@@ -18,8 +18,8 @@
       }
     ],
     "paths": {
+      "@/*": ["src/*"],
       "@/components/ui/*": ["../../../../libs/shadcn/src/lib/ui/*"],
-      "@/*": ["src/*"]
     },
     "types": ["jest", "node"]
   },

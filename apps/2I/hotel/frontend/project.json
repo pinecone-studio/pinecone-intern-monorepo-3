@@ -17,10 +17,10 @@
         }
       },
       "dependsOn": [
-        {
-          "target": "codegen:dev",
-          "params": "forward"
-        }
+        // {
+        //   "target": "codegen:dev",
+        //   "params": "forward"
+        // }
       ]
     },
     "serve": {
@@ -42,10 +42,10 @@
         }
       },
       "dependsOn": [
-        {
-          "target": "codegen:dev",
-          "params": "forward"
-        },
+        // {
+        //   "target": "codegen:dev",
+        //   "params": "forward"
+        // },
         {
           "target": "export-env",
           "params": "forward"
@@ -67,10 +67,10 @@
         "codeCoverage": true
       },
       "dependsOn": [
-        {
-          "target": "codegen:testing",
-          "params": "forward"
-        }
+        // {
+        //   "target": "codegen:testing",
+        //   "params": "forward"
+        // }
       ]
     },
     "get-secrets:dev": {
@@ -187,10 +187,10 @@
         {
           "target": "export-env"
         },
-        {
-          "target": "codegen:testing",
-          "params": "forward"
-        }
+        // {
+        //   "target": "codegen:testing",
+        //   "params": "forward"
+        // }
       ]
     },
     "deploy-dev": {
@@ -213,10 +213,10 @@
         {
           "target": "export-env"
         },
-        {
-          "target": "codegen:dev",
-          "params": "forward"
-        }
+        // {
+        //   "target": "codegen:dev",
+        //   "params": "forward"
+        // }
       ]
     },
     "lint": {
@@ -244,17 +244,17 @@
       },
       "dependsOn": [{ "target": "get-secrets:dev" }]
     },
-    "codegen:testing": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["graphql-codegen --config ./apps/2I/hotel/frontend/codegen.ts"]
-      },
-      "dependsOn": [
-        {
-          "target": "get-secrets:testing"
-        }
-      ]
-    },
+    // "codegen:testing": {
+    //   "executor": "nx:run-commands",
+    //   "options": {
+    //     "commands": ["graphql-codegen --config ./apps/2I/hotel/frontend/codegen.ts"]
+    //   },
+    //   "dependsOn": [
+    //     {
+    //       "target": "get-secrets:testing"
+    //     }
+    //   ]
+    // },
     "deploy-prod": {
       "executor": "nx:run-commands",
       "options": {
@@ -275,10 +275,10 @@
         {
           "target": "export-env"
         },
-        {
-          "target": "codegen:prod",
-          "params": "forward"
-        }
+        // {
+        //   "target": "codegen:prod",
+        //   "params": "forward"
+        // }
       ]
     }
   },
