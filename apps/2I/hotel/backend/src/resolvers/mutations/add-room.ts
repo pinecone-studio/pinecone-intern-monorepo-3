@@ -22,9 +22,7 @@ export const addRoom = async (_: unknown, args: AddRoomArgs) => {
     if (exists) {
       throw new Error('This room already added');
     }
-
-    const newRoom = new RoomModel({ ...args });
-    return await newRoom.save();
+    return await RoomModel.create({ ...args });
   } catch (err: any) {
     if (err.message === 'This room already added') {
       throw err;
