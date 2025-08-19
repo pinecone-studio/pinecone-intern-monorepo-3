@@ -5,7 +5,6 @@ export const getRooms = async () => {
     const rooms = await RoomModel.find();
     return rooms;
   } catch (err) {
-    console.log(err);
     throw new Error('Something went wrong');
   }
 };

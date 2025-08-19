@@ -18,13 +18,18 @@ type AddRoomArgs = {
 };
 export const addRoom = async (_: unknown, args: AddRoomArgs) => {
   try {
-    const isExistingRoom = await RoomModel.findOne({ hotelName: args.hotelName, roomNumber: args.roomNumber }).lean();
-    if (!isExistingRoom) {
-      return await RoomModel.create({ ...args });
-    } else {
+    const exists = await RoomModel.findOne({ roomNumber: args.roomNumber });
+    if (exists) {
       throw new Error('This room already added');
     }
+
+    const newRoom = new RoomModel({ ...args });
+    return await newRoom.save();
   } catch (err: any) {
+    if (err.message === 'This room already added') {
+      throw err;
+    }
+
     throw new Error('Something went wrong');
   }
 };
