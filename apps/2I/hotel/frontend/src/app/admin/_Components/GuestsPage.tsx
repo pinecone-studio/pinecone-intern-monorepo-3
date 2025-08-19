@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export function GuestsPage() {
+export const GuestsPage = () => {
   const [statusFilter, setStatusFilter] = useState('');
 
   const guests = [
@@ -118,4 +118,4 @@ export function GuestsPage() {
       <div className="flex justify-end items-center mt-4 text-sm text-gray-500">Page 1 of 10</div>
     </main>
   );
-}
+};

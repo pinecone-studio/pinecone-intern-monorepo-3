@@ -1,14 +1,10 @@
-'use client';
-
 import { Home, Users, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 interface SidebarProps {
-  onNavigate: (page: 'hotels' | 'guests') => void;
+  onNavigate: (_page: 'hotels' | 'guests') => void;
 }
-
-export function AppSidebar({ onNavigate }: SidebarProps) {
+export const AppSidebar = ({ onNavigate }: SidebarProps) => {
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-white">
       <div className="flex items-center gap-3 px-4 py-5 border-b">
@@ -49,4 +45,4 @@ export function AppSidebar({ onNavigate }: SidebarProps) {
       </div>
     </aside>
   );
-}
+};

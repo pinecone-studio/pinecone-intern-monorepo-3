@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { TopBar } from '../_Components/TopBar';
 
-export function HotelsPage() {
+export const HotelsPage = () => {
   const hotels = [
     {
       id: '0001',
@@ -93,4 +93,4 @@ export function HotelsPage() {
       </div>
     </main>
   );
-}
+};

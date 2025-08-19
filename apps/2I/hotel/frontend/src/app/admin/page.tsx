@@ -6,7 +6,7 @@ import { HotelsPage } from './_Components/HotelsPage';
 import { GuestsPage } from './_Components/GuestsPage';
 import { PanelLeft } from 'lucide-react';
 
-export default function AdminPage() {
+const AdminPage = () => {
   const [activePage, setActivePage] = useState<'hotels' | 'guests'>('hotels');
 
   return (
@@ -26,4 +26,6 @@ export default function AdminPage() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminPage;
