@@ -2,9 +2,14 @@ import { UserModel } from "../../models";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+type LoginInput = {
+  email: string;
+  password: string;
+};
+
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-export const login = async (_: unknown, { login }: { login: any }) => {
+export const login = async (_: unknown, { login }: { login: LoginInput }) => {
   const { email, password } = login;
 
   const user = await UserModel.findOne({ email });

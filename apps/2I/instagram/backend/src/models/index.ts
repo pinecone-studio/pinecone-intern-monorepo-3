@@ -1,5 +1,5 @@
 
-import mongoose, { model, Schema} from "mongoose"
+import mongoose, {Schema} from "mongoose"
 
 
 export interface User extends Document {

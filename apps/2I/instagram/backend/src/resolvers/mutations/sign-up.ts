@@ -1,13 +1,21 @@
+
 import { UserModel } from "../../models"
+import bcrypt from 'bcryptjs';  
+import jwt from 'jsonwebtoken'
 
 
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+
+type SignupInput = {
+  username: string;
+  email: string;
+  password: string;
+  fullname: string;
+};
 
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
- export const signup =  async (_: unknown, { signup }: { signup: any }) => {
+ export const signup =  async (_: unknown, { signup }: { signup: SignupInput }) => {
       const { username, email, password, fullname } = signup
 
       const existingUser = await UserModel.findOne({
