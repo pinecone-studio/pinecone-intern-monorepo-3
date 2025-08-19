@@ -67,7 +67,7 @@
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["hotel-backend"],
+          "groups": ["2I-Hotelbooking-BE"],
           "env": "test"
         }
       }
