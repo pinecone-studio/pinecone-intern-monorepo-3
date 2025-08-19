@@ -6,6 +6,6 @@ generates:
       - typescript
       - typescript-resolvers
     config:
-      contextType: Context
+      contextType: '../types#Context'
       makeResolverTypeCallable: true
       maybeValue: T
