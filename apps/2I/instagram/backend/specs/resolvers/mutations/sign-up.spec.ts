@@ -28,8 +28,9 @@ describe('Signup Mutation', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  jest.clearAllMocks();
+  process.env.JWT_SECRET = 'supersecret'; 
+});
 
   it('should return user and token on successful signup', async () => {
   
