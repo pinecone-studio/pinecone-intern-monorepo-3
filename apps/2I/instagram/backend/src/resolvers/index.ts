@@ -1,7 +1,21 @@
-import * as Mutation from './mutations';
-import * as Query from './queries';
+
+import { login } from './mutations/login';
+import { signup } from './mutations/sign-up';
+import { getuser } from './queries/get-signup';
+
+
+
 
 export const resolvers = {
-  Mutation,
-  Query,
-};
+  Mutation: {
+       signup,
+       login
+  },
+
+Query: {
+getuser
+}
+
+
+}
+

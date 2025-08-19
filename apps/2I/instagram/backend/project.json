@@ -62,12 +62,22 @@
         }
       ]
     },
+        "get-secrets:dev": {
+      "executor": "@pinecone-intern-monorepo/secrets:get",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {
+          "groups": ["Instagram-2I-2025-BE"],
+          "env": "dev"
+        }
+      }
+    },
     "get-secrets:testing": {
       "executor": "@pinecone-intern-monorepo/secrets:get",
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["instagram-backend"],
+          "groups": ["Instagram-2I-2025-BE"],
           "env": "test"
         }
       }
@@ -77,7 +87,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["instagram-backend"],
+          "groups": ["Instagram-2I-2025-BE"],
           "env": "prod"
         }
       }
