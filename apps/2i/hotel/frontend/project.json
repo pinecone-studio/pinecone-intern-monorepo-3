@@ -1,7 +1,7 @@
 {
   "name": "hotel-frontend",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/2I/hotel/frontend",
+  "sourceRoot": "apps/2i/hotel/frontend",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,11 +9,11 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/2I/hotel/frontend"
+        "outputPath": "dist/apps/2i/hotel/frontend"
       },
       "configurations": {
         "development": {
-          "outputPath": "dist/apps/2I/hotel/frontend"
+          "outputPath": "dist/apps/2i/hotel/frontend"
         }
       },
       "dependsOn": [
@@ -78,7 +78,7 @@
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "groups": ["hotel-frontend"],
+          "groups": ["2I-Hotelbooking-FE"],
           "env": "dev"
         }
       }
@@ -88,7 +88,7 @@
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["hotel-frontend"],
+          "groups": ["2I-Hotelbooking-FE"],
           "env": "test"
         }
       }
@@ -98,7 +98,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["hotel-frontend"],
+          "groups": ["2I-Hotelbooking-FE"],
           "env": "prod"
         }
       }
@@ -106,14 +106,14 @@
     "export-env": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["export $(cat apps/2I/hotel/frontend/.env | xargs)"],
+        "commands": ["export $(cat apps/2i/hotel/frontend/.env | xargs)"],
         "parallel": false
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["rm -rf dist/apps/2I/hotel/frontend", "rm -rf .vercel"]
+        "commands": ["rm -rf dist/apps/2i/hotel/frontend", "rm -rf .vercel"]
       }
     },
     "e2e": {
@@ -135,14 +135,14 @@
     "cypress:clean": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["rm -rf apps/2I/hotel/frontend/cypress/results", "rm -rf apps/2I/hotel/frontend/.nyc_output", "rm -rf apps/2I/hotel/frontend/.cy", "rm -rf apps/2I/hotel/frontend/coverage"],
+        "commands": ["rm -rf apps/2i/hotel/frontend/cypress/results", "rm -rf apps/2i/hotel/frontend/.nyc_output", "rm -rf apps/2i/hotel/frontend/.cy", "rm -rf apps/2i/hotel/frontend/coverage"],
         "parallel": false
       }
     },
     "cypress": {
       "executor": "@nx/cypress:cypress",
       "options": {
-        "cypressConfig": "apps/2I/hotel/frontend/cypress.config.ts",
+        "cypressConfig": "apps/2i/hotel/frontend/cypress.config.ts",
         "testingType": "e2e",
         "reporter": "mochawesome",
         "devServerTarget": "hotel-frontend:serve:development",
@@ -163,7 +163,7 @@
     "cypress-generate-all-page-json": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx ts-node apps/2I/hotel/frontend/cypress/utils/get-all-pages.ts"],
+        "commands": ["npx ts-node apps/2i/hotel/frontend/cypress/utils/get-all-pages.ts"],
         "parallel": false
       }
     },
@@ -171,9 +171,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
-          "npx env-cmd -f apps/2I/hotel/frontend/.env vercel build --token=$VERCEL_TOKEN",
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel pull --yes --environment=preview --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx env-cmd -f apps/2i/hotel/frontend/.env vercel build --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel --archive=tgz --prebuilt --token=PesgKgc0dTrFmrxoYtrTLeBc"
         ],
         "parallel": false
       },
@@ -197,9 +197,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=production --token=$VERCEL_TOKEN",
-          "vercel build --prod --token=$VERCEL_TOKEN",
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel --prebuilt --prod --token=$VERCEL_TOKEN"
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel pull --yes --environment=production --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "vercel build --prod --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel --prebuilt --prod --token=PesgKgc0dTrFmrxoYtrTLeBc"
         ],
         "parallel": false
       },
@@ -223,13 +223,13 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/2I/hotel/frontend/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/2i/hotel/frontend/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "codegen:prod": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./apps/2I/hotel/frontend/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2i/hotel/frontend/codegen.ts"]
       },
       "dependsOn": [
         {
@@ -240,14 +240,14 @@
     "codegen:dev": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./apps/2I/hotel/frontend/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2i/hotel/frontend/codegen.ts"]
       },
       "dependsOn": [{ "target": "get-secrets:dev" }]
     },
     "codegen:testing": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./apps/2I/hotel/frontend/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2i/hotel/frontend/codegen.ts"]
       },
       "dependsOn": [
         {
@@ -259,9 +259,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=production --token=$VERCEL_TOKEN",
-          "vercel build --prod --token=$VERCEL_TOKEN",
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel --prebuilt --prod --token=$VERCEL_TOKEN"
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel pull --yes --environment=production --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "vercel build --prod --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel --prebuilt --prod --token=PesgKgc0dTrFmrxoYtrTLeBc"
         ],
         "parallel": false
       },
