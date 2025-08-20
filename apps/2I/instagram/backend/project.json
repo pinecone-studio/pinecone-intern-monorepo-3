@@ -128,9 +128,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
-          "npx env-cmd -f apps/2I/instagram/backend/.env vercel build --token=$VERCEL_TOKEN",
-          "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
+          "npx dotenv -v VERCEL_ORG_ID=team_TyAKo31Ogf3CJ8KPtpD8BzQy -v VERCEL_PROJECT_ID=prj_KDdZIbdxAkwl9F6QPduMIhclMya9 -- vercel pull --yes --environment=preview --token=j4cfcRy6TSvRGwuaDlm6aBvB",
+          "npx env-cmd -f apps/2I/instagram/backend/.env vercel build --token=j4cfcRy6TSvRGwuaDlm6aBvB",
+          "npx dotenv -v VERCEL_ORG_ID=team_TyAKo31Ogf3CJ8KPtpD8BzQy -v VERCEL_PROJECT_ID=prj_KDdZIbdxAkwl9F6QPduMIhclMya9 -- vercel --archive=tgz --prebuilt --token=j4cfcRy6TSvRGwuaDlm6aBvB"
         ],
         "parallel": false
       },
@@ -154,9 +154,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=production --token=$VERCEL_TOKEN",
-          "vercel build --prod --token=$VERCEL_TOKEN",
-          "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel --prebuilt --prod --token=$VERCEL_TOKEN"
+          "npx dotenv -v VERCEL_ORG_ID=team_TyAKo31Ogf3CJ8KPtpD8BzQy -v VERCEL_PROJECT_ID=prj_KDdZIbdxAkwl9F6QPduMIhclMya9 -- vercel pull --yes --environment=production --token=j4cfcRy6TSvRGwuaDlm6aBvB",
+          "vercel build --prod --token=j4cfcRy6TSvRGwuaDlm6aBvB",
+          "npx dotenv -v VERCEL_ORG_ID=team_TyAKo31Ogf3CJ8KPtpD8BzQy -v VERCEL_PROJECT_ID=prj_KDdZIbdxAkwl9F6QPduMIhclMya9 -- vercel --prebuilt --prod --token=j4cfcRy6TSvRGwuaDlm6aBvB"
         ],
         "parallel": false
       },
@@ -180,9 +180,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=production --token=$VERCEL_TOKEN",
-          "vercel build --prod --token=$VERCEL_TOKEN",
-          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel --prebuilt --prod --token=$VERCEL_TOKEN"
+          "npx dotenv -v VERCEL_ORG_ID=team_TyAKo31Ogf3CJ8KPtpD8BzQy -v VERCEL_PROJECT_ID=prj_KDdZIbdxAkwl9F6QPduMIhclMya9 -- vercel pull --yes --environment=production --token=j4cfcRy6TSvRGwuaDlm6aBvB",
+          "vercel build --prod --token=j4cfcRy6TSvRGwuaDlm6aBvB",
+          "npx dotenv -v VERCEL_ORG_ID=team_TyAKo31Ogf3CJ8KPtpD8BzQy -v VERCEL_PROJECT_ID=prj_KDdZIbdxAkwl9F6QPduMIhclMya9 -- vercel --prebuilt --prod --token=j4cfcRy6TSvRGwuaDlm6aBvB"
         ],
         "parallel": false
       },

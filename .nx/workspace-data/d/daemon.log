@@ -1,0 +1,91 @@
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.360Z - Started listening on: /private/var/folders/t2/gp_cm89s71l5lhbhtrsqf2nm0000h6/T/c1b1a5e5de022184bf4d/d.sock
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.366Z - [WATCHER]: Subscribed to changes within: /Users/25LP7473/Desktop/pinecone-intern-monorepo-3 (native)
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.367Z - Established a connection. Number of open connections: 1
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.367Z - Established a connection. Number of open connections: 2
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.368Z - Closed a connection. Number of open connections: 1
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.369Z - [REQUEST]: Client Request for Project Graph Received
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.371Z - Time taken for 'loadSpecifiedNxPlugins' 0.6286249999999995ms
+Time for 'plugin worker 38486 code loading' 2.3545
+Time for 'plugin worker 38487 code loading' 2.304584
+Time for 'plugin worker 38488 code loading' 2.0831670000000013
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.422Z - [WATCHER]: Processing file changes in outputs
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.453Z - Time taken for 'Load Nx Plugin: /Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/plugins/package-json' 83.75450000000001ms
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.453Z - Time taken for 'Load Nx Plugin: /Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/plugins/project-json/build-nodes/project-json' 83.827292ms
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.463Z - [REQUEST]: Updated workspace context based on watched changes, recomputing project graph...
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.463Z - [REQUEST]: 
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.463Z - [REQUEST]: 
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.464Z - No files changed, but no in-memory cached project graph found. Recomputing it...
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.464Z - [REQUEST]: Responding to the client with an error. Error when preparing serialized project graph. (0 , minimatch_1.minimatch) is not a function
+Time for 'nx/js/dependencies-and-lockfile:createNodes' 0.0656670000000048
+TypeError: (0 , minimatch_1.minimatch) is not a function
+    at findMatchingConfigFiles (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/project-configuration-utils.js:373:39)
+    at createProjectConfigurationsWithPlugins (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/project-configuration-utils.js:269:37)
+    at retrieveProjectConfigurations (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/retrieve-workspace-files.js:47:85)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async processFilesAndCreateAndSerializeProjectGraph (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/project-graph-incremental-recomputation.js:165:43)
+    at async getCachedSerializedProjectGraphPromise (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/project-graph-incremental-recomputation.js:57:24)
+    at async handleRequestProjectGraph (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/handle-request-project-graph.js:12:24)
+    at async handleResult (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:188:14)
+    at async handleMessage (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:109:9)
+    at async /Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:74:9
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.464Z - Done responding to the client null
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.465Z - Handled REQUEST_PROJECT_GRAPH. Handling time: 95. Response time: 0.
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.465Z - Time taken for 'loadDefaultNxPlugins' 93.419625ms
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:14:51.465Z - Closed a connection. Number of open connections: 0
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.941Z - Established a connection. Number of open connections: 1
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.941Z - Closed a connection. Number of open connections: 0
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.942Z - Established a connection. Number of open connections: 1
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.942Z - [REQUEST]: Client Request for Project Graph Received
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.942Z - [REQUEST]: Updated workspace context based on watched changes, recomputing project graph...
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.942Z - [REQUEST]: 
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.942Z - [REQUEST]: 
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.950Z - No files changed, but no in-memory cached project graph found. Recomputing it...
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.950Z - [REQUEST]: Responding to the client with an error. Error when preparing serialized project graph. (0 , minimatch_1.minimatch) is not a function
+TypeError: (0 , minimatch_1.minimatch) is not a function
+    at findMatchingConfigFiles (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/project-configuration-utils.js:373:39)
+    at createProjectConfigurationsWithPlugins (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/project-configuration-utils.js:269:37)
+    at retrieveProjectConfigurations (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/retrieve-workspace-files.js:47:85)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async processFilesAndCreateAndSerializeProjectGraph (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/project-graph-incremental-recomputation.js:165:43)
+    at async getCachedSerializedProjectGraphPromise (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/project-graph-incremental-recomputation.js:57:24)
+    at async handleRequestProjectGraph (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/handle-request-project-graph.js:12:24)
+    at async handleResult (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:188:14)
+    at async handleMessage (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:109:9)
+    at async /Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:74:9
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.950Z - Done responding to the client null
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.950Z - Handled REQUEST_PROJECT_GRAPH. Handling time: 8. Response time: 0.
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.950Z - Time taken for 'hash changed files from watcher' 0.08241699999780394ms
+Time for 'nx/js/dependencies-and-lockfile:createNodes' 0.06737499999871943
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:15:13.951Z - Closed a connection. Number of open connections: 0
+Creating project graph nodes with 3 plugins
+Creating project graph nodes with 3 plugins
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.299Z - Established a connection. Number of open connections: 1
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.299Z - Established a connection. Number of open connections: 2
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.299Z - Closed a connection. Number of open connections: 1
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.301Z - [REQUEST]: Client Request for Project Graph Received
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.310Z - [REQUEST]: Updated workspace context based on watched changes, recomputing project graph...
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.310Z - [REQUEST]: 
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.310Z - [REQUEST]: 
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.310Z - No files changed, but no in-memory cached project graph found. Recomputing it...
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.310Z - [REQUEST]: Responding to the client with an error. Error when preparing serialized project graph. (0 , minimatch_1.minimatch) is not a function
+TypeError: (0 , minimatch_1.minimatch) is not a function
+    at findMatchingConfigFiles (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/project-configuration-utils.js:373:39)
+    at createProjectConfigurationsWithPlugins (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/project-configuration-utils.js:269:37)
+    at retrieveProjectConfigurations (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/project-graph/utils/retrieve-workspace-files.js:47:85)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async processFilesAndCreateAndSerializeProjectGraph (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/project-graph-incremental-recomputation.js:165:43)
+    at async getCachedSerializedProjectGraphPromise (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/project-graph-incremental-recomputation.js:57:24)
+    at async handleRequestProjectGraph (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/handle-request-project-graph.js:12:24)
+    at async handleResult (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:188:14)
+    at async handleMessage (/Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:109:9)
+    at async /Users/25LP7473/Desktop/pinecone-intern-monorepo-3/node_modules/nx/src/daemon/server/server.js:74:9
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.311Z - Done responding to the client null
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.311Z - Handled REQUEST_PROJECT_GRAPH. Handling time: 9. Response time: 1.
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.311Z - Time taken for 'hash changed files from watcher' 8.825250000023516ms
+Time for 'nx/js/dependencies-and-lockfile:createNodes' 0.09491700000944547
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:17:26.311Z - Closed a connection. Number of open connections: 0
+Creating project graph nodes with 3 plugins
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:26:46.553Z - [WATCHER]: Processing file changes in outputs
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:26:46.557Z - [WATCHER]: Stopping the watcher for /Users/25LP7473/Desktop/pinecone-intern-monorepo-3 (sources)
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:26:46.557Z - [WATCHER]: Stopping the watcher for /Users/25LP7473/Desktop/pinecone-intern-monorepo-3 (outputs)
+[NX v21.4.0 Daemon Server] - 2025-08-20T04:26:46.557Z - Server stopped because: "NX_VERSION_CHANGED"

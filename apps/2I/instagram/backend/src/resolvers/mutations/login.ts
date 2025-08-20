@@ -1,13 +1,12 @@
 import { UserModel } from "../../models";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+
+
 
 type LoginInput = {
   email: string;
   password: string;
 };
-
-const JWT_SECRET = process.env.JWT_SECRET as string;
 
 export const login = async (_: unknown, { login }: { login: LoginInput }) => {
   const { email, password } = login;
@@ -24,12 +23,8 @@ export const login = async (_: unknown, { login }: { login: LoginInput }) => {
     throw new Error("Invalid email or password");
   }
 
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-    expiresIn: "7d",
-  });
 
   return {
-    token,
     user,
   };
 };
