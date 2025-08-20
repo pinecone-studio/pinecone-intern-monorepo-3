@@ -12,6 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET as string;
   
   export const verifyOtp =  async (_: unknown, { verifyOtp}: {verifyOtp:LoginVerify}) => {
     
+    
 const { otp }= verifyOtp
 
     
@@ -43,6 +44,7 @@ const { otp }= verifyOtp
         token,
     user,
        };
+       
     }
 
 

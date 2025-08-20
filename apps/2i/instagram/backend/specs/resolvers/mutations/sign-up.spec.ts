@@ -1,88 +1,70 @@
 
-import { resolvers } from '../../../src/resolvers';
 import { UserModel } from '../../../src/models';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { signup } from '../../../src/resolvers/mutations/sign-up';
 
-jest.mock('../../../src/models', () => ({
+
+jest.mock('.../../../src/models', () => ({
   UserModel: {
     findOne: jest.fn(),
     create: jest.fn(),
   },
 }));
 
-jest.mock('bcryptjs', () => ({
-  hash: jest.fn(),
-}));
+jest.mock('bcryptjs');
 
-jest.mock('jsonwebtoken', () => ({
-  sign: jest.fn(),
-}));
-
-describe('Signup Mutation', () => {
+describe('Signup Mutation without token', () => {
   const input = {
-    email: 'mnhtulgaa550@gmail.com',
-    username: 'tulgaa',
-    fullname: 'munkh',
-    password: 'qwerty23',
+    username: 'testuser',
+    email: 'test@example.com',
+    password: 'password123',
+    fullname: 'Test User',
   };
 
   beforeEach(() => {
-  jest.clearAllMocks();
-  process.env.JWT_SECRET = 'supersecret'; 
-});
+    jest.clearAllMocks();
+  });
 
-  it('should return user and token on successful signup', async () => {
-  
+  it('should create and return a user without token', async () => {
+    
     (UserModel.findOne as jest.Mock).mockResolvedValue(null);
 
-    
-    (bcrypt.hash as jest.Mock).mockResolvedValue('hashedpassword');
-
    
+    (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
+
+    
     (UserModel.create as jest.Mock).mockResolvedValue({
-      id: '123456',
-      email: input.email,
+      id: 'userId123',
       username: input.username,
+      email: input.email,
       fullname: input.fullname,
-      password: 'hashedpassword',
+      password: 'hashedPassword',
     });
 
-
-    (jwt.sign as jest.Mock).mockReturnValue('dummy.token.value');
-
-    const result = await resolvers.Mutation.signup(null, { signup: input });
+    const result = await signup(null, { signup: input });
 
     expect(UserModel.findOne).toHaveBeenCalledWith({ email: input.email });
     expect(bcrypt.hash).toHaveBeenCalledWith(input.password, 10);
     expect(UserModel.create).toHaveBeenCalledWith({
-      fullname: input.fullname,
       username: input.username,
       email: input.email,
-      password: 'hashedpassword',
+      fullname: input.fullname,
+      password: 'hashedPassword',
     });
-    expect(jwt.sign).toHaveBeenCalledWith(
-      { userId: '123456' },
-      'supersecret',
-      { expiresIn: '7d' }
-    );
 
-    expect(result).toHaveProperty('token', 'dummy.token.value');
     expect(result).toHaveProperty('user');
     expect(result.user).toMatchObject({
-      id: '123456',
-      email: input.email,
       username: input.username,
+      email: input.email,
       fullname: input.fullname,
     });
   });
 
   it('should throw error if user already exists', async () => {
+    (UserModel.findOne as jest.Mock).mockResolvedValue({ id: 'existingUserId' });
 
-    (UserModel.findOne as jest.Mock).mockResolvedValue({ id: 'existingUser' });
-
-    await expect(
-      resolvers.Mutation.signup(null, { signup: input })
-    ).rejects.toThrow('Phone or email already in use');
+    await expect(signup(null, { signup: input })).rejects.toThrow(
+      'Phone or email already in use'
+    );
   });
 });

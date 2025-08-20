@@ -18,6 +18,10 @@ describe("verifyOtp function", () => {
     jest.useFakeTimers().setSystemTime(fakeDateNow);
   });
 
+   beforeAll(() => {
+    process.env.JWT_SECRET = 'supersecret';
+  });
+
   afterEach(() => {
     jest.useRealTimers();
   });
