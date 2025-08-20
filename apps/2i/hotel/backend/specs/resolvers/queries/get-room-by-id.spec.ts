@@ -1,5 +1,5 @@
 import { RoomModel } from '../../../src/models/room-model';
-import { getRoomById } from '../../../src/resolvers/queries/get-room-by-id';
+import { getRoomById } from '../../../src/resolvers/queries';
 
 jest.mock('../../../src/models/room-model', () => {
   return {
