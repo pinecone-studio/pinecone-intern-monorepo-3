@@ -16,10 +16,7 @@
         "name": "next"
       }
     ],
-    "types": [
-      "jest",
-      "node"
-    ]
+    "types": ["jest","node"]
   },
   "include": [
     "**/*.ts",
@@ -28,13 +25,7 @@
     "**/*.jsx",
     "../../../../apps/2I/instagram/backend/.next/types/**/*.ts",
     "../../../../dist/aapps/2I/instagram/backend/.next/types/**/*.ts",
-    "next-env.d.ts",
-    "../../../../dist/apps/2I/instagram/backend/.next/types/**/*.ts"
+    "next-env.d.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "jest.config.ts",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts"
-  ]
+  "exclude": ["node_modules", "jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }
