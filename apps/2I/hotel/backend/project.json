@@ -171,9 +171,15 @@
         ],
         "parallel": false
       },
+      "dependsOn": [
+        {
+          "target": "clean"
+        },
+        {
           "target": "get-secrets:prod"
         },
         {
+          "target": "codegen",
           "params": "forward"
         }
       ]
