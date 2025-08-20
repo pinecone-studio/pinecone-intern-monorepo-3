@@ -9,11 +9,41 @@ export const typeDefs = gql`
     Success
   }
 
+  type Amenities {
+    bathroom: [String]!
+    foodAndDrink: [String]!
+    technology: [String]!
+    accessibility: [String]!
+    bedroom: [String]!
+    more: [String]!
+  }
+
+  type Room {
+    _id: ID!
+    hotelName: String!
+    roomNumber: String!
+    roomType: String!
+    pricePerNight: Int!
+    roomImgs: [String]!
+    roomInfos: [String]!
+    amenities: Amenities!
+  }
+
   type Query {
-    sampleQuery: String!
+    getRoomById(id: ID!): Room
+    getRooms: [Room]!
   }
 
   type Mutation {
-    sampleMutation: String!
+    addRoom(hotelName: String!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomImgs: [String]!, roomInfos: [String]!, amenities: AmenitiesInput!): Room!
+  }
+
+  input AmenitiesInput {
+    bathroom: [String]!
+    foodAndDrink: [String]!
+    technology: [String]!
+    accessibility: [String]!
+    bedroom: [String]!
+    more: [String]!
   }
 `;

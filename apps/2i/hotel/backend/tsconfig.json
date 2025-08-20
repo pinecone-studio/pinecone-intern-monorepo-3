@@ -16,8 +16,25 @@
         "name": "next"
       }
     ],
-    "types": ["jest", "node"]
+    "types": [
+      "jest",
+      "node"
+    ]
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "../../../../apps/2i/hotel/backend/.next/types/**/*.ts", "../../../../dist/aapps/2i/hotel/backend/.next/types/**/*.ts", "next-env.d.ts"],
-  "exclude": ["node_modules", "jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "../../../../apps/2i/hotel/backend/.next/types/**/*.ts",
+    "../../../../dist/aapps/2i/hotel/backend/.next/types/**/*.ts",
+    "next-env.d.ts",
+    "../../../../dist/apps/2i/hotel/backend/.next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "jest.config.ts",
+    "src/**/*.spec.ts",
+    "src/**/*.test.ts"
+  ]
 }
