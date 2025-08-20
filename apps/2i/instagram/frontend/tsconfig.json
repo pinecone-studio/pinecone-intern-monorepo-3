@@ -28,8 +28,8 @@
     "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-    "../../../../apps/2I/instagram/frontend/.next/types/**/*.ts",
-    "../../../../dist/apps/2I/instagram/frontend/.next/types/**/*.ts",
+    "../../../../apps/2i/instagram/frontend/.next/types/**/*.ts",
+    "../../../../dist/apps/2i/instagram/frontend/.next/types/**/*.ts",
     "next-env.d.ts"
   ],
   "exclude": ["node_modules", "jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
