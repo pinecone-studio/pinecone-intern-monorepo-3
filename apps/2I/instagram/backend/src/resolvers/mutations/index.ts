@@ -1,1 +1,5 @@
-export * from './sample-mutation';
+import { signup } from "./signup";
+
+export const Mutation = {
+  signup,
+};

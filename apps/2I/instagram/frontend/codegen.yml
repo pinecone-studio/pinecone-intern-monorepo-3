@@ -1,0 +1,16 @@
+overwrite: true
+schema: ${LOCAL_BACKEND_URI:${BACKEND_URI:${NEXT_PUBLIC_GRAPHQL_URL}}}
+documents:
+  - src/**/*.graphql
+generates:
+  src/generated/index.ts:
+    config:
+      reactApolloVersion: 3
+      withHOC: true
+      withHooks: true
+    plugins:
+      - add:
+          content: '// @ts-nocheck'
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo

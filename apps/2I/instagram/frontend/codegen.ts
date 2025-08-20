@@ -1,27 +1,36 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
+import path from 'path';
+
+const here = __dirname; 
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.LOCAL_BACKEND_URI ?? process.env.BACKEND_URI,
-  documents: ['apps/2I/instagram/frontend/src/**/*.graphql'],
+
+  
+  schema: path.resolve(here, 'schema.graphql'),
+
+
+  documents: [path.resolve(here, 'src/**/*.{graphql,gql}')],
+
   generates: {
-    'apps/2I/instagram/frontend/src/generated/index.ts': {
+
+    [path.resolve(here, 'src/generated/index.ts')]: {
       config: {
         reactApolloVersion: 3,
-        withHOC: true,
         withHooks: true,
+        withHOC: false,
       },
       plugins: [
-        {
-          add: {
-            content: '// @ts-nocheck',
-          },
-        },
+        { add: { content: '// @ts-nocheck' } },
         'typescript',
         'typescript-operations',
         'typescript-react-apollo',
       ],
     },
   },
+
+
+  ignoreNoDocuments: true,
 };
+
 export default config;

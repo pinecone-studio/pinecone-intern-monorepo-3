@@ -1,0 +1,36 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+"---- Types ----"
+type User {
+  id: ID!
+  username: String!
+  email: String
+  fullName: String
+  avatarUrl: String
+}
+
+type AuthPayload {
+  user: User!
+  token: String
+}
+
+input SignupInput {
+  contact: String!   # email эсвэл утас гэж та нар нэрлэсэн
+  password: String!
+  fullName: String
+  username: String!
+}
+
+"---- Root operations ----"
+type Query {
+  _empty: String
+  me: User
+}
+
+type Mutation {
+  _noop: Boolean
+  signup(input: SignupInput!): AuthPayload!
+}

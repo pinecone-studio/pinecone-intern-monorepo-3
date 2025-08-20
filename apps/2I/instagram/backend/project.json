@@ -82,6 +82,18 @@
         }
       }
     },
+
+    "get-secrets:dev": {
+      "executor": "@pinecone-intern-monorepo/secrets:get",
+      "defaultConfiguration": "dev",
+      "configurations": {
+        "dev": {
+          "groups": ["instagram-backend"],
+          "env": "dev"
+        }
+      }
+    },
+
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
@@ -125,19 +137,10 @@
         "parallel": false
       },
       "dependsOn": [
-        {
-          "target": "clean"
-        },
-        {
-          "target": "get-secrets:testing"
-        },
-        {
-          "target": "export-env"
-        },
-        {
-          "target": "codegen",
-          "params": "forward"
-        }
+        { "target": "clean" },
+        { "target": "get-secrets:testing" },
+        { "target": "export-env" },
+        { "target": "codegen", "params": "forward" }
       ]
     },
     "deploy-testing": {
@@ -151,19 +154,10 @@
         "parallel": false
       },
       "dependsOn": [
-        {
-          "target": "clean"
-        },
-        {
-          "target": "get-secrets:testing"
-        },
-        {
-          "target": "export-env"
-        },
-        {
-          "target": "codegen",
-          "params": "forward"
-        }
+        { "target": "clean" },
+        { "target": "get-secrets:testing" },
+        { "target": "export-env" },
+        { "target": "codegen", "params": "forward" }
       ]
     },
     "deploy-prod": {
@@ -177,19 +171,10 @@
         "parallel": false
       },
       "dependsOn": [
-        {
-          "target": "clean"
-        },
-        {
-          "target": "get-secrets:prod"
-        },
-        {
-          "target": "export-env"
-        },
-        {
-          "target": "codegen",
-          "params": "forward"
-        }
+        { "target": "clean" },
+        { "target": "get-secrets:prod" },
+        { "target": "export-env" },
+        { "target": "codegen", "params": "forward" }
       ]
     }
   },

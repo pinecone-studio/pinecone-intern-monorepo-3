@@ -1,12 +1,18 @@
-/* eslint-disable */
-export default {
-  displayName: 'instagram-frontend',
-  preset: '../../../../jest.preset.js',
-  transform: {
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
-    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/next/babel'], babelrc: false }],
-  },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../../../coverage/apps/2I/instagram/frontend',
-  collectCoverageFrom: ['src/**/*.{ts,tsx,js,jsx}', '!src/**/generated/**/*.ts', '!src/app/**/*.tsx', '!src/components/providers/*.tsx'],
+import nextJest from "next/jest";
+import type { Config } from "@jest/types";
+
+// ⬇️ ЭНД: монорепо root биш, тухайн аппын хавтсыг заана
+const createJestConfig = nextJest({ dir: __dirname });
+
+const customJestConfig: Config.InitialOptions = {
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+  testMatch: [
+    "<rootDir>/**/__tests__/**/*.(spec|test).(ts|tsx|js|jsx)",
+    "<rootDir>/**/*.(spec|test).(ts|tsx|js|jsx)",
+  ],
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
+
 };
+
+export default createJestConfig(customJestConfig);

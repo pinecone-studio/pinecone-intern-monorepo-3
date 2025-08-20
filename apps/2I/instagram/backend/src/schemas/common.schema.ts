@@ -1,19 +1,14 @@
-import gql from 'graphql-tag';
-
-export const typeDefs = gql`
-  scalar JSON
-
-  scalar Date
-
-  enum Response {
-    Success
+const common = /* GraphQL */ `
+  type User {
+    id: ID!
+    email: String!
+    username: String!
+    fullName: String
   }
 
-  type Query {
-    sampleQuery: String!
-  }
-
-  type Mutation {
-    sampleMutation: String!
+  type AuthPayload {
+    token: String!
+    user: User!
   }
 `;
+export default common;

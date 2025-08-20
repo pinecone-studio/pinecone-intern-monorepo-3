@@ -1,1 +1,5 @@
-export * from './sample-query';
+import { me } from "./me";
+
+export const Query = {
+  me,
+};

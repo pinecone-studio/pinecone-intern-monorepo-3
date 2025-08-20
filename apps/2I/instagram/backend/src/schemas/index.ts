@@ -1,4 +1,14 @@
-import { mergeTypeDefs } from '@graphql-tools/merge';
-import { typeDefs as CommonTypeDefs } from './common.schema';
+const root = /* GraphQL */ `
+  type Query {
+    me: User
+  }
 
-export const typeDefs = mergeTypeDefs([CommonTypeDefs]);
+  type Mutation {
+    signup(email: String!, password: String!, fullName: String!, username: String!): User!
+    login(email: String!, password: String!): AuthPayload!
+  }
+`;
+
+import common from "./common.schema";
+
+export default [common, root]; 
