@@ -64,7 +64,7 @@ describe("verifyOtp function", () => {
     );
   });
 
-  it("should activate user, save and return token and user", async () => {
+  it("should activate user, save and return token and users", async () => {
     const mockUser = {
       id: mockUserId,
       email: mockEmail,
