@@ -17,9 +17,3 @@ query GetRooms {
     }
   }
 }
-mutation CreateHotel($name: String!, $description: String!, $stars: Int!, $phone: String!, $rating: String!, $location: String!, $image: Upload) {
-  createHotel(input: { name: $name, description: $description, stars: $stars, phone: $phone, rating: $rating, location: $location, image: $image }) {
-    _id
-    name
-  }
-}
