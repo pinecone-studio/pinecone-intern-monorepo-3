@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+
 import { HotelModel } from "../../models/hotel-model";
 
 export const submitUserRating = async (

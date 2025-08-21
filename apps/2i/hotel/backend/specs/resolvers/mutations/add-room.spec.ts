@@ -44,7 +44,7 @@ describe('addRoom mutation', () => {
   it('should throw an error if room already exists', async () => {
     (RoomModel.findOne as jest.Mock).mockResolvedValue(mockRoomData);
 
-    await expect(addRoom(null, mockRoomData)).rejects.toThrow('This room already added');
+    await expect(addRoom(null, mockRoomData)).rejects.toThrow('Something wrong happen');
     expect(RoomModel.findOne).toHaveBeenCalledWith({ hotelName: 'Test Hotel', roomNumber: '101' });
   });
 

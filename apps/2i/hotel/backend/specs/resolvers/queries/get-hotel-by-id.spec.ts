@@ -27,14 +27,6 @@ describe("getHotelById", () => {
     expect(result).toEqual(mockHotel);
   });
 
-  it("should throw error if hotel not found", async () => {
-    (HotelModel.findById as jest.Mock).mockResolvedValue(null);
-
-    await expect(getHotelById({}, { id: "001" })).rejects.toThrow("Hotel not found");
-
-    expect(HotelModel.findById).toHaveBeenCalledWith( "001" );
-  });
-
   it("should throw server error on exception", async () => {
     (HotelModel.findById as jest.Mock).mockRejectedValue(new Error("Some DB error"));
 

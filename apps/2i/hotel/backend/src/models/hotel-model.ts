@@ -15,8 +15,8 @@ type HotelType = {
 export type UserRatingType = {
     hotel?:Schema.Types.ObjectId
     // userId?: String,
-    rating?: Number,
-    comment?: String
+    rating?: number,
+    comment?: string
 }
 
 const userRatingSchema = new mongoose.Schema<UserRatingType>({
