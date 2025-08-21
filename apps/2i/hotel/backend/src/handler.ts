@@ -16,6 +16,8 @@ const server = new ApolloServer<Context>({
 
 export const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
   context: async (req) => {
-    return { req };
+    const id = req.nextUrl.searchParams.get("id");
+    return { req, id };
   },
 });
+ 
