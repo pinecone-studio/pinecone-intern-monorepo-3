@@ -42,7 +42,6 @@ export const HotelsPage = () => {
   return (
     <main className="flex-1 bg-gray-50 p-6">
       <TopBar />
-      {/* Filters */}
       <div className="flex items-center gap-3 mb-4">
         <input type="text" placeholder="Search" className="w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
         <select className="rounded-md border border-gray-300 px-3 py-2 text-sm">

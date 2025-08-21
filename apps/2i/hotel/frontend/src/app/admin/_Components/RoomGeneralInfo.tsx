@@ -1,33 +1,23 @@
 'use client';
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useState } from 'react';
 
-export const RoomGeneralInfoDialog = () => {
-  const [form, setForm] = useState({
-    name: '',
-    type: '',
-    price: '',
-    room: '',
-  });
+export const RoomGeneralInfoDialog = ({ data, setData }: any) => {
+  const [open, setOpen] = useState(false);
 
-  const handleChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = () => {
-    console.log('Form data:', form);
+  const handleChange = (field: keyof typeof data, value: string) => {
+    setData((prev: any) => ({ ...prev, [field]: value }));
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>Edit</Button>
+        <Button>Edit General Info</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
@@ -36,46 +26,40 @@ export const RoomGeneralInfoDialog = () => {
 
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" value={form.name} onChange={(e) => handleChange('name', e.target.value)} className="col-span-3" />
+            <label className="text-right">Name</label>
+            <Input className="col-span-3" value={data.name} onChange={(e) => handleChange('name', e.target.value)} />
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="type" className="text-right">
-              Type
-            </Label>
-            <Select onValueChange={(v) => handleChange('type', v)}>
+            <label className="text-right">Type</label>
+            <Select value={data.type} onValueChange={(v) => handleChange('type', v)}>
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">single</SelectItem>
-                <SelectItem value="2">luxury</SelectItem>
-                <SelectItem value="3">deluxe</SelectItem>
+                <SelectItem value="single">Single</SelectItem>
+                <SelectItem value="luxury">Luxury</SelectItem>
+                <SelectItem value="deluxe">Deluxe</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="price" className="text-right">
-              Price per night
-            </Label>
-            <Input id="price" value={form.price} onChange={(e) => handleChange('price', e.target.value)} className="col-span-3" />
+            <label className="text-right">Price per night</label>
+            <Input className="col-span-3" value={data.price} onChange={(e) => handleChange('price', e.target.value)} />
           </div>
 
           <div className="grid grid-cols-4 items-start gap-4">
-            <Label htmlFor="Room information" className="text-right pt-2">
-              Room information
-            </Label>
-            <Textarea id="Room information" value={form.room} onChange={(e) => handleChange('room', e.target.value)} className="col-span-3" rows={4} />
+            <label className="text-right pt-2">Room information</label>
+            <Textarea className="col-span-3" value={data.room} onChange={(e) => handleChange('room', e.target.value)} rows={4} />
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline">Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+        <DialogFooter className="flex justify-between">
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+          <Button onClick={() => setOpen(false)}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
