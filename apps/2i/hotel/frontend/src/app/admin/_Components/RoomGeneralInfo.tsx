@@ -40,6 +40,7 @@ export const RoomGeneralInfoDialog = ({ data, setData }: any) => {
                 <SelectItem value="single">Single</SelectItem>
                 <SelectItem value="luxury">Luxury</SelectItem>
                 <SelectItem value="deluxe">Deluxe</SelectItem>
+                <SelectItem value="suite">Suite</SelectItem>
               </SelectContent>
             </Select>
           </div>
