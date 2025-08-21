@@ -95,7 +95,7 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./apps/2i/instagram/backend/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2i/instagram/backend/codegen.yml"]
       }
     },
     "export": {

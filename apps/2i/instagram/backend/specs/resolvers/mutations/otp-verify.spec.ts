@@ -16,11 +16,10 @@ describe("verifyOtp function", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers().setSystemTime(fakeDateNow);
+     process.env.JWT_SECRET = 'supersecret';
   });
 
-   beforeAll(() => {
-    process.env.JWT_SECRET = 'supersecret';
-  });
+   
 
   afterEach(() => {
     jest.useRealTimers();
@@ -90,7 +89,7 @@ describe("verifyOtp function", () => {
     expect(mockUser.save).toHaveBeenCalled();
     expect(jwt.sign).toHaveBeenCalledWith(
       { userId: mockUser.id, email: mockUser.email },
-      expect.any(String),
+     'supersecret',
       { expiresIn: "7d" }
     );
 
