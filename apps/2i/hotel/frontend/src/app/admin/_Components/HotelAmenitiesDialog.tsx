@@ -5,9 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Button } from '@/components/ui/button';
 
 export const LocationDialog = () => {
-  const handleSave = () => {
-    console.log('Saved location:', location);
-  };
+  const handleSave = () => {};
 
   return (
     <Dialog>
@@ -31,9 +29,7 @@ export const LocationDialog = () => {
           <Button variant="outline">Laundry facilities</Button>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => console.log('Cancelled')}>
-            Cancel
-          </Button>
+          <Button variant="outline">Cancel</Button>
           <Button onClick={handleSave}>Save</Button>
         </DialogFooter>
       </DialogContent>

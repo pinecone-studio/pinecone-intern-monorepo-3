@@ -1,37 +1,60 @@
 'use client';
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
+
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
+import { useState } from 'react';
 
-export const GeneralInfoDialog = ({ data, setData }: any) => {
-  const [open, setOpen] = useState(false);
-  const handleChange = (field: keyof typeof data, value: string) => setData({ ...data, [field]: value });
+export const GeneralInfoDialog = () => {
+  const [form, setForm] = useState({
+    name: '',
+    description: '',
+    stars: '',
+    phone: '',
+    rating: '',
+  });
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSave = () => {
+    console.log('Form data:', form);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
-        <Button>Edit General Info</Button>
+        <Button>Edit</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>General Info</DialogTitle>
         </DialogHeader>
+
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Name</Label>
-            <Input className="col-span-3" value={data.name} onChange={(e) => handleChange('name', e.target.value)} />
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" value={form.name} onChange={(e) => handleChange('name', e.target.value)} className="col-span-3" />
           </div>
+
           <div className="grid grid-cols-4 items-start gap-4">
-            <Label className="text-right pt-2">Description</Label>
-            <Textarea className="col-span-3" value={data.description} onChange={(e) => handleChange('description', e.target.value)} rows={4} />
+            <Label htmlFor="description" className="text-right pt-2">
+              Description
+            </Label>
+            <Textarea id="description" value={form.description} onChange={(e) => handleChange('description', e.target.value)} className="col-span-3" rows={4} />
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Stars</Label>
-            <Select value={data.stars} onValueChange={(v) => handleChange('stars', v)}>
+            <Label htmlFor="stars" className="text-right">
+              Stars Rating
+            </Label>
+            <Select onValueChange={(v) => handleChange('stars', v)}>
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -44,13 +67,19 @@ export const GeneralInfoDialog = ({ data, setData }: any) => {
               </SelectContent>
             </Select>
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Phone</Label>
-            <Input className="col-span-3" value={data.phone} onChange={(e) => handleChange('phone', e.target.value)} />
+            <Label htmlFor="phone" className="text-right">
+              Phone Number
+            </Label>
+            <Input id="phone" value={form.phone} onChange={(e) => handleChange('phone', e.target.value)} className="col-span-3" />
           </div>
+
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Rating</Label>
-            <Select value={data.rating} onValueChange={(v) => handleChange('rating', v)}>
+            <Label htmlFor="rating" className="text-right">
+              Rating
+            </Label>
+            <Select onValueChange={(v) => handleChange('rating', v)}>
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select" />
               </SelectTrigger>
@@ -63,11 +92,10 @@ export const GeneralInfoDialog = ({ data, setData }: any) => {
             </Select>
           </div>
         </div>
+
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-          <Button onClick={() => setOpen(false)}>Save</Button>
+          <Button variant="outline">Cancel</Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
