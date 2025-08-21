@@ -5,7 +5,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Button } from '@/components/ui/button';
 
 export const LocationDialog = () => {
-  const handleSave = () => {};
+  const handleSave = () => {
+    console.log('Amenities saved');
+  };
 
   return (
     <Dialog>

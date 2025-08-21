@@ -10,7 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export const RoomGeneralInfoDialog = ({ data, setData }: any) => {
   const [open, setOpen] = useState(false);
 
-  const handleChange = (field: keyof typeof data, value: string) => {
+  type FormFields = { name: string; type: string; price: string; room: string };
+  const handleChange = (field: keyof FormFields, value: string) => {
     setData((prev: any) => ({ ...prev, [field]: value }));
   };
 
