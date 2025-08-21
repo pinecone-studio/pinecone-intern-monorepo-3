@@ -8,10 +8,10 @@ type LoginVerify = {
 };
 
 
-const JWT_SECRET = process.env.JWT_SECRET as string;
+
   
   export const verifyOtp =  async (_: unknown, { verifyOtp}: {verifyOtp:LoginVerify}) => {
-    
+    const JWT_SECRET = process.env.JWT_SECRET as string;
     
 const { otp }= verifyOtp
 

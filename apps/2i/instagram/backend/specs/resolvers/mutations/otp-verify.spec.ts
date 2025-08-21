@@ -1,3 +1,4 @@
+process.env.JWT_SECRET = 'supersecret';
 import { verifyOtp } from "../../../src/resolvers/mutations/otp-verify";
 import { OtpModel } from "../../../src/models/otpmodel";
 import { UserModel } from "../../../src/models";
@@ -14,9 +15,10 @@ describe("verifyOtp function", () => {
   const fakeDateNow = new Date();
 
   beforeEach(() => {
+    
     jest.clearAllMocks();
     jest.useFakeTimers().setSystemTime(fakeDateNow);
-     process.env.JWT_SECRET = 'supersecret';
+    
   });
 
    
@@ -65,6 +67,7 @@ describe("verifyOtp function", () => {
   });
 
   it("should activate user, save and return token and users", async () => {
+  
     const mockUser = {
       id: mockUserId,
       email: mockEmail,
@@ -90,7 +93,7 @@ expect(jwt.sign).toHaveBeenCalledWith(
     userId: mockUser.id,
     email: mockUser.email,
   }),
-  'supersecret', 
+ 'supersecret',
   expect.objectContaining({
     expiresIn: "7d"
   })
@@ -103,3 +106,4 @@ expect(jwt.sign).toHaveBeenCalledWith(
     });
   });
 });
+
