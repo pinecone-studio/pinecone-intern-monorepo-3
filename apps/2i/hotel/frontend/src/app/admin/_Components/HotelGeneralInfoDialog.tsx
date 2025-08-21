@@ -33,7 +33,6 @@ export const GeneralInfoDialog = () => {
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle>General Info</DialogTitle>
-          <DialogDescription>Update the general information about your hotel.</DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">

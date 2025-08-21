@@ -78,7 +78,7 @@
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "groups": ["2I-Hotelbooking-FE"],
+          "groups": ["2i-Hotelbooking-FE"],
           "env": "dev"
         }
       }
@@ -88,7 +88,7 @@
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["2I-Hotelbooking-FE"],
+          "groups": ["2i-Hotelbooking-FE"],
           "env": "test"
         }
       }
@@ -98,7 +98,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["2I-Hotelbooking-FE"],
+          "groups": ["2i-Hotelbooking-FE"],
           "env": "prod"
         }
       }
