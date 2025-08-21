@@ -29,9 +29,9 @@ export const RoomServicesModal = ({ services, setServices }: any) => {
             <div key={field} className="space-y-2">
               <label className="text-sm font-medium">{field.charAt(0).toUpperCase() + field.slice(1)}</label>
               {field === 'other' ? (
-                <Textarea placeholder={`Enter ${field} details`} value={services[field]} onChange={(e) => handleChange(field, e.target.value)} />
+                <Textarea value={services[field]} onChange={(e) => handleChange(field, e.target.value)} />
               ) : (
-                <Input placeholder={`Enter ${field} details`} value={services[field]} onChange={(e) => handleChange(field, e.target.value)} />
+                <Input value={services[field]} onChange={(e) => handleChange(field, e.target.value)} />
               )}
             </div>
           ))}

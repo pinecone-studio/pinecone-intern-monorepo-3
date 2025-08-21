@@ -26,12 +26,12 @@ export const RoomGeneralInfoDialog = ({ data, setData }: any) => {
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex flex-col items-start">
             <label className="text-right">Name</label>
             <Input className="col-span-3" value={data.name} onChange={(e) => handleChange('name', e.target.value)} />
           </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex flex-col items-start">
             <label className="text-right">Type</label>
             <Select value={data.type} onValueChange={(v) => handleChange('type', v)}>
               <SelectTrigger className="col-span-3">
@@ -46,12 +46,12 @@ export const RoomGeneralInfoDialog = ({ data, setData }: any) => {
             </Select>
           </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex flex-col items-start">
             <label className="text-right">Price per night</label>
             <Input className="col-span-3" value={data.price} onChange={(e) => handleChange('price', e.target.value)} />
           </div>
 
-          <div className="grid grid-cols-4 items-start gap-4">
+          <div className="flex flex-col items-start gap-2">
             <label className="text-right pt-2">Room information</label>
             <Textarea className="col-span-3" value={data.room} onChange={(e) => handleChange('room', e.target.value)} rows={4} />
           </div>

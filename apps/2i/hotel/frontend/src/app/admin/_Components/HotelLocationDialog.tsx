@@ -3,8 +3,8 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 
 export const LocationDialog = () => {
   const [location, setLocation] = useState('Damdínbazar street-52, Bayangol district, Bayangol, 212513 Ulaanbaatar, Mongolia');
@@ -23,7 +23,7 @@ export const LocationDialog = () => {
           <DialogTitle>Location</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <Input value={location} onChange={(e) => setLocation(e.target.value)} />
+          <Textarea value={location} onChange={(e) => setLocation(e.target.value)} />
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => console.log('Cancelled')}>
