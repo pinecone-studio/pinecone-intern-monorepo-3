@@ -31,12 +31,7 @@ export const addRoom = async (_: unknown, args: AddRoomArgs) => {
     const newRoom = await RoomModel.create(args);
     return newRoom;
   } catch (err: unknown) {
-    console.error('Error adding room:', err);
+    // console.error('Error adding room:', err);
     throw new Error('Something wrong happen');
   }
 };
-
-// if (err.message === 'This room already added') {
-//   throw err;
-// }
-// throw new Error('Something wrong happen');
