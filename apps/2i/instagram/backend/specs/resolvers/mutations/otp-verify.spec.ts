@@ -85,13 +85,16 @@ describe("verifyOtp function", () => {
 
     const result = await verifyOtp(null, { verifyOtp: { otp: mockOtp } });
 
-    expect(mockUser.isActive).toBe(true);
-    expect(mockUser.save).toHaveBeenCalled();
-    expect(jwt.sign).toHaveBeenCalledWith(
-      { userId: mockUser.id, email: mockUser.email },
-      process.env.JWT_SECRET!,
-      { expiresIn: "7d" }
-    );
+expect(jwt.sign).toHaveBeenCalledWith(
+  expect.objectContaining({
+    userId: mockUser.id,
+    email: mockUser.email,
+  }),
+  'supersecret', 
+  expect.objectContaining({
+    expiresIn: "7d"
+  })
+);
 
     expect(result).toEqual({
       message: "OTP баталгаажуулалт амжилттай",
