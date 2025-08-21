@@ -89,7 +89,7 @@ describe("verifyOtp function", () => {
     expect(mockUser.save).toHaveBeenCalled();
     expect(jwt.sign).toHaveBeenCalledWith(
       { userId: mockUser.id, email: mockUser.email },
-     'supersecret',
+      process.env.JWT_SECRET!,
       { expiresIn: "7d" }
     );
 
