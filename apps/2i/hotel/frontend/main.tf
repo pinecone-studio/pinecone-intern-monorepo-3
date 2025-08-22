@@ -10,21 +10,21 @@ terraform {
 resource "vercel_project" "hotel-frontend" {
   name             = "hotel-frontend"
   build_command    = "nx build --skip-nx-cache hotel-frontend"
-  output_directory = "./dist/apps/2I/hotel/frontend/.next"
+  output_directory = "./dist/apps/2i/hotel/frontend/.next"
   framework        = "nextjs"
   team_id          = "team_0ASDilhqwPl5fll9OnzqDM30"
 }
 resource "vercel_project" "hotel-frontend" {
   name             = "hotel-frontend"
   build_command    = "nx build --skip-nx-cache hotel-frontend"
-  output_directory = "./dist/apps/2I/hotel/frontend/.next"
+  output_directory = "./dist/apps/2i/hotel/frontend/.next"
   framework        = "nextjs"
   team_id          = "team_0ASDilhqwPl5fll9OnzqDM30"
 }
 resource "vercel_project" "hotel-frontend" {
   name             = "hotel-frontend"
   build_command    = "nx build --skip-nx-cache hotel-frontend"
-  output_directory = "./dist/apps/2I/hotel/frontend/.next"
+  output_directory = "./dist/apps/2i/hotel/frontend/.next"
   framework        = "nextjs"
   team_id          = "team_0ASDilhqwPl5fll9OnzqDM30"
 }
