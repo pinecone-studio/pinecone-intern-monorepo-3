@@ -6,10 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
 export const HotelAmenitiesDialog = () => {
-  const handleSave = () => {
-    console.log('Amenities saved');
-  };
-
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -33,7 +29,7 @@ export const HotelAmenitiesDialog = () => {
         </div>
         <DialogFooter>
           <Button variant="outline">Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
