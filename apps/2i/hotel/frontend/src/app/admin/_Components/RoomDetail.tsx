@@ -5,10 +5,7 @@ import { UpcomingBookings } from './UpcomingBookings';
 import { RoomServices } from './RoomServices';
 import { RoomGeneralInfos } from './RoomGeneralInfos';
 
-type Props = {
-  roomId: string;
-};
-export const RoomDetail = ({}: Props) => {
+export const RoomDetail = () => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
