@@ -10,7 +10,7 @@ const searchDepth = (folderPath: string) => {
   const folders = rootFolders.filter((folder) => !folder.includes('.'));
 
   if (rootFolders.includes('page.tsx')) {
-    pages.push(`//${folderPath}`);
+    pages.push(`${folderPath}`);
   }
 
   folders.forEach((folder) => {
@@ -30,7 +30,7 @@ export const getAllPages = () => {
       .join('/')
   );
 
-  fs.writeFileSync(path.join(...'apps/2i/hotel/frontend'.split('/'), 'cypress', 'utils', 'all-pages.json'), JSON.stringify(pages));
+  fs.writeFileSync(path.join('apps', '2i', 'hotel', 'frontend', 'cypress', 'utils', 'all-pages.json'), JSON.stringify(pages));
 
   return;
 };
