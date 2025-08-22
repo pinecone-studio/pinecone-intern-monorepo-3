@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const root = './apps/2I/hotel/frontend/src/app';
+const root = './apps/2i/hotel/frontend/src/app';
 
 const searchDepth = (folderPath: string) => {
   let pages: string[] = [];
@@ -30,7 +30,7 @@ export const getAllPages = () => {
       .join('/')
   );
 
-  fs.writeFileSync(path.join(...'apps/2I/hotel/frontend'.split('/'), 'cypress', 'utils', 'all-pages.json'), JSON.stringify(pages));
+  fs.writeFileSync(path.join(...'apps/2i/hotel/frontend'.split('/'), 'cypress', 'utils', 'all-pages.json'), JSON.stringify(pages));
 
   return;
 };
