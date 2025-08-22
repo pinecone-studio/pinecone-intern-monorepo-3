@@ -1,14 +1,14 @@
 'use client';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import RoomGeneralInfo from './RoomGeneralInfo';
-import UpcomingBookings from './UpcomingBookings';
-import RoomServices from './RoomServices';
+import { RoomGeneralInfo } from './RoomGeneralInfo';
+import { UpcomingBookings } from './UpcomingBookings';
+import { RoomServices } from './RoomServices';
 
 type Props = {
   roomId: string;
 };
-export default function RoomDetail({ roomId }: Props) {
+export const RoomDetail = ({ roomId }: Props) => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -25,4 +25,4 @@ export default function RoomDetail({ roomId }: Props) {
       <RoomServices />
     </div>
   );
-}
+};

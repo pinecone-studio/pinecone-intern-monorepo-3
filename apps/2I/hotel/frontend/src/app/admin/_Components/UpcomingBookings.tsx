@@ -40,7 +40,7 @@ const bookings: Booking[] = [
   },
 ];
 
-export default function UpcomingBookings() {
+export const UpcomingBookings = () => {
   const [filterStatus, setFilterStatus] = useState<string | null>(null);
   const [filterDate, setFilterDate] = useState<string | null>(null);
 
@@ -137,4 +137,4 @@ export default function UpcomingBookings() {
       </Card>
     </div>
   );
-}
+};
