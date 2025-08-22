@@ -8,7 +8,7 @@ import { RoomGeneralInfos } from './RoomGeneralInfos';
 type Props = {
   roomId: string;
 };
-export const RoomDetail = ({ roomId }: Props) => {
+export const RoomDetail = ({}: Props) => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
