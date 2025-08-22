@@ -1,3 +1,4 @@
+import { HotelModel } from '../../models/hotel-model';
 import { RoomModel } from '../../models/room-model';
 
 type AddRoomArgs = {
@@ -29,9 +30,15 @@ export const addRoom = async (_: unknown, args: AddRoomArgs) => {
     }
 
     const newRoom = await RoomModel.create(args);
-    return newRoom;
+
+    await HotelModel.findOneAndUpdate({ _id: args.hotelName }, { $push: { rooms: newRoom._id } });
+
+    return { message: 'Succesfully added room in this hotel' };
   } catch (err: unknown) {
-    // console.error('Error adding room:', err);
+    if (err instanceof Error) {
+      throw new Error(err.message);
+    }
+
     throw new Error('Something wrong happen');
   }
 };

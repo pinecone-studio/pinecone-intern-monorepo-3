@@ -1,37 +1,43 @@
+import { HotelModel } from '../../../src/models/hotel-model';
+import { getHotelById } from '../../../src/resolvers/queries';
 
-import { HotelModel } from "../../../src/models/hotel-model";
-import { getHotelById } from "../../../src/resolvers/queries";
+jest.mock('../../../src/models/hotel-model');
 
-jest.mock("../../../src/models/hotel-model");
-
-describe("getHotelById", () => {
+describe('getHotelById', () => {
   const mockHotel = {
-    _id: "001",
-    hotelName: "Test Hotel",
-    location: "UB",
-    description: "Test description",
-    starRating: "5 star",
-    userRating: []
+    _id: '001',
+    hotelName: 'Test Hotel',
+    location: 'UB',
+    description: 'Test description',
+    starRating: '5 star',
+    userRating: [],
+    image: [],
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should return hotel if found", async () => {
-    (HotelModel.findById as jest.Mock).mockResolvedValue(mockHotel);
+  it('should return hotel if found', async () => {
+    const mockPopulate = jest.fn().mockResolvedValue(mockHotel);
 
-    const result = await getHotelById({}, { id: "001" });
+    (HotelModel.findById as jest.Mock).mockReturnValue({ populate: mockPopulate });
 
-    expect(HotelModel.findById).toHaveBeenCalledWith( "001" );
+    const result = await getHotelById({}, { id: '001' });
+
+    expect(HotelModel.findById).toHaveBeenCalledWith('001');
+    expect(mockPopulate).toHaveBeenCalledWith('rooms');
     expect(result).toEqual(mockHotel);
   });
 
-  it("should throw server error on exception", async () => {
-    (HotelModel.findById as jest.Mock).mockRejectedValue(new Error("Some DB error"));
+  it('should throw server error on exception', async () => {
+    const mockPopulate = jest.fn().mockRejectedValue(new Error('Some DB error'));
 
-    await expect(getHotelById({}, { id: "001" })).rejects.toThrow("Server error");
+    (HotelModel.findById as jest.Mock).mockReturnValue({ populate: mockPopulate });
 
-    expect(HotelModel.findById).toHaveBeenCalledWith("001" );
+    await expect(getHotelById({}, { id: '001' })).rejects.toThrow('Server error');
+
+    expect(HotelModel.findById).toHaveBeenCalledWith('001');
+    expect(mockPopulate).toHaveBeenCalledWith('rooms');
   });
 });
