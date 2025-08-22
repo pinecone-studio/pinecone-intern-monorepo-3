@@ -74,8 +74,8 @@ type User {
   profilePicture: String
   isActive: Boolean!
   isPrivate: Boolean! 
-  followers: [User!]!
-  following: [User!]!
-  followRequests: [User!]!
+  followers: [User!]
+  following: [User!]
+  followRequests: [User!]
 }
 `;
