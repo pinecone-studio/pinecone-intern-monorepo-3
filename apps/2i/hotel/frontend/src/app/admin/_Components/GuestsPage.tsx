@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import RoomDetail from './RoomDetails';
+import { RoomDetail } from './RoomDetails';
 
 export const GuestsPage = () => {
   const [statusFilter, setStatusFilter] = useState('');
