@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { RoomDetail } from './RoomDetails';
+import { RoomDetails } from './RoomDetails';
 
 export const GuestsPage = () => {
   const [statusFilter, setStatusFilter] = useState('');
@@ -68,7 +68,7 @@ export const GuestsPage = () => {
     }
   };
   if (selectedRoomId) {
-    return <RoomDetail roomId={selectedRoomId} />;
+    return <RoomDetails roomId={selectedRoomId} />;
   }
 
   return (
