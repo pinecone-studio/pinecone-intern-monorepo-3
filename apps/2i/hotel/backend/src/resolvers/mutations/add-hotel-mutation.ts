@@ -1,6 +1,6 @@
 import { HotelModel } from '../../models/hotel-model';
 
-export const addHotel = async (_: unknown, args: { id: string; hotelName: string; description: string; location: string; starRating: string }) => {
+export const addHotel = async (_: unknown, args: { id: string; hotelName: string; description: string; location: string; starRating: string; image: string[] }) => {
   const existingHotel = await HotelModel.findOne({ _id: args.id, hotelName: args.hotelName });
 
   if (!existingHotel) {
@@ -10,6 +10,7 @@ export const addHotel = async (_: unknown, args: { id: string; hotelName: string
       description: args.description,
       location: args.location,
       starRating: args.starRating,
+      image: args.image,
     });
 
     return newHotel;
