@@ -8,7 +8,7 @@ import { RoomServices } from './RoomServices';
 type Props = {
   roomId: string;
 };
-export const RoomDetails = ({ roomId }: Props) => {
+export const RoomDetail = ({ roomId }: Props) => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
