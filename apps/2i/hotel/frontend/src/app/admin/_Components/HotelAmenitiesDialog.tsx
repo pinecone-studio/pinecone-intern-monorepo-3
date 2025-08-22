@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-export const LocationDialog = () => {
+export const HotelAmenitiesDialog = () => {
   const handleSave = () => {
     console.log('Amenities saved');
   };
