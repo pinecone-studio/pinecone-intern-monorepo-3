@@ -24,6 +24,11 @@ input VerifyOtpInput {
   otp: String!
 }
 
+input UpdatePrivacyInput {
+  isPrivate: Boolean!
+}
+
+
 input UpdateProfileInput {
   bio: String
   gender: String
@@ -34,14 +39,19 @@ input UpdateProfileInput {
 type Mutation {
   signup(signup: SignupInput!): AuthPayload!
   login(login: LoginInput!): AuthPayload!
-  updateProfile(userId: ID!, update: UpdateProfileInput!): User!
+  updateProfile( update: UpdateProfileInput!): User!
   troublelogin(trouble: TroubleLoginInput!): TroubleLoginResponse!
-   verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
+  verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
+  updatePrivacy(input: UpdatePrivacyInput!): User!
+    sendFollowRequest(userId: ID!): MessageResponse!
+  respondFollowRequest(userId: ID!, accept: Boolean!): MessageResponse!
+  unfollowUser(userId: ID!): MessageResponse!
 }
 
 type Query {
   getuser(id: ID!): User!
    me: User!
+   followRequests: [User!]!
 }
 
 type AuthPayload {
@@ -66,5 +76,6 @@ type User {
   isPrivate: Boolean! 
   followers: [User!]!
   following: [User!]!
+  followRequests: [User!]!
 }
 `;

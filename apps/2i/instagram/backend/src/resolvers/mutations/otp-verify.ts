@@ -42,7 +42,7 @@ const { otp }= verifyOtp
 
       return { message: "OTP баталгаажуулалт амжилттай",
         token,
-    user,
+    user
        };
        
     }

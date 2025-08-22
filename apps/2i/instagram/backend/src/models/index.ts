@@ -11,6 +11,7 @@ export interface User extends Document {
   profilePicture?: string;
   followers: Types.ObjectId[];  
   following: Types.ObjectId[];
+  followRequests: Types.ObjectId[]
   isVerified: boolean;
   verificationToken?: string;
   isPrivate: boolean;
@@ -30,6 +31,7 @@ const UserSchema: Schema<User> = new mongoose.Schema({
   profilePicture: { type: String, default: '' },
   followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  followRequests: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   isVerified: { type: Boolean, default: false },
   verificationToken: { type: String },
   isPrivate: { type: Boolean, default: false }
