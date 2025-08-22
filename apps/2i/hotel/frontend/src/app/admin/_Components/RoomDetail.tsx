@@ -1,9 +1,9 @@
 'use client';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { RoomGeneralInfo } from './RoomGeneralInfo';
 import { UpcomingBookings } from './UpcomingBookings';
 import { RoomServices } from './RoomServices';
+import { RoomGeneralInfos } from './RoomGeneralInfos';
 
 type Props = {
   roomId: string;
@@ -20,7 +20,7 @@ export const RoomDetail = ({ roomId }: Props) => {
       </div>
 
       {/* Components */}
-      <RoomGeneralInfo />
+      <RoomGeneralInfos />
       <UpcomingBookings />
       <RoomServices />
     </div>
