@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import RoomDetail from './RoomDetails';
 
 export const GuestsPage = () => {
   const [statusFilter, setStatusFilter] = useState('');
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
 
   const guests = [
     {
@@ -65,6 +67,9 @@ export const GuestsPage = () => {
         return 'bg-gray-100 text-gray-600';
     }
   };
+  if (selectedRoomId) {
+    return <RoomDetail roomId={selectedRoomId} />;
+  }
 
   return (
     <main className="flex-1 bg-gray-50 p-6">
@@ -103,7 +108,9 @@ export const GuestsPage = () => {
                   <td className="px-4 py-3">{guest.id}</td>
                   <td className="px-4 py-3">{guest.name}</td>
                   <td className="px-4 py-3">{guest.hotel}</td>
-                  <td className="px-4 py-3">{guest.room}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => setSelectedRoomId(guest.id)}>{guest.room}</button>
+                  </td>
                   <td className="px-4 py-3">{guest.guests}</td>
                   <td className="px-4 py-3">{guest.date}</td>
                   <td className="px-4 py-3">
