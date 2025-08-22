@@ -18,6 +18,7 @@ describe('addHotel', () => {
       starRating: '5 star',
       userRating: [],
       description: 'tailbar end bn',
+      image: [],
     }));
 
     const hotelData = {
@@ -27,6 +28,7 @@ describe('addHotel', () => {
       starRating: '5 star',
       userRating: 'test 10',
       description: 'tailbar end bn',
+      image: [],
     };
 
     const result = await addHotel({}, hotelData);
@@ -54,6 +56,7 @@ describe('addHotel', () => {
           starRating: '5 star',
           // userRating: [],
           description: 'tailbar end bn',
+          image: [],
         }
       )
     ).rejects.toThrow('Hotel with this name already exists.');

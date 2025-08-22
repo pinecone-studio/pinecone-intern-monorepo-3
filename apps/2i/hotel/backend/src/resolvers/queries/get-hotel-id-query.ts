@@ -1,17 +1,11 @@
+import { HotelModel } from '../../models/hotel-model';
 
-import { HotelModel } from "../../models/hotel-model";
-
-
-
-
-export const getHotelById = async (_:unknown, args: {id: string})=>{
+export const getHotelById = async (_: unknown, args: { id: string }) => {
   try {
-    const hotel = await HotelModel.findById(args.id);
-    return hotel 
-  } catch(err){
-    console.error(err)
-    throw new Error("Server error")
-  }
-}
+    const hotel = await HotelModel.findById(args.id).populate('rooms');
 
- 
+    return hotel;
+  } catch (err) {
+    throw new Error('Server error');
+  }
+};
