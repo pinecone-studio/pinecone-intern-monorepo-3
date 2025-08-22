@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-// import { RoomDetail } from './RoomDetail';
+import { RoomDetail } from './RoomDetail';
 
 export const GuestsPage = () => {
   const [statusFilter, setStatusFilter] = useState('');
@@ -67,9 +67,9 @@ export const GuestsPage = () => {
         return 'bg-gray-100 text-gray-600';
     }
   };
-  // if (selectedRoomId) {
-  //   return <RoomDetail roomId={selectedRoomId} />;
-  // }
+  if (selectedRoomId) {
+    return <RoomDetail roomId={selectedRoomId} />;
+  }
 
   return (
     <main className="flex-1 bg-gray-50 p-6">
