@@ -110,12 +110,7 @@
         "ci": {
           "ci": true
         }
-      },
-      "dependsOn": [
-        {
-          "target": "graphql-codegen"
-        }
-      ]
+      }
     },
     "export-env": {
       "executor": "nx:run-commands",

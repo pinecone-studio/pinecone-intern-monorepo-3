@@ -15,8 +15,7 @@
         "development": {
           "outputPath": "apps/example/client"
         }
-      },
-      "dependsOn": [{ "target": "graphql-codegen" }]
+      }
     },
     "serve": {
       "executor": "@nx/next:server",
@@ -106,12 +105,7 @@
         "ci": {
           "ci": true
         }
-      },
-      "dependsOn": [
-        {
-          "target": "graphql-codegen"
-        }
-      ]
+      }
     },
 
     "graphql-codegen": {

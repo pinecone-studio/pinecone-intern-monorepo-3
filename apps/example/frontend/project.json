@@ -15,12 +15,7 @@
         "development": {
           "outputPath": "apps/example/frontend"
         }
-      },
-      "dependsOn": [
-        {
-          "target": "codegen"
-        }
-      ]
+      }
     },
     "serve": {
       "executor": "@nx/next:server",
@@ -67,13 +62,7 @@
         "jestConfig": "{projectRoot}/jest.config.ts",
         "passWithNoTests": true,
         "codeCoverage": true
-      },
-      "dependsOn": [
-        {
-          "target": "codegen",
-          "params": "forward"
-        }
-      ]
+      }
     },
     "codegen": {
       "executor": "nx:run-commands",
@@ -82,7 +71,7 @@
       },
       "dependsOn": [
         {
-          "target": "get-secrets:dev"
+          "target": "get-secrets:testing"
         }
       ]
     },
