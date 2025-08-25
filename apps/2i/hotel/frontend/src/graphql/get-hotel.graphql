@@ -1,0 +1,32 @@
+query GetHotel {
+  getHotel {
+    _id
+    hotelName
+    description
+    location
+    starRating
+    userRating {
+      rating
+      comment
+      hotel
+    }
+    image
+    rooms {
+      _id
+      hotelName
+      roomNumber
+      roomType
+      pricePerNight
+      roomImgs
+      roomInfos
+      amenities {
+        bathroom
+        foodAndDrink
+        technology
+        accessibility
+        bedroom
+        more
+      }
+    }
+  }
+}

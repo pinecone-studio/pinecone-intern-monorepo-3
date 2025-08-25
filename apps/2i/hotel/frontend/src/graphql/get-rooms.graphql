@@ -1,0 +1,19 @@
+query GetRooms {
+  getRooms {
+    _id
+    hotelName
+    roomNumber
+    roomType
+    pricePerNight
+    roomImgs
+    roomInfos
+    amenities {
+      bathroom
+      foodAndDrink
+      technology
+      accessibility
+      bedroom
+      more
+    }
+  }
+}
