@@ -3,7 +3,7 @@
 import { Button, Card, IconButton, Modal, Stack, TextField, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
-import { useCreateAuthorMutation } from '../generated';
+// import { useCreateAuthorMutation } from '../generated';
 
 type CreateAuthorModalProps = {
   refetch: () => Promise<void>;
@@ -13,16 +13,16 @@ export const CreateAuthorModal = ({ refetch }: CreateAuthorModalProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState('');
 
-  const [createAuthor, { loading }] = useCreateAuthorMutation();
+  // const [createAuthor, { loading }] = useCreateAuthorMutation();
 
   const handleAuthorCreate = async () => {
-    await createAuthor({
-      variables: {
-        name,
-      },
-    });
+    // await createAuthor({
+    //   variables: {
+    //     name,
+    //   },
+    // });
 
-    await refetch();
+    // await refetch();
 
     setName('');
 
@@ -58,8 +58,8 @@ export const CreateAuthorModal = ({ refetch }: CreateAuthorModalProps) => {
               }}
             />
 
-            <Button data-testid="create-author-btn" variant="contained" color="primary" disabled={loading} fullWidth onClick={handleAuthorCreate}>
-              {loading ? 'Creating...' : 'Create'}
+            <Button data-testid="create-author-btn" variant="contained" color="primary" disabled={false} fullWidth onClick={handleAuthorCreate}>
+              {/* {loading ? 'Creating...' : 'Create'} */}
             </Button>
           </Stack>
         </Card>
