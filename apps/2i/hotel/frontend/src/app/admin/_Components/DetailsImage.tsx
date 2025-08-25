@@ -1,37 +1,45 @@
+'use client';
+
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Plus } from 'lucide-react';
+import { ImageOff, Plus } from 'lucide-react';
+import Image from 'next/image';
+
 export const DetailImage = () => {
+  const [images, setImages] = useState<string[]>([]);
+
   return (
-    <Card className="p-6">
-      <div className="flex justify-between border-b">
-        <CardTitle>Images</CardTitle>
+    <Card className="pt-4 pr-6 pb-6 pl-6">
+      <div className="flex items-center justify-between ">
+        <h2 className="text-lg font-semibold text-gray-900">Images</h2>
+
         <Dialog>
           <DialogTrigger className="text-[#2563EB]">Edit</DialogTrigger>
-          <DialogContent className="w-[1160px] max-h-[90vh] overflow-y-auto">
+          <DialogContent className="w-[1160px] max-h-[800px] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Images</DialogTitle>
             </DialogHeader>
 
-            {/* zurag */}
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              {/* upload */}
-
-              <Label
-                htmlFor="image-upload"
-                className="cursor-pointer border border-dashed rounded-md p-6 text-sm flex flex-col justify-center gap-2 items-center text-muted-foreground hover:bg-gray-50 bg-[#E4E4E7]"
-              >
-                <Plus className="w-5 h-5 text-[#2563EB]" />
-                <input id="image-upload" type="file" className="hidden" />
+            {/* Upload хэсэг */}
+            <div className="grid grid-cols-2 gap-6 mb-6">
+              <Label htmlFor="image-upload" className="w-[552px] h-[300px] cursor-pointer border-2 border-dashed rounded-md p-8 text-sm flex flex-col justify-center gap-2 items-center   bg-gray-50 ">
+                <Plus className="w-8 h-8 text-[#2563EB]" />
+                <span>Drag or Upload Photo</span>
+                <input
+                  id="image-upload"
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const url = URL.createObjectURL(e.target.files[0]);
+                      setImages((prev) => [...prev, url]); // state-д нэмэх
+                    }
+                  }}
+                />
               </Label>
-
-              <img src="/images/room1.jpg" alt="Room 1" className="rounded-md object-cover w-full h-40 border" />
-              <img src="/images/room2.jpg" alt="Room 2" className="rounded-md object-cover w-full h-40 border" />
-              <img src="/images/room3.jpg" alt="Room 3" className="rounded-md object-cover w-full h-40 border" />
-              <img src="/images/room4.jpg" alt="Room 4" className="rounded-md object-cover w-full h-40 border" />
             </div>
 
             <div className="flex justify-between">
@@ -41,31 +49,32 @@ export const DetailImage = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <CardContent className="mt-10">
-        {/* <div className="border rounded-xl p-4 space-y-4"> */}
-        {/* <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">Images</h2>
-            <button className="text-sm text-blue-500 hover:underline">Edit</button>
-          </div> */}
+      <CardContent className="mt-4">
+        <div className="flex flex-col gap-1">
+          {images.length > 0 ? (
+            // Зураг байвал gallery
+            <div>
+              <div className="w-full h-64">
+                <Image src={images[0]} alt="Main" width={625} height={400} className="w-full h-full object-cover rounded-xl border shadow-md" />
+              </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          {/* tom zurag */}
-          <img src="/images/bar.jpg" alt="Main" className="col-span-2 h-48 object-cover rounded-lg border" />
-
-          {/* jijig zurganuud */}
-          <img src="/images/hotel.jpg" alt="Hotel" className="h-24 object-cover rounded-lg border" />
-          <img src="/images/lobby.jpg" alt="Lobby" className="h-24 object-cover rounded-lg border" />
-          <img src="/images/room.jpg" alt="Room" className="h-24 object-cover rounded-lg border" />
-
-          {/* + */}
-          <div className="relative h-24 rounded-lg overflow-hidden">
-            <img src="/images/more.jpg" alt="More" className="h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <span className="text-white text-sm font-medium">+18</span>
+              <div className="grid grid-cols-2 gap-3">
+                {images.slice(1).map((img, i) => (
+                  <Image key={i} src={img} alt={`Uploaded ${i}`} width={250} height={180} className="h-44 w-full object-cover rounded-lg border shadow hover:scale-105 transition" />
+                ))}
+              </div>
             </div>
-          </div>
+          ) : (
+            // Хоосон төлөв
+            <div className="flex flex-col items-center justify-center  rounded-lg text-center ">
+              <div className="font-medium flex flex-col gap-3 justify-center items-center">
+                <ImageOff className="text-muted-foreground" />
+                <p>No Photos Uploaded</p>
+              </div>
+              <p className="text-sm text-gray-400">Add photos of your rooms, amenities, or property to showcase your hotel.</p>
+            </div>
+          )}
         </div>
-        {/* </div> */}
       </CardContent>
     </Card>
   );

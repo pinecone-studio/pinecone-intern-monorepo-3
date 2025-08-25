@@ -8,9 +8,10 @@ import { DetailLocation } from './DetailLocation';
 import { DetailImage } from './DetailsImage';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
-import { redirect } from 'next/navigation';
+
 import { useState } from 'react';
 import { HotelsPage } from './HotelsPage';
+import { DetailsQuestions } from './DetailsQuestions';
 
 type PropsType = {
   hotelId: string;
@@ -32,7 +33,7 @@ export const HotelDetail = ({ hotelId }: PropsType) => {
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
-        <h1 className="font-bold text-[16px]">{hotelId}</h1>
+        <h1 className="font-bold text-[16px]">{hotelId} Hotel name</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -44,6 +45,7 @@ export const HotelDetail = ({ hotelId }: PropsType) => {
           <Amenities />
           <AboutProperty />
           <Policies />
+          <DetailsQuestions />
         </div>
 
         {/* right */}
