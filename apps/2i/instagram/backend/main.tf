@@ -10,21 +10,21 @@ terraform {
 resource "vercel_project" "instagram-backend" {
   name             = "instagram-backend"
   build_command    = "nx build --skip-nx-cache instagram-backend"
-  output_directory = "./dist/apps/2I/instagram/backend/.next"
+  output_directory = "./dist/apps/2i/instagram/backend/.next"
   framework        = "nextjs"
   team_id          = "team_0ASDilhqwPl5fll9OnzqDM30"
 }
 resource "vercel_project" "instagram-backend" {
   name             = "instagram-backend"
   build_command    = "nx build --skip-nx-cache instagram-backend"
-  output_directory = "./dist/apps/2I/instagram/backend/.next"
+  output_directory = "./dist/apps/2i/instagram/backend/.next"
   framework        = "nextjs"
   team_id          = "team_0ASDilhqwPl5fll9OnzqDM30"
 }
 resource "vercel_project" "instagram-backend" {
   name             = "instagram-backend"
   build_command    = "nx build --skip-nx-cache instagram-backend"
-  output_directory = "./dist/apps/2I/instagram/backend/.next"
+  output_directory = "./dist/apps/2i/instagram/backend/.next"
   framework        = "nextjs"
   team_id          = "team_0ASDilhqwPl5fll9OnzqDM30"
 }
