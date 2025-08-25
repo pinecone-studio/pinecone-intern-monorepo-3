@@ -1,3 +1,4 @@
+import { HotelModel } from '../../models/hotel-model';
 import { RoomModel } from '../../models/room-model';
 
 type AddRoomArgs = {
@@ -17,7 +18,7 @@ type AddRoomArgs = {
   };
 };
 
-export const addRoom = async (_: any, args: AddRoomArgs) => {
+export const addRoom = async (_: unknown, args: AddRoomArgs) => {
   try {
     const exists = await RoomModel.findOne({
       hotelName: args.hotelName,
@@ -29,11 +30,15 @@ export const addRoom = async (_: any, args: AddRoomArgs) => {
     }
 
     const newRoom = await RoomModel.create(args);
-    return newRoom;
-  } catch (err: any) {
-    if (err.message === 'This room already added') {
-      throw err;
+
+    await HotelModel.findOneAndUpdate({ _id: args.hotelName }, { $push: { rooms: newRoom._id } });
+
+    return { message: 'Succesfully added room in this hotel' };
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      throw new Error(err.message);
     }
+
     throw new Error('Something wrong happen');
   }
 };

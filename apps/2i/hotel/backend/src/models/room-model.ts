@@ -17,6 +17,7 @@ type RoomType = {
   pricePerNight: number;
   roomImgs: string[];
   roomInfos: string[];
+
   amenities: AmenitiesType;
 };
 
