@@ -63,7 +63,7 @@ describe("acceptFollowRequest", () => {
     expect(requestingUser.following).toContainEqual(currentUserId);
   });
 
-  it("should not add duplicate follower or following", async () => {
+  it("should not add duplicate follower or followings", async () => {
     currentUser.followers.push(requestingUserId);
     requestingUser.following.push(currentUserId);
 

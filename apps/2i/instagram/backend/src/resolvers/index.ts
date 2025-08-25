@@ -1,9 +1,8 @@
 
-
-
 import { respondFollowRequest,sendFollowRequest, unfollowUser } from './mutations/followers';
 import { login } from './mutations/login';
 import { verifyOtp } from './mutations/otp-verify';
+import { updateProfile } from './mutations/profile-update';
 import {  updatePrivacy } from './mutations/public-private';
 import { signup } from './mutations/sign-up';
 import { troublelogin } from './mutations/trouble-login';
@@ -23,6 +22,7 @@ export const resolvers = {
        respondFollowRequest,
        unfollowUser,
        sendFollowRequest,
+       updateProfile
   },
 
 Query: {
