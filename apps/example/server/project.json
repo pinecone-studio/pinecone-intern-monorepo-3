@@ -231,5 +231,5 @@
       ]
     }
   },
-  "tags": []
+  "tags": ["excludeFromAffected"]
 }
