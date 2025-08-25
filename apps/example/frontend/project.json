@@ -15,12 +15,7 @@
         "development": {
           "outputPath": "apps/example/frontend"
         }
-      },
-      "dependsOn": [
-        {
-          "target": "codegen"
-        }
-      ]
+      }
     },
     "serve": {
       "executor": "@nx/next:server",
@@ -259,5 +254,5 @@
     }
   },
 
-  "tags": ["excludeFromAffected"]
+  "tags": []
 }
