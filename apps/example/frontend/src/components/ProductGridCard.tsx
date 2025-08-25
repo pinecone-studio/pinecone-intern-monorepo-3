@@ -1,11 +1,11 @@
 'use client';
 
-import Image from 'next/image';
+// import Image from 'next/image';
 // import Link from 'next/link';
 // import { Product } from '../generated';
 
 export const ProductGridCard = () => {
-  return <>ignored</>;
+  return <div>ignored</div>;
   // return (
   //   <div data-testid="product-card">
   //     {/* <Link href={`/products/${_id}`}> */}

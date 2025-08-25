@@ -1,15 +1,15 @@
 'use client';
 
-import { Button, Card, MenuItem, Modal, Stack, TextField, Typography } from '@mui/material';
+// import { Button, Card, MenuItem, Modal, Stack, TextField, Typography } from '@mui/material';
 // import { useCreateBookMutation, useGetAuthorsQuery } from '../generated';
-import { useState } from 'react';
-import { CreateAuthorModal } from './CreateAuthorModal';
+// import { useState } from 'react';
+// import { CreateAuthorModal } from './CreateAuthorModal';
 
-type CreateBookModalProps = {
-  refetch: () => Promise<void>;
-};
+// type CreateBookModalProps = {
+//   refetch: () => Promise<void>;
+// };
 
-export const CreateBookModal = ({ refetch }: CreateBookModalProps) => {
+export const CreateBookModal = () => {
   // const [isModalOpen, setIsModalOpen] = useState(false);
   // const [title, setTitle] = useState('');
   // const [authorId, setAuthorId] = useState('');

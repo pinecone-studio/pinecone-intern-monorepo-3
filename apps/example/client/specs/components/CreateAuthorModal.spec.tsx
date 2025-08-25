@@ -1,31 +1,32 @@
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { CreateAuthorModal } from '../../src/components';
-import { CreateAuthorDocument } from '../../src/generated';
+// import { CreateAuthorDocument } from '../../src/generated';
 
-const createAuthorMock: MockedResponse = {
-  request: {
-    query: CreateAuthorDocument,
-    variables: {
-      name: 'Test Author',
-    },
-  },
-  result: {
-    data: {
-      createAuthor: {
-        _id: '1',
-        name: 'Test Author',
-      },
-    },
-  },
-};
+// const createAuthorMock: MockedResponse = {
+//   request: {
+//     query: CreateAuthorDocument,
+//     variables: {
+//       name: 'Test Author',
+//     },
+//   },
+//   result: {
+//     data: {
+//       createAuthor: {
+//         _id: '1',
+//         name: 'Test Author',
+//       },
+//     },
+//   },
+// };
 
 describe('CreateAuthorModal', () => {
   it('should render', async () => {
     const { getByTestId } = render(
-      <MockedProvider mocks={[createAuthorMock]} addTypename={false}>
-        <CreateAuthorModal refetch={jest.fn()} />
-      </MockedProvider>
+      // <MockedProvider mocks={[createAuthorMock]} addTypename={false}>
+      <CreateAuthorModal />
+      // refetch={jest.fn()}
+      // </MockedProvider>
     );
 
     const modalBtn = getByTestId('add-author-open-modal-btn');

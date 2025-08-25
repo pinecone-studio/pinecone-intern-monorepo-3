@@ -5,11 +5,11 @@ import AddIcon from '@mui/icons-material/Add';
 import { useState } from 'react';
 // import { useCreateAuthorMutation } from '../generated';
 
-type CreateAuthorModalProps = {
-  refetch: () => Promise<void>;
-};
+// type CreateAuthorModalProps = {
+//   refetch: () => Promise<void>;
+// };
 
-export const CreateAuthorModal = ({ refetch }: CreateAuthorModalProps) => {
+export const CreateAuthorModal = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [name, setName] = useState('');
 

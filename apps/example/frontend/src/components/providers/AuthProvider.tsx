@@ -1,46 +1,46 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
+// import { useRouter } from 'next/navigation';
+// import { createContext, PropsWithChildren /*useContext, useEffect, useState*/ } from 'react';
+// import { toast } from 'react-toastify';
 // import { useChangePasswordMutation, useGetMeLazyQuery, useLoginMutation, User, useRegisterMutation, useRequestChangePasswordMutation } from 'src/generated';
 
-type SignUpParams = {
-  email: string;
-  password: string;
-  address: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-};
+// type SignUpParams = {
+//   email: string;
+//   password: string;
+//   address: string;
+//   firstName: string;
+//   lastName: string;
+//   phone: string;
+// };
 
-type SignInParams = {
-  email: string;
-  password: string;
-};
+// type SignInParams = {
+//   email: string;
+//   password: string;
+// };
 
-type ChangePasswordParams = {
-  email: string;
-  password: string;
-  otp: string;
-};
+// type ChangePasswordParams = {
+//   email: string;
+//   password: string;
+//   otp: string;
+// };
 
-type RequestChangePasswordParams = {
-  email: string;
-};
+// type RequestChangePasswordParams = {
+//   email: string;
+// };
 
-type AuthContextType = {
-  signin: (_params: SignInParams) => void;
-  signup: (_params: SignUpParams) => void;
-  signout: () => void;
-  requestChangePassword: (_params: RequestChangePasswordParams) => void;
-  changePassword: (_params: ChangePasswordParams) => void;
-  // user: User | null;
-};
+// type AuthContextType = {
+//   signin: (_params: SignInParams) => void;
+//   signup: (_params: SignUpParams) => void;
+//   signout: () => void;
+//   requestChangePassword: (_params: RequestChangePasswordParams) => void;
+//   changePassword: (_params: ChangePasswordParams) => void;
+//   // user: User | null;
+// };
 
-const AuthContext = createContext<AuthContextType>({} as AuthContextType);
+// const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
-export const AuthProvider = ({ children }: PropsWithChildren) => {
+export const AuthProvider = () => {
   // const router = useRouter();
   // const [user, setUser] = useState<User | null>(null);
   // const [getMe] = useGetMeLazyQuery({

@@ -1,8 +1,8 @@
 'use client';
 
-import { ProductGridCard, Container } from './';
+// import { ProductGridCard, Container } from './';
 // import { useGetProductsQuery } from '../generated';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 export const ProductsGrid = () => {
   // const { data } = useGetProductsQuery();

@@ -1,16 +1,11 @@
 'use client';
 
-import { Card, Container, IconButton, Stack, Typography } from '@mui/material';
-// import { useGetBooksQuery } from '../generated';
-import { CreateBookModal } from '../components/CreateBookModal';
-import DeleteIcon from '@mui/icons-material/Delete';
-
 const Page = () => {
   // const { data, loading, error, refetch } = useGetBooksQuery();
 
-  const refresh = async () => {
-    // await refetch();
-  };
+  // const refresh = async () => {
+  //   // await refetch();
+  // };
 
   // if (error) {
   //   return (
@@ -28,7 +23,7 @@ const Page = () => {
   //   );
   // }
 
-  return <>ignored</>;
+  return <div>ignored</div>;
   // return (
   //   <Container maxWidth="xs">
   //     <Stack py={8} minHeight="100vh" gap={2}>
@@ -40,7 +35,7 @@ const Page = () => {
   //                 {book.title}
   //               </Typography>
   //               <Stack direction="row" gap={1}>
-  //                 <Typography color="text.secondary">Author:</Typography>
+  //                 <Typography color="">Author:</Typography>
   //                 <Typography>{book.author.name}</Typography>
   //               </Stack>
   //             </Stack>

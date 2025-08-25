@@ -1,11 +1,11 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+// import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { useAuth } from './providers';
+// import { useAuth } from './providers';
 
 export const Header = () => {
-  const { user, signout } = useAuth();
+  // const { user, signout } = useAuth();
 
   return (
     <div className="z-10 flex justify-between px-8 py-4 text-white bg-black mb-14">
@@ -25,7 +25,7 @@ export const Header = () => {
         {/* <Link href="/category">Бүтээгдэхүүн</Link> */}
       </div>
 
-      {!user && (
+      {/* {!user && (
         <div className="flex items-center gap-4">
           <Link href="/signin">
             <Button>Нэвтрэх</Button>
@@ -41,7 +41,7 @@ export const Header = () => {
         <div className="flex items-center gap-4">
           <Button onClick={signout}>Гарах</Button>
         </div>
-      )}
+      )} */}
     </div>
   );
 };

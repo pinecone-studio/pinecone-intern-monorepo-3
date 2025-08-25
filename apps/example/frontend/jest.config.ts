@@ -7,6 +7,6 @@ export default {
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/next/babel'], babelrc: false }],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '!../../../coverage/apps/example/frontend',
-  collectCoverageFrom: ['!src/**/*.{ts,tsx,js,jsx}', '!src/**/generated/**/*.ts', '!src/app/**/*.tsx', '!src/components/providers/ApolloWrapper.tsx', '!src/components/providers/AuthProvider.tsx'],
+  coverageDirectory: '../../../coverage/apps/example/frontend',
+  collectCoverageFrom: ['src/**/*.{ts,tsx,js,jsx}', '!src/**/generated/**/*.ts', '!src/app/**/*.tsx', '!src/components/providers/ApolloWrapper.tsx', '!src/components/providers/AuthProvider.tsx'],
 };

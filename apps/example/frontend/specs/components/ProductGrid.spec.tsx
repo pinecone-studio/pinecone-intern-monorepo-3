@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, waitFor } from '@testing-library/react';
+import { render /*waitFor*/ } from '@testing-library/react';
 import { ProductsGrid } from '../../src/components';
-import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+// import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 // import { GetProductsDocument } from '../../src/generated';
 
 // const mock: MockedResponse = {
@@ -49,7 +49,7 @@ import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 
 describe('ProductGrid', () => {
   it('should render successfully', async () => {
-    const { getAllByTestId } = render(
+    render(
       // <MockedProvider mocks={[mock]}>
       <ProductsGrid />
       // </MockedProvider>

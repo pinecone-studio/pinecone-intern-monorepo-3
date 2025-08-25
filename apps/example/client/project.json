@@ -105,12 +105,7 @@
         "ci": {
           "ci": true
         }
-      },
-      "dependsOn": [
-        {
-          "target": "graphql-codegen"
-        }
-      ]
+      }
     },
 
     "graphql-codegen": {

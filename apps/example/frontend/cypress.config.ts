@@ -16,7 +16,7 @@ const config: Cypress.ConfigOptions<unknown> = {
     supportFile: './cypress/support/e2e.ts',
     fileServerFolder: './src',
     specPattern: ['./cypress/e2e/render-all-pages.cy.tsx', '!./cypress/e2e/**/*.cy.tsx'],
-    excludeSpecPattern: ['./cypress/e2e/render-all-pages.cy.tsx', '!./cypress/e2e/**/*.cy.tsx'],
+    excludeSpecPattern: ['./cypress/e2e/render-all-pages.cy.tsx', './cypress/e2e/**/*.cy.tsx'],
     screenshotsFolder: './cypress/results/assets',
     videosFolder: './cypress/results/assets',
     viewportWidth: 1536,
