@@ -8,6 +8,7 @@ export const resolvers = {
     updateHotel: Mutation.updateHotel,
     deleteHotel: Mutation.deleteHotel,
     submitUserRating: Mutation.submitUserRating,
+    uploadToCloudinary: Mutation.uploadToCloudinary,
   },
   Query: {
     getRoomById: Query.getRoomById,

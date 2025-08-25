@@ -18,12 +18,17 @@ export type UserRatingType = {
   comment?: string;
 };
 
-const userRatingSchema = new mongoose.Schema<UserRatingType>({
-  // user: { type: Schema.Types.ObjectId, ref: 'User', required: false },
-  rating: { type: Number, required: false },
-  hotel: { type: Schema.Types.ObjectId, ref: 'Hotel', required: false },
-  comment: { type: String, required: false },
-});
+const userRatingSchema = new mongoose.Schema<UserRatingType>(
+  {
+    // user: { type: Schema.Types.ObjectId, ref: 'User', required: false },
+    rating: { type: Number, required: false },
+    hotel: { type: Schema.Types.ObjectId, ref: 'Hotel', required: false },
+    comment: { type: String, required: false },
+  },
+  {
+    _id: false,
+  }
+);
 
 const hotelSchema = new mongoose.Schema<HotelType>(
   {

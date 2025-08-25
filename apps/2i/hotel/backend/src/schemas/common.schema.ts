@@ -21,9 +21,9 @@ export const typeDefs = gql`
   }
 
   type UserRating {
-    rating: Int!
+    rating: Int
     comment: String
-    hotel: String!
+    hotel: ID
   }
   type Amenities {
     bathroom: [String]!
@@ -48,7 +48,7 @@ export const typeDefs = gql`
   type Query {
     getRoomById(id: ID!): Room
     getRooms: [Room]!
-    getHotel: [Hotel!]!
+    getHotel: [Hotel]!
     getHotelById(id: ID!): Hotel!
     getAvailableRooms(id: ID!): Room
   }
@@ -56,7 +56,7 @@ export const typeDefs = gql`
   type Booking {
     _id: ID!
     user: ID!
-    hotel: Hotel!
+    hotel: Hotel
     room: Room!
     checkIn: String!
     checkOut: String!
@@ -68,5 +68,6 @@ export const typeDefs = gql`
     updateHotel(id: ID!, hotelName: String!, description: String!, location: String!, starRating: String): Hotel!
     deleteHotel(id: ID!): Boolean!
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
+    uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
   }
 `;
