@@ -19,6 +19,7 @@ export const RoomTypes = () => {
             Add Room
           </Button>
         </div>
+
         <CardContent>
           <Tabs defaultValue="All" className="w-full">
             <TabsList className="mb-4">
