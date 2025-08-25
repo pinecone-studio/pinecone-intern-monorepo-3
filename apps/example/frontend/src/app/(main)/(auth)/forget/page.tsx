@@ -6,7 +6,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-// import { useAuth } from 'src/components/providers';
+import { useAuth } from 'src/components/providers';
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -15,7 +15,7 @@ const formSchema = z.object({
 });
 
 const ForgetPage = () => {
-  // const { requestChangePassword } = useAuth();
+  const { requestChangePassword } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -25,9 +25,9 @@ const ForgetPage = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // await requestChangePassword({
-    //   email: values.email,
-    // });
+    await requestChangePassword({
+      email: values.email,
+    });
   };
 
   return (

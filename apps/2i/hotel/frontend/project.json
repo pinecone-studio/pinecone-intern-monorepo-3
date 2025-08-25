@@ -18,7 +18,7 @@
       },
       "dependsOn": [
         {
-          "target": "codegen:testing",
+          "target": "codegen:dev",
           "params": "forward"
         }
       ]
@@ -116,14 +116,64 @@
         "commands": ["rm -rf dist/apps/2i/hotel/frontend", "rm -rf .vercel"]
       }
     },
-
+    "e2e": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx nx execute-cypress scripts hotel-frontend"],
+        "parallel": false
+      },
+      "dependsOn": [{ "target": "cypress:clean" }]
+    },
+    "e2e:open": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx nx cypress hotel-frontend --watch"],
+        "parallel": false
+      },
+      "dependsOn": [{ "target": "cypress:clean" }]
+    },
+    "cypress:clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["rm -rf apps/2i/hotel/frontend/cypress/results", "rm -rf apps/2i/hotel/frontend/.nyc_output", "rm -rf apps/2i/hotel/frontend/.cy", "rm -rf apps/2i/hotel/frontend/coverage"],
+        "parallel": false
+      }
+    },
+    "cypress": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/2i/hotel/frontend/cypress.config.ts",
+        "testingType": "e2e",
+        "reporter": "mochawesome",
+        "devServerTarget": "hotel-frontend:serve:development",
+        "browser": "chrome"
+      },
+      "dependsOn": [
+        {
+          "target": "cypress-generate-all-page-json"
+        },
+        {
+          "target": "get-secrets"
+        },
+        {
+          "target": "export-env"
+        }
+      ]
+    },
+    "cypress-generate-all-page-json": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["npx ts-node apps/2i/hotel/frontend/cypress/utils/get-all-pages.ts"],
+        "parallel": false
+      }
+    },
     "preview": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_cmcCeJJdpp1N8KN7RomGup9idIGN -- vercel pull --yes --environment=preview --token=8sE6Wygsz7EK4Jg8Y4C3dfri",
-          "npx env-cmd -f apps/2i/hotel/frontend/.env vercel build --token=8sE6Wygsz7EK4Jg8Y4C3dfri",
-          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_cmcCeJJdpp1N8KN7RomGup9idIGN -- vercel --archive=tgz --prebuilt --token=8sE6Wygsz7EK4Jg8Y4C3dfri"
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel pull --yes --environment=preview --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx env-cmd -f apps/2i/hotel/frontend/.env vercel build --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel --archive=tgz --prebuilt --token=PesgKgc0dTrFmrxoYtrTLeBc"
         ],
         "parallel": false
       },
@@ -147,9 +197,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_cmcCeJJdpp1N8KN7RomGup9idIGN -- vercel pull --yes --environment=production --token=8sE6Wygsz7EK4Jg8Y4C3dfri",
-          "vercel build --prod --token=8sE6Wygsz7EK4Jg8Y4C3dfri",
-          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_cmcCeJJdpp1N8KN7RomGup9idIGN -- vercel --prebuilt --prod --token=8sE6Wygsz7EK4Jg8Y4C3dfri"
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel pull --yes --environment=production --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "vercel build --prod --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel --prebuilt --prod --token=PesgKgc0dTrFmrxoYtrTLeBc"
         ],
         "parallel": false
       },
@@ -209,9 +259,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_cmcCeJJdpp1N8KN7RomGup9idIGN -- vercel pull --yes --environment=production --token=8sE6Wygsz7EK4Jg8Y4C3dfri",
-          "vercel build --prod --token=8sE6Wygsz7EK4Jg8Y4C3dfri",
-          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_cmcCeJJdpp1N8KN7RomGup9idIGN -- vercel --prebuilt --prod --token=8sE6Wygsz7EK4Jg8Y4C3dfri"
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel pull --yes --environment=production --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "vercel build --prod --token=PesgKgc0dTrFmrxoYtrTLeBc",
+          "npx dotenv -v VERCEL_ORG_ID=wg2ukpE3GwsYARXLqSe143OQ -v VERCEL_PROJECT_ID=prj_I4Oa5JJqDiutgkqEebeKw0gHsRQm -- vercel --prebuilt --prod --token=PesgKgc0dTrFmrxoYtrTLeBc"
         ],
         "parallel": false
       },
