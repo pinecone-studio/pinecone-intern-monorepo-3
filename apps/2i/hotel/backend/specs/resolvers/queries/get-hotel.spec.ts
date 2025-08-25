@@ -17,6 +17,7 @@ describe('getHotel', () => {
       {
         hotelName: 'test hotelName',
         location: 'test location',
+        image: 'test image',
         rooms: ['room1', 'room2'],
       },
     ];
@@ -32,6 +33,7 @@ describe('getHotel', () => {
     expect(mockPopulate).toHaveBeenCalledWith('rooms');
     expect(result.length).toBeGreaterThan(0);
     expect(result[0]).toHaveProperty('hotelName', 'test hotelName');
+    expect(result[0]).toHaveProperty('image', 'test image');
     expect(result[0]).toHaveProperty('location', 'test location');
   });
 });
