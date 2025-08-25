@@ -116,57 +116,7 @@
         "commands": ["rm -rf dist/apps/2i/hotel/frontend", "rm -rf .vercel"]
       }
     },
-    "e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npx nx cypress example-frontend"],
-        "parallel": false
-      },
-      "dependsOn": [{ "target": "cypress:clean" }]
-    },
-    "e2e:open": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npx nx cypress hotel-frontend --watch"],
-        "parallel": false
-      },
-      "dependsOn": [{ "target": "cypress:clean" }]
-    },
-    "cypress:clean": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["rm -rf apps/2i/hotel/frontend/cypress/results", "rm -rf apps/2i/hotel/frontend/.nyc_output", "rm -rf apps/2i/hotel/frontend/.cy", "rm -rf apps/2i/hotel/frontend/coverage"],
-        "parallel": false
-      }
-    },
-    "cypress": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/2i/hotel/frontend/cypress.config.ts",
-        "testingType": "e2e",
-        "reporter": "mochawesome",
-        "devServerTarget": "hotel-frontend:serve:development",
-        "browser": "chrome"
-      },
-      "dependsOn": [
-        {
-          "target": "cypress-generate-all-page-json"
-        },
-        {
-          "target": "get-secrets:testing"
-        },
-        {
-          "target": "export-env"
-        }
-      ]
-    },
-    "cypress-generate-all-page-json": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npx ts-node apps/2i/hotel/frontend/cypress/utils/get-all-pages.ts"],
-        "parallel": false
-      }
-    },
+
     "preview": {
       "executor": "nx:run-commands",
       "options": {
