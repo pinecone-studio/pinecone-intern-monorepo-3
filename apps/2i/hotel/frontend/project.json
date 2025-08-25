@@ -18,7 +18,7 @@
       },
       "dependsOn": [
         {
-          "target": "codegen:dev",
+          "target": "codegen:testing",
           "params": "forward"
         }
       ]
@@ -153,7 +153,7 @@
           "target": "cypress-generate-all-page-json"
         },
         {
-          "target": "get-secrets"
+          "target": "get-secrets:testing"
         },
         {
           "target": "export-env"
