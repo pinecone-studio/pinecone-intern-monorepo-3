@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
-// import { useAuth } from 'src/components/providers';
+import { useAuth } from 'src/components/providers';
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -18,7 +18,7 @@ const formSchema = z.object({
 });
 
 const SigninPage = () => {
-  // const { signin } = useAuth();
+  const { signin } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -29,10 +29,10 @@ const SigninPage = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // await signin({
-    //   email: values.email,
-    //   password: values.password,
-    // });
+    await signin({
+      email: values.email,
+      password: values.password,
+    });
   };
 
   return (
