@@ -1,8 +1,11 @@
-import { userLogin } from '../../../src/resolvers/mutations/user-login';
-import { UserModel } from '../../../src/models/user-model';
+// __tests__/user-login.test.ts
+
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { UserModel } from '../../../src/models/user-model';
+import { userLogin } from '../../../src/resolvers/mutations/user-login';
 
+// Mock dependencies
 jest.mock('../../../src/models/user-model', () => ({
   UserModel: {
     findOne: jest.fn(),
@@ -17,62 +20,54 @@ jest.mock('jsonwebtoken', () => ({
   sign: jest.fn(),
 }));
 
-describe('userLogin', () => {
+describe('userLogin resolver', () => {
   const mockUser = {
-    _id: '12345',
+    _id: 'user123',
     email: 'test@example.com',
     password: 'hashedPassword',
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    process.env.JWT_PASSWORD = 'test-secret';
+    process.env.JWT_PASSWORD = 'test_secret';
   });
 
-  it('should throw an error if user does not exist', async () => {
+  it('should login successfully with correct credentials', async () => {
+    (UserModel.findOne as jest.Mock).mockResolvedValue(mockUser);
+    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    (jwt.sign as jest.Mock).mockReturnValue('fake_jwt_token');
+
+    const result = await userLogin(null, { email: mockUser.email, password: 'plainPassword' });
+
+    expect(UserModel.findOne).toHaveBeenCalledWith({ email: mockUser.email });
+    expect(bcrypt.compare).toHaveBeenCalledWith('plainPassword', mockUser.password);
+    expect(jwt.sign).toHaveBeenCalledWith({ userId: mockUser._id }, 'test_secret');
+    expect(result).toEqual({
+      message: 'Login successful',
+      token: 'fake_jwt_token',
+    });
+  });
+
+  it('should throw an error if user is not found', async () => {
     (UserModel.findOne as jest.Mock).mockResolvedValue(null);
 
-    const result = await userLogin(null, { email: 'no@user.com', password: 'password123' });
-
-    expect(result).toEqual({
-      message: 'Something went wrong Email or password incorrect, please check again',
-    });
-    expect(UserModel.findOne).toHaveBeenCalledWith({ email: 'no@user.com' });
+    await expect(userLogin(null, { email: 'wrong@example.com', password: 'any' })).rejects.toThrow('Email or password incorrect, please check again');
   });
 
   it('should throw an error if password is invalid', async () => {
     (UserModel.findOne as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-    const result = await userLogin(null, { email: mockUser.email, password: 'wrongPass' });
-
-    expect(result).toEqual({
-      message: 'Something went wrong Email or password incorrect, please check again',
-    });
-    expect(bcrypt.compare).toHaveBeenCalledWith('wrongPass', mockUser.password);
+    await expect(userLogin(null, { email: mockUser.email, password: 'wrongPassword' })).rejects.toThrow('Email or password incorrect, please check again');
   });
 
-  it('should return a token if login is successful', async () => {
+  it('should throw an error if jwt.sign fails', async () => {
     (UserModel.findOne as jest.Mock).mockResolvedValue(mockUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-    (jwt.sign as jest.Mock).mockReturnValue('mockedToken');
-
-    const result = await userLogin(null, { email: mockUser.email, password: 'validPass' });
-
-    expect(result).toEqual({
-      message: 'Login successful',
-      token: 'mockedToken',
+    (jwt.sign as jest.Mock).mockImplementation(() => {
+      throw new Error('JWT failed');
     });
-    expect(jwt.sign).toHaveBeenCalledWith({ userId: mockUser._id }, process.env.JWT_PASSWORD);
-  });
 
-  it('should handle unexpected errors', async () => {
-    (UserModel.findOne as jest.Mock).mockRejectedValue(new Error('DB error'));
-
-    const result = await userLogin(null, { email: mockUser.email, password: 'anyPass' });
-
-    expect(result).toEqual({
-      message: 'Something went wrong DB error',
-    });
+    await expect(userLogin(null, { email: mockUser.email, password: 'plainPassword' })).rejects.toThrow(/Server error/);
   });
 });

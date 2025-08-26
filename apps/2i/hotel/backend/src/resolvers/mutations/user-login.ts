@@ -17,8 +17,6 @@ export const userLogin = async (_: unknown, args: { email: string; password: str
 
     return { message: 'Login successful', token };
   } catch (err) {
-    if (err instanceof Error) {
-      return { message: `Something went wrong ${err.message}` };
-    }
+    throw new Error(`Server error ${err}`);
   }
 };
