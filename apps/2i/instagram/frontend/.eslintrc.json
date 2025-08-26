@@ -31,6 +31,12 @@
     {
       "files": ["*.cy.{ts,js,tsx,jsx}", "cypress/**/*.{ts,js,tsx,jsx}"],
       "rules": {}
+    },
+    {
+      "files": ["**/SetupTests.tsx"],
+      "rules": {
+        "react/function-component-definition": "off"
+      }
     }
   ]
 }
