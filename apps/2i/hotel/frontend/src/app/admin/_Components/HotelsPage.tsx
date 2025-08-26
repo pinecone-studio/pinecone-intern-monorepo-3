@@ -23,7 +23,7 @@ export const HotelsPage = () => {
     },
     {
       id: '0003',
-      name: 'Flower Hotel Ulaanbaatar',
+      name: 'Flower Hotel Ulaanbaator',
       image: '/hotel3.jpg',
       stars: 5,
       rating: '8.2/10',
