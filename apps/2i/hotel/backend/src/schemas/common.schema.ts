@@ -45,6 +45,25 @@ export const typeDefs = gql`
     amenities: Amenities!
   }
 
+  type EmergencyNumber {
+    phoneNumber: String
+    relation: String
+  }
+
+  type User {
+    _id: ID!
+    email: String!
+    firstName: String
+    lastName: String
+    birthDate: String
+    phoneNumber: String
+    emergencyNumber: EmergencyNumber
+  }
+
+  type SignUpResponse {
+    message: String!
+  }
+
   type Query {
     getRoomById(id: ID!): Room
     getRooms: [Room]!
@@ -60,6 +79,7 @@ export const typeDefs = gql`
     room: Room!
     checkIn: String!
     checkOut: String!
+    getHotelById(id: ID!): Hotel
   }
 
   type Mutation {
@@ -69,5 +89,6 @@ export const typeDefs = gql`
     deleteHotel(id: ID!): Boolean!
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
     uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
+    userSignUp(email: String!, password: String!): SignUpResponse!
   }
 `;
