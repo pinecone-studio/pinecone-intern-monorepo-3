@@ -4,7 +4,7 @@ import { createContext, Dispatch, PropsWithChildren, SetStateAction } from 'reac
 import { useContext, useState } from 'react';
 
 type UploadContextType = {
-  uploadImage: (file: File) => Promise<string | null>;
+  uploadImage: (_file: File) => Promise<string | null>;
   uploading: boolean;
   setUploading: Dispatch<SetStateAction<boolean>>;
 };
