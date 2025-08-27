@@ -16,7 +16,7 @@ export const SelectStar = ({ onChange }: LocationSelectProps) => {
   const { data } = useGetHotelQuery();
   const stars = data?.getHotel.map((hotel) => hotel?.starRating) as string[];
 
-  const filteredStars = stars.filter((star) => star.toString().toLowerCase().includes(search.toLowerCase()));
+  const filteredStars = stars?.filter((star) => star.toString().toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

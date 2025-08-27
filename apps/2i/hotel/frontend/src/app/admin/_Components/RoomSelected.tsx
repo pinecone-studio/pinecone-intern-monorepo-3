@@ -15,7 +15,7 @@ export const RoomTypeSelect = ({ onChange }: LocationSelectProps) => {
   const { data, loading } = useGetHotelQuery();
 
   const rooms = data?.getHotel.flatMap((hotel) => hotel?.rooms?.map((room) => room?.roomType)) as string[];
-  const filteredRooms = rooms.filter((room) => room.toLowerCase().includes(search.toLowerCase()));
+  const filteredRooms = rooms?.filter((room) => room.toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

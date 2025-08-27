@@ -15,7 +15,7 @@ export const LocationSelectWithSearch = ({ onChange }: LocationSelectProps) => {
   const { data } = useGetHotelQuery();
   const locations = data?.getHotel.map((hotel) => hotel?.location) as string[];
 
-  const filteredLocations = locations.filter((loc) => loc.toLowerCase().includes(search.toLowerCase()));
+  const filteredLocations = locations?.filter((loc) => loc.toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

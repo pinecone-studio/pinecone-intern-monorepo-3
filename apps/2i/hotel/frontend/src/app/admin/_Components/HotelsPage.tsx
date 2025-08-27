@@ -58,10 +58,10 @@ export const HotelsPage = () => {
   const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
 
   const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data.getHotel : [];
-  const filteredHotels = hotelsArray.filter(matchesFilters);
+  const filteredHotels = hotelsArray?.filter(matchesFilters);
 
   const renderRooms = (rooms: HotelType['rooms']) =>
-    rooms.filter(Boolean).map((room, i) => (
+    rooms?.filter(Boolean).map((room, i) => (
       <span key={i} className="inline-block rounded-md border px-2 py-1 text-xs">
         {room?.roomType}
       </span>
@@ -69,9 +69,9 @@ export const HotelsPage = () => {
 
   const renderRatings = (userRating: HotelType['userRating']) =>
     userRating
-      .filter(Boolean)
+      ?.filter(Boolean)
       .map((r) => r?.rating)
-      .filter(Boolean)
+      ?.filter(Boolean)
       .join(', ');
 
   return (

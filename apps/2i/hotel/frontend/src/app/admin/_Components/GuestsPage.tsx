@@ -97,7 +97,7 @@ export const GuestsPage = () => {
           </thead>
           <tbody>
             {guests
-              .filter((g) => (statusFilter ? g.status === statusFilter : true))
+              ?.filter((g) => (statusFilter ? g.status === statusFilter : true))
               .map((guest) => (
                 <tr key={guest.id} className="border-t">
                   <td className="px-4 py-3">{guest.id}</td>
