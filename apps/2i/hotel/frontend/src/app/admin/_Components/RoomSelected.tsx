@@ -1,18 +1,20 @@
 'use client';
+import { useGetHotelQuery } from '@/generated';
 import { ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 type LocationSelectProps = {
-  rooms?: string[];
-  onChange?: (val: string) => void;
+  onChange?: (_val: string) => void;
 };
 
-export const RoomTypeSelect = ({ rooms = [], onChange }: LocationSelectProps) => {
+export const RoomTypeSelect = ({ onChange }: LocationSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState('Room Type');
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const { data, loading, error } = useGetHotelQuery();
+  if (loading) return <p>Loading...</p>;
+  const rooms = data?.getHotel.flatMap((hotel) => hotel?.rooms?.map((room) => room?.roomType)) as string[];
   const filteredRooms = rooms.filter((room) => room.toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {

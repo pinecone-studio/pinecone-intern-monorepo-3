@@ -7,13 +7,13 @@ import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
 import { UserRating } from './UserRating';
+import { set } from 'cypress/types/lodash';
 
 export const HotelsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
-  const [selectedRating, setSelectedRating] = useState<number | string>('User Rating');
-
+  const [selectedRating, setSelectedRating] = useState<string>('User Rating');
   const { data, loading, error } = useGetHotelQuery();
 
   console.log(data);
@@ -47,9 +47,6 @@ export const HotelsPage = () => {
 
     return match;
   });
-  const locations = data?.getHotel.map((hotel) => hotel?.location) as string[];
-  const rooms = data?.getHotel.flatMap((hotel) => hotel?.rooms?.map((room) => room?.roomType)) as string[];
-  const stars = data?.getHotel.map((hotel) => hotel?.starRating) as string[];
 
   return (
     <main className="flex-1 bg-gray-50 p-6">
@@ -58,13 +55,13 @@ export const HotelsPage = () => {
       <div className="flex items-center gap-3 mb-4">
         <input type="text" placeholder="Search" className="w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
 
-        <LocationSelectWithSearch location={locations} onChange={(val) => setSelectedLocation(val)} />
+        <LocationSelectWithSearch onChange={(_val) => setSelectedLocation(_val)} />
 
-        <RoomTypeSelect rooms={rooms} onChange={(_val) => setSelectedRoom(_val)} />
+        <RoomTypeSelect onChange={(_val) => setSelectedRoom(_val)} />
 
-        <SelectStar stars={stars} onChange={(_val) => setSelectedStar(_val)} />
+        <SelectStar onChange={(_val) => setSelectedStar(_val)} />
 
-        {/* <UserRating ratings={ratings} onChange={(_val) => setSelectedRating(_val)} /> */}
+        <UserRating onChange={(_val) => setSelectedRating(_val)} />
       </div>
 
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">

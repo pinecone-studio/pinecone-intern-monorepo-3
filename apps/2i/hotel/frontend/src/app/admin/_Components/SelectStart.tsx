@@ -1,17 +1,20 @@
 'use client';
+import { useGetHotelQuery } from '@/generated';
 import { ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 type LocationSelectProps = {
-  stars?: string[];
-  onChange?: (val: string) => void;
+  onChange?: (_val: string) => void;
 };
 
-export const SelectStar = ({ stars = [], onChange }: LocationSelectProps) => {
+export const SelectStar = ({ onChange }: LocationSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<string>('Star Rating');
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const { data, loading, error } = useGetHotelQuery();
+  const stars = data?.getHotel.map((hotel) => hotel?.starRating) as string[];
 
   const filteredStars = stars.filter((star) => star.toString().toLowerCase().includes(search.toLowerCase()));
 

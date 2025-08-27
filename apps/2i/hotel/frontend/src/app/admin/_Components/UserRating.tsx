@@ -1,19 +1,23 @@
 'use client';
+import { useGetHotelQuery } from '@/generated';
 import { ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 type LocationSelectProps = {
-  ratings?: string[];
-  onChange?: (val: string) => void;
+  onChange?: (_val: string) => void;
 };
 
-export const UserRating = ({ ratings = [], onChange }: LocationSelectProps) => {
+export const UserRating = ({ onChange }: LocationSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState<string | undefined>('User Rating');
+  const [selected, setSelected] = useState<string | number>('User Rating');
   const containerRef = useRef<HTMLDivElement>(null);
+  const { data, loading, error } = useGetHotelQuery();
+  if (loading) return <p>Loading...</p>;
 
-  const filteredRating = ratings.filter((rating) => rating.toString().toLowerCase().includes(search.toLowerCase()));
+  const ratings = Array.from(new Set(data?.getHotel.flatMap((hotel) => hotel?.userRating?.map((r) => r?.rating ?? 0) ?? []) ?? []));
+
+  const filteredRating = ratings?.filter((rating) => rating !== undefined && rating !== null && rating.toString().toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -25,8 +29,9 @@ export const UserRating = ({ ratings = [], onChange }: LocationSelectProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSelect = (val: string) => {
-    setSelected(val);
+  const handleSelect = (val: number) => {
+    const num = Number(val);
+    setSelected(num);
     onChange?.(val.toString());
     setOpen(false);
     setSearch('');
@@ -45,7 +50,7 @@ export const UserRating = ({ ratings = [], onChange }: LocationSelectProps) => {
           <input type="text" placeholder="Search option..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full px-3 py-2 border-b border-gray-200 focus:outline-none" />
           <ul className="max-h-40 overflow-y-auto">
             {filteredRating.length > 0 ? (
-              filteredRating.map((rating) => (
+              filteredRating?.map((rating) => (
                 <li
                   key={rating}
                   onClick={() => {
