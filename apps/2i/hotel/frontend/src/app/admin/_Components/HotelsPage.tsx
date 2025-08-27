@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import { TopBar } from '../_Components/TopBar';
+import { useState } from 'react';
+import { HotelDetail } from './HotelDetail';
 
 export const HotelsPage = () => {
   const hotels = [
@@ -38,7 +40,10 @@ export const HotelsPage = () => {
       rooms: ['Single', 'Deluxe', 'Standard'],
     },
   ];
-
+  const [selectedHotelId, setSelectedHotelId] = useState<string | null>(null);
+  if (selectedHotelId) {
+    return <HotelDetail hotelId={selectedHotelId} />;
+  }
   return (
     <main className="flex-1 bg-gray-50 p-6">
       <TopBar />
@@ -74,7 +79,7 @@ export const HotelsPage = () => {
                 <td className="px-4 py-3">{hotel.id}</td>
                 <td className="px-4 py-3 flex items-center gap-2">
                   <Image src={hotel.image} alt={hotel.name} width={40} height={40} className="rounded-md object-cover" />
-                  {hotel.name}
+                  <button onClick={() => setSelectedHotelId(hotel.id)}>{hotel.name}</button>
                 </td>
                 <td className="px-4 py-3 space-x-2">
                   {hotel.rooms.map((room, i) => (
