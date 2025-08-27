@@ -49,8 +49,7 @@ export const HotelsPage = () => {
   });
   const locations = data?.getHotel.map((hotel) => hotel?.location) as string[];
   const rooms = data?.getHotel.flatMap((hotel) => hotel?.rooms?.map((room) => room?.roomType)) as string[];
-  const stars = data.getHotel.map((hotel) => hotel?.starRating) as string[];
-  const ratings = data.getHotel.flatMap((hotel) => hotel?.userRating?.map((rating) => rating?.rating)) as number[];
+  const stars = data?.getHotel.map((hotel) => hotel?.starRating) as string[];
 
   return (
     <main className="flex-1 bg-gray-50 p-6">
@@ -61,11 +60,11 @@ export const HotelsPage = () => {
 
         <LocationSelectWithSearch location={locations} onChange={(val) => setSelectedLocation(val)} />
 
-        <RoomTypeSelect rooms={rooms} onChange={(val) => setSelectedRoom(val)} />
+        <RoomTypeSelect rooms={rooms} onChange={(_val) => setSelectedRoom(_val)} />
 
-        <SelectStar stars={stars} onChange={(val) => setSelectedStar(val)} />
+        <SelectStar stars={stars} onChange={(_val) => setSelectedStar(_val)} />
 
-        <UserRating ratings={ratings} onChange={(val) => setSelectedRating(val)} />
+        {/* <UserRating ratings={ratings} onChange={(_val) => setSelectedRating(_val)} /> */}
       </div>
 
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">

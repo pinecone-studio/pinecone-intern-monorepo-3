@@ -3,14 +3,14 @@ import { ChevronDown } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 type LocationSelectProps = {
-  ratings?: number[];
+  ratings?: string[];
   onChange?: (val: string) => void;
 };
 
 export const UserRating = ({ ratings = [], onChange }: LocationSelectProps) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState<number | string>('User Rating');
+  const [selected, setSelected] = useState<string | undefined>('User Rating');
   const containerRef = useRef<HTMLDivElement>(null);
 
   const filteredRating = ratings.filter((rating) => rating.toString().toLowerCase().includes(search.toLowerCase()));
@@ -25,10 +25,9 @@ export const UserRating = ({ ratings = [], onChange }: LocationSelectProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSelect = (val: number) => {
-    const num = Number(val);
-    setSelected(num);
-    onChange?.(num.toString());
+  const handleSelect = (val: string) => {
+    setSelected(val);
+    onChange?.(val.toString());
     setOpen(false);
     setSearch('');
   };
