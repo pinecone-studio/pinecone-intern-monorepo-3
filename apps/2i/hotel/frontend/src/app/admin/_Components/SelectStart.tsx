@@ -13,7 +13,7 @@ export const SelectStar = ({ onChange }: LocationSelectProps) => {
   const [selected, setSelected] = useState<string>('Star Rating');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data, loading, error } = useGetHotelQuery();
+  const { data } = useGetHotelQuery();
   const stars = data?.getHotel.map((hotel) => hotel?.starRating) as string[];
 
   const filteredStars = stars.filter((star) => star.toString().toLowerCase().includes(search.toLowerCase()));

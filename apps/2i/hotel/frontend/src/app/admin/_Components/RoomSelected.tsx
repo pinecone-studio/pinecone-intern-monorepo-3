@@ -12,8 +12,8 @@ export const RoomTypeSelect = ({ onChange }: LocationSelectProps) => {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState('Room Type');
   const containerRef = useRef<HTMLDivElement>(null);
-  const { data, loading, error } = useGetHotelQuery();
-  if (loading) return <p>Loading...</p>;
+  const { data, loading } = useGetHotelQuery();
+
   const rooms = data?.getHotel.flatMap((hotel) => hotel?.rooms?.map((room) => room?.roomType)) as string[];
   const filteredRooms = rooms.filter((room) => room.toLowerCase().includes(search.toLowerCase()));
 
@@ -26,6 +26,7 @@ export const RoomTypeSelect = ({ onChange }: LocationSelectProps) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+  if (loading) return <p>Loading...</p>;
 
   const handleSelect = (val: string) => {
     setSelected(val);

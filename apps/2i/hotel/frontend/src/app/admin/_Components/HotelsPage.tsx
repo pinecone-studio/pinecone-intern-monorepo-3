@@ -7,8 +7,28 @@ import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
 import { UserRating } from './UserRating';
-import { set } from 'cypress/types/lodash';
 
+type HotelType = {
+  __typename?: 'Hotel' | undefined;
+  _id: string;
+  hotelName: string;
+  description?: string | null | undefined;
+  location: string;
+  starRating: string;
+  image: string[];
+  userRating: ({
+    __typename?: 'UserRating' | undefined;
+    rating?: number | null | undefined;
+    comment?: string | null | undefined;
+    hotel?: string | null | undefined;
+  } | null)[];
+  rooms: ({
+    __typename?: 'Room' | undefined;
+    roomType?: string | null | undefined;
+    price?: number | null | undefined;
+    availability?: number | null | undefined;
+  } | null)[];
+};
 export const HotelsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
@@ -23,30 +43,34 @@ export const HotelsPage = () => {
   if (!data) return <p>No data available</p>;
   if (data?.getHotel?.length === 0) return <p>No hotels found</p>;
 
-  const filteredHotels = data?.getHotel.filter((hotel) => {
-    let match = true;
+  const getAvgRating = (hotel: HotelType): number => {
+    if (!hotel.userRating || hotel.userRating.length === 0) return 0;
+    return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
+  };
+
+  const matchesFilters = (hotel: HotelType | null): boolean => {
+    if (!hotel) return false;
 
     if (selectedLocation && selectedLocation !== 'All Locations' && selectedLocation !== 'Locations') {
-      match = match && hotel?.location === selectedLocation;
+      if (hotel.location !== selectedLocation) return false;
     }
+
     if (selectedRoom && selectedRoom !== 'All Room' && selectedRoom !== 'Room Type') {
-      match = match && (hotel?.rooms?.some((room) => room?.roomType === selectedRoom) ?? false);
+      if (!(hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false)) return false;
     }
 
     if (selectedStar && selectedStar !== 'Star Rating' && selectedStar !== 'All') {
-      match = match && hotel?.starRating === selectedStar;
+      if (hotel.starRating !== selectedStar) return false;
     }
 
     if (selectedRating && selectedRating !== 'User Rating') {
-      if (!hotel?.userRating || hotel.userRating.length === 0) return false;
-
-      const avgRating = hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
-
-      match = match && avgRating >= Number(selectedRating);
+      if (getAvgRating(hotel) < Number(selectedRating)) return false;
     }
 
-    return match;
-  });
+    return true;
+  };
+
+  const filteredHotels = data?.getHotel?.filter(matchesFilters) ?? [];
 
   return (
     <main className="flex-1 bg-gray-50 p-6">

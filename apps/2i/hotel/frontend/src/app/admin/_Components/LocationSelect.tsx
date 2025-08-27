@@ -12,7 +12,7 @@ export const LocationSelectWithSearch = ({ onChange }: LocationSelectProps) => {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState('Locations');
   const containerRef = useRef<HTMLDivElement>(null);
-  const { data, loading, error } = useGetHotelQuery();
+  const { data } = useGetHotelQuery();
   const locations = data?.getHotel.map((hotel) => hotel?.location) as string[];
 
   const filteredLocations = locations.filter((loc) => loc.toLowerCase().includes(search.toLowerCase()));
