@@ -87,7 +87,6 @@ export const HotelsPage = () => {
 
         <UserRating onChange={(_val) => setSelectedRating(_val)} />
       </div>
-      // ... (previous code)
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs font-medium uppercase text-gray-500">
@@ -101,7 +100,6 @@ export const HotelsPage = () => {
           </thead>
           <tbody>
             {filteredHotels.map((hotel) => {
-              // Early return for null hotels
               if (!hotel) return null;
 
               return (
@@ -124,7 +122,7 @@ export const HotelsPage = () => {
                   <td className="px-4 py-3">⭐ {hotel.starRating}</td>
                   <td className="px-4 py-3">
                     {hotel.userRating
-                      .map((el, i) => {
+                      .map((el) => {
                         if (!el) return null;
                         return el.rating;
                       })
