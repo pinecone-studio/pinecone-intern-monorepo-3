@@ -57,7 +57,8 @@ export const HotelsPage = () => {
 
   const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
 
-  const filteredHotels = data?.getHotel?.filter(matchesFilters) ?? [];
+  const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data.getHotel : [];
+  const filteredHotels = hotelsArray.filter(matchesFilters);
 
   const renderRooms = (rooms: HotelType['rooms']) =>
     rooms.filter(Boolean).map((room, i) => (
