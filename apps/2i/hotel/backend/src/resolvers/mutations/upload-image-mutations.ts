@@ -15,7 +15,9 @@ export const uploadToCloudinary = async (_: unknown, args: Args) => {
       throw new Error('Hotel not found');
     }
 
-    await existingHotel.image.push(...image);
+    existingHotel.image.push(...image);
+    await existingHotel.save();
+
     return existingHotel;
   } catch (err) {
     throw new Error(`Server error ${err}`);
