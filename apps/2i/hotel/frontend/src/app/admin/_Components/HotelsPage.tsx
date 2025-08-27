@@ -51,19 +51,23 @@ export const HotelsPage = () => {
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
 
-    const locationFilter = selectedLocation && selectedLocation !== 'All Locations' && selectedLocation !== 'Locations';
-    const roomFilter = selectedRoom && selectedRoom !== 'All Room' && selectedRoom !== 'Room Type';
-    const starFilter = selectedStar && selectedStar !== 'Star Rating' && selectedStar !== 'All';
-    const ratingFilter = selectedRating && selectedRating !== 'User Rating';
-
-    if (
-      (locationFilter && hotel.location !== selectedLocation) ||
-      (roomFilter && !(hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false)) ||
-      (starFilter && hotel.starRating !== selectedStar) ||
-      (ratingFilter && getAvgRating(hotel) < Number(selectedRating))
-    ) {
-      return false;
+    if (selectedLocation && selectedLocation !== 'All Locations' && selectedLocation !== 'Locations') {
+      if (hotel.location !== selectedLocation) return false;
     }
+
+    if (selectedRoom && selectedRoom !== 'All Room' && selectedRoom !== 'Room Type') {
+      const hasMatchingRoom = hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false;
+      if (!hasMatchingRoom) return false;
+    }
+
+    if (selectedStar && selectedStar !== 'Star Rating' && selectedStar !== 'All') {
+      if (hotel.starRating !== selectedStar) return false;
+    }
+
+    if (selectedRating && selectedRating !== 'User Rating') {
+      if (getAvgRating(hotel) < Number(selectedRating)) return false;
+    }
+
     return true;
   };
 
@@ -72,7 +76,6 @@ export const HotelsPage = () => {
   return (
     <main className="flex-1 bg-gray-50 p-6">
       <TopBar />
-
       <div className="flex items-center gap-3 mb-4">
         <input type="text" placeholder="Search" className="w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
 
@@ -84,7 +87,7 @@ export const HotelsPage = () => {
 
         <UserRating onChange={(_val) => setSelectedRating(_val)} />
       </div>
-
+      // ... (previous code)
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-xs font-medium uppercase text-gray-500">
@@ -97,24 +100,40 @@ export const HotelsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredHotels.map((hotel) => (
-              <tr key={hotel?._id} className="border-t">
-                <td className="px-4 py-3">{hotel?._id}</td>
-                <td className="px-4 py-3 flex items-center gap-2">
-                  {/* <Image src={hotel?.image[0]} alt="hotelName" width={40} height={40} className="rounded-md object-cover" /> */}
-                  {hotel?.hotelName}
-                </td>
-                <td className="px-4 py-3 space-x-2">
-                  {hotel?.rooms.map((room, i) => (
-                    <span key={i} className="inline-block rounded-md border px-2 py-1 text-xs">
-                      {room?.roomType}
-                    </span>
-                  ))}
-                </td>
-                <td className="px-4 py-3">⭐ {hotel?.starRating}</td>
-                <td className="px-4 py-3">{hotel?.userRating.map((el) => el?.rating)}</td>
-              </tr>
-            ))}
+            {filteredHotels.map((hotel) => {
+              // Early return for null hotels
+              if (!hotel) return null;
+
+              return (
+                <tr key={hotel._id} className="border-t">
+                  <td className="px-4 py-3">{hotel._id}</td>
+                  <td className="px-4 py-3 flex items-center gap-2">
+                    {/* <Image src={hotel.image[0]} alt="hotelName" width={40} height={40} className="rounded-md object-cover" /> */}
+                    {hotel.hotelName}
+                  </td>
+                  <td className="px-4 py-3 space-x-2">
+                    {hotel.rooms.map((room, i) => {
+                      if (!room) return null;
+                      return (
+                        <span key={i} className="inline-block rounded-md border px-2 py-1 text-xs">
+                          {room.roomType}
+                        </span>
+                      );
+                    })}
+                  </td>
+                  <td className="px-4 py-3">⭐ {hotel.starRating}</td>
+                  <td className="px-4 py-3">
+                    {hotel.userRating
+                      .map((el, i) => {
+                        if (!el) return null;
+                        return el.rating;
+                      })
+                      .filter(Boolean)
+                      .join(', ')}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
