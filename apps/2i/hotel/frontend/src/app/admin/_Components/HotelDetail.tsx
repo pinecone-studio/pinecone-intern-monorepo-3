@@ -49,7 +49,7 @@ export const HotelDetail = ({ hotelId }: PropsType) => {
 
         <div className="flex flex-col gap-4">
           <DetailLocation />
-          <DetailImage />
+          <DetailImage hotelId={''} />
         </div>
       </div>
     </div>

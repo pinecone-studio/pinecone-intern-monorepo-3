@@ -1,7 +1,6 @@
 'use client';
 
-import { createContext, Dispatch, PropsWithChildren, SetStateAction } from 'react';
-import { useContext, useState } from 'react';
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState } from 'react';
 
 type UploadContextType = {
   uploadImage: (_file: File) => Promise<string | null>;
@@ -28,7 +27,39 @@ export const UploadProvider = ({ children }: PropsWithChildren) => {
       });
 
       const data = await res.json();
-      return data.secure_url;
+
+      const imageUrl = data.secure_url;
+
+      const query = `
+        mutation UploadHotelImages($hotelId: ID!, $images: [String!]!) {
+          uploadHotelImages(hotelId: $hotelId, images: $images) {
+            success
+            message
+          }
+        }
+      `;
+
+      const variables = {
+        images: [imageUrl],
+      };
+
+      const saveResponse = await fetch('http://localhost:4200/api/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, variables }),
+      });
+
+      if (!saveResponse.ok) {
+        throw new Error('Failed to save image URL to DB');
+      }
+
+      const saveData = await saveResponse.json();
+
+      if (!saveData.data.uploadHotelImages.success) {
+        throw new Error(saveData.data.uploadHotelImages.message || 'Failed to save image URL');
+      }
+
+      return imageUrl;
     } catch (err) {
       console.error('Upload error:', err);
       return null;
