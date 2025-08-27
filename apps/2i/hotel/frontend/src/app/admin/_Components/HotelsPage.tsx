@@ -34,14 +34,9 @@ export const HotelsPage = () => {
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
   const [selectedRating, setSelectedRating] = useState<string>('User Rating');
-  const { data, loading, error } = useGetHotelQuery();
+  const { data } = useGetHotelQuery();
 
   console.log(data);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
-  if (!data) return <p>No data available</p>;
-  if (data?.getHotel?.length === 0) return <p>No hotels found</p>;
 
   const getAvgRating = (hotel: HotelType): number => {
     if (!hotel.userRating || hotel.userRating.length === 0) return 0;
@@ -51,27 +46,32 @@ export const HotelsPage = () => {
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
 
-    if (selectedLocation && selectedLocation !== 'All Locations' && selectedLocation !== 'Locations') {
-      if (hotel.location !== selectedLocation) return false;
-    }
-
-    if (selectedRoom && selectedRoom !== 'All Room' && selectedRoom !== 'Room Type') {
-      const hasMatchingRoom = hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false;
-      if (!hasMatchingRoom) return false;
-    }
-
-    if (selectedStar && selectedStar !== 'Star Rating' && selectedStar !== 'All') {
-      if (hotel.starRating !== selectedStar) return false;
-    }
-
-    if (selectedRating && selectedRating !== 'User Rating') {
-      if (getAvgRating(hotel) < Number(selectedRating)) return false;
-    }
-
-    return true;
+    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesRating(hotel);
   };
 
+  const matchesLocation = (hotel: HotelType) => !selectedLocation || selectedLocation === 'All Locations' || selectedLocation === 'Locations' || hotel.location === selectedLocation;
+
+  const matchesRoom = (hotel: HotelType) => !selectedRoom || selectedRoom === 'All Room' || selectedRoom === 'Room Type' || (hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false);
+
+  const matchesStar = (hotel: HotelType) => !selectedStar || selectedStar === 'Star Rating' || selectedStar === 'All' || hotel.starRating === selectedStar;
+
+  const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
+
   const filteredHotels = data?.getHotel?.filter(matchesFilters) ?? [];
+
+  const renderRooms = (rooms: HotelType['rooms']) =>
+    rooms.filter(Boolean).map((room, i) => (
+      <span key={i} className="inline-block rounded-md border px-2 py-1 text-xs">
+        {room?.roomType}
+      </span>
+    ));
+
+  const renderRatings = (userRating: HotelType['userRating']) =>
+    userRating
+      .filter(Boolean)
+      .map((r) => r?.rating)
+      .filter(Boolean)
+      .join(', ');
 
   return (
     <main className="flex-1 bg-gray-50 p-6">
@@ -110,25 +110,10 @@ export const HotelsPage = () => {
                     {hotel.hotelName}
                   </td>
                   <td className="px-4 py-3 space-x-2">
-                    {hotel.rooms.map((room, i) => {
-                      if (!room) return null;
-                      return (
-                        <span key={i} className="inline-block rounded-md border px-2 py-1 text-xs">
-                          {room.roomType}
-                        </span>
-                      );
-                    })}
+                    <td className="px-4 py-3 space-x-2">{renderRooms(hotel.rooms)}</td>
                   </td>
                   <td className="px-4 py-3">⭐ {hotel.starRating}</td>
-                  <td className="px-4 py-3">
-                    {hotel.userRating
-                      .map((el) => {
-                        if (!el) return null;
-                        return el.rating;
-                      })
-                      .filter(Boolean)
-                      .join(', ')}
-                  </td>
+                  <td className="px-4 py-3">{renderRatings(hotel.userRating)}</td>
                 </tr>
               );
             })}
