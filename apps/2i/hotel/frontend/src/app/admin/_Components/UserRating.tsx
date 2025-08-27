@@ -13,7 +13,6 @@ export const UserRating = ({ onChange }: LocationSelectProps) => {
   const [selected, setSelected] = useState<string | number>('User Rating');
   const containerRef = useRef<HTMLDivElement>(null);
   const { data, loading } = useGetHotelQuery();
-  if (loading) return <p>Loading...</p>;
 
   const ratings = Array.from(new Set(data?.getHotel.flatMap((hotel) => hotel?.userRating?.map((r) => r?.rating ?? 0) ?? []) ?? []));
 
@@ -29,6 +28,7 @@ export const UserRating = ({ onChange }: LocationSelectProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  if (loading) return <p>Loading...</p>;
   const handleSelect = (val: number) => {
     const num = Number(val);
     setSelected(num);

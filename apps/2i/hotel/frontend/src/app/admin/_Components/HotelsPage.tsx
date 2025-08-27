@@ -51,22 +51,19 @@ export const HotelsPage = () => {
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
 
-    if (selectedLocation && selectedLocation !== 'All Locations' && selectedLocation !== 'Locations') {
-      if (hotel.location !== selectedLocation) return false;
-    }
+    const locationFilter = selectedLocation && selectedLocation !== 'All Locations' && selectedLocation !== 'Locations';
+    const roomFilter = selectedRoom && selectedRoom !== 'All Room' && selectedRoom !== 'Room Type';
+    const starFilter = selectedStar && selectedStar !== 'Star Rating' && selectedStar !== 'All';
+    const ratingFilter = selectedRating && selectedRating !== 'User Rating';
 
-    if (selectedRoom && selectedRoom !== 'All Room' && selectedRoom !== 'Room Type') {
-      if (!(hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false)) return false;
+    if (
+      (locationFilter && hotel.location !== selectedLocation) ||
+      (roomFilter && !(hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false)) ||
+      (starFilter && hotel.starRating !== selectedStar) ||
+      (ratingFilter && getAvgRating(hotel) < Number(selectedRating))
+    ) {
+      return false;
     }
-
-    if (selectedStar && selectedStar !== 'Star Rating' && selectedStar !== 'All') {
-      if (hotel.starRating !== selectedStar) return false;
-    }
-
-    if (selectedRating && selectedRating !== 'User Rating') {
-      if (getAvgRating(hotel) < Number(selectedRating)) return false;
-    }
-
     return true;
   };
 
