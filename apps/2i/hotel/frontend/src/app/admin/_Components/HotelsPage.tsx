@@ -4,6 +4,8 @@ import Image from 'next/image';
 import { TopBar } from '../_Components/TopBar';
 import { useState } from 'react';
 import { HotelDetail } from './HotelDetail';
+import { useApolloClient } from '@apollo/client';
+import { useGetHotelQuery } from '@/generated';
 
 export const HotelsPage = () => {
   const hotels = [
@@ -40,6 +42,9 @@ export const HotelsPage = () => {
       rooms: ['Single', 'Deluxe', 'Standard'],
     },
   ];
+  // const { data, loading, error } = useGetHotelQuery();
+  // console.log(data, 'data');
+
   const [selectedHotelId, setSelectedHotelId] = useState<string | null>(null);
   if (selectedHotelId) {
     return <HotelDetail hotelId={selectedHotelId} />;
@@ -99,3 +104,6 @@ export const HotelsPage = () => {
     </main>
   );
 };
+function useApolloQuery(): { data: any; loading: any; error: any } {
+  throw new Error('Function not implemented.');
+}

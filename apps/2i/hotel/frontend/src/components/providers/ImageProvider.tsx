@@ -28,6 +28,31 @@ export const UploadProvider = ({ children }: PropsWithChildren) => {
       });
 
       const data = await res.json();
+
+      const secureUrl = data.secure_url;
+
+      if (secureUrl) {
+        await fetch(process.env.NEXT_PUBLIC_BACKEND_URI ?? '', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+            mutation UploadImage($url: String!) {
+              uploadImage(url: $url) {
+                id
+                image
+              }
+            }
+          `,
+            variables: {
+              url: secureUrl,
+            },
+          }),
+        });
+      }
+
       return data.secure_url;
     } catch (err) {
       console.error('Upload error:', err);
