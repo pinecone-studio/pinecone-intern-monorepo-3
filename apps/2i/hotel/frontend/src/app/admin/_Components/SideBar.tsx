@@ -1,10 +1,13 @@
+'use client';
+
 import { Home, Users, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-interface SidebarProps {
-  onNavigate: (_page: 'hotels' | 'guests') => void;
-}
-export const AppSidebar = ({ onNavigate }: SidebarProps) => {
+export const AppSidebar = () => {
+  const pathname = usePathname();
+
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-white">
       <div className="flex items-center gap-3 px-4 py-5 border-b">
@@ -14,25 +17,30 @@ export const AppSidebar = ({ onNavigate }: SidebarProps) => {
           <p className="text-xs text-gray-500">Admin</p>
         </div>
       </div>
-
       <nav className="flex-1 px-3 py-4">
         <h3 className="mb-2 px-2 text-xs font-semibold text-gray-400 uppercase">Menu</h3>
         <ul className="space-y-1">
           <li>
-            <button onClick={() => onNavigate('hotels')} className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <Link
+              href="/admin/hotels"
+              className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 ${pathname === '/hotels' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'}`}
+            >
               <Home className="h-4 w-4" />
               Hotels
-            </button>
+            </Link>
           </li>
           <li>
-            <button onClick={() => onNavigate('guests')} className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <Link
+              href="/admin/guests"
+              className={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-gray-100 ${pathname === '/guests' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'}`}
+            >
               <Users className="h-4 w-4" />
               Guests
-            </button>
+            </Link>
           </li>
         </ul>
       </nav>
-
+      =
       <div className="flex items-center justify-between border-t px-3 py-4">
         <div className="flex items-center gap-2">
           <Image src="/avatar.png" alt="admin" width={32} height={32} className="rounded-full" />
