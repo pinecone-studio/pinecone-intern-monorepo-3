@@ -29,11 +29,13 @@ type HotelType = {
     availability?: number | null | undefined;
   } | null)[];
 };
+
 export const HotelsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
   const [selectedRating, setSelectedRating] = useState<string>('User Rating');
+  const [, setShowAddHotel] = useState<boolean>(false);
   const { data } = useGetHotelQuery();
 
   console.log(data);
@@ -76,7 +78,7 @@ export const HotelsPage = () => {
 
   return (
     <main className="flex-1 bg-gray-50 p-6">
-      <TopBar />
+      <TopBar onAddHotel={() => setShowAddHotel(true)} />
       <div className="flex items-center gap-3 mb-4">
         <input type="text" placeholder="Search" className="w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
 
@@ -123,6 +125,7 @@ export const HotelsPage = () => {
           </tbody>
         </table>
       </div>
+      {/* {showAddHotel && <AddHotel />} */}
     </main>
   );
 };

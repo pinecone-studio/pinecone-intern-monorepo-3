@@ -5,11 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus } from 'lucide-react';
-import Image from 'next/image';
+import { ImageOff, Plus } from 'lucide-react';
 
-export const DetailImage = () => {
-  const [images, setImages] = useState<string[]>([]);
+export const AddImage = () => {
+  const [, setImages] = useState<string[]>([]);
 
   return (
     <Card className="pt-4 pr-6 pb-6 pl-6">
@@ -51,17 +50,11 @@ export const DetailImage = () => {
       </div>
       <CardContent className="mt-4">
         <div className="flex flex-col gap-1">
-          <div>
-            <div className="w-full h-64">
-              <Image src={images[0]} alt="Main" width={625} height={400} className="w-full h-full object-cover rounded-xl border shadow-md" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {images.slice(1).map((img, i) => (
-                <Image key={i} src={img} alt={`Uploaded ${i}`} width={250} height={180} className="h-44 w-full object-cover rounded-lg border shadow hover:scale-105 transition" />
-              ))}
-            </div>
+          <div className="font-medium flex flex-col gap-3 justify-center items-center">
+            <ImageOff className="text-muted-foreground" />
+            <p>No Photos Uploaded</p>
           </div>
+          <p className="text-sm text-gray-400 text-center">Add photos of your rooms, amenities, or property to showcase your hotel.</p>
         </div>
       </CardContent>
     </Card>
