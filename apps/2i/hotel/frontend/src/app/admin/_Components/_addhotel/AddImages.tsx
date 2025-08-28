@@ -6,7 +6,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { ImageOff, Plus } from 'lucide-react';
-import Image from 'next/image';
 
 export const AddImage = () => {
   const [images, setImages] = useState<string[]>([]);

@@ -29,14 +29,13 @@ type HotelType = {
     availability?: number | null | undefined;
   } | null)[];
 };
-import { AddHotel } from './AddHotel';
 
 export const HotelsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
   const [selectedRating, setSelectedRating] = useState<string>('User Rating');
-  const [showAddHotel, setShowAddHotel] = useState<boolean>(false);
+  const [, setShowAddHotel] = useState<boolean>(false);
   const { data } = useGetHotelQuery();
 
   console.log(data);

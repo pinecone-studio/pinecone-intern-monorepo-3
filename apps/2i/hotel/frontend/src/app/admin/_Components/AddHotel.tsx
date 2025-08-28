@@ -1,5 +1,3 @@
-import { DetailLocation } from './DetailLocation';
-import { DetailImage } from './DetailsImage';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useState } from 'react';

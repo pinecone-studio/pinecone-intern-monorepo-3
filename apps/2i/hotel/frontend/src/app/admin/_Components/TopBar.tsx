@@ -1,5 +1,4 @@
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
 
 type Props = {
   onAddHotel: () => void;

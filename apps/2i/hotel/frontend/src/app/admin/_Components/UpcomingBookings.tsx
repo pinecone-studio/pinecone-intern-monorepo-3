@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { History } from 'lucide-react';
+
 type Booking = {
   id: string;
   guest: string;
