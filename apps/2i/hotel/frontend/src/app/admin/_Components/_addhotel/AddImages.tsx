@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { ImageOff, Plus } from 'lucide-react';
 import Image from 'next/image';
 
-export const DetailImage = () => {
+export const AddImage = () => {
   const [images, setImages] = useState<string[]>([]);
 
   return (
@@ -51,17 +51,11 @@ export const DetailImage = () => {
       </div>
       <CardContent className="mt-4">
         <div className="flex flex-col gap-1">
-          <div>
-            <div className="w-full h-64">
-              <Image src={images[0]} alt="Main" width={625} height={400} className="w-full h-full object-cover rounded-xl border shadow-md" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {images.slice(1).map((img, i) => (
-                <Image key={i} src={img} alt={`Uploaded ${i}`} width={250} height={180} className="h-44 w-full object-cover rounded-lg border shadow hover:scale-105 transition" />
-              ))}
-            </div>
+          <div className="font-medium flex flex-col gap-3 justify-center items-center">
+            <ImageOff className="text-muted-foreground" />
+            <p>No Photos Uploaded</p>
           </div>
+          <p className="text-sm text-gray-400 text-center">Add photos of your rooms, amenities, or property to showcase your hotel.</p>
         </div>
       </CardContent>
     </Card>

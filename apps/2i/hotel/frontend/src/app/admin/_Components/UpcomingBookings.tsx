@@ -6,12 +6,41 @@ type Booking = {
   guest: string;
   details?: string;
   date: string;
-  room: string;
+  rooms: string;
 };
 
 export const UpcomingBookings = () => {
-  const bookings: Booking[] = [];
-
+  // const bookings: Booking[] = [];
+  const bookings: Booking[] = [
+    {
+      id: '0001',
+      guest: 'Shagai Nymdorj',
+      details: '2 Adults, 1 Child',
+      date: '2023-10-15',
+      rooms: 'Economy Double',
+    },
+    {
+      id: '0001',
+      guest: 'Shagai Nymdorj',
+      details: '2 Adults, 1 Child',
+      date: '2023-10-15',
+      rooms: 'Economy Double',
+    },
+    {
+      id: '0002',
+      guest: 'Jane Smith',
+      details: '1 Adult',
+      date: '2023-10-16',
+      rooms: 'Economy',
+    },
+    {
+      id: '0003',
+      guest: 'Jane Smith',
+      details: '1 Adult',
+      date: '2023-10-16',
+      rooms: 'Economy',
+    },
+  ];
   return (
     <Card className="bg-white p-6 rounded-lg shadow-sm">
       <div className="mb-4">
@@ -30,32 +59,18 @@ export const UpcomingBookings = () => {
           </TableHeader>
 
           <TableBody>
-            {bookings.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4}>
-                  <div className="flex flex-col items-center justify-center py-10 text-gray-500">
-                    <div className=" bg-white p-3 rounded-full mb-4 shadow-md">
-                      <History className="w-6 h-6" />
-                    </div>
-                    <p className="font-semibold">No Upcoming Bookings</p>
-                    <p className="text-sm text-gray-400 mt-1">You currently have no upcoming stays. Your future bookings will appear here once confirmed.</p>
-                  </div>
+            {bookings.map((booking) => (
+              <TableRow key={booking.id}>
+                <TableCell className="font-medium">{booking.id}</TableCell>
+                <TableCell>
+                  {booking.guest}
+                  <br />
+                  <span className="text-sm text-gray-500">{booking.details}</span>
                 </TableCell>
+                <TableCell>{booking.date}</TableCell>
+                <TableCell className="text-right">{booking.rooms}</TableCell>
               </TableRow>
-            ) : (
-              bookings.map((booking) => (
-                <TableRow key={booking.id}>
-                  <TableCell className="font-medium">{booking.id}</TableCell>
-                  <TableCell>
-                    {booking.guest}
-                    <br />
-                    <span className="text-sm text-gray-500">{booking.details}</span>
-                  </TableCell>
-                  <TableCell>{booking.date}</TableCell>
-                  <TableCell className="text-right">{booking.room}</TableCell>
-                </TableRow>
-              ))
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
