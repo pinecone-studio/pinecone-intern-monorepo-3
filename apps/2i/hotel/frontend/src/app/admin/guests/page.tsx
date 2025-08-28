@@ -1,12 +1,11 @@
 import { GuestsPage } from '../_Components/GuestsPage';
 
-export const PageGuest = () => {
+const GuestHomePage = () => {
   return (
     <div>
-      <h1>
-        <GuestsPage />
-      </h1>
+      <GuestsPage />
     </div>
   );
 };
-export default PageGuest;
+
+export default GuestHomePage;
