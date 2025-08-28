@@ -7,6 +7,7 @@ import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
 import { UserRating } from './UserRating';
+import Link from 'next/link';
 
 type HotelType = {
   __typename?: 'Hotel' | undefined;
@@ -106,10 +107,12 @@ export const HotelsPage = () => {
               return (
                 <tr key={hotel._id} className="border-t">
                   <td className="px-4 py-3">{hotel._id}</td>
+
                   <td className="px-4 py-3 flex items-center gap-2">
                     {/* <Image src={hotel.image[0]} alt="hotelName" width={40} height={40} className="rounded-md object-cover" /> */}
                     {hotel.hotelName}
                   </td>
+
                   <td className="px-4 py-3 space-x-2">
                     <td className="px-4 py-3 space-x-2">{renderRooms(hotel.rooms)}</td>
                   </td>
