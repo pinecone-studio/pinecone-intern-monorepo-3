@@ -1,10 +1,11 @@
 'use client';
 
+import { any } from 'cypress/types/bluebird';
 import { createContext, Dispatch, PropsWithChildren, SetStateAction } from 'react';
 import { useContext, useState } from 'react';
 
 type UploadContextType = {
-  uploadImage: (_file: File) => Promise<string | null>;
+  uploadImage: (_file: File, hotelId: string) => Promise<string | null>;
   uploading: boolean;
   setUploading: Dispatch<SetStateAction<boolean>>;
 };
@@ -28,6 +29,33 @@ export const UploadProvider = ({ children }: PropsWithChildren) => {
       });
 
       const data = await res.json();
+
+      const cloudinaryUrl = data.secure_url;
+
+      if (data.secure_url) {
+        const fetchImage = await fetch(process.env.BACKEND_URI!, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: `
+         mutation UploadImage(
+         $hotelId:ID!, 
+         $image: [String!]) {
+         uploadImage(hotelId:$hotelId, image: $image) {
+         
+        }
+      }
+    `,
+            variables: {
+              hotelId: '68ac274c84d8875c677cf27b',
+              image: [cloudinaryUrl],
+            },
+          }),
+        });
+      }
+
       return data.secure_url;
     } catch (err) {
       console.error('Upload error:', err);

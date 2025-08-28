@@ -5,3 +5,5 @@ export * from './update-hotel-mutation';
 export * from './submit-rating-mutation';
 export * from './upload-image-mutations';
 export * from './user-signup';
+export * from './booking-mutation';
+export * from './booking-update-mutation';

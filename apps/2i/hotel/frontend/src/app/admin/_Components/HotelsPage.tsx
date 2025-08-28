@@ -29,6 +29,7 @@ type HotelType = {
     availability?: number | null | undefined;
   } | null)[];
 };
+
 export const HotelsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');

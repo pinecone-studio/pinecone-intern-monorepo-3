@@ -9,6 +9,8 @@ export const resolvers = {
     deleteHotel: Mutation.deleteHotel,
     submitUserRating: Mutation.submitUserRating,
     userSignUp: Mutation.userSignUp,
+    bookingUpdate: Mutation.bookingUpdate,
+    roomBooking: Mutation.roomBooking,
   },
   Query: {
     getRoomById: Query.getRoomById,
@@ -16,5 +18,6 @@ export const resolvers = {
     getHotel: Query.getHotel,
     getHotelById: Query.getHotelById,
     getAvailableRooms: Query.getAvailableRooms,
+    getUserData: Query.getUserData,
   },
 };

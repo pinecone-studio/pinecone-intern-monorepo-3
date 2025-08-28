@@ -3,8 +3,10 @@ import { connect } from 'mongoose';
 export const connectToDb = async () => {
   const uri = process.env.MONGO_URI;
 
+  console.log(uri, 'mongo');
+
   if (!uri) {
-    throw new Error("MONGO_URI is not defined in environment variables.");
+    throw new Error('MONGO_URI is not defined in environment variables.');
   }
 
   await connect(uri);

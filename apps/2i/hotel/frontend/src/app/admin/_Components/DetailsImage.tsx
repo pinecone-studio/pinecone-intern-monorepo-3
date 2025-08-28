@@ -7,9 +7,18 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 import { ImageOff, Plus } from 'lucide-react';
 import Image from 'next/image';
+import { useUpload } from '@/components/providers';
+import { useParams } from 'next/navigation';
 
-export const DetailImage = () => {
+type Props = {
+  id: string;
+};
+
+export const DetailImage = ({ id }: Props) => {
   const [images, setImages] = useState<string[]>([]);
+  const hotelId = '68ac274c84d8875c677cf27b';
+
+  const { uploadImage, uploading } = useUpload();
 
   return (
     <Card className="pt-4 pr-6 pb-6 pl-6">
@@ -32,10 +41,12 @@ export const DetailImage = () => {
                   id="image-upload"
                   type="file"
                   className="hidden"
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     if (e.target.files && e.target.files[0]) {
-                      const url = URL.createObjectURL(e.target.files[0]);
-                      setImages((prev) => [...prev, url]); // state-д нэмэх
+                      const uploadedUrl = await uploadImage(e.target.files[0], hotelId);
+                      if (uploadedUrl) {
+                        setImages((prev) => [...prev, uploadedUrl]);
+                      }
                     }
                   }}
                 />

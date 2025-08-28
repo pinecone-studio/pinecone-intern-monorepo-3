@@ -30,7 +30,7 @@ const UserSchema = new Schema<UserType>(
     birthDate: { type: String, required: false },
     phoneNumber: { type: String, required: false },
     emergencyNumber: emergencyNumberSchema,
-    bookingRoom: { type: Schema.Types.ObjectId, required: false, ref: 'BookingModel' },
+    bookingRoom: { type: Schema.Types.ObjectId, required: false, ref: 'Booking' },
   },
   { timestamps: true }
 );

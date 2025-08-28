@@ -20,4 +20,4 @@ const RoomBookingSchema = new Schema<BookingType>(
   { timestamps: true }
 );
 
-export const BookingModel = models.BookingModel || model<BookingType>('BookingModel', RoomBookingSchema);
+export const BookingModel = models.BookingModel || model<BookingType>('Booking', RoomBookingSchema);
