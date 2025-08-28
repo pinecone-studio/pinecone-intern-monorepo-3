@@ -1,4 +1,4 @@
-export const AdminDashboard = () => {
+const AdminDashboard = () => {
   return (
     <div className="p-4">
       <h1 className="text-lg font-semibold">Welcome to Admin Dashboard</h1>
