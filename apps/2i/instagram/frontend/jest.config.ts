@@ -8,5 +8,12 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/apps/2i/instagram/frontend',
-  collectCoverageFrom: ['src/**/*.{ts,tsx,js,jsx}', '!src/**/generated/**/*.ts', '!src/app/**/*.tsx', '!src/components/providers/*.tsx'],
+  collectCoverageFrom: [
+    'src/**/_components/**/*.{ts,tsx,js,jsx}',
+    '!src/**/layout.{ts,tsx,js,jsx}',
+    '!src/**/providers/*.{ts,tsx,js,jsx}',
+    '!src/**/page.{ts,tsx,js,jsx}',
+    '!src/**/_features/**/*.ts',
+    '!src/**/generated/**/*.ts',
+  ],
 };
