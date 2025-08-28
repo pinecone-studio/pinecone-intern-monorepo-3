@@ -12,23 +12,17 @@ describe('addHotel', () => {
     jest.spyOn(HotelModel, 'findOne').mockResolvedValue(null);
 
     (HotelModel.create as jest.Mock).mockImplementation(() => ({
-      _id: '001',
       hotelName: 'test hotel',
-      location: 'test UB',
+      phoneNumber: '99119911',
       starRating: '5 star',
-      userRating: [],
       description: 'tailbar end bn',
-      image: [],
     }));
 
     const hotelData = {
-      id: '001',
       hotelName: 'test hotel',
-      location: 'test UB',
       starRating: '5 star',
-      userRating: 'test 10',
+      phoneNumber: '99119911',
       description: 'tailbar end bn',
-      image: [],
     };
 
     const result = await addHotel({}, hotelData);
@@ -50,13 +44,10 @@ describe('addHotel', () => {
       addHotel(
         {},
         {
-          id: '001',
           hotelName: 'test hotel',
-          location: 'test UB',
           starRating: '5 star',
-          // userRating: [],
           description: 'tailbar end bn',
-          image: [],
+          phoneNumber: '99119911',
         }
       )
     ).rejects.toThrow('Hotel with this name already exists.');
