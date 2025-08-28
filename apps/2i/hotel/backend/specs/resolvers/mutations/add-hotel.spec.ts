@@ -28,7 +28,7 @@ describe('addHotel', () => {
     const result = await addHotel({}, hotelData);
 
     expect(result).toBeDefined();
-    expect(result._id).toBe('001');
+    expect(result.phoneNumber).toBe('99119911');
     expect(result.hotelName).toBe('test hotel');
 
     expect(HotelModel.findOne).toHaveBeenCalledWith({
