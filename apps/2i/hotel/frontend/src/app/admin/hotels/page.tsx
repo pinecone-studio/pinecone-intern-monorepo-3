@@ -1,9 +1,10 @@
 import { HotelsPage } from '../_Components/HotelsPage';
 
-export default function Page() {
+export const Page = () => {
   return (
     <div>
       <HotelsPage />
     </div>
   );
-}
+};
+export default Page;

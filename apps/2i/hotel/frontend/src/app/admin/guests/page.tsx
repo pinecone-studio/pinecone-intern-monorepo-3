@@ -1,6 +1,6 @@
 import { GuestsPage } from '../_Components/GuestsPage';
 
-export default function Page() {
+export const Page = () => {
   return (
     <div>
       <h1>
@@ -8,4 +8,5 @@ export default function Page() {
       </h1>
     </div>
   );
-}
+};
+export default Page;

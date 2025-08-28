@@ -4,7 +4,7 @@ import { AppSidebar } from './_Components/SideBar';
 import { PanelLeft } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   return (
@@ -21,4 +21,5 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
     </div>
   );
-}
+};
+export default AdminLayout;
