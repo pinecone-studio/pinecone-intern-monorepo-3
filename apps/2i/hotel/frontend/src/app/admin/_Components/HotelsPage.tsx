@@ -7,7 +7,6 @@ import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
 import { UserRating } from './UserRating';
-import Link from 'next/link';
 
 type HotelType = {
   __typename?: 'Hotel' | undefined;
