@@ -15,7 +15,7 @@ type AddHotelProps = {
   onBack: () => void;
 };
 export const AddHotel = ({ onBack }: AddHotelProps) => {
-  const [backButton, setBackButton] = useState<string | null>(null);
+  const [backButton] = useState<string | null>(null);
   if (backButton) {
     return <HotelsPage />;
   }

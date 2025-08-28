@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { ImageOff, Plus } from 'lucide-react';
 
 export const AddImage = () => {
-  const [images, setImages] = useState<string[]>([]);
+  const [, setImages] = useState<string[]>([]);
 
   return (
     <Card className="pt-4 pr-6 pb-6 pl-6">
