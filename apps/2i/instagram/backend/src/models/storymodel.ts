@@ -16,4 +16,4 @@ const StorySchema = new Schema<Story>({
   viewers: [{ type: Schema.Types.ObjectId, ref: "User" }],
 });
 
-export const StoryModel = mongoose.model("Story", StorySchema);
+export const StoryModel = mongoose.models.Story || mongoose.model("Story", StorySchema);

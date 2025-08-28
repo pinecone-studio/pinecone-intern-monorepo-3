@@ -44,6 +44,7 @@ query FollowRequests {
     }
   }
 }
+
 mutation Login($login: LoginInput!) {
   login(login: $login) {
     user {

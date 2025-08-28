@@ -12,7 +12,6 @@ type SignupInput = {
   fullname: string;
 };
 
-
  export const signup =  async (_: unknown, { signup }: { signup: SignupInput }) => {
       const { username, email, password, fullname } = signup
 
@@ -37,4 +36,4 @@ type SignupInput = {
       }
     }
   
-
+  
