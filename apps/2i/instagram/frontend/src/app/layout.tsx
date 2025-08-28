@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import './global.css';
 import { ApolloWrapper } from '@/components/providers';
+import { Sidebar } from '@/components/Sidebar/Sidebar';
 
 export const metadata = {
   title: 'Welcome to example-frontend',
@@ -11,7 +12,12 @@ const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en">
       <body>
-        <ApolloWrapper>{children}</ApolloWrapper>
+        <ApolloWrapper>
+          <div className="flex">
+            <Sidebar />
+            <main className="pl-20 md:pl-64 transition-all duration-300">{children}</main>
+          </div>
+        </ApolloWrapper>
       </body>
     </html>
   );
