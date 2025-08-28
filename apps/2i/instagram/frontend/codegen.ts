@@ -2,8 +2,8 @@ import 'dotenv/config';
 import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const schemaEndpoint =
-  process.env.LOCAL_SCHEMA_FILE ?? 
-  process.env.LOCAL_BACKEND_URI ??
+  process.env.LOCAL_SCHEMA_FILE ??
+  process.env.LOCAL_BACKEND_URI ??       
   process.env.BACKEND_URI ??
   'http://localhost:4200/graphql';
 
