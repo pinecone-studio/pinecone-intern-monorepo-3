@@ -1,55 +1,52 @@
+// __tests__/addHotel.test.js
+
 import { HotelModel } from '../../../src/models/hotel-model';
 import { addHotel } from '../../../src/resolvers/mutations/add-hotel-mutation';
 
 jest.mock('../../../src/models/hotel-model');
 
 describe('addHotel', () => {
-  beforeEach(() => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should create a new hotel when it doesn't exist", async () => {
-    jest.spyOn(HotelModel, 'findOne').mockResolvedValue(null);
+  it('should create a new hotel if it does not exist', async () => {
+    (HotelModel.findOne as jest.Mock).mockResolvedValue(null);
 
-    (HotelModel.create as jest.Mock).mockImplementation(() => ({
-      hotelName: 'test hotel',
-      phoneNumber: '99119911',
-      starRating: '5 star',
-      description: 'tailbar end bn',
-    }));
+    const mockHotel = {
+      hotelName: 'Test Hotel',
+      description: 'Test Description',
+      starRating: '5',
+      phoneNumber: '123456789',
+    };
+    (HotelModel.create as jest.Mock).mockResolvedValue(mockHotel);
 
-    const hotelData = {
-      hotelName: 'test hotel',
-      starRating: '5 star',
-      phoneNumber: '99119911',
-      description: 'tailbar end bn',
+    const args = {
+      hotelName: 'Test Hotel',
+      description: 'Test Description',
+      starRating: '5',
+      phoneNumber: '123456789',
     };
 
-    const result = await addHotel({}, hotelData);
+    const result = await addHotel(null, args);
 
-    expect(result).toBeDefined();
-    expect(result.phoneNumber).toBe('99119911');
-    expect(result.hotelName).toBe('test hotel');
-
-    expect(HotelModel.findOne).toHaveBeenCalledWith({
-      phoneNumber: '99119911',
-      hotelName: 'test hotel',
-    });
+    expect(HotelModel.findOne).toHaveBeenCalledWith({ hotelName: 'Test Hotel' });
+    expect(HotelModel.create).toHaveBeenCalledWith(args);
+    expect(result).toEqual(mockHotel);
   });
 
   it('should throw an error if hotel already exists', async () => {
-    jest.spyOn(HotelModel, 'findOne').mockResolvedValue({ id: '001' });
+    (HotelModel.findOne as jest.Mock).mockResolvedValue({ hotelName: 'Existing Hotel' });
 
-    await expect(
-      addHotel(
-        {},
-        {
-          hotelName: 'test hotel',
-          starRating: '5 star',
-          description: 'tailbar end bn',
-          phoneNumber: '99119911',
-        }
-      )
-    ).rejects.toThrow('Hotel with this name already exists.');
+    const args = {
+      hotelName: 'Existing Hotel',
+      description: 'Test Description',
+      starRating: '5',
+      phoneNumber: '123456789',
+    };
+
+    await expect(addHotel(null, args)).rejects.toThrow('Hotel with this name already exists.');
+    expect(HotelModel.findOne).toHaveBeenCalledWith({ hotelName: 'Existing Hotel' });
+    expect(HotelModel.create).not.toHaveBeenCalled();
   });
 });
