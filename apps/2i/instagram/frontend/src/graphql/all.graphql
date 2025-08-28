@@ -1,7 +1,95 @@
-query Query {
-  sampleQuery
+query FollowRequests {
+  followRequests {
+    id
+    username
+    email
+    fullname
+    bio
+    gender
+    profilePicture
+    isActive
+    isPrivate
+    followers {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isActive
+      isPrivate
+    }
+    following {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isActive
+      isPrivate
+    }
+    followRequests {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isActive
+      isPrivate
+    }
+  }
 }
 
-mutation Mutation {
-  sampleMutation
+mutation Login($login: LoginInput!) {
+  login(login: $login) {
+    user {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isActive
+      isPrivate
+      followers {
+        id
+        username
+        email
+        fullname
+        bio
+        gender
+        profilePicture
+        isActive
+        isPrivate
+      }
+      following {
+        id
+        username
+        email
+        fullname
+        bio
+        gender
+        profilePicture
+        isActive
+        isPrivate
+      }
+      followRequests {
+        id
+        username
+        email
+        fullname
+        bio
+        gender
+        profilePicture
+        isActive
+        isPrivate
+      }
+    }
+  }
 }
