@@ -16,17 +16,26 @@ export const typeDefs = gql`
   input TroubleLoginInput {
     email: String!
   }
-  type TroubleLoginResponse {
-    message: String!
+
+  input ForgetPass {
+     email: String!
   }
+ 
 
   input VerifyOtpInput {
     otp: String!
   }
 
+
+
   input UpdatePrivacyInput {
     isPrivate: Boolean!
   }
+
+input UpdatePasswordInput {
+  email: String!
+  password: String!
+}
 
   input CreateStoryInput {
     mediaUrl: String!
@@ -44,7 +53,10 @@ export const typeDefs = gql`
     signup(signup: SignupInput!): AuthPayload!
     login(login: LoginInput!): AuthPayload!
     updateProfile(update: UpdateProfileInput!): User!
+    forgetverify(forget: ForgetPass):TroubleLoginResponse!
     troublelogin(trouble: TroubleLoginInput!): TroubleLoginResponse!
+    updatePassword(input: UpdatePasswordInput):updatepasswordResponse!
+    forgetverifyOtp(verifyOtp: VerifyOtpInput!):forgetOtpResponse!
     verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
     updatePrivacy(input: UpdatePrivacyInput!): User!
     sendFollowRequest(userId: ID!): MessageResponse!
@@ -62,9 +74,22 @@ export const typeDefs = gql`
     getUserStories(userId: ID!): [Story!]!
   }
 
+   type TroubleLoginResponse {
+    message: String!
+  }
+
+   type updatepasswordResponse {
+    message: String!
+  }
+
+   type forgetOtpResponse {
+    message: String!
+  }
   type AuthPayload {
     user: User!
   }
+
+
 
   type MessageResponse {
     token: String!
