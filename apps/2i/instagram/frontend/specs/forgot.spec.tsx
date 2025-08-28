@@ -4,13 +4,15 @@ import ForgotPage from '../src/app/forgot/page';
 
 // Mock Next.js Link component
 jest.mock('next/link', () => {
-  return function MockLink({ children, href, ...props }: { children: React.ReactNode; href: string; [key: string]: any }) {
+  const MockLink = ({ children, href, ...props }: { children: React.ReactNode; href: string; [key: string]: unknown }) => {
     return (
       <a href={href} {...props}>
         {children}
       </a>
     );
   };
+  MockLink.displayName = 'MockLink';
+  return MockLink;
 });
 
 describe('ForgotPage', () => {
@@ -25,7 +27,7 @@ describe('ForgotPage', () => {
     expect(screen.getByText('Trouble logging in?')).toBeTruthy();
     expect(screen.getByText("Enter your email and we'll send you a link to get back into your account.")).toBeTruthy();
     expect(screen.getByPlaceholderText('Email')).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Send login link' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Send reset link' })).toBeTruthy();
   });
 
   it('should render padlock icon', () => {
@@ -78,7 +80,7 @@ describe('ForgotPage', () => {
   it('should have proper styling classes', () => {
     render(<ForgotPage />);
 
-    const sendButton = screen.getByRole('button', { name: 'Send login link' });
+    const sendButton = screen.getByRole('button', { name: 'Send reset link' });
     expect(sendButton.className).toContain('bg-blue-500');
     expect(sendButton.className).toContain('text-white');
     expect(sendButton.className).toContain('rounded-md');

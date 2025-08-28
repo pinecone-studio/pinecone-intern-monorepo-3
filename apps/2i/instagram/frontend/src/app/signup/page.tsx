@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 
-export default function SignupPage() {
+const SignupPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center" data-cy="signup-page">
       <div className="bg-white border border-gray-300 rounded-lg p-8 w-full max-w-md">
@@ -77,4 +76,6 @@ export default function SignupPage() {
       </div>
     </div>
   );
-}
+};
+
+export default SignupPage;

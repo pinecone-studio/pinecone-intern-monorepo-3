@@ -3,14 +3,12 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-export default function ForgotPage() {
+const ForgotPage = () => {
   const [email, setEmail] = useState('');
-  const [showOtpForm, setShowOtpForm] = useState(false);
-  const [otp, setOtp] = useState('');
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowOtpForm(true);
+    // Handle form submission
   };
 
   return (
@@ -24,10 +22,10 @@ export default function ForgotPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Trouble logging in?</h1>
-          <p className="text-gray-600 text-sm">Enter your email and we'll send you a link to get back into your account.</p>
+          <p className="text-gray-600 text-sm">Enter your email and we&apos;ll send you a link to get back into your account.</p>
         </div>
 
-        <form onSubmit={handleSendOtp} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             data-cy="email-input"
             type="email"
@@ -38,7 +36,7 @@ export default function ForgotPage() {
             required
           />
           <button data-cy="submit-button" type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
-            Send login link
+            Send reset link
           </button>
 
           {/* OR Separator */}
@@ -66,4 +64,6 @@ export default function ForgotPage() {
       </div>
     </div>
   );
-}
+};
+
+export default ForgotPage;

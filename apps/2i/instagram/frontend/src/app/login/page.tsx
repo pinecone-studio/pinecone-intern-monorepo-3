@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-export default function LoginPage() {
+const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -73,7 +73,7 @@ export default function LoginPage() {
 
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-blue-900 hover:underline">
               Sign up
             </Link>
@@ -82,4 +82,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginPage;
