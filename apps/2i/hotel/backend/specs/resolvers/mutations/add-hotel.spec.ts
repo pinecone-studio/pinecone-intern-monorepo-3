@@ -32,7 +32,7 @@ describe('addHotel', () => {
     expect(result.hotelName).toBe('test hotel');
 
     expect(HotelModel.findOne).toHaveBeenCalledWith({
-      _id: '001',
+      phoneNumber: '99119911',
       hotelName: 'test hotel',
     });
   });
