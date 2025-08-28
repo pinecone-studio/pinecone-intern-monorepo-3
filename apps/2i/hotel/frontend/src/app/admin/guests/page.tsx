@@ -1,6 +1,6 @@
 import { GuestsPage } from '../_Components/GuestsPage';
 
-export const Page = () => {
+export const GuestPage = () => {
   return (
     <div>
       <h1>
@@ -9,4 +9,4 @@ export const Page = () => {
     </div>
   );
 };
-export default Page;
+export default GuestPage;

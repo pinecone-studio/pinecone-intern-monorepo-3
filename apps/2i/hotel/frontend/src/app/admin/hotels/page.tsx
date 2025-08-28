@@ -1,10 +1,10 @@
 import { HotelsPage } from '../_Components/HotelsPage';
 
-export const Page = () => {
+export const HotelPage = () => {
   return (
     <div>
       <HotelsPage />
     </div>
   );
 };
-export default Page;
+export default HotelPage;
