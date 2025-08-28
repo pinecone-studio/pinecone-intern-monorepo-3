@@ -1,4 +1,11 @@
+import 'dotenv/config';
 import type { CodegenConfig } from '@graphql-codegen/cli';
+
+const schemaEndpoint =
+  process.env.LOCAL_SCHEMA_FILE ?? 
+  process.env.LOCAL_BACKEND_URI ??
+  process.env.BACKEND_URI ??
+  'http://localhost:4200/graphql';
 
 const config: CodegenConfig = {
   overwrite: true,
@@ -12,11 +19,7 @@ const config: CodegenConfig = {
         withHooks: true,
       },
       plugins: [
-        {
-          add: {
-            content: '// @ts-nocheck',
-          },
-        },
+        { add: { content: '// @ts-nocheck' } },
         'typescript',
         'typescript-operations',
         'typescript-react-apollo',
@@ -24,4 +27,5 @@ const config: CodegenConfig = {
     },
   },
 };
+
 export default config;
