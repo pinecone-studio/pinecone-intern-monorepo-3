@@ -9,6 +9,25 @@ export const typeDefs = gql`
     bedroom: [String]!
     more: [String]!
   }
+
+  input PolicyInput {
+    title: String
+    description: String
+  }
+
+  input UpdateHotelInput {
+    hotelName: String
+    description: String
+    phoneNumber: String
+    about: String
+    location: String
+    languages: [String]
+    starRating: String
+    image: [String]
+    amenities: [String]
+    policies: [PolicyInput]
+  }
+
   type Hotel {
     _id: ID!
     hotelName: String!
@@ -64,6 +83,10 @@ export const typeDefs = gql`
     message: String!
   }
 
+  type UpdateResponse {
+    message: String!
+  }
+
   type Query {
     getRoomById(id: ID!): Room
     getRooms: [Room]!
@@ -84,8 +107,8 @@ export const typeDefs = gql`
 
   type Mutation {
     addRoom(hotelName: ID!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomImgs: [String]!, roomInfos: [String]!, amenities: AmenitiesInput!): Room!
-    addHotel(hotelName: String!, description: String!, location: String!, starRating: String!, image: [String]!): Hotel!
-    updateHotel(id: ID!, hotelName: String!, description: String!, location: String!, starRating: String): Hotel!
+    addHotel(hotelName: String!, description: String!, starRating: String!, phoneNumber: String!): Hotel!
+    updateHotel(id: ID!, input: UpdateHotelInput!): UpdateResponse!
     deleteHotel(id: ID!): Boolean!
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
     uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
