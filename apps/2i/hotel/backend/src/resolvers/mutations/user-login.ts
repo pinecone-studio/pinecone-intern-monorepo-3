@@ -1,5 +1,5 @@
 import { UserModel } from '../../models/user-model';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 export const userLogin = async (_: unknown, args: { email: string; password: string }) => {

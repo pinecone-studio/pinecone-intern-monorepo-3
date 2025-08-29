@@ -1,65 +1,45 @@
 import { HotelModel } from '../../../src/models/hotel-model';
-import { updateHotel } from '../../../src/resolvers/mutations';
+import { updateHotel } from '../../../src/resolvers/mutations/update-hotel';
 
-jest.mock('../../../src/models/hotel-model', () => ({
-  HotelModel: {
-    findOneAndUpdate: jest.fn(),
-  },
-}));
+// HotelModel-ийг mock хийнэ
+jest.mock('../../../src/models/hotel-model', () => {
+  return {
+    HotelModel: {
+      findByIdAndUpdate: jest.fn(),
+    },
+  };
+});
 
 describe('updateHotel', () => {
-  beforeEach(() => {
+  const mockHotel = {
+    _id: '123',
+    hotelName: 'Test Hotel',
+    description: 'Old description',
+  };
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should throw an error if no ID is provided', async () => {
-    await expect(updateHotel(undefined, { hotelName: 'Test', location: 'UB' } as any)).rejects.toThrow('No ID provided');
-  });
-
-  it('should throw an error if hotel is not found', async () => {
-    (HotelModel.findOneAndUpdate as jest.Mock).mockResolvedValueOnce(null);
-
-    await expect(updateHotel(undefined, { id: '999', hotelName: 'Test Hotel' })).rejects.toThrow('Hotel not found');
-  });
-
-  it('should throw an error if no fields to update are provided', async () => {
-    await expect(updateHotel(undefined, { id: 'some-id' })).rejects.toThrow('No fields to update');
-  });
-
-  it('should update and result should be returned', async () => {
-    (HotelModel.findOneAndUpdate as jest.Mock).mockResolvedValueOnce({
-      id: '003',
-      hotelName: 'updated name',
-      description: 'updated description',
-      location: 'updated location',
-      starRating: 'updated rating',
+  it('should update hotel successfully', async () => {
+    // Mock буцаах утга
+    (HotelModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
+      ...mockHotel,
+      description: 'New description',
     });
 
-    const result = await updateHotel(undefined, {
-      id: '003',
-      hotelName: 'updated name',
-      description: 'updated description',
-      location: 'updated location',
-      starRating: 'updated rating',
+    const result = await updateHotel(null, {
+      id: '123',
+      input: { description: 'New description' },
     });
 
-    expect(result).toEqual({
-      id: '003',
-      hotelName: 'updated name',
-      description: 'updated description',
-      location: 'updated location',
-      starRating: 'updated rating',
-    });
+    expect(HotelModel.findByIdAndUpdate).toHaveBeenCalledWith('123', { $set: { description: 'New description' } }, { new: true });
 
-    expect(HotelModel.findOneAndUpdate).toHaveBeenCalledWith(
-      { _id: '003' },
-      {
-        hotelName: 'updated name',
-        description: 'updated description',
-        location: 'updated location',
-        starRating: 'updated rating',
-      },
-      { new: true }
-    );
+    expect(result.message).toBe('Successfully updated');
+  });
+
+  it('should throw error if hotel not found', async () => {
+    (HotelModel.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
+    await expect(updateHotel(null, { id: 'not-exist', input: { hotelName: 'Fail' } })).rejects.toThrow('Hotel not found');
   });
 });

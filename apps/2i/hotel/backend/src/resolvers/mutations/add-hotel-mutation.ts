@@ -1,16 +1,14 @@
 import { HotelModel } from '../../models/hotel-model';
 
-export const addHotel = async (_: unknown, args: { id: string; hotelName: string; description: string; location: string; starRating: string; image: string[] }) => {
-  const existingHotel = await HotelModel.findOne({ _id: args.id, hotelName: args.hotelName });
+export const addHotel = async (_: unknown, args: { hotelName: string; description: string; starRating: string; phoneNumber: string }) => {
+  const existingHotel = await HotelModel.findOne({ hotelName: args.hotelName });
 
   if (!existingHotel) {
     const newHotel = await HotelModel.create({
-      _id: args.id,
+      phoneNumber: args.phoneNumber,
       hotelName: args.hotelName,
       description: args.description,
-      location: args.location,
       starRating: args.starRating,
-      image: args.image,
     });
 
     return newHotel;
