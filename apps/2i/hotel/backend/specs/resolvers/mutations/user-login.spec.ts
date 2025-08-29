@@ -1,6 +1,6 @@
 // __tests__/user-login.test.ts
 
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../../../src/models/user-model';
 import { userLogin } from '../../../src/resolvers/mutations/user-login';

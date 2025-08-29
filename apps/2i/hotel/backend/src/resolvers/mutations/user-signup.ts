@@ -1,5 +1,5 @@
 import { UserModel } from '../../models/user-model';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const userSignUp = async (_: unknown, args: { email: string; password: string }) => {
   try {
