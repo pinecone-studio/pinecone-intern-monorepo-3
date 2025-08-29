@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { SearchPanel } from '@/components/Sidebar/SearchPanel'; // Adjust path as needed
+import { SearchPanel } from '@/_components/Sidebar/SearchPanel'; // Adjust path as needed
 
 // Mock framer-motion
 jest.mock('framer-motion', () => ({

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { Sidebar } from '@/components/Sidebar/Sidebar';
+import { Sidebar } from '@/_components/Sidebar/Sidebar';
 
 // Mock all dependencies
 jest.mock('next/image', () => ({ __esModule: true, default: (props) => <img {...props} /> }));

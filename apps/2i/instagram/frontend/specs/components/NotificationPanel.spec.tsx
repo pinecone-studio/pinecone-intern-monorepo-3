@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { NotificationPanel } from '@/components/Sidebar/NotificationPanel'; // Adjust path as needed
+import { NotificationPanel } from '@/_components/Sidebar/NotificationPanel'; // Adjust path as needed
 
 // Mock framer-motion
 jest.mock('framer-motion', () => ({

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { SidebarHeader } from '@/components/Sidebar/SidebarHeader';
+import { SidebarHeader } from '@/_components/Sidebar/SidebarHeader';
 /* eslint-disable @typescript-eslint/no-empty-function */
 jest.mock('next/image', () => ({
   __esModule: true,

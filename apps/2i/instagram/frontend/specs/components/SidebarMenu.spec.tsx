@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { SidebarMenu } from '@/components/Sidebar/SidebarMenu';
+import { SidebarMenu } from '@/_components/Sidebar/SidebarMenu';
 import React from 'react';
 
 // Mock next/image since it uses lazy loading and needs mocking in Jest
