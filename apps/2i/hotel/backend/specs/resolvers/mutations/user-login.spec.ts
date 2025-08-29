@@ -12,7 +12,7 @@ jest.mock('../../../src/models/user-model', () => ({
   },
 }));
 
-jest.mock('bcrypt', () => ({
+jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
 }));
 
