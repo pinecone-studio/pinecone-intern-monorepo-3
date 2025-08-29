@@ -11,7 +11,7 @@
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@next/next/no-html-link-for-pages": ["error", "apps/2I/instagram/frontend/pages"]
+        "@next/next/no-html-link-for-pages": ["error", "apps/2i/instagram/frontend/pages"]
       }
     },
     {

@@ -62,7 +62,7 @@
         }
       ]
     },
-        "get-secrets:dev": {
+    "get-secrets:dev": {
       "executor": "@pinecone-intern-monorepo/secrets:get",
       "defaultConfiguration": "development",
       "configurations": {
@@ -101,7 +101,8 @@
     "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "instagram-backend:build:production"
+        "buildTarget": "instagram-backend:build:production",
+        "outputPath": ".vercel/output/static"
       }
     },
     "export-env": {
@@ -180,9 +181,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=Ek2AAina6XqHTBMJTdK1bq5U -v VERCEL_PROJECT_ID=prj_kHRfRvviNAcAuBZQfGyl5HhViRtE -- vercel pull --yes --environment=production --token=0nMLr6qC8OPvIR4GGd1M23rK",
-          "vercel build --prod --token=0nMLr6qC8OPvIR4GGd1M23rK",
-          "npx dotenv -v VERCEL_ORG_ID=Ek2AAina6XqHTBMJTdK1bq5U -v VERCEL_PROJECT_ID=prj_kHRfRvviNAcAuBZQfGyl5HhViRtE -- vercel --prebuilt --prod --token=0nMLr6qC8OPvIR4GGd1M23rK"
+          "npx dotenv -v VERCEL_ORG_ID=... -v VERCEL_PROJECT_ID=... -- vercel pull --yes --environment=production --token=$VERCEL_TOKEN",
+          "yarn nx run instagram-backend:export",
+          "vercel --prebuilt --prod --token=$VERCEL_TOKEN"
         ],
         "parallel": false
       },
