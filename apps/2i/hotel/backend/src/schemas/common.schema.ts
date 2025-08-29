@@ -93,6 +93,7 @@ export const typeDefs = gql`
     getHotel: [Hotel]!
     getHotelById(id: ID!): Hotel!
     getAvailableRooms(id: ID!): Room
+    getUserData(id: ID): [User]!
   }
 
   type Booking {
@@ -113,5 +114,7 @@ export const typeDefs = gql`
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
     uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
     userSignUp(email: String!, password: String!): SignUpResponse!
+    roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String): [Booking]!
+    bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String): Booking!
   }
 `;
