@@ -45,51 +45,67 @@ query FollowRequests {
   }
 }
 
-mutation Login($login: LoginInput!) {
-  login(login: $login) {
-    user {
-      id
+mutation Sign($signup: SignupInput!) {
+  signup(signup: $signup) {
+    user { 
       username
       email
       fullname
-      bio
-      gender
-      profilePicture
-      isActive
-      isPrivate
-      followers {
-        id
-        username
-        email
-        fullname
-        bio
-        gender
-        profilePicture
-        isActive
-        isPrivate
-      }
-      following {
-        id
-        username
-        email
-        fullname
-        bio
-        gender
-        profilePicture
-        isActive
-        isPrivate
-      }
-      followRequests {
-        id
-        username
-        email
-        fullname
-        bio
-        gender
-        profilePicture
-        isActive
-        isPrivate
-      }
     }
+  }
+}
+
+mutation Login($login: LoginInput!) {
+  login(login: $login) {
+    user {
+    email
+    }
+  }
+}
+
+
+mutation Forgetverify($forget: ForgetPass) {
+  forgetverify(forget: $forget) {
+    message
+  }
+}
+
+
+mutation UpdateProfile($update: UpdateProfileInput!) {
+  updateProfile(update: $update) {
+    username
+    profilePicture
+    gender
+    fullname
+    bio
+  }
+}
+
+query GetUser($id: ID!) {
+  getuser(id: $id) {
+    id
+    fullname
+    username
+    bio
+    gender
+    profilePicture
+  }
+}
+
+
+mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
+   verifyOtp(verifyOtp: $verifyOtp) {
+    token
+    user {
+      id
+      email
+    }
+    message
+  }
+}
+
+mutation Troublelogin($trouble: TroubleLoginInput!) {
+  troublelogin(trouble: $trouble) {
+    message
   }
 }

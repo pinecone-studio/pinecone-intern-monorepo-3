@@ -20,9 +20,12 @@ import {
   Phone,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useGetUserQuery } from "@/generated"
 
 export const  InstagramProfile = () => {
   const router = useRouter()
+   const userId = localStorage.getItem("userId");
+
 
   return (
     <div className="min-h-screen bg-white">

@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { gql, useMutation } from "@apollo/client"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -9,58 +9,64 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Home, Search, Bell, PlusSquare, User, Menu } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useGetUserQuery, useUpdateProfileMutation } from "@/generated"
 
-const UPDATE_PROFILE = gql`
-  mutation UpdateProfile($update: UpdateProfileInput!) {
-    updateProfile(update: $update) {
-      id
-      username
-      bio
-      profilePicture
-      fullname
-    }
-  }
-`
 
-export const EditProfile = ()  => {
+
+
+type ProfilePutProps = {
+  userId: string | undefined;
+};
+
+export const EditProfile = ({ userId }: ProfilePutProps)  => {
   const router = useRouter()
-   const { data, loading, error } = useGetUserQuery()
-  const [formData, setFormData] = useState({
-    name: data?.getuser?.fullname ?? "",
-    username: data?.getuser?.username ?? "",
-    bio: data?.getuser?.bio ?? "",
-    gender: data?.getuser?.gender ?? "prefer-not-to-say",
-    profilePicture: data?.getuser?.profilePicture ?? ""
-  })
-   const [updateProfile, { loading: updating }] = useMutation(UPDATE_PROFILE)
+ 
+const { data, loading, error } = useGetUserQuery({
+  skip: !userId, 
+  variables: { id: userId! }
+})
+const [updateProfile] = useUpdateProfileMutation()
+const [formData, setFormData] = useState({
+  name: "",
+  username: "",
+  bio: "",
+  gender: "prefer-not-to-say",
+  profilePicture: ""
+})
 
-
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    try {
-      await updateProfile({
-        variables: {
-          update: {
-            bio: formData.bio,
-            fullname: formData.name,
-            gender: formData.gender,
-            username: formData.username,
-            profilePicture: formData.profilePicture,
-          }
-        }
-      })
-
-      router.push("/profile")
-    } catch (err) {
-      console.error("Failed to update profile:", err)
-    }
+useEffect(() => {
+  if (data?.getuser) {
+    setFormData({
+      name: data.getuser.fullname,
+      username: data.getuser.username,
+      bio: data.getuser.bio ?? "",
+      gender: data.getuser.gender ?? "prefer-not-to-say",
+      profilePicture: data.getuser.profilePicture ?? ""
+    })
   }
+}, [data])
 
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  try {
+    await updateProfile({
+      variables: {
+        update: {
+          fullname: formData.name,
+          username: formData.username,
+          bio: formData.bio,
+          gender: formData.gender,
+          profilePicture: formData.profilePicture
+        }
+      }
+    })
+    router.push("/profile")
+  } catch (err) {
+    console.error(err)
+  }
+}
 
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error loading user data</div>
@@ -220,3 +226,11 @@ export const EditProfile = ()  => {
     </div>
   )
 }
+
+
+
+
+
+
+
+
