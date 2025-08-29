@@ -10,7 +10,7 @@ jest.mock('../../../src/models/user-model', () => {
   };
 });
 
-jest.mock('bcrypt', () => ({
+jest.mock('bcryptjs', () => ({
   hash: jest.fn(() => Promise.resolve('hashedMockPassword')),
 }));
 beforeAll(() => {
