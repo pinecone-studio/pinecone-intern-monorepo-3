@@ -4,7 +4,7 @@ import { createContext, Dispatch, PropsWithChildren, SetStateAction } from 'reac
 import { useContext, useState } from 'react';
 
 type UploadContextType = {
-  uploadImage: (_file: File) => Promise<string | null>;
+  uploadImage: (_file: File, _hotelId: string) => Promise<string | null>;
   uploading: boolean;
   setUploading: Dispatch<SetStateAction<boolean>>;
 };
@@ -14,7 +14,7 @@ const UploadContext = createContext<UploadContextType | undefined>(undefined);
 export const UploadProvider = ({ children }: PropsWithChildren) => {
   const [uploading, setUploading] = useState(false);
 
-  const uploadImage = async (file: File): Promise<string | null> => {
+  const uploadImage = async (file: File, _hotelId: string): Promise<string | null> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'hotel-booking');
@@ -28,6 +28,29 @@ export const UploadProvider = ({ children }: PropsWithChildren) => {
       });
 
       const data = await res.json();
+
+      if (data.secure_url) {
+        await fetch(process.env.BACKEND_URI!, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: `
+          mutation UploadImage(
+         $hotelId:ID!,
+         $image: [String!]) {
+         uploadImage(hotelId:$hotelId, image: $image) {
+         
+        }
+      }
+          `,
+            variables: {
+              _hotelId,
+              image: [data.secure_url],
+            },
+          }),
+        });
+      }
+
       return data.secure_url;
     } catch (err) {
       console.error('Upload error:', err);
