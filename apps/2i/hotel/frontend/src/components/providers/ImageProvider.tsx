@@ -44,7 +44,7 @@ export const UploadProvider = ({ children }: PropsWithChildren) => {
       }
           `,
             variables: {
-              hotelId,
+              _hotelId,
               image: [data.secure_url],
             },
           }),
