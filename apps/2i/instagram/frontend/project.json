@@ -116,69 +116,69 @@
         "commands": ["rm -rf dist/apps/2i/instagram/frontend", "rm -rf .vercel"]
       }
     },
-    "e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npx nx execute-cypress scripts example-frontend"],
-        "parallel": false
-      },
-      "dependsOn": [{ "target": "cypress:clean" }]
-    },
-    "e2e:open": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npx nx cypress instagram-frontend --watch"],
-        "parallel": false
-      },
-      "dependsOn": [{ "target": "cypress:clean" }]
-    },
-    "cypress:clean": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "rm -rf apps/2i/instagram/frontend/cypress/results",
-          "rm -rf apps/2i/instagram/frontend/.nyc_output",
-          "rm -rf apps/2i/instagram/frontend/.cy",
-          "rm -rf apps/2i/instagram/frontend/coverage"
-        ],
-        "parallel": false
-      }
-    },
-    "cypress": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/2i/instagram/frontend/cypress.config.ts",
-        "testingType": "e2e",
-        "reporter": "mochawesome",
-        "devServerTarget": "instagram-frontend:serve:development",
-        "browser": "chrome"
-      },
-      "dependsOn": [
-        {
-          "target": "cypress-generate-all-page-json"
-        },
-        {
-          "target": "get-secrets"
-        },
-        {
-          "target": "export-env"
-        }
-      ]
-    },
-    "cypress-generate-all-page-json": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["npx ts-node apps/2i/instagram/frontend/cypress/utils/get-all-pages.ts"],
-        "parallel": false
-      }
-    },
+    // "e2e": {
+    //   "executor": "nx:run-commands",
+    //   "options": {
+    //     "commands": ["npx nx execute-cypress scripts example-frontend"],
+    //     "parallel": false
+    //   },
+    //   "dependsOn": [{ "target": "cypress:clean" }]
+    // },
+    // "e2e:open": {
+    //   "executor": "nx:run-commands",
+    //   "options": {
+    //     "commands": ["npx nx cypress instagram-frontend --watch"],
+    //     "parallel": false
+    //   },
+    //   "dependsOn": [{ "target": "cypress:clean" }]
+    // },
+    // "cypress:clean": {
+    //   "executor": "nx:run-commands",
+    //   "options": {
+    //     "commands": [
+    //       "rm -rf apps/2i/instagram/frontend/cypress/results",
+    //       "rm -rf apps/2i/instagram/frontend/.nyc_output",
+    //       "rm -rf apps/2i/instagram/frontend/.cy",
+    //       "rm -rf apps/2i/instagram/frontend/coverage"
+    //     ],
+    //     "parallel": false
+    //   }
+    // },
+    // "cypress": {
+    //   "executor": "@nx/cypress:cypress",
+    //   "options": {
+    //     "cypressConfig": "apps/2i/instagram/frontend/cypress.config.ts",
+    //     "testingType": "e2e",
+    //     "reporter": "mochawesome",
+    //     "devServerTarget": "instagram-frontend:serve:development",
+    //     "browser": "chrome"
+    //   },
+    //   "dependsOn": [
+    //     {
+    //       "target": "cypress-generate-all-page-json"
+    //     },
+    //     {
+    //       "target": "get-secrets"
+    //     },
+    //     {
+    //       "target": "export-env"
+    //     }
+    //   ]
+    // },
+    // "cypress-generate-all-page-json": {
+    //   "executor": "nx:run-commands",
+    //   "options": {
+    //     "commands": ["npx ts-node apps/2i/instagram/frontend/cypress/utils/get-all-pages.ts"],
+    //     "parallel": false
+    // }
+    // },
     "preview": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_qt3JCkcpvuHyo9cVrRp5IGFfWvHF -- vercel pull --yes --environment=preview --token=kxobBi6fkgt0vJMY2AGSyOkx",
+          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_9ud5BQTVC7ilkWcV9PBwh9bJP6rO -- vercel pull --yes --environment=preview --token=kxobBi6fkgt0vJMY2AGSyOkx",
           "npx env-cmd -f apps/2i/instagram/frontend/.env vercel build --token=kxobBi6fkgt0vJMY2AGSyOkx",
-          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_qt3JCkcpvuHyo9cVrRp5IGFfWvHF -- vercel --archive=tgz --prebuilt --token=kxobBi6fkgt0vJMY2AGSyOkx"
+          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_9ud5BQTVC7ilkWcV9PBwh9bJP6rO -- vercel --archive=tgz --prebuilt --token=kxobBi6fkgt0vJMY2AGSyOkx"
         ],
         "parallel": false
       },
@@ -202,9 +202,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_qt3JCkcpvuHyo9cVrRp5IGFfWvHF -- vercel pull --yes --environment=production --token=kxobBi6fkgt0vJMY2AGSyOkx",
+          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_9ud5BQTVC7ilkWcV9PBwh9bJP6rO -- vercel pull --yes --environment=production --token=kxobBi6fkgt0vJMY2AGSyOkx",
           "vercel build --prod --token=kxobBi6fkgt0vJMY2AGSyOkx",
-          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_qt3JCkcpvuHyo9cVrRp5IGFfWvHF -- vercel --prebuilt --prod --token=kxobBi6fkgt0vJMY2AGSyOkx"
+          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_9ud5BQTVC7ilkWcV9PBwh9bJP6rO -- vercel --prebuilt --prod --token=kxobBi6fkgt0vJMY2AGSyOkx"
         ],
         "parallel": false
       },
@@ -264,9 +264,9 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_qt3JCkcpvuHyo9cVrRp5IGFfWvHF -- vercel pull --yes --environment=production --token=kxobBi6fkgt0vJMY2AGSyOkx",
+          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_9ud5BQTVC7ilkWcV9PBwh9bJP6rO -- vercel pull --yes --environment=production --token=kxobBi6fkgt0vJMY2AGSyOkx",
           "vercel build --prod --token=kxobBi6fkgt0vJMY2AGSyOkx",
-          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_qt3JCkcpvuHyo9cVrRp5IGFfWvHF -- vercel --prebuilt --prod --token=kxobBi6fkgt0vJMY2AGSyOkx"
+          "npx dotenv -v VERCEL_ORG_ID=JupUOMqqFQbhoTmCGYqqDF01 -v VERCEL_PROJECT_ID=prj_9ud5BQTVC7ilkWcV9PBwh9bJP6rO -- vercel --prebuilt --prod --token=kxobBi6fkgt0vJMY2AGSyOkx"
         ],
         "parallel": false
       },
