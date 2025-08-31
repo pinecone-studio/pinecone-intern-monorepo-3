@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckoutDialog } from './CheckoutDialog';
+import { InfoRow, StatusBadge } from './InfoRow';
 
 type GuestInfoProps = {
   guest: {
