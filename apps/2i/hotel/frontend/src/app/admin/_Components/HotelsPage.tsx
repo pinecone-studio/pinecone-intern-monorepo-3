@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
-import { UserRating } from './UserRating';
 
 type HotelType = {
   __typename?: 'Hotel' | undefined;
@@ -16,40 +15,40 @@ type HotelType = {
   location: string;
   starRating: string;
   image: string[];
-  userRating: ({
+  userRating: {
     __typename?: 'UserRating' | undefined;
     rating?: number | null | undefined;
     comment?: string | null | undefined;
     hotel?: string | null | undefined;
-  } | null)[];
-  rooms: ({
+  }[];
+  rooms: {
     __typename?: 'Room' | undefined;
     roomType?: string | null | undefined;
     price?: number | null | undefined;
     availability?: number | null | undefined;
-  } | null)[];
+  }[];
 };
 
 export const HotelsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
-  const [selectedRating, setSelectedRating] = useState<string>('User Rating');
+  // const [selectedRating, setSelectedRating] = useState<string>('User Rating');
   const [searchTerm, setSearchTerm] = useState('');
   const [, setShowAddHotel] = useState<boolean>(false);
   const { data } = useGetHotelQuery();
 
   console.log(data);
 
-  const getAvgRating = (hotel: HotelType): number => {
-    if (!hotel.userRating || hotel.userRating.length === 0) return 0;
-    return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
-  };
+  // const getAvgRating = (hotel: HotelType): number => {
+  //   if (!hotel.userRating || hotel.userRating.length === 0) return 0;
+  //   return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
+  // };
 
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
 
-    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesRating(hotel);
+    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesSearch(hotel);
   };
 
   const matchesLocation = (hotel: HotelType) => !selectedLocation || selectedLocation === 'All Locations' || selectedLocation === 'Locations' || hotel.location === selectedLocation;
@@ -58,14 +57,16 @@ export const HotelsPage = () => {
 
   const matchesStar = (hotel: HotelType) => !selectedStar || selectedStar === 'Star Rating' || selectedStar === 'All' || hotel.starRating === selectedStar;
 
-  const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
+  // const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
+
   const matchesSearch = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
     return hotel.hotelName.toLowerCase().includes(searchTerm.toLowerCase());
   };
 
-  const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data.getHotel : [];
-  const filteredHotels = hotelsArray?.filter(matchesFilters);
+  const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data!.getHotel : data?.getHotel ? [data.getHotel] : [];
+
+  const filteredHotels = hotelsArray.filter(matchesFilters);
 
   const renderRooms = (rooms: HotelType['rooms']) =>
     rooms?.filter(Boolean).map((room, i) => (
@@ -99,7 +100,7 @@ export const HotelsPage = () => {
 
         <SelectStar onChange={(_val) => setSelectedStar(_val)} />
 
-        <UserRating onChange={(_val) => setSelectedRating(_val)} />
+        {/* <UserRating onChange={(_val) => setSelectedRating(_val)} /> */}
       </div>
       <div className="overflow-hidden rounded-lg border border-gray-200 e shadow-sm">
         <table className="w-full text-sm text-left text-black">

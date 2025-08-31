@@ -2,11 +2,11 @@ import { GuestBooking } from '../_Components/GuestBooking';
 import { GuestInfo } from '../_Components/GuestInfo';
 import { ChevronLeft } from 'lucide-react';
 
-type Props = {
-  _params: { id: string };
-};
+// type Props = {
+//   params: { id: string };
+// };
 
-const GuestPage = async ({ _params }: Props) => {
+const GuestPage = async () => {
   // const guest = await getUserDataById(params.id);
 
   const guest = {
