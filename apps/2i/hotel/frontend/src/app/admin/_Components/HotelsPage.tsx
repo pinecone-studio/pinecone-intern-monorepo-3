@@ -49,7 +49,7 @@ export const HotelsPage = () => {
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
 
-    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesRating(hotel) && matchesSearch(hotel);
+    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesRating(hotel);
   };
 
   const matchesLocation = (hotel: HotelType) => !selectedLocation || selectedLocation === 'All Locations' || selectedLocation === 'Locations' || hotel.location === selectedLocation;
