@@ -37,7 +37,7 @@ export const SelectStar = ({ onChange }: LocationSelectProps) => {
 
   return (
     <div ref={containerRef} className="relative w-[200px]">
-      <button onClick={() => setOpen(!open)} className="w-full bg-white border border-gray-300 rounded-sm px-3 py-2 flex justify-between items-center">
+      <button onClick={() => setOpen(!open)} className="w-full border border-gray-300 rounded-sm px-3 py-2 flex justify-between items-center">
         {selected}
         <span className="ml-2">
           <ChevronDown size={20} />

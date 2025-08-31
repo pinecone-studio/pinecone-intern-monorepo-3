@@ -1,4 +1,9 @@
+'use client';
+import { usePathname } from 'next/navigation';
+
 export const Header = () => {
+  const pathname = usePathname();
+  if (pathname.startsWith('/admin')) return null;
   return (
     <header className="relative w-full bg-[#013B94] h-[280px]">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
