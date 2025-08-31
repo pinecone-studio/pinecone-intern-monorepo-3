@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Image from 'next/image';
 type GuestBookingProps = {
   booking: {
     roomType: string;
@@ -20,7 +20,7 @@ export const GuestBooking: React.FC<GuestBookingProps> = ({ booking }) => {
           <h3 className="text-md font-semibold">{booking.roomType}</h3>
           <button className="text-blue-600 text-sm hover:underline">View</button>
         </div>
-        <img src={booking.image} alt="Room" className="w-full h-40 object-cover rounded-lg" />
+        <Image src={booking.image} alt="Room" className="w-full h-40 object-cover rounded-lg" />
       </div>
 
       <div className="p-4 border rounded-2xl shadow-sm backdrop-brightness-125">

@@ -18,8 +18,7 @@ type GuestInfoProps = {
 };
 
 export const GuestInfo: React.FC<GuestInfoProps> = ({ guest }) => {
-  const totalGuests = (guest.adults || 0) + (guest.children || 0);
-
+  //   const totalGuests = (guest.adults || 0) + (guest.children || 0);
   return (
     <div className="backdrop-brightness-125 p-6 rounded-lg shadow-md max-w-2xl mx-auto border border-gray-200">
       <h2 className="text-xl font-semibold mb-6 text-gray-800">Guest Info</h2>

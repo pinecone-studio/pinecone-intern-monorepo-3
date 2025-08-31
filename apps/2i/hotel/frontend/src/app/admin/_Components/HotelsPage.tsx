@@ -61,7 +61,6 @@ export const HotelsPage = () => {
   const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
   const matchesSearch = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
-    if (!searchTerm) return true;
     return hotel.hotelName.toLowerCase().includes(searchTerm.toLowerCase());
   };
 

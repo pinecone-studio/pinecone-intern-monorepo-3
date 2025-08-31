@@ -1,13 +1,12 @@
-import { use } from 'chai';
 import { GuestBooking } from '../_Components/GuestBooking';
 import { GuestInfo } from '../_Components/GuestInfo';
 import { ChevronLeft } from 'lucide-react';
 
 type Props = {
-  params: { id: string };
+  _params: { id: string };
 };
 
-const GuestPage = async ({ params }: Props) => {
+const GuestPage = async ({ _params }: Props) => {
   // const guest = await getUserDataById(params.id);
 
   const guest = {
@@ -24,7 +23,7 @@ const GuestPage = async ({ params }: Props) => {
 
   const booking = {
     roomType: 'Economy Double Room, City View',
-    image: 'https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1200',
+    image: '/photo.png',
     nights: 1,
     pricePerNight: 150000,
     taxes: 12000,
