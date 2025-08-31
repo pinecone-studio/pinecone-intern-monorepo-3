@@ -23,7 +23,7 @@ const GuestPage = async () => {
 
   const booking = {
     roomType: 'Economy Double Room, City View',
-    image: '/photo.png',
+    image: '/hotel.avif',
     nights: 1,
     pricePerNight: 150000,
     taxes: 12000,
