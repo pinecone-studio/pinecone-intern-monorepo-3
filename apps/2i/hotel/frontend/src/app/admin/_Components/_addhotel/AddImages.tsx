@@ -1,13 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { ImageOff, Plus } from 'lucide-react';
-import { useGetHotelQuery } from '@/generated';
-import { UploadProvider, useUpload } from '@/components/providers';
 
 export type ImageType = {
   id: string;
@@ -16,12 +13,12 @@ export type ImageType = {
 };
 
 export const AddImage = () => {
-  const [images, setImages] = useState<string[]>([]);
+  // const [images, setImages] = useState<string[]>([]);
 
   // const { data, loading, error } = useGetHotelQuery();
   // console.log(data, 'image');
 
-  const { uploadImage, uploading } = useUpload();
+  // const { uploadImage, uploading } = useUpload();
 
   return (
     <Card className="pt-4 pr-6 pb-6 pl-6">
@@ -46,13 +43,11 @@ export const AddImage = () => {
                   className="hidden"
                   onChange={async (e) => {
                     if (e.target.files && e.target.files[0]) {
-                      const file = e.target.files[0];
+                      // const file = e.target.files[0];
                       // const hotelId: any = data?.getHotel?.map((el) => {
                       //   el?._id;
                       // });
-
                       // const uploadedUrl = await uploadImage(file, hotelId);
-
                       //   if (uploadedUrl) {
                       //     setImages((prev) => [...prev, uploadedUrl]);
                       //   } else {
