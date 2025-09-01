@@ -19,5 +19,6 @@ export const resolvers = {
     getHotelById: Query.getHotelById,
     getAvailableRooms: Query.getAvailableRooms,
     getUserData: Query.getUserData,
+    getBooking: Query.getBooking,
   },
 };
