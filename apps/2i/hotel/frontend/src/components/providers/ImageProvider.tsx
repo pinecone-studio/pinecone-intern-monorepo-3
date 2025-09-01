@@ -29,27 +29,27 @@ export const UploadProvider = ({ children }: PropsWithChildren) => {
 
       const data = await res.json();
 
-      if (data.secure_url) {
-        await fetch(process.env.BACKEND_URI!, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            query: `
-          mutation UploadImage(
-         $hotelId:ID!,
-         $image: [String!]) {
-         uploadImage(hotelId:$hotelId, image: $image) {
-         
-        }
+      if (!process.env.BACKEND_URI) {
+        throw new Error('Missing BACKEND_URI environment variable');
       }
+
+      await fetch(process.env.BACKEND_URI, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `
+            mutation UploadImage($hotelId:ID!, $image:[String!]) {
+              uploadImage(hotelId:$hotelId, image:$image) {
+                # return fields here
+              }
+            }
           `,
-            variables: {
-              _hotelId,
-              image: [data.secure_url],
-            },
-          }),
-        });
-      }
+          variables: {
+            hotelId: _hotelId,
+            image: [data.secure_url],
+          },
+        }),
+      });
 
       return data.secure_url;
     } catch (err) {

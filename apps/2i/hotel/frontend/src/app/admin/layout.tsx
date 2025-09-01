@@ -8,13 +8,14 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gradient-to-br from-blue-700 via-red-400 to-gray-800">
       <AppSidebar />
-      <div className="flex-1 bg-[#f3f4f6] p-4">
+
+      <div className="flex-1 p-4 ">
         <div className="flex items-center px-5 gap-3 border-b mb-4">
-          <PanelLeft size={18} color="gray" />
-          <span className="text-gray-300">|</span>
-          <h2 className="text-gray-500 capitalize">{pathname.split('/').pop()}</h2>
+          <PanelLeft size={18} color="black" />
+          <span className="text-black">|</span>
+          <h2 className="text-black capitalize">{pathname.split('/').pop()}</h2>
         </div>
 
         {children}

@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
-import { UserRating } from './UserRating';
 
 type HotelType = {
   __typename?: 'Hotel' | undefined;
@@ -16,39 +15,40 @@ type HotelType = {
   location: string;
   starRating: string;
   image: string[];
-  userRating: ({
+  userRating: {
     __typename?: 'UserRating' | undefined;
     rating?: number | null | undefined;
     comment?: string | null | undefined;
     hotel?: string | null | undefined;
-  } | null)[];
-  rooms: ({
+  }[];
+  rooms: {
     __typename?: 'Room' | undefined;
     roomType?: string | null | undefined;
     price?: number | null | undefined;
     availability?: number | null | undefined;
-  } | null)[];
+  }[];
 };
 
 export const HotelsPage = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
   const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
-  const [selectedRating, setSelectedRating] = useState<string>('User Rating');
+  // const [selectedRating, setSelectedRating] = useState<string>('User Rating');
+  const [searchTerm, setSearchTerm] = useState('');
   const [, setShowAddHotel] = useState<boolean>(false);
   const { data } = useGetHotelQuery();
 
   console.log(data);
 
-  const getAvgRating = (hotel: HotelType): number => {
-    if (!hotel.userRating || hotel.userRating.length === 0) return 0;
-    return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
-  };
+  // const getAvgRating = (hotel: HotelType): number => {
+  //   if (!hotel.userRating || hotel.userRating.length === 0) return 0;
+  //   return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
+  // };
 
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
 
-    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesRating(hotel);
+    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesSearch(hotel);
   };
 
   const matchesLocation = (hotel: HotelType) => !selectedLocation || selectedLocation === 'All Locations' || selectedLocation === 'Locations' || hotel.location === selectedLocation;
@@ -57,10 +57,16 @@ export const HotelsPage = () => {
 
   const matchesStar = (hotel: HotelType) => !selectedStar || selectedStar === 'Star Rating' || selectedStar === 'All' || hotel.starRating === selectedStar;
 
-  const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
+  // const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
 
-  const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data.getHotel : [];
-  const filteredHotels = hotelsArray?.filter(matchesFilters);
+  const matchesSearch = (hotel: HotelType | null): boolean => {
+    if (!hotel) return false;
+    return hotel.hotelName.toLowerCase().includes(searchTerm.toLowerCase());
+  };
+
+  const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data!.getHotel : data?.getHotel ? [data.getHotel] : [];
+
+  const filteredHotels = hotelsArray.filter(matchesFilters);
 
   const renderRooms = (rooms: HotelType['rooms']) =>
     rooms?.filter(Boolean).map((room, i) => (
@@ -77,10 +83,16 @@ export const HotelsPage = () => {
       .join(', ');
 
   return (
-    <main className="flex-1 bg-gray-50 p-6">
+    <main className="flex-1 backdrop-brightness-125 p-6 rounded-md">
       <TopBar onAddHotel={() => setShowAddHotel(true)} />
       <div className="flex items-center gap-3 mb-4">
-        <input type="text" placeholder="Search" className="w-full max-w-sm rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none" />
+        <input
+          type="text"
+          placeholder="Search by hotel name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full max-w-sm rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm focus:border-blue-500 focus:outline-none placeholder-gray-700"
+        />
 
         <LocationSelectWithSearch onChange={(_val) => setSelectedLocation(_val)} />
 
@@ -88,11 +100,11 @@ export const HotelsPage = () => {
 
         <SelectStar onChange={(_val) => setSelectedStar(_val)} />
 
-        <UserRating onChange={(_val) => setSelectedRating(_val)} />
+        {/* <UserRating onChange={(_val) => setSelectedRating(_val)} /> */}
       </div>
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-        <table className="w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-100 text-xs font-medium uppercase text-gray-500">
+      <div className="overflow-hidden rounded-lg border border-gray-200 e shadow-sm">
+        <table className="w-full text-sm text-left text-black">
+          <thead className=" text-xs font-medium uppercase text-black">
             <tr>
               <th className="px-4 py-3">ID</th>
               <th className="px-4 py-3">Name</th>
@@ -107,10 +119,10 @@ export const HotelsPage = () => {
 
               return (
                 <tr key={hotel._id} className="border-t">
-                  <td className="px-4 py-3">{hotel._id}</td>
+                  <td className="px-4 py-3">{hotel._id.slice(0, 4)}</td>
 
                   <td className="px-4 py-3 flex items-center gap-2">
-                    {/* <Image src={hotel.image[0]} alt="hotelName" width={40} height={40} className="rounded-md object-cover" /> */}
+                    {/* <Image src={hotel.image} alt="hotelName" width={40} height={40} className="rounded-md object-cover" /> */}
                     {hotel.hotelName}
                   </td>
 
