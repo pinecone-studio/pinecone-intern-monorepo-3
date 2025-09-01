@@ -8,7 +8,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-blue-700 via-red-400 to-gray-800">
+    <div className="flex h-screen bg-white">
       <AppSidebar />
 
       <div className="flex-1 p-4 ">
