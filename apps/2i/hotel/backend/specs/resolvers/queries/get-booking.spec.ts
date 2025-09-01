@@ -1,28 +1,31 @@
 import { getBooking } from '../../../src/resolvers/queries/get-booking-query';
 import { BookingModel } from '../../../src/models/room-booking-model';
+import mongoose from 'mongoose';
 
 jest.mock('../../../src/models/room-booking-model');
 
-const mockArgs = {
-  userId: 'user123',
-  hotelName: 'hotel123',
-  roomNumber: 'room123',
-  checkIn: new Date('2025-09-09'),
-  checkOut: new Date('2025-09-12'),
-  nights: 3,
-  pricePerNight: 100,
-  taxes: 30,
-  totalPrice: 330,
-};
-
-const mockBooking = {
-  _id: 'booking123',
-  ...mockArgs,
-  hotel: { _id: 'hotel123', hotelName: 'Mock Hotel' },
-  room: { _id: 'room123', roomType: 'Deluxe' },
-};
-
 describe('getBooking resolver', () => {
+  const mockArgs = {
+    userId: '68a6b9cfc9c7f7af314ae116',
+    hotelName: '68b320ba9e01907e03193439',
+    roomNumber: '68ac283284d8875c677cf288',
+    checkIn: '2025-09-09',
+    checkOut: '2025-09-12',
+  };
+
+  const mockBooking = {
+    _id: 'booking123',
+    userId: 'user123',
+    hotelName: { _id: 'hotel123', hotelName: 'Mock Hotel' },
+    roomNumber: { _id: 'room123', roomType: 'Deluxe' },
+    checkIn: new Date('2025-09-09'),
+    checkOut: new Date('2025-09-12'),
+    nights: 3,
+    pricePerNight: 100,
+    taxes: 30,
+    totalPrice: 330,
+  };
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -36,15 +39,21 @@ describe('getBooking resolver', () => {
     const result = await getBooking(null, mockArgs);
 
     expect(BookingModel.findOne).toHaveBeenCalledWith({
-      userId: mockArgs.userId,
-      hotelName: mockArgs.hotelName,
-      roomNumber: mockArgs.roomNumber,
-      checkIn: mockArgs.checkIn,
-      checkOut: mockArgs.checkOut,
+      userId: new mongoose.Types.ObjectId(mockArgs.userId),
+      hotelName: new mongoose.Types.ObjectId(mockArgs.hotelName),
+      roomNumber: new mongoose.Types.ObjectId(mockArgs.roomNumber),
+      checkIn: {
+        $gte: new Date(new Date(mockArgs.checkIn).setHours(0, 0, 0, 0)),
+        $lte: new Date(new Date(mockArgs.checkIn).setHours(23, 59, 59, 999)),
+      },
+      checkOut: {
+        $gte: new Date(new Date(mockArgs.checkOut).setHours(0, 0, 0, 0)),
+        $lte: new Date(new Date(mockArgs.checkOut).setHours(23, 59, 59, 999)),
+      },
     });
 
-    expect(firstPopulate).toHaveBeenCalledWith('hotel');
-    expect(secondPopulate).toHaveBeenCalledWith('room');
+    expect(firstPopulate).toHaveBeenCalledWith('hotelName');
+    expect(secondPopulate).toHaveBeenCalledWith('roomNumber');
     expect(result).toEqual(mockBooking);
   });
 
@@ -56,15 +65,7 @@ describe('getBooking resolver', () => {
 
     await expect(getBooking(null, mockArgs)).rejects.toThrow('No booking found');
 
-    expect(BookingModel.findOne).toHaveBeenCalledWith({
-      userId: mockArgs.userId,
-      hotelName: mockArgs.hotelName,
-      roomNumber: mockArgs.roomNumber,
-      checkIn: mockArgs.checkIn,
-      checkOut: mockArgs.checkOut,
-    });
-
-    expect(firstPopulate).toHaveBeenCalledWith('hotel');
-    expect(secondPopulate).toHaveBeenCalledWith('room');
+    expect(firstPopulate).toHaveBeenCalledWith('hotelName');
+    expect(secondPopulate).toHaveBeenCalledWith('roomNumber');
   });
 });

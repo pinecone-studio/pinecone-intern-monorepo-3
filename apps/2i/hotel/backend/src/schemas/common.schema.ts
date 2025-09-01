@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 
 export const typeDefs = gql`
+  scalar Date
   input AmenitiesInput {
     bathroom: [String]!
     foodAndDrink: [String]!
@@ -94,7 +95,7 @@ export const typeDefs = gql`
     getHotelById(id: ID!): Hotel!
     getAvailableRooms(id: ID!): [Room]!
     getUserData(id: ID): [User]!
-    getBooking(userId:ID):Booking
+    getBooking(userId: ID): [Booking]!
   }
 
   type Booking {
@@ -102,8 +103,8 @@ export const typeDefs = gql`
     user: ID!
     hotel: Hotel
     room: Room!
-    checkIn: String!
-    checkOut: String!
+    checkIn: Date!
+    checkOut: Date!
     getHotelById(id: ID!): Hotel
     nights: Int
     pricePerNight: Int
@@ -119,7 +120,7 @@ export const typeDefs = gql`
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
     uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
     userSignUp(email: String!, password: String!): SignUpResponse!
-    roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights:Int, pricePerNight:Int, taxes:Float,totalPrice:Float): Booking!
-    bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String,nights:Int, pricePerNight:Int, taxes:Float, totalPrice:Float): Booking!
+    roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: Date, checkOut: Date, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
+    bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
   }
 `;

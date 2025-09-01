@@ -15,7 +15,7 @@ type BookingType = {
 
 const RoomBookingSchema = new Schema<BookingType>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'Users', required: true },
     hotelName: { type: Schema.Types.ObjectId, ref: 'Hotel', required: true },
     roomNumber: { type: Schema.Types.ObjectId, ref: 'Rooms', required: true },
     checkIn: { type: Date, required: true },
