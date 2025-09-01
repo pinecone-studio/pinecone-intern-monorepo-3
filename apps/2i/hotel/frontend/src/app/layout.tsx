@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 import './global.css';
-import { ApolloWrapper } from '@/components/providers';
+import { ApolloWrapper, UploadProvider } from '@/components/providers';
 import { Header } from '@/components/Header';
 
 export const metadata = {
@@ -13,8 +13,10 @@ const RootLayout = ({ children }: PropsWithChildren) => {
     <html lang="en">
       <body>
         <ApolloWrapper>
-          <Header />
-          {children}
+          <UploadProvider>
+            <Header />
+            {children}
+          </UploadProvider>
         </ApolloWrapper>
       </body>
     </html>

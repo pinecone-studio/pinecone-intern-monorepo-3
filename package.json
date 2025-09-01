@@ -112,6 +112,7 @@
     "formik": "2.4.6",
     "framer-motion": "^12.15.0",
     "graphql": "16.6.0",
+    "graphql-iso-date": "^3.6.1",
     "graphql-tag": "2.12.6",
     "graphql-ws": "^6.0.3",
     "input-otp": "1.2.4",
