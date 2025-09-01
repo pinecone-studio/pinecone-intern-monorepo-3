@@ -7,6 +7,10 @@ type BookingType = {
   roomNumber: Schema.Types.ObjectId;
   checkIn: Date;
   checkOut: Date;
+  nights: number;
+  pricePerNight: number;
+  taxes: number;
+  totalPrice: number;
 };
 
 const RoomBookingSchema = new Schema<BookingType>(
@@ -16,6 +20,10 @@ const RoomBookingSchema = new Schema<BookingType>(
     roomNumber: { type: Schema.Types.ObjectId, ref: 'Rooms', required: true },
     checkIn: { type: Date, required: true },
     checkOut: { type: Date, required: true },
+    nights: { type: Number, required: false },
+    pricePerNight: { type: Number, required: false },
+    taxes: { type: Number, required: false },
+    totalPrice: { type: Number, required: false },
   },
   { timestamps: true }
 );
