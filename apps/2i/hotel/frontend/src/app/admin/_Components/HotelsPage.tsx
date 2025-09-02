@@ -37,8 +37,6 @@ export const HotelsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const { data } = useGetHotelQuery();
 
-  console.log(data);
-
   // const getAvgRating = (hotel: HotelType): number => {
   //   if (!hotel.userRating || hotel.userRating.length === 0) return 0;
   //   return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
@@ -51,42 +49,42 @@ export const HotelsPage = () => {
   //   return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
   // };
 
-  const matchesFilters = (hotel: HotelType | null): boolean => {
-    if (!hotel) return false;
+  // const matchesFilters = (hotel: HotelType | null): boolean => {
+  //   if (!hotel) return false;
 
-    return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesSearch(hotel);
-  };
+  //   return matchesLocation(hotel) && matchesRoom(hotel) && matchesStar(hotel) && matchesSearch(hotel);
+  // };
 
-  const matchesLocation = (hotel: HotelType) => !selectedLocation || selectedLocation === 'All Locations' || selectedLocation === 'Locations' || hotel.location === selectedLocation;
+  // const matchesLocation = (hotel: HotelType) => !selectedLocation || selectedLocation === 'All Locations' || selectedLocation === 'Locations' || hotel.location === selectedLocation;
 
-  const matchesRoom = (hotel: HotelType) => !selectedRoom || selectedRoom === 'All Room' || selectedRoom === 'Room Type' || (hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false);
+  // const matchesRoom = (hotel: HotelType) => !selectedRoom || selectedRoom === 'All Room' || selectedRoom === 'Room Type' || (hotel.rooms?.some((room) => room?.roomType === selectedRoom) ?? false);
 
-  const matchesStar = (hotel: HotelType) => !selectedStar || selectedStar === 'Star Rating' || selectedStar === 'All' || hotel.starRating === selectedStar;
+  // const matchesStar = (hotel: HotelType) => !selectedStar || selectedStar === 'Star Rating' || selectedStar === 'All' || hotel.starRating === selectedStar;
 
-  // const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
+  // // const matchesRating = (hotel: HotelType) => !selectedRating || selectedRating === 'User Rating' || getAvgRating(hotel) >= Number(selectedRating);
 
-  const matchesSearch = (hotel: HotelType | null): boolean => {
-    if (!hotel) return false;
-    return hotel.hotelName.toLowerCase().includes(searchTerm.toLowerCase());
-  };
+  // const matchesSearch = (hotel: HotelType | null): boolean => {
+  //   if (!hotel) return false;
+  //   return hotel.hotelName.toLowerCase().includes(searchTerm.toLowerCase());
+  // };
 
-  const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data!.getHotel : data?.getHotel ? [data.getHotel] : [];
+  // const hotelsArray: any[] = Array.isArray(data?.getHotel) ? data!.getHotel : data?.getHotel ? [data.getHotel] : [];
 
-  const filteredHotels = hotelsArray.filter(matchesFilters);
+  // const filteredHotels = hotelsArray.filter(matchesFilters);
 
-  const renderRooms = (rooms: HotelType['rooms']) =>
-    rooms?.filter(Boolean).map((room, i) => (
-      <span key={i} className="inline-block rounded-md border px-2 py-1 text-xs">
-        {room?.roomType}
-      </span>
-    ));
+  // const renderRooms = (rooms: HotelType['rooms']) =>
+  //   rooms?.filter(Boolean).map((room, i) => (
+  //     <span key={i} className="inline-block rounded-md border px-2 py-1 text-xs">
+  //       {room?.roomType}
+  //     </span>
+  //   ));
 
-  const renderRatings = (userRating: HotelType['userRating']) =>
-    userRating
-      ?.filter(Boolean)
-      .map((r) => r?.rating)
-      ?.filter(Boolean)
-      .join(', ');
+  // const renderRatings = (userRating: HotelType['userRating']) =>
+  //   userRating
+  //     ?.filter(Boolean)
+  //     .map((r) => r?.rating)
+  //     ?.filter(Boolean)
+  //     .join(', ');
   if (showAddHotel) {
     return <AddHotel />;
   }
@@ -121,7 +119,7 @@ export const HotelsPage = () => {
               <th className="px-4 py-3">User Rating</th>
             </tr>
           </thead>
-          <tbody>
+          {/* <tbody>
             {filteredHotels.map((hotel) => {
               if (!hotel) return null;
 
@@ -144,7 +142,7 @@ export const HotelsPage = () => {
                 </tr>
               );
             })}
-          </tbody>
+          </tbody> */}
         </table>
       </div>
       {/* {showAddHotel && <AddHotel />} */}
