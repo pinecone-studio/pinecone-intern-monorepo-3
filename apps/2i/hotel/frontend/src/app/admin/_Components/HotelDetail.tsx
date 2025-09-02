@@ -6,16 +6,9 @@ import { Button } from '@/components/ui/button';
 import { useGetHotelByIdQuery } from '@/generated';
 
 import { HotelsPage } from './HotelsPage';
-import { AboutProperty } from './DetailsAbout';
-import { Amenities } from './Amenities';
-import { Generalinfo } from './Generalinfo';
-import { Policies } from './Policies';
-import { RoomTypes } from './RoomTypes';
-import { UpcomingBookings } from './UpcomingBookings';
-import { DetailLocation } from './DetailLocation';
-import { DetailImage } from './DetailsImage';
-import { DetailsQuestions } from './DetailsQuestions';
 import { HotelType } from './HotelsPage';
+import { LeftColumn } from './LeftColumn';
+import { RightColumn } from './RightColumn';
 
 type PropsType = {
   hotelId: string;
@@ -33,39 +26,17 @@ const mapHotelData = (data: any): HotelType | null => {
     starRating: data.getHotelById.starRating ?? '',
     image: data.getHotelById.image ?? [],
     userRating:
-      data.getHotelById.userRating?.map((r:any) => ({
+      data.getHotelById.userRating?.map((r: any) => ({
         rating: r?.rating ?? 0,
         comment: r?.comment ?? '',
         hotel: r?.hotel ?? '',
       })) ?? [],
     rooms:
-      data.getHotelById.rooms?.map((r:any) => ({
+      data.getHotelById.rooms?.map((r: any) => ({
         roomType: r?.roomType ?? '',
       })) ?? [],
   };
 };
-
-// Left column component
-const LeftColumn = ({ hotel }: { hotel: HotelType | null }) => (
-  <div className="lg:col-span-2 flex flex-col gap-4">
-    <UpcomingBookings />
-    <RoomTypes />
-    <Generalinfo data={hotel} />
-    <Amenities />
-    <AboutProperty />
-    <Policies />
-    <DetailsQuestions />
-  </div>
-);
-
-// Right column component
-const RightColumn = ({ hotel }: { hotel: HotelType | null }) => (
-  <div className="flex flex-col gap-4">
-    <DetailLocation />
-    {hotel && <DetailImage hotelData={hotel} />}
-  </div>
-);
-
 // Main HotelDetail component
 export const HotelDetail = ({ hotelId }: PropsType) => {
   const { data } = useGetHotelByIdQuery({
