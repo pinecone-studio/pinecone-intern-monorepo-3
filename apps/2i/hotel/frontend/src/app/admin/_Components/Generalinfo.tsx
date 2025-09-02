@@ -8,7 +8,7 @@ import { Phone, Star } from 'lucide-react';
 import { HotelType } from './HotelsPage';
 
 type HotelCompType = {
-  data?: HotelType;
+  data?: HotelType | undefined | null;
 };
 
 export const Generalinfo = ({ data }: HotelCompType) => {
