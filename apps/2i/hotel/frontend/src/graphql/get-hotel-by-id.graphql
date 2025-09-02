@@ -1,0 +1,40 @@
+query GetHotelById($getHotelByIdId: ID!) {
+  getHotelById(id: $getHotelByIdId) {
+    _id
+    hotelName
+    description
+    location
+    phoneNumber
+    about
+    language
+    amenities
+    policies {
+      title
+      description
+    }
+    starRating
+    userRating {
+      rating
+      comment
+      hotel
+    }
+    image
+    rooms {
+      _id
+      hotelName
+      roomNumber
+      roomType
+      pricePerNight
+      roomImgs
+      roomInfos
+      amenities {
+        bathroom
+        foodAndDrink
+        technology
+        accessibility
+        bedroom
+        more
+      }
+    }
+  }
+}
