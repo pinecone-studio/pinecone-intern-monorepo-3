@@ -84,8 +84,8 @@ const Page = () => {
         {/* Main Content Area */}
         <div className="col-span-6">
           <div className="max-w-2xl mx-auto py-6">
-            {/* Stories Section */}
-            <div className="mb-4">
+            {/* Stories Section - Highlighted */}
+            <div className="mb-8">
               <Stories />
             </div>
 
