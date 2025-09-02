@@ -5,8 +5,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Phone, Star } from 'lucide-react';
+import { HotelType } from './HotelsPage';
 
-export const Generalinfo = () => {
+type HotelCompType = {
+  data?: HotelType;
+};
+
+export const Generalinfo = ({ data }: HotelCompType) => {
   return (
     <Card className="p-6">
       <div className="flex justify-between border-b">
@@ -48,7 +53,7 @@ export const Generalinfo = () => {
       <div className="flex flex-col gap-2 justify-between p-6 ">
         <div>
           <label className="text-sm text-gray-500">Name</label>
-          <p className="text-sm">Chingis khan hotel</p>
+          <p className="text-sm">{data?.hotelName}</p>
         </div>
 
         <div className="flex justify-between items-center ">
@@ -56,7 +61,6 @@ export const Generalinfo = () => {
             <label className="text-sm text-gray-500">Phone Number</label>
             <p className="text-sm flex gap-2 items-center">
               <Phone className="w-4 h-4" />
-              72700880
             </p>
           </div>
           <div>
@@ -79,7 +83,7 @@ export const Generalinfo = () => {
 
         <div>
           <label className="text-base text-gray-500">Description</label>
-          <p className="text-sm text-[#09090B] font-medium">Ulaanbaatar hotel in Downtown Ulaanbaatar with 4 restaurants and a full-service spa</p>
+          <p className="text-sm text-[#09090B] font-medium">{data?.description}</p>
         </div>
       </div>
     </Card>

@@ -1,6 +1,7 @@
 'use client';
 
 import { Footer } from '@/components/Footer';
+import { Header } from '@/components/Header';
 
 import { HotelCard } from '@/components/HotelCard';
 import { MostBooked } from '@/components/Mostbooked';
@@ -91,6 +92,7 @@ const Page = () => {
   ];
   return (
     <div className="min-h-screen w-full bg-[#F6F7FB]">
+      <Header />
       <SearchCard />
 
       <HotelCard hotels={hotels} />

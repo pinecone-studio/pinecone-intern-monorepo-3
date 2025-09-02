@@ -1,17 +1,17 @@
-query GetHotel {
-  getHotel {
+query GetHotelById($getHotelByIdId: ID!) {
+  getHotelById(id: $getHotelByIdId) {
     _id
     hotelName
     description
+    location
     phoneNumber
     about
+    languages
     policies {
       title
       description
     }
-    languages
     amenities
-    location
     starRating
     userRating {
       rating

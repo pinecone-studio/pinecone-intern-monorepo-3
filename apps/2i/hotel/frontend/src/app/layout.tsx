@@ -12,10 +12,7 @@ const RootLayout = ({ children }: PropsWithChildren) => {
   return (
     <html lang="en">
       <body>
-        <ApolloWrapper>
-          <Header />
-          {children}
-        </ApolloWrapper>
+        <ApolloWrapper>{children}</ApolloWrapper>
       </body>
     </html>
   );

@@ -6,27 +6,27 @@ import { useState } from 'react';
 import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
+import { UserRating } from './UserRating';
 import { AddHotel } from './AddHotel';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-type HotelType = {
-  __typename?: 'Hotel' | undefined;
+export type HotelType = {
   _id: string;
   hotelName: string;
-  description?: string | null | undefined;
+  description: string;
   location: string;
   starRating: string;
   image: string[];
   userRating: {
-    __typename?: 'UserRating' | undefined;
-    rating?: number | null | undefined;
-    comment?: string | null | undefined;
-    hotel?: string | null | undefined;
+    rating?: number;
+    comment?: string;
+    hotel?: string;
   }[];
   rooms: {
-    __typename?: 'Room' | undefined;
-    roomType?: string | null | undefined;
-    price?: number | null | undefined;
-    availability?: number | null | undefined;
+    roomType?: string;
+    price?: number;
+    availability?: number;
   }[];
 };
 
@@ -36,8 +36,6 @@ export const HotelsPage = () => {
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
   // const [selectedRating, setSelectedRating] = useState<string>('User Rating');
   const [searchTerm, setSearchTerm] = useState('');
-  const [showAddHotel, setShowAddHotel] = useState<boolean>(false);
-
   const { data } = useGetHotelQuery();
 
   console.log(data);
@@ -46,6 +44,13 @@ export const HotelsPage = () => {
   //   if (!hotel.userRating || hotel.userRating.length === 0) return 0;
   //   return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
   // };
+  const [selectedRating, setSelectedRating] = useState<string>('User Rating');
+  const [showAddHotel, setShowAddHotel] = useState<boolean>(false);
+
+  const getAvgRating = (hotel: HotelType): number => {
+    if (!hotel.userRating || hotel.userRating.length === 0) return 0;
+    return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
+  };
 
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;
@@ -83,7 +88,6 @@ export const HotelsPage = () => {
       .map((r) => r?.rating)
       ?.filter(Boolean)
       .join(', ');
-
   if (showAddHotel) {
     return <AddHotel />;
   }
@@ -124,11 +128,13 @@ export const HotelsPage = () => {
 
               return (
                 <tr key={hotel._id} className="border-t">
-                  <td className="px-4 py-3">{hotel._id.slice(0, 4)}</td>
+                  <td className="px-4 py-3">{hotel._id.slice(12, 18)}</td>
 
                   <td className="px-4 py-3 flex items-center gap-2">
-                    {/* <Image src={hotel.image} alt="hotelName" width={40} height={40} className="rounded-md object-cover" /> */}
-                    {hotel.hotelName}
+                    <Link href={`/admin/hotels/${hotel._id}`} className="flex gap-2">
+                      <img src={hotel.image[0]} className="w-[70px] h-[35px] rounded-sm" />
+                      <Button variant="link">{hotel.hotelName}</Button>
+                    </Link>
                   </td>
 
                   <td className="px-4 py-3 space-x-2">
