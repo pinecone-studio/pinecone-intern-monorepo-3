@@ -3,9 +3,9 @@
 import { TopBar } from '../_Components/TopBar';
 import { useGetHotelQuery } from '@/generated';
 import { useState } from 'react';
-import { LocationSelectWithSearch } from './LocationSelect';
-import { RoomTypeSelect } from './RoomSelected';
-import { SelectStar } from './SelectStart';
+// import { LocationSelectWithSearch } from './LocationSelect';
+// import { RoomTypeSelect } from './RoomSelected';
+// import { SelectStar } from './SelectStart';
 import { AddHotel } from './AddHotel';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -30,9 +30,9 @@ export type HotelType = {
 };
 
 export const HotelsPage = () => {
-  const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
-  const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
-  const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
+  // const [selectedLocation, setSelectedLocation] = useState<string>('All Locations');
+  // const [selectedRoom, setSelectedRoom] = useState<string>('Room Type');
+  // const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
   // const [selectedRating, setSelectedRating] = useState<string>('User Rating');
   const [searchTerm, setSearchTerm] = useState('');
   const { data } = useGetHotelQuery();
@@ -100,11 +100,11 @@ export const HotelsPage = () => {
           className="w-full max-w-sm rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm focus:border-blue-500 focus:outline-none placeholder-gray-700"
         />
 
-        <LocationSelectWithSearch onChange={(_val) => setSelectedLocation(_val)} />
+        {/* <LocationSelectWithSearch onChange={(_val) => setSelectedLocation(_val)} />
 
         <RoomTypeSelect onChange={(_val) => setSelectedRoom(_val)} />
 
-        <SelectStar onChange={(_val) => setSelectedStar(_val)} />
+        <SelectStar onChange={(_val) => setSelectedStar(_val)} /> */}
 
         {/* <UserRating onChange={(_val) => setSelectedRating(_val)} /> */}
       </div>
@@ -119,8 +119,8 @@ export const HotelsPage = () => {
               <th className="px-4 py-3">User Rating</th>
             </tr>
           </thead>
-          {/* <tbody>
-            {filteredHotels.map((hotel) => {
+          <tbody>
+            {data?.getHotel.map((hotel) => {
               if (!hotel) return null;
 
               return (
@@ -129,20 +129,18 @@ export const HotelsPage = () => {
 
                   <td className="px-4 py-3 flex items-center gap-2">
                     <Link href={`/admin/hotels/${hotel._id}`} className="flex gap-2">
-                      <img src={hotel.image[0]} className="w-[70px] h-[35px] rounded-sm" />
+                      <img src={hotel?.image?.[0]} className="w-[70px] h-[35px] rounded-sm" />
                       <Button variant="link">{hotel.hotelName}</Button>
                     </Link>
                   </td>
 
-                  <td className="px-4 py-3 space-x-2">
-                    <td className="px-4 py-3 space-x-2">{renderRooms(hotel.rooms)}</td>
-                  </td>
+                  <td className="px-4 py-3 space-x-2">{/* <td className="px-4 py-3 space-x-2">{renderRooms(hotel.rooms)}</td> */}</td>
                   <td className="px-4 py-3">⭐ {hotel.starRating}</td>
-                  <td className="px-4 py-3">{renderRatings(hotel.userRating)}</td>
+                  {/* <td className="px-4 py-3">{renderRatings(hotel.userRating)}</td> */}
                 </tr>
               );
             })}
-          </tbody> */}
+          </tbody>
         </table>
       </div>
       {/* {showAddHotel && <AddHotel />} */}
