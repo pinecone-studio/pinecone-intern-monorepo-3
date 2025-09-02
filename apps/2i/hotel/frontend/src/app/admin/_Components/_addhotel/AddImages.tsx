@@ -10,50 +10,82 @@ import { useUpload } from '@/components/providers/ImageProvider';
 import { useUploadToCloudinaryMutation } from '@/generated';
 import Image from 'next/image';
 
-export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
-  const [uploadToCloudinaryMutation, { data, error, loading }] = useUploadToCloudinaryMutation();
-  const [open, setOpen] = useState<boolean>(false);
-  const [imgFile, setImgFile] = useState<File | null>(null);
+export const AddImage = ({ hotelId }: { hotelId: string }) => {
+  const [uploadToCloudinaryMutation] = useUploadToCloudinaryMutation();
+  const [open, setOpen] = useState(false);
+  const [imgFiles, setImgFiles] = useState<File[]>([]);
   const [preview, setPreview] = useState<string[]>([]);
   const [imgUrls, setImgUrls] = useState<string[]>([]);
   const { uploadImage, uploading } = useUpload();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return null;
-    }
-    const url = URL.createObjectURL(file);
-    setPreview((prev) => [...prev, url]);
-    setImgFile(file);
+    const files = e.target.files;
+    if (!files) return;
+
+    const newFiles = Array.from(files);
+    const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+
+    setImgFiles((prev) => [...prev, ...newFiles]);
+    setPreview((prev) => [...prev, ...newPreviews]);
   };
+
+  const uploadFiles = async (files: File[]) => {
+    const uploaded: string[] = [];
+    for (const file of files) {
+      const url = await uploadImage(file);
+      if (url) uploaded.push(url);
+    }
+    return uploaded;
+  };
+
   const handleUpload = async () => {
-    if (!imgFile || !hotelId) return;
+    if (imgFiles.length === 0 || !hotelId) return;
 
     try {
-      const url = await uploadImage(imgFile);
-      if (!url) return;
+      const uploadedUrls = await uploadFiles(imgFiles);
 
-      // Preview-г Cloudinary URL-аар солих
-      setPreview((prev) => [...prev, url]);
-      setImgUrls((prev) => [...prev, url]);
+      setImgUrls((prev) => [...prev, ...uploadedUrls]);
 
+      const finalImages = [...imgUrls, ...uploadedUrls];
       const { data } = await uploadToCloudinaryMutation({
         variables: {
           hotelId: hotelId,
-          image: [...imgUrls, url],
+          image: finalImages,
         },
       });
 
       console.log(data?.uploadToCloudinary);
+
+      setImgFiles([]);
+      setPreview([]);
+      setOpen(false);
     } catch (err) {
       console.error(err);
     }
   };
 
   const handleRemove = (index: number) => {
-    const newImages = preview.filter((_, i) => i !== index);
-    setPreview(newImages);
+    setPreview((prev) => prev.filter((_, i) => i !== index));
+    setImgFiles((prev) => prev.filter((_, i) => i !== index));
+    setImgUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Inline arrow ашиглахгүйн тулд centralized click handler
+  const onRemoveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const i = Number(e.currentTarget.dataset.index);
+    handleRemove(i);
+  };
+
+  // map доторх callback-ийг нэг удаа зарлаж ашиглая (function declaration тул arrow биш)
+  const renderPreview = (img: string, index: number) => {
+    return (
+      <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
+        <Image src={img} alt={`preview-${index}`} width={220} height={40} style={{ objectFit: 'cover' }} />
+        <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" data-index={index} onClick={onRemoveClick}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+    );
   };
 
   return (
@@ -72,22 +104,11 @@ export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
               <Label htmlFor="image-upload" className="w-[552px] h-[300px] cursor-pointer border-2 border-dashed rounded-md p-8 text-sm flex flex-col justify-center gap-2 items-center bg-gray-50">
                 <Plus className="w-8 h-8 text-[#2563EB]" />
                 <span>{uploading ? 'Uploading...' : 'Drag or Upload Photo'}</span>
-                <input id="image-upload" type="file" className="hidden" onChange={handleFileChange} />
+                <input id="image-upload" type="file" className="hidden" onChange={handleFileChange} multiple />
               </Label>
             </div>
 
-            {preview.length > 0 && (
-              <div className="grid grid-cols-5 gap-4 mb-6">
-                {preview.map((img, index) => (
-                  <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
-                    <Image src={img} alt={`preview-${index}`} width={220} height={40} objectFit="cover" />
-                    <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" onClick={() => handleRemove(index)}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
+            {preview.length > 0 && <div className="grid grid-cols-5 gap-4 mb-6">{preview.map(renderPreview)}</div>}
 
             <div className="flex justify-between">
               <DialogClose>

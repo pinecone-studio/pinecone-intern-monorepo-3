@@ -16,8 +16,8 @@ type DetailImageType = {
 };
 
 export const DetailImage = ({ hotelData }: DetailImageType) => {
-  const [uploadToCloudinaryMutation, { data, error, loading }] = useUploadToCloudinaryMutation();
-  const [open, setOpen] = useState<boolean>(false);
+  const [uploadToCloudinaryMutation] = useUploadToCloudinaryMutation();
+  const [open, setOpen] = useState(false);
   const [imgFiles, setImgFiles] = useState<File[]>([]);
   const [preview, setPreview] = useState<string[]>([]);
   const [imgUrls, setImgUrls] = useState<string[]>([]);
@@ -34,35 +34,36 @@ export const DetailImage = ({ hotelData }: DetailImageType) => {
     setPreview((prev) => [...prev, ...newPreviews]);
   };
 
+  const uploadFiles = async (files: File[]) => {
+    const uploaded: string[] = [];
+    for (const file of files) {
+      const url = await uploadImage(file);
+      if (url) uploaded.push(url);
+    }
+    return uploaded;
+  };
+
   const handleUpload = async () => {
     if (imgFiles.length === 0 || !hotelData._id) return;
 
     try {
-      const uploadedUrls: string[] = [];
+      const uploadedUrls = await uploadFiles(imgFiles);
 
-      for (const file of imgFiles) {
-        const url = await uploadImage(file);
-        if (url) {
-          uploadedUrls.push(url);
-        }
-      }
-
-      // Cloudinary URL-уудыг зөвхөн imgUrls-д хадгална
       setImgUrls((prev) => [...prev, ...uploadedUrls]);
 
-      // backend рүү зөвхөн uploadedUrls явуулна
+      const finalImages = [...imgUrls, ...uploadedUrls];
       const { data } = await uploadToCloudinaryMutation({
         variables: {
-          hotelId: hotelData._id!,
-          image: [...uploadedUrls],
+          hotelId: hotelData._id,
+          image: finalImages,
         },
       });
 
       console.log(data?.uploadToCloudinary);
 
-      // upload амжилттай болсны дараа local preview-г цэвэрлэж болно
       setImgFiles([]);
       setPreview([]);
+      setOpen(false);
     } catch (err) {
       console.error(err);
     }
@@ -72,6 +73,24 @@ export const DetailImage = ({ hotelData }: DetailImageType) => {
     setPreview((prev) => prev.filter((_, i) => i !== index));
     setImgFiles((prev) => prev.filter((_, i) => i !== index));
     setImgUrls((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Inline arrow ашиглахгүйн тулд centralized click handler
+  const onRemoveClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const i = Number(e.currentTarget.dataset.index);
+    handleRemove(i);
+  };
+
+  // map доторх callback-ийг нэг удаа зарлаж ашиглая (function declaration тул arrow биш)
+  const renderPreview = (img: string, index: number) => {
+    return (
+      <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
+        <Image src={img} alt={`preview-${index}`} width={220} height={40} style={{ objectFit: 'cover' }} />
+        <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" data-index={index} onClick={onRemoveClick}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+    );
   };
 
   return (
@@ -94,18 +113,7 @@ export const DetailImage = ({ hotelData }: DetailImageType) => {
               </Label>
             </div>
 
-            {preview.length > 0 && (
-              <div className="grid grid-cols-5 gap-4 mb-6">
-                {preview.map((img, index) => (
-                  <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
-                    <Image src={img} alt={`preview-${index}`} width={220} height={40} objectFit="cover" />
-                    <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" onClick={() => handleRemove(index)}>
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
+            {preview.length > 0 && <div className="grid grid-cols-5 gap-4 mb-6">{preview.map(renderPreview)}</div>}
 
             <div className="flex justify-between">
               <DialogClose>

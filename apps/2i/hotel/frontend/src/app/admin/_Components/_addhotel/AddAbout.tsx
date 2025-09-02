@@ -16,7 +16,7 @@ const formSchema = z.object({
 });
 
 export const AddAbout = ({ hotelId }: { hotelId: string | undefined }) => {
-  const [updateHotelMutation, { data, loading, error }] = useUpdateHotelMutation();
+  const [updateHotelMutation] = useUpdateHotelMutation();
   const [open, setOpen] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

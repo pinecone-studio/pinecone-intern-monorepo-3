@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useUpdateHotelMutation } from '@/generated';
 
-// --- Zod schema ---
 const policySchema = z.object({
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
@@ -24,7 +23,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export const AddPolicies = ({ hotelId }: { hotelId: string | undefined }) => {
-  const [updateHotelMutation, { data, loading, error }] = useUpdateHotelMutation();
+  const [updateHotelMutation] = useUpdateHotelMutation();
   const [savedPolicies, setSavedPolicies] = useState<FormValues>({
     policies: [
       { title: 'Check-in', description: '-/-' },
@@ -36,14 +35,10 @@ export const AddPolicies = ({ hotelId }: { hotelId: string | undefined }) => {
       { title: 'Property payment types', description: '-/-' },
     ],
   });
-
-  // useForm
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: savedPolicies,
   });
-
-  // useFieldArray
   const { fields } = useFieldArray({
     control: form.control,
     name: 'policies',

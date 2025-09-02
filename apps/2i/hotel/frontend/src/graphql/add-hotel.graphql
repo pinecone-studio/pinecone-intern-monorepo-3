@@ -2,5 +2,6 @@ mutation AddHotel($hotelName: String!, $description: String!, $starRating: Strin
   addHotel(hotelName: $hotelName, description: $description, starRating: $starRating, phoneNumber: $phoneNumber) {
     description
     hotelName
+    _id
   }
 }

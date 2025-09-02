@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+'use client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -16,7 +16,7 @@ const formSchema = z.object({
 
 export const AddHotelAmenities = ({ hotelId }: { hotelId: string | undefined }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [updateHotelMutation, { data, loading, error }] = useUpdateHotelMutation();
+  const [updateHotelMutation] = useUpdateHotelMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -93,6 +93,7 @@ export const AddHotelAmenities = ({ hotelId }: { hotelId: string | undefined }) 
                         );
                       }}
                       variant="destructive"
+                      key={i}
                     >
                       {a} x
                     </Button>

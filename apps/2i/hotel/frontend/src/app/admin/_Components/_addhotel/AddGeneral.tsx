@@ -1,9 +1,8 @@
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Phone, Star } from 'lucide-react';
+import { Phone } from 'lucide-react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -21,7 +20,7 @@ const formSchema = z.object({
 
 export const AddHotelGeneral = ({ setHotelId }: { setHotelId: Dispatch<SetStateAction<string | undefined>> }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [addHotelMutation, { data, loading, error }] = useAddHotelMutation();
+  const [addHotelMutation] = useAddHotelMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,20 +41,26 @@ export const AddHotelGeneral = ({ setHotelId }: { setHotelId: Dispatch<SetStateA
           starRating: values.stars,
         },
       });
-      setHotelId(data?.addHotel._id!);
+      setHotelId(data?.addHotel._id);
       console.log('Hotel added', data?.addHotel);
       setOpen(false);
     } catch (err) {
       console.log(err);
     }
   };
+  const inputs = [
+    { name: 'hotelName', label: 'Hotel name', placeholder: 'please insert your hotel name here' },
+    { name: 'description', label: 'Description', placeholder: 'Hotel Description' },
+    { name: 'phone', label: 'Phone number', placeholder: 'Phone number' },
+  ];
+
+  const stars = ['1', '2', '3', '4', '5'];
   return (
     <Card className="p-6">
       <div className="flex justify-between border-b">
         <div className="mb-4">
           <h1 className="text-lg font-semibold text-gray-800">General Info</h1>
         </div>
-        {/* dialog */}
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger className="text-[#2563EB]">Edit</DialogTrigger>
 
@@ -65,32 +70,24 @@ export const AddHotelGeneral = ({ setHotelId }: { setHotelId: Dispatch<SetStateA
                 <DialogHeader>
                   <DialogTitle>General Info</DialogTitle>
                 </DialogHeader>
-                <FormField
-                  control={form.control}
-                  name="hotelName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Hotel name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="please insert your hotel name here" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Hotel Description" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {inputs.map((input, index) => {
+                  return (
+                    <FormField
+                      key={index}
+                      control={form.control}
+                      name={input.name as any}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{input.label}</FormLabel>
+                          <FormControl>
+                            <Input placeholder={input.placeholder} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  );
+                })}
                 <FormField
                   control={form.control}
                   name="stars"
@@ -103,26 +100,15 @@ export const AddHotelGeneral = ({ setHotelId }: { setHotelId: Dispatch<SetStateA
                             <SelectValue placeholder="Choose rating" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="5 stars">5 stars</SelectItem>
-                            <SelectItem value="4 stars">4 stars</SelectItem>
-                            <SelectItem value="3 stars">3 stars</SelectItem>
-                            <SelectItem value="2 stars">2 stars</SelectItem>
-                            <SelectItem value="1 star">1 star</SelectItem>
+                            {stars.map((star, index) => {
+                              return (
+                                <SelectItem value={star} key={index}>
+                                  {star} stars
+                                </SelectItem>
+                              );
+                            })}
                           </SelectContent>
                         </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone number</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Phone number" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -132,7 +118,6 @@ export const AddHotelGeneral = ({ setHotelId }: { setHotelId: Dispatch<SetStateA
                   <DialogClose asChild>
                     <Button>Cancel</Button>
                   </DialogClose>
-
                   <Button variant="hotel" type="submit">
                     Save
                   </Button>
@@ -163,19 +148,7 @@ export const AddHotelGeneral = ({ setHotelId }: { setHotelId: Dispatch<SetStateA
               <span className="font-medium text-sm  text-[#09090B] ">None</span>
             </div>
           </div>
-
-          <div>
-            <label className="text-sm text-gray-500">Stars Rating</label>
-            <div className="flex gap-1 ">
-              <Star className="w-4 h-4" />
-              <Star className="w-4 h-4" />
-              <Star className="w-4 h-4" />
-              <Star className="w-4 h-4" />
-              <Star className="w-4 h-4" />
-            </div>
-          </div>
         </div>
-
         <div>
           <label className="text-base text-gray-500">Description</label>
           <p className="text-sm text-[#09090B] font-medium">{form.getValues('description')}</p>

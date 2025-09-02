@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
-import { UserRating } from './UserRating';
 import { AddHotel } from './AddHotel';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -44,13 +43,13 @@ export const HotelsPage = () => {
   //   if (!hotel.userRating || hotel.userRating.length === 0) return 0;
   //   return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
   // };
-  const [selectedRating, setSelectedRating] = useState<string>('User Rating');
+  // const [selectedRating, setSelectedRating] = useState<string>('User Rating');
   const [showAddHotel, setShowAddHotel] = useState<boolean>(false);
 
-  const getAvgRating = (hotel: HotelType): number => {
-    if (!hotel.userRating || hotel.userRating.length === 0) return 0;
-    return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
-  };
+  // const getAvgRating = (hotel: HotelType): number => {
+  //   if (!hotel.userRating || hotel.userRating.length === 0) return 0;
+  //   return hotel.userRating.reduce((sum, r) => sum + (r?.rating ?? 0), 0) / hotel.userRating.length;
+  // };
 
   const matchesFilters = (hotel: HotelType | null): boolean => {
     if (!hotel) return false;

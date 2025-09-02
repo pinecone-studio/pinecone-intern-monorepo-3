@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { useUpdateHotelMutation } from '@/generated';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +12,7 @@ const formSchema = z.object({
   location: z.string().nonempty('Location please'),
 });
 export const AddLocation = ({ hotelId }: { hotelId: string | undefined }) => {
-  const [updateHotelMutation, { data, loading, error }] = useUpdateHotelMutation();
+  const [updateHotelMutation] = useUpdateHotelMutation();
   const [open, setOpen] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
