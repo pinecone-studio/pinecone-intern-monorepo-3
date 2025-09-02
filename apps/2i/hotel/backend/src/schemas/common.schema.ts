@@ -27,16 +27,24 @@ export const typeDefs = gql`
     amenities: [String]
     policies: [PolicyInput]
   }
-
+  type PolicyType {
+    title: String
+    description: String
+  }
   type Hotel {
     _id: ID!
     hotelName: String!
-    description: String
-    location: String!
-    starRating: String!
-    userRating: [UserRating]!
-    image: [String!]!
-    rooms: [Room]!
+    description: String!
+    phoneNumber: String!
+    location: String
+    starRating: String
+    about: String
+    policies: [PolicyType]
+    language: [String]
+    amenities: [String]
+    userRating: [UserRating]
+    image: [String]
+    rooms: [Room]
   }
 
   type UserRating {

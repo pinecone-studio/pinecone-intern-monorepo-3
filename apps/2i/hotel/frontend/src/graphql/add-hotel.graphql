@@ -1,0 +1,9 @@
+mutation AddHotel($hotelName: String!, $phoneNumber: String!, $description: String!, $starRating: String!) {
+  addHotel(hotelName: $hotelName, phoneNumber: $phoneNumber, description: $description, starRating: $starRating) {
+    _id
+    hotelName
+    description
+    starRating
+    phoneNumber
+  }
+}

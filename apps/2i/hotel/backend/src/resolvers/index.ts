@@ -11,6 +11,7 @@ export const resolvers = {
     userSignUp: Mutation.userSignUp,
     roomBooking: Mutation.roomBooking,
     bookingUpdate: Mutation.bookingUpdate,
+    uploadToCloudinary: Mutation.uploadToCloudinary,
   },
   Query: {
     getRoomById: Query.getRoomById,
