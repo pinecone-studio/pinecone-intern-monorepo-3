@@ -10,7 +10,7 @@ import { useUpload } from '@/components/providers/ImageProvider';
 import { useUploadToCloudinaryMutation } from '@/generated';
 import Image from 'next/image';
 
-export const AddImage = ({ hotelId }: { hotelId: string }) => {
+export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
   const [uploadToCloudinaryMutation] = useUploadToCloudinaryMutation();
   const [open, setOpen] = useState(false);
   const [imgFiles, setImgFiles] = useState<File[]>([]);
