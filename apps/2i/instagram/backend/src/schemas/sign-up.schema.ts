@@ -18,27 +18,34 @@ export const typeDefs = gql`
   }
 
   input ForgetPass {
-     email: String!
+    email: String!
   }
- 
 
   input VerifyOtpInput {
     otp: String!
   }
 
-
-
   input UpdatePrivacyInput {
     isPrivate: Boolean!
   }
 
-input UpdatePasswordInput {
-  email: String!
-  password: String!
-}
+  input UpdatePasswordInput {
+    email: String!
+    password: String!
+  }
 
   input CreateStoryInput {
     mediaUrl: String!
+  }
+
+  input CreatePostInput {
+    images: [String!]!
+    caption: String
+  }
+
+  input AddCommentInput {
+    postId: ID!
+    content: String!
   }
 
   input UpdateProfileInput {
@@ -53,10 +60,10 @@ input UpdatePasswordInput {
     signup(signup: SignupInput!): AuthPayload!
     login(login: LoginInput!): AuthPayload!
     updateProfile(update: UpdateProfileInput!): User!
-    forgetverify(forget: ForgetPass):TroubleLoginResponse!
+    forgetverify(forget: ForgetPass): TroubleLoginResponse!
     troublelogin(trouble: TroubleLoginInput!): TroubleLoginResponse!
-    updatePassword(input: UpdatePasswordInput):updatepasswordResponse!
-    forgetverifyOtp(verifyOtp: VerifyOtpInput!):forgetOtpResponse!
+    updatePassword(input: UpdatePasswordInput): updatepasswordResponse!
+    forgetverifyOtp(verifyOtp: VerifyOtpInput!): forgetOtpResponse!
     verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
     updatePrivacy(input: UpdatePrivacyInput!): User!
     sendFollowRequest(userId: ID!): MessageResponse!
@@ -64,6 +71,9 @@ input UpdatePasswordInput {
     unfollowUser(userId: ID!): MessageResponse!
     createStory(input: CreateStoryInput!): Story!
     markStorySeen(storyId: ID!): Story!
+    createPost(input: CreatePostInput!): Post!
+    likePost(postId: ID!): Post!
+    addComment(input: AddCommentInput!): Comment!
   }
 
   type Query {
@@ -72,24 +82,24 @@ input UpdatePasswordInput {
     followRequests: [User!]!
     getStories: [Story!]!
     getUserStories(userId: ID!): [Story!]!
+    getPosts: [Post!]!
+    getUserPosts(userId: ID!): [Post!]!
   }
 
-   type TroubleLoginResponse {
+  type TroubleLoginResponse {
     message: String!
   }
 
-   type updatepasswordResponse {
+  type updatepasswordResponse {
     message: String!
   }
 
-   type forgetOtpResponse {
+  type forgetOtpResponse {
     message: String!
   }
   type AuthPayload {
     user: User!
   }
-
-
 
   type MessageResponse {
     token: String!
@@ -104,6 +114,25 @@ input UpdatePasswordInput {
     createdAt: String!
     expiresAt: String!
     viewers: [User!]!
+  }
+
+  type Post {
+    id: ID!
+    user: User!
+    images: [String!]!
+    caption: String!
+    likes: [User!]!
+    comments: [Comment!]!
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type Comment {
+    id: ID!
+    user: User!
+    post: Post!
+    content: String!
+    createdAt: String!
   }
 
   type User {

@@ -6,7 +6,11 @@ import { SidebarMenu } from './SidebarMenu';
 import { SearchPanel } from './SearchPanel';
 import { NotificationPanel } from './NotificationPanel';
 
-export const Sidebar = () => {
+interface SidebarProps {
+  onPostCreated?: () => void;
+}
+
+export const Sidebar = ({ onPostCreated }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activePanel, setActivePanel] = useState<'search' | 'notification' | null>(null);
 
@@ -49,7 +53,7 @@ export const Sidebar = () => {
         `}
       >
         <SidebarHeader isCollapsed={isCollapsed} />
-        <SidebarMenu isCollapsed={isCollapsed} activePanel={activePanel} onExpandClick={handleExpandClick} onPanelToggle={handlePanelToggle} />
+        <SidebarMenu isCollapsed={isCollapsed} activePanel={activePanel} onExpandClick={handleExpandClick} onPanelToggle={handlePanelToggle} onPostCreated={onPostCreated} />
         <div onClick={handleMenuClick} className="flex items-center h-12 cursor-pointer hover:text-pink-500">
           <AlignJustify />
           {!isCollapsed && <p className="pl-4 text-sm">Menu</p>}

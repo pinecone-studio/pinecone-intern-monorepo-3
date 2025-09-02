@@ -1,7 +1,7 @@
 import { PropsWithChildren } from 'react';
 import './global.css';
 import { ApolloWrapper } from '@/_components/providers';
-import { Sidebar } from '@/_components/Sidebar/Sidebar';
+import { ConditionalLayout } from '@/_components/ConditionalLayout/ConditionalLayout';
 
 export const metadata = {
   title: 'Welcome to example-frontend',
@@ -13,10 +13,7 @@ const RootLayout = ({ children }: PropsWithChildren) => {
     <html lang="en">
       <body>
         <ApolloWrapper>
-          <div className="flex">
-            <Sidebar />
-            <main className="pl-20 md:pl-64 transition-all duration-300">{children}</main>
-          </div>
+          <ConditionalLayout>{children}</ConditionalLayout>
         </ApolloWrapper>
       </body>
     </html>

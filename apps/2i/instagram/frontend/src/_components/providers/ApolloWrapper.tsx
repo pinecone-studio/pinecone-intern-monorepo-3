@@ -5,7 +5,7 @@ import { ApolloNextAppProvider, ApolloClient, InMemoryCache } from '@apollo/expe
 import { PropsWithChildren } from 'react';
 import { setContext } from '@apollo/client/link/context';
 
-const uri = process.env.BACKEND_URI ?? 'http://localhost:4200/api/graphql';
+const uri = process.env.BACKEND_URI ?? 'http://localhost:3000/api/graphql';
 
 const makeClient = () => {
   const httpLink = new HttpLink({
@@ -14,11 +14,12 @@ const makeClient = () => {
   });
 
   const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem('token');
+    // Development-д test token ашиглах
+    const token = localStorage.getItem('token') || 'test-token-for-development';
     return {
       headers: {
         ...headers,
-        authorization: token ?? '',
+        authorization: token ? `Bearer ${token}` : '',
       },
     };
   });

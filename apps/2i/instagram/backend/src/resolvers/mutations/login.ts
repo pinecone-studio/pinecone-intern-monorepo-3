@@ -1,7 +1,5 @@
-import { UserModel } from "../../models";
-import bcrypt from "bcryptjs";
-
-
+import { UserModel } from '../../models';
+import bcrypt from 'bcryptjs';
 
 type LoginInput = {
   email: string;
@@ -14,15 +12,14 @@ export const login = async (_: unknown, { login }: { login: LoginInput }) => {
   const user = await UserModel.findOne({ email });
 
   if (!user) {
-    throw new Error("Invalid email or password");
+    throw new Error('Invalid email or password');
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password");
+    throw new Error('Invalid email or password');
   }
-
 
   return {
     user,

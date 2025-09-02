@@ -93,3 +93,81 @@ mutation Login($login: LoginInput!) {
     }
   }
 }
+
+mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    id
+    images
+    caption
+    user {
+      id
+      username
+      fullname
+      profilePicture
+    }
+    likes {
+      id
+      username
+    }
+    comments {
+      id
+      content
+      user {
+        id
+        username
+      }
+      createdAt
+    }
+    createdAt
+  }
+}
+
+query GetPosts {
+  getPosts {
+    id
+    images
+    caption
+    user {
+      id
+      username
+      fullname
+      profilePicture
+    }
+    likes {
+      id
+      username
+    }
+    comments {
+      id
+      content
+      user {
+        id
+        username
+      }
+      createdAt
+    }
+    createdAt
+  }
+}
+
+mutation LikePost($postId: ID!) {
+  likePost(postId: $postId) {
+    id
+    likes {
+      id
+      username
+    }
+  }
+}
+
+mutation AddComment($input: AddCommentInput!) {
+  addComment(input: $input) {
+    id
+    content
+    user {
+      id
+      username
+    }
+    createdAt
+  }
+}
