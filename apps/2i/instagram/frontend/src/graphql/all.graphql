@@ -89,6 +89,36 @@ query GetUser($id: ID!) {
     bio
     gender
     profilePicture
+      followers {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isPrivate
+    }
+      following {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isPrivate
+    }
+    followRequests {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isPrivate
+    }
   }
 }
 
@@ -99,6 +129,9 @@ mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
     user {
       id
       email
+      fullname
+      username
+      gender
     }
     message
   }
@@ -109,3 +142,4 @@ mutation Troublelogin($trouble: TroubleLoginInput!) {
     message
   }
 }
+

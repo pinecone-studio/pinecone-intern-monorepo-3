@@ -45,14 +45,14 @@ const [ Sign,{ loading, error }] = useSignMutation()
 
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center" data-cy="signup-page">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center" >
       <div className="bg-white border border-gray-300 rounded-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Instagram</h1>
           <p className="text-gray-600 text-sm">Sign up to see photos and videos from your friends.</p>
         </div>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={handleSubmit} data-testid="signup-page">
           <input
             data-cy="email-input"
             type="email"

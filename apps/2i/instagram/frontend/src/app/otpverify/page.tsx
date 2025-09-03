@@ -19,7 +19,9 @@ const  InstagramOtpVerify = () => {
 
 
   const handleChange = (index: number, value: string) => {
-    if (value.length > 1) return 
+    if (value.length > 1) {
+      return
+    }
 
     const newOtp = [...otp]
     newOtp[index] = value
@@ -30,7 +32,6 @@ const  InstagramOtpVerify = () => {
       inputRefs.current[index + 1]?.focus()
     }
   }
-
  
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
@@ -62,9 +63,9 @@ const  InstagramOtpVerify = () => {
     if (result?.message && result?.token) {
     
       localStorage.setItem("token", result.token);
-      router.push("/home");
+      router.push("/");
     } else {
-      alert(result?.message || "OTP verification failed");
+      alert(result?.message );
     }
   } catch (err) {
     console.error(err);
@@ -83,7 +84,7 @@ const  InstagramOtpVerify = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4" >
       <div className="w-full max-w-sm space-y-8">
      
         <Card className="border border-border p-8">
@@ -102,7 +103,7 @@ const  InstagramOtpVerify = () => {
             </div>
 
      
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6"  role="form">
             
               <div className="flex justify-center gap-2">
                 {otp.map((digit, index) => (
@@ -143,7 +144,7 @@ const  InstagramOtpVerify = () => {
             <div className="text-center">
               <button
                 type="button"
-                onClick={() => router.push("/")}
+                onClick={() => router.push("/login")}
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Back to login
@@ -155,5 +156,4 @@ const  InstagramOtpVerify = () => {
     </div>
   )
 }
-
 export default  InstagramOtpVerify;
