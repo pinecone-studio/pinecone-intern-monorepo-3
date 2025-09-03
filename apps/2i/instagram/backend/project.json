@@ -62,7 +62,7 @@
         }
       ]
     },
-        "get-secrets:dev": {
+    "get-secrets:dev": {
       "executor": "@pinecone-intern-monorepo/secrets:get",
       "defaultConfiguration": "development",
       "configurations": {
@@ -101,7 +101,8 @@
     "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "instagram-backend:build:production"
+        "buildTarget": "instagram-backend:build:production",
+        "outputPath": ".vercel/output/static"
       }
     },
     "export-env": {

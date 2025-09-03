@@ -1,3 +1,10 @@
+query Getuser($getuserId: ID!) {
+  getuser(id: $getuserId) {
+    id
+    username
+    email
+  }
+}
 query FollowRequests {
   followRequests {
     id

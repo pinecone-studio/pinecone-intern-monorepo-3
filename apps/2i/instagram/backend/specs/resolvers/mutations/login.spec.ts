@@ -1,4 +1,3 @@
-
 import { resolvers } from '../../../src/resolvers';
 import { UserModel } from '../../../src/models';
 import bcrypt from 'bcryptjs';
@@ -49,17 +48,13 @@ describe('Login Mutation', () => {
   it('should throw error if email not found', async () => {
     (UserModel.findOne as jest.Mock).mockResolvedValue(null);
 
-    await expect(
-      resolvers.Mutation.login(null, { login: input })
-    ).rejects.toThrow('Invalid email or password');
+    await expect(resolvers.Mutation.login(null, { login: input })).rejects.toThrow('Invalid email or password');
   });
 
   it('should throw error if password is incorrect', async () => {
     (UserModel.findOne as jest.Mock).mockResolvedValue(fakeUser);
     (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-    await expect(
-      resolvers.Mutation.login(null, { login: input })
-    ).rejects.toThrow('Invalid email or password');
+    await expect(resolvers.Mutation.login(null, { login: input })).rejects.toThrow('Invalid email or password');
   });
 });

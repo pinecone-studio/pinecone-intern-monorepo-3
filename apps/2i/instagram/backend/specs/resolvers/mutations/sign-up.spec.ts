@@ -1,8 +1,6 @@
-
 import { UserModel } from '../../../src/models';
 import bcrypt from 'bcryptjs';
 import { signup } from '../../../src/resolvers/mutations/sign-up';
-
 
 jest.mock('.../../../src/models', () => ({
   UserModel: {
@@ -26,13 +24,10 @@ describe('Signup Mutation without token', () => {
   });
 
   it('should create and return a user without token', async () => {
-    
     (UserModel.findOne as jest.Mock).mockResolvedValue(null);
 
-   
     (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
 
-    
     (UserModel.create as jest.Mock).mockResolvedValue({
       id: 'userId123',
       username: input.username,
@@ -63,8 +58,6 @@ describe('Signup Mutation without token', () => {
   it('should throw error if user already exists', async () => {
     (UserModel.findOne as jest.Mock).mockResolvedValue({ id: 'existingUserId' });
 
-    await expect(signup(null, { signup: input })).rejects.toThrow(
-      'Phone or email already in use'
-    );
+    await expect(signup(null, { signup: input })).rejects.toThrow('Phone or email already in use');
   });
 });
