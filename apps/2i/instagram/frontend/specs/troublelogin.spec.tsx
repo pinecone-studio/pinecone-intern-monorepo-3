@@ -9,7 +9,7 @@ import '@testing-library/jest-dom'
 jest.mock('next/navigation', () => ({ useRouter: jest.fn() }))
 jest.mock('@/generated', () => ({ useTroubleloginMutation: jest.fn() }))
 
-describe('TroublePage Component', () => {
+describe('TroublePage Components', () => {
   const mockPush = jest.fn()
   const mockTroublelogin = jest.fn()
 

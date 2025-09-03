@@ -37,7 +37,7 @@ const [ Sign,{ loading, error }] = useSignMutation()
           }
         }
       });
-      router.push('/login');
+      router.push('/troublelogin');
     } catch (err) {
       console.error('Failed to signup:', err);
     }
