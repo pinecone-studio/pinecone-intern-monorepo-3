@@ -45,9 +45,51 @@ query FollowRequests {
   }
 }
 
+mutation Sign($signup: SignupInput!) {
+  signup(signup: $signup) {
+    user { 
+      username
+      email
+      fullname
+    }
+  }
+}
+
 mutation Login($login: LoginInput!) {
   login(login: $login) {
     user {
+    email
+    }
+  }
+}
+
+
+mutation Forgetverify($forget: ForgetPass) {
+  forgetverify(forget: $forget) {
+    message
+  }
+}
+
+
+mutation UpdateProfile($update: UpdateProfileInput!) {
+  updateProfile(update: $update) {
+    username
+    profilePicture
+    gender
+    fullname
+    bio
+  }
+}
+
+query GetUser($id: ID!) {
+  getuser(id: $id) {
+    id
+    fullname
+    username
+    bio
+    gender
+    profilePicture
+      followers {
       id
       username
       email
@@ -55,41 +97,49 @@ mutation Login($login: LoginInput!) {
       bio
       gender
       profilePicture
-      isActive
       isPrivate
-      followers {
-        id
-        username
-        email
-        fullname
-        bio
-        gender
-        profilePicture
-        isActive
-        isPrivate
-      }
+    }
       following {
-        id
-        username
-        email
-        fullname
-        bio
-        gender
-        profilePicture
-        isActive
-        isPrivate
-      }
-      followRequests {
-        id
-        username
-        email
-        fullname
-        bio
-        gender
-        profilePicture
-        isActive
-        isPrivate
-      }
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isPrivate
+    }
+    followRequests {
+      id
+      username
+      email
+      fullname
+      bio
+      gender
+      profilePicture
+      isPrivate
     }
   }
 }
+
+
+mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
+   verifyOtp(verifyOtp: $verifyOtp) {
+    token
+    user {
+      id
+      email
+      fullname
+      username
+      gender
+    }
+    message
+  }
+}
+
+mutation Troublelogin($trouble: TroubleLoginInput!) {
+  troublelogin(trouble: $trouble) {
+    message
+  }
+}
+

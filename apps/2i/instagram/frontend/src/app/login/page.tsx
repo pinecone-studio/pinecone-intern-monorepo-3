@@ -2,47 +2,76 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useLoginMutation } from '@/generated';
+import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
+const router = useRouter();
+  const [ Login,{ loading, error }] = useLoginMutation()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData(prev => ({ ...prev, [name]: value }));
+    };
+  
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login
+
+       try {
+      await Login({
+        variables: {
+          login: {
+            email: formData.email,
+            password: formData.password
+          }
+        }
+      });
+      router.push('/');
+    } catch (err) {
+      console.error('Failed to login:', err);
+    }
+  
   };
+  if (loading) return <div>Loading...</div>
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center" data-cy="login-page">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white border border-gray-300 rounded-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Instagram</h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form  data-testid="login-form"  onSubmit={handleSubmit} className="space-y-4">
           <input
-            data-cy="email-input"
+           
             type="email"
+            name='email'
             placeholder="Phone number, username, or email"
             value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+           onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
           <input
-            data-cy="password-input"
+           
             type="password"
             placeholder="Password"
+            name='password'
             value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
-          <button data-cy="submit-button" type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
+          <button  type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
             Log in
           </button>
+          {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}
         </form>
 
         <div className="mt-6 text-center">
@@ -74,7 +103,7 @@ const LoginPage = () => {
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-blue-900 hover:underline">
+            <Link href="/signup" className="text-blue-900 hover:underline" >
               Sign up
             </Link>
           </p>

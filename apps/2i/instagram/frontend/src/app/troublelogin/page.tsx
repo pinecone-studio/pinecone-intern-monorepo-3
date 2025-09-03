@@ -3,15 +3,17 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useForgetverifyMutation } from '@/generated';
+import { useTroubleloginMutation } from '@/generated';
 
-const ForgotPage = () => {
+
+const TroublePage = () => {
   const router = useRouter();
  
-const [Forgetverify,{ loading, error }]= useForgetverifyMutation()
+const [Troublelogin,{ loading, error }]= useTroubleloginMutation()
 
 
   const [email, setEmail] = useState({
+   
     email:''
   });
 
@@ -25,22 +27,23 @@ const [Forgetverify,{ loading, error }]= useForgetverifyMutation()
     e.preventDefault();
  
        try {
-      await Forgetverify({
+      await Troublelogin({
         variables: {
-          forget: {
-            email: email.email,
+          trouble: {
+         email: email.email,
           }
         }
       });
-      router.push('/');
+      router.push('/otpverify');
     } catch (err) {
       console.error('Failed to signup:', err);
     }
   };
+
   if (loading) return <div>Loading...</div>
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center" data-cy="forgot-page">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center" >
       <div className="bg-white border border-gray-300 rounded-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
         
@@ -95,6 +98,6 @@ const [Forgetverify,{ loading, error }]= useForgetverifyMutation()
   );
 };
 
-export default ForgotPage;
+export default TroublePage;
 
 
