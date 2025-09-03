@@ -55,7 +55,7 @@ const [Forgetverify,{ loading, error }]= useForgetverifyMutation()
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            data-cy="email-input"
+            data-testid="email-input"
             type="email"
             placeholder="Email"
             name='email'
@@ -64,7 +64,7 @@ const [Forgetverify,{ loading, error }]= useForgetverifyMutation()
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
-          <button data-cy="submit-button" type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
+          <button data-cy="submit-button" type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors" data-testid="submit-button">
             Send reset link
           </button>
          {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}

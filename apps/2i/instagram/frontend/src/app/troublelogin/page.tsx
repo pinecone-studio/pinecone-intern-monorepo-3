@@ -43,7 +43,7 @@ const [Troublelogin,{ loading, error }]= useTroubleloginMutation()
   if (loading) return <div>Loading...</div>
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center" data-cy="forgot-page">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center" >
       <div className="bg-white border border-gray-300 rounded-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
         
@@ -58,7 +58,7 @@ const [Troublelogin,{ loading, error }]= useTroubleloginMutation()
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            data-cy="email-input"
+            data-testid="email-input"
             type="email"
             placeholder="Email"
             name='email'
@@ -67,7 +67,7 @@ const [Troublelogin,{ loading, error }]= useTroubleloginMutation()
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
-          <button data-cy="submit-button" type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
+          <button data-cy="submit-button" type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors" data-testid="submit-button">
             Send reset link
           </button>
          {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}
