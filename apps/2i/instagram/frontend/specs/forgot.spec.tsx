@@ -44,7 +44,7 @@ describe('ForgotPage Component', () => {
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'))
   })
 
-  it('handles submission failure gracefullys', async () => {
+  it('handles submission failure gracefully', async () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
     const user = userEvent.setup()
