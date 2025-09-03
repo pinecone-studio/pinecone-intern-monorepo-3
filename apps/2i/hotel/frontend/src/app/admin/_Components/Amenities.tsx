@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 export const Amenities = () => {
   const Amenities = ['Airport Shuttle', 'Free Wi-Fi', 'Swimming Pool', 'Spa', 'Fitness Center', 'Restaurant', 'Bar'];
+
+  
   return (
     <Card className="p-6">
       <div className="border-b flex justify-between">
