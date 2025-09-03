@@ -98,7 +98,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["instagram-frontend"],
+          "groups": ["instagram-2i-frontend"],
           "env": "prod"
         }
       }
