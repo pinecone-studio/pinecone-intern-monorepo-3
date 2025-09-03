@@ -1,7 +1,7 @@
 {
-  "name": "<%= name %>",
-  "$schema": "<%= parentDirs %>/node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "<%= directory %>",
+  "name": "ticket-frontend",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/2j/concert-ticket/frontend",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,11 +9,11 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/<%= directory %>"
+        "outputPath": "dist/apps/2j/concert-ticket/frontend"
       },
       "configurations": {
         "development": {
-          "outputPath": "dist/<%= directory %>"
+          "outputPath": "dist/apps/2j/concert-ticket/frontend"
         }
       },
       "dependsOn": [
@@ -27,17 +27,17 @@
       "executor": "@nx/next:server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "<%= name %>:build",
+        "buildTarget": "ticket-frontend:build",
         "dev": true
       },
       "configurations": {
         "development": {
-          "buildTarget": "<%= name %>:build:development",
+          "buildTarget": "ticket-frontend:build:development",
           "dev": true,
           "port": 4201
         },
         "production": {
-          "buildTarget": "<%= name %>:build:production",
+          "buildTarget": "ticket-frontend:build:production",
           "dev": false
         }
       },
@@ -49,13 +49,13 @@
         {
           "target": "export-env",
           "params": "forward"
-        },
+        }
       ]
     },
     "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "<%= name %>:build:production"
+        "buildTarget": "ticket-frontend:build:production"
       }
     },
     "test": {
@@ -78,7 +78,7 @@
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "groups": ["<%= name %>"],
+          "groups": ["ticket-frontend"],
           "env": "dev"
         }
       }
@@ -88,7 +88,7 @@
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["<%= name %>"],
+          "groups": ["ticket-frontend"],
           "env": "test"
         }
       }
@@ -98,7 +98,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["<%= name %>"],
+          "groups": ["ticket-frontend"],
           "env": "prod"
         }
       }
@@ -106,20 +106,20 @@
     "export-env": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["export $(cat <%= directory %>/.env | xargs)"],
+        "commands": ["export $(cat apps/2j/concert-ticket/frontend/.env | xargs)"],
         "parallel": false
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["rm -rf dist/<%= directory %>", "rm -rf .vercel"]
+        "commands": ["rm -rf dist/apps/2j/concert-ticket/frontend", "rm -rf .vercel"]
       }
     },
     "e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx nx execute-cypress scripts <%= name %>"],
+        "commands": ["npx nx execute-cypress scripts ticket-frontend"],
         "parallel": false
       },
       "dependsOn": [{ "target": "cypress:clean" }]
@@ -127,7 +127,7 @@
     "e2e:open": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx nx cypress <%= name %> --watch"],
+        "commands": ["npx nx cypress ticket-frontend --watch"],
         "parallel": false
       },
       "dependsOn": [{ "target": "cypress:clean" }]
@@ -135,17 +135,22 @@
     "cypress:clean": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["rm -rf <%= directory %>/cypress/results", "rm -rf <%= directory %>/.nyc_output", "rm -rf <%= directory %>/.cy", "rm -rf <%= directory %>/coverage"],
+        "commands": [
+          "rm -rf apps/2j/concert-ticket/frontend/cypress/results",
+          "rm -rf apps/2j/concert-ticket/frontend/.nyc_output",
+          "rm -rf apps/2j/concert-ticket/frontend/.cy",
+          "rm -rf apps/2j/concert-ticket/frontend/coverage"
+        ],
         "parallel": false
       }
     },
     "cypress": {
       "executor": "@nx/cypress:cypress",
       "options": {
-        "cypressConfig": "<%= directory %>/cypress.config.ts",
+        "cypressConfig": "apps/2j/concert-ticket/frontend/cypress.config.ts",
         "testingType": "e2e",
         "reporter": "mochawesome",
-        "devServerTarget": "<%= name %>:serve:development",
+        "devServerTarget": "ticket-frontend:serve:development",
         "browser": "chrome"
       },
       "dependsOn": [
@@ -163,7 +168,7 @@
     "cypress-generate-all-page-json": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx ts-node <%= directory %>/cypress/utils/get-all-pages.ts"],
+        "commands": ["npx ts-node apps/2j/concert-ticket/frontend/cypress/utils/get-all-pages.ts"],
         "parallel": false
       }
     },
@@ -172,7 +177,7 @@
       "options": {
         "commands": [
           "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
-          "npx env-cmd -f <%= directory %>/.env vercel build --token=$VERCEL_TOKEN",
+          "npx env-cmd -f apps/2j/concert-ticket/frontend/.env vercel build --token=$VERCEL_TOKEN",
           "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
         ],
         "parallel": false
@@ -223,15 +228,15 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["<%= directory %>/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/2j/concert-ticket/frontend/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "codegen:prod": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./<%= directory %>/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2j/concert-ticket/frontend/codegen.ts"]
       },
-       "dependsOn": [
+      "dependsOn": [
         {
           "target": "get-secrets:prod"
         }
@@ -240,16 +245,16 @@
     "codegen:dev": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./<%= directory %>/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2j/concert-ticket/frontend/codegen.ts"]
       },
       "dependsOn": [{ "target": "get-secrets:dev" }]
     },
     "codegen:testing": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./<%= directory %>/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2j/concert-ticket/frontend/codegen.ts"]
       },
-       "dependsOn": [
+      "dependsOn": [
         {
           "target": "get-secrets:testing"
         }
@@ -284,5 +289,3 @@
   },
   "tags": []
 }
-
-
