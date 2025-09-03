@@ -15,6 +15,8 @@ export interface User extends Document {
   isVerified: boolean;
   verificationToken?: string;
   isPrivate: boolean;
+   otp?: string;     
+  otpExpires?: Date;  
 }
 
 const UserSchema: Schema<User> = new mongoose.Schema({
@@ -22,6 +24,14 @@ const UserSchema: Schema<User> = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   fullname: { type: String, required: true },
   password: { type: String, required: true },
+otp: {
+  type: String,
+  required: false,
+},
+otpExpires: {
+  type: Date,
+  required: false,
+},
   bio: { type: String, default: '' },
   gender: {
     type: String,

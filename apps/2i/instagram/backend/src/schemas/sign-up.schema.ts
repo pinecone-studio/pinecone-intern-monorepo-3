@@ -13,20 +13,9 @@ export const typeDefs = gql`
     password: String!
   }
 
-  input TroubleLoginInput {
-    email: String!
-  }
-
   input ForgetPass {
      email: String!
   }
- 
-
-  input VerifyOtpInput {
-    otp: String!
-  }
-
-
 
   input UpdatePrivacyInput {
     isPrivate: Boolean!
@@ -39,6 +28,9 @@ input UpdatePasswordInput {
 
   input CreateStoryInput {
     mediaUrl: String!
+  }
+  input VerifyOtpInput {
+    otp : String!
   }
 
   input UpdateProfileInput {
@@ -54,7 +46,6 @@ input UpdatePasswordInput {
     login(login: LoginInput!): AuthPayload!
     updateProfile(update: UpdateProfileInput!): User!
     forgetverify(forget: ForgetPass):TroubleLoginResponse!
-    troublelogin(trouble: TroubleLoginInput!): TroubleLoginResponse!
     updatePassword(input: UpdatePasswordInput):updatepasswordResponse!
     forgetverifyOtp(verifyOtp: VerifyOtpInput!):forgetOtpResponse!
     verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
@@ -86,6 +77,7 @@ input UpdatePasswordInput {
     message: String!
   }
   type AuthPayload {
+    token: String!
     user: User!
   }
 
@@ -119,5 +111,7 @@ input UpdatePasswordInput {
     followers: [User!]
     following: [User!]
     followRequests: [User!]
+    otp: String    
+  otpExpires: String 
   }
 `;
