@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-
+ 
 export const typeDefs = gql`
   input SignupInput {
     email: String!
@@ -7,38 +7,48 @@ export const typeDefs = gql`
     fullname: String!
     username: String!
   }
-
+ 
   input LoginInput {
     email: String!
     password: String!
   }
-
+ 
   input TroubleLoginInput {
     email: String!
   }
-  type TroubleLoginResponse {
-    message: String!
+ 
+  input ForgetPass {
+     email: String!
   }
-
+ 
+ 
   input VerifyOtpInput {
     otp: String!
   }
-
+ 
+ 
+ 
   input UpdatePrivacyInput {
     isPrivate: Boolean!
   }
-
-  input Postdocument {
-    message: String
+ 
+input UpdatePasswordInput {
+  email: String!
+  password: String!
+}
+ 
+  input CreateStoryInput {
+    mediaUrl: String!
   }
-
+ 
   input UpdateProfileInput {
     bio: String
     gender: String
     profilePicture: String
     fullname: String
+    username: String
   }
-
+ 
   type Mutation {
     signup(signup: SignupInput!): AuthPayload!
     login(login: LoginInput!): AuthPayload!
@@ -55,38 +65,39 @@ export const typeDefs = gql`
     createStory(input: CreateStoryInput!): Story!
     markStorySeen(storyId: ID!): Story!
   }
-
+ 
   type Query {
     getuser(id: ID!): User!
     me: User!
     followRequests: [User!]!
     getStories: [Story!]!
     getUserStories(userId: ID!): [Story!]!
+    followers(userId: ID!): [User!]!
   }
-
+ 
    type TroubleLoginResponse {
     message: String!
   }
-
+ 
    type updatepasswordResponse {
     message: String!
   }
-
+ 
    type forgetOtpResponse {
     message: String!
   }
   type AuthPayload {
     user: User!
   }
-
-
-
+ 
+ 
+ 
   type MessageResponse {
     token: String!
     message: String!
     user: User!
   }
-
+ 
   type Story {
     id: ID!
     user: User!
@@ -95,7 +106,7 @@ export const typeDefs = gql`
     expiresAt: String!
     viewers: [User!]!
   }
-
+ 
   type User {
     id: ID!
     username: String!

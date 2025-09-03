@@ -11,6 +11,7 @@ import {  updatePrivacy } from './mutations/public-private';
 import { signup } from './mutations/sign-up';
 import { troublelogin } from './mutations/trouble-login';
 import { updatePassword } from './mutations/up-password';
+import { followers } from './queries/get-followers';
 
 
 
