@@ -8,6 +8,8 @@ jest.mock('../../../src/models', () => ({
 }));
 
 describe('getuser resolver', () => {
+
+  
   it('should return user if found', async () => {
    
     const mockUser = {

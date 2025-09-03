@@ -40,7 +40,6 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createpost(post: Postdocument): postResponse!
     signup(signup: SignupInput!): AuthPayload!
     login(login: LoginInput!): AuthPayload!
     updateProfile(update: UpdateProfileInput!): User!
@@ -55,7 +54,8 @@ export const typeDefs = gql`
   type Query {
     getuser(id: ID!): User!
     me: User!
-    followRequests: [User!]!
+
+    followers(id: ID!): [User!]!
   }
 
   type postResponse {
