@@ -19,15 +19,21 @@ export const signup = async (_: unknown, { signup }: { signup: SignupInput }) =>
     throw new Error('Phone or email already in use');
   }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+      if (existingUser) {
+        throw new Error('Phone or email already in use')
+      }
 
-  const user = await UserModel.create({
-    fullname,
-    username,
-    email,
-    password: hashedPassword,
-  });
-  return {
-    user,
-  };
-};
+      const hashedPassword = await bcrypt.hash(password, 10)
+
+      const user = await UserModel.create({
+          fullname,
+          username,
+          email,
+          password: hashedPassword,   
+      })
+      return {
+         user,
+      }
+    }
+  
+  

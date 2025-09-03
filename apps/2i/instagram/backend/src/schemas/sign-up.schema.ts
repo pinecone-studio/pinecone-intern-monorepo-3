@@ -43,35 +43,57 @@ export const typeDefs = gql`
     signup(signup: SignupInput!): AuthPayload!
     login(login: LoginInput!): AuthPayload!
     updateProfile(update: UpdateProfileInput!): User!
+    forgetverify(forget: ForgetPass):TroubleLoginResponse!
     troublelogin(trouble: TroubleLoginInput!): TroubleLoginResponse!
+    updatePassword(input: UpdatePasswordInput):updatepasswordResponse!
+    forgetverifyOtp(verifyOtp: VerifyOtpInput!):forgetOtpResponse!
     verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
     updatePrivacy(input: UpdatePrivacyInput!): User!
     sendFollowRequest(userId: ID!): MessageResponse!
     respondFollowRequest(userId: ID!, accept: Boolean!): MessageResponse!
     unfollowUser(userId: ID!): MessageResponse!
+    createStory(input: CreateStoryInput!): Story!
+    markStorySeen(storyId: ID!): Story!
   }
 
   type Query {
     getuser(id: ID!): User!
     me: User!
-
-    followers(id: ID!): [User!]!
+    followRequests: [User!]!
+    getStories: [Story!]!
+    getUserStories(userId: ID!): [Story!]!
   }
 
-  type postResponse {
-    token: String!
+   type TroubleLoginResponse {
     message: String!
-    user: User!
   }
 
+   type updatepasswordResponse {
+    message: String!
+  }
+
+   type forgetOtpResponse {
+    message: String!
+  }
   type AuthPayload {
     user: User!
   }
+
+
 
   type MessageResponse {
     token: String!
     message: String!
     user: User!
+  }
+
+  type Story {
+    id: ID!
+    user: User!
+    mediaUrl: String!
+    createdAt: String!
+    expiresAt: String!
+    viewers: [User!]!
   }
 
   type User {

@@ -9,6 +9,25 @@ export const typeDefs = gql`
     bedroom: [String]!
     more: [String]!
   }
+
+  input PolicyInput {
+    title: String
+    description: String
+  }
+
+  input UpdateHotelInput {
+    hotelName: String
+    description: String
+    phoneNumber: String
+    about: String
+    location: String
+    languages: [String]
+    starRating: String
+    image: [String]
+    amenities: [String]
+    policies: [PolicyInput]
+  }
+
   type Hotel {
     _id: ID!
     hotelName: String!
@@ -21,9 +40,9 @@ export const typeDefs = gql`
   }
 
   type UserRating {
-    rating: Int!
+    rating: Int
     comment: String
-    hotel: String!
+    hotel: ID
   }
   type Amenities {
     bathroom: [String]!
@@ -45,28 +64,57 @@ export const typeDefs = gql`
     amenities: Amenities!
   }
 
+  type EmergencyNumber {
+    phoneNumber: String
+    relation: String
+  }
+
+  type User {
+    _id: ID!
+    email: String!
+    firstName: String
+    lastName: String
+    birthDate: String
+    phoneNumber: String
+    emergencyNumber: EmergencyNumber
+  }
+
+  type SignUpResponse {
+    message: String!
+  }
+
+  type UpdateResponse {
+    message: String!
+  }
+
   type Query {
     getRoomById(id: ID!): Room
     getRooms: [Room]!
-    getHotel: [Hotel!]!
+    getHotel: [Hotel]!
     getHotelById(id: ID!): Hotel!
     getAvailableRooms(id: ID!): Room
+    getUserData(id: ID): [User]!
   }
 
   type Booking {
     _id: ID!
     user: ID!
-    hotel: Hotel!
+    hotel: Hotel
     room: Room!
     checkIn: String!
     checkOut: String!
+    getHotelById(id: ID!): Hotel
   }
 
   type Mutation {
     addRoom(hotelName: ID!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomImgs: [String]!, roomInfos: [String]!, amenities: AmenitiesInput!): Room!
-    addHotel(hotelName: String!, description: String!, location: String!, starRating: String!, image: [String]!): Hotel!
-    updateHotel(id: ID!, hotelName: String!, description: String!, location: String!, starRating: String): Hotel!
+    addHotel(hotelName: String!, description: String!, starRating: String!, phoneNumber: String!): Hotel!
+    updateHotel(id: ID!, input: UpdateHotelInput!): UpdateResponse!
     deleteHotel(id: ID!): Boolean!
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
+    uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
+    userSignUp(email: String!, password: String!): SignUpResponse!
+    roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String): [Booking]!
+    bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String): Booking!
   }
 `;

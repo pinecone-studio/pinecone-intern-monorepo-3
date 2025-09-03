@@ -1,14 +1,22 @@
-import mongoose, { Schema } from 'mongoose';
+import { model, models, Schema } from 'mongoose';
 
-type HotelType = {
+export type HotelType = {
   _id: Schema.Types.ObjectId;
   hotelName: string;
   description: string;
+  phoneNumber: string;
+  about: string;
   rooms: Schema.Types.ObjectId[];
   location: string;
+  languages: string[];
   starRating: string;
   userRating?: UserRatingType[];
   image?: string[];
+  amenities: string[];
+  policies: {
+    title: string;
+    description: string;
+  }[];
 };
 
 export type UserRatingType = {
@@ -18,24 +26,39 @@ export type UserRatingType = {
   comment?: string;
 };
 
-const userRatingSchema = new mongoose.Schema<UserRatingType>({
-  // user: { type: Schema.Types.ObjectId, ref: 'User', required: false },
-  rating: { type: Number, required: false },
-  hotel: { type: Schema.Types.ObjectId, ref: 'Hotel', required: false },
-  comment: { type: String, required: false },
-});
+const userRatingSchema = new Schema<UserRatingType>(
+  {
+    // user: { type: Schema.Types.ObjectId, ref: 'User', required: false },
+    rating: { type: Number, required: false },
+    hotel: { type: Schema.Types.ObjectId, ref: 'Hotel', required: false },
+    comment: { type: String, required: false },
+  },
+  {
+    _id: false,
+  }
+);
 
-const hotelSchema = new mongoose.Schema<HotelType>(
+const hotelSchema = new Schema<HotelType>(
   {
     hotelName: { type: String, required: true },
-    description: { type: String, required: false },
+    description: { type: String, required: true },
+    about: { type: String, required: false },
+    languages: [{ type: String, required: false }],
+    phoneNumber: { type: String, required: true },
     rooms: [{ type: Schema.Types.ObjectId, ref: 'Rooms' }],
-    location: { type: String, required: true },
+    amenities: [{ type: String, required: false }],
+    policies: [
+      {
+        title: { type: String, required: false },
+        description: { type: String, required: false },
+      },
+    ],
+    location: { type: String, required: false },
     starRating: { type: String, required: true },
     userRating: [userRatingSchema],
-    image: [{ type: String, require: true }],
+    image: [{ type: String, require: false }],
   },
   { timestamps: true }
 );
 
-export const HotelModel = mongoose.models.Hotel || mongoose.model<HotelType>('Hotel', hotelSchema);
+export const HotelModel = models.Hotel || model<HotelType>('Hotel', hotelSchema);
