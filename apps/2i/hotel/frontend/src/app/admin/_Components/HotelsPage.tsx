@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { LocationSelectWithSearch } from './LocationSelect';
 import { RoomTypeSelect } from './RoomSelected';
 import { SelectStar } from './SelectStart';
+import { AddHotel } from './AddHotel';
 
 type HotelType = {
   __typename?: 'Hotel' | undefined;
@@ -35,7 +36,7 @@ export const HotelsPage = () => {
   const [selectedStar, setSelectedStar] = useState<string>('Star Rating');
   // const [selectedRating, setSelectedRating] = useState<string>('User Rating');
   const [searchTerm, setSearchTerm] = useState('');
-  const [, setShowAddHotel] = useState<boolean>(false);
+  const [showAddHotel, setShowAddHotel] = useState<boolean>(false);
   const { data } = useGetHotelQuery();
 
   console.log(data);
@@ -82,6 +83,9 @@ export const HotelsPage = () => {
       ?.filter(Boolean)
       .join(', ');
 
+  if (showAddHotel) {
+    return <AddHotel />;
+  }
   return (
     <main className="flex-1 backdrop-brightness-125 p-6 rounded-md">
       <TopBar onAddHotel={() => setShowAddHotel(true)} />

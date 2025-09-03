@@ -5,3 +5,4 @@ export * from './get-hotel-query';
 export * from './get-room-calendar';
 export * from './get-user-query';
 export * from './get-booking-query';
+export * from './get-filtered-query';

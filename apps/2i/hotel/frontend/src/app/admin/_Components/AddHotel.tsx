@@ -11,11 +11,9 @@ import { AddPolicies } from './_addhotel/AddPolicies';
 import { AddQuestions } from './_addhotel/AddQuestions';
 import { AddLocation } from './_addhotel/AddLocation';
 import { AddImage } from './_addhotel/AddImages';
-type AddHotelProps = {
-  onBack: () => void;
-};
-export const AddHotel = ({ onBack }: AddHotelProps) => {
-  const [backButton] = useState<string | null>(null);
+
+export const AddHotel = () => {
+  const [backButton, setBackButton] = useState<string | null>(null);
   if (backButton) {
     return <HotelsPage />;
   }
@@ -26,7 +24,7 @@ export const AddHotel = ({ onBack }: AddHotelProps) => {
         <Button
           variant={'outline'}
           onClick={() => {
-            onBack();
+            setBackButton('back');
           }}
         >
           <ChevronLeft className="w-4 h-4" />

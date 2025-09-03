@@ -16,6 +16,7 @@ import { DetailsQuestions } from './DetailsQuestions';
 type PropsType = {
   hotelId: string;
 };
+
 export const HotelDetail = ({ hotelId }: PropsType) => {
   const [backButton, setBackButton] = useState<string | null>(null);
   if (backButton) {

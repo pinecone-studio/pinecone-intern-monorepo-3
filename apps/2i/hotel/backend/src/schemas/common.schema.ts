@@ -94,7 +94,8 @@ export const typeDefs = gql`
     getHotelById(id: ID!): Hotel!
     getAvailableRooms(id: ID!): [Room]!
     getUserData(id: ID): [User]!
-    getBooking(userId:ID):Booking
+    getBooking(userId: ID): Booking
+    getFiltered: [Hotel]!
   }
 
   type Booking {
@@ -119,7 +120,7 @@ export const typeDefs = gql`
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
     uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
     userSignUp(email: String!, password: String!): SignUpResponse!
-    roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights:Int, pricePerNight:Int, taxes:Float,totalPrice:Float): Booking!
-    bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String,nights:Int, pricePerNight:Int, taxes:Float, totalPrice:Float): Booking!
+    roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
+    bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
   }
 `;
