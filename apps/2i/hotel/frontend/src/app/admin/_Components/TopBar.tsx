@@ -11,7 +11,7 @@ export const TopBar = ({ onAddHotel }: Props) => {
       <button className="flex items-center gap-2 rounded-md   px-4 py-2 text-sm text-black" onClick={() => onAddHotel()}>
         <Plus className="h-4 w-4" />
         Add Hotel
-      </button>{' '}
+      </button>
     </div>
   );
 };

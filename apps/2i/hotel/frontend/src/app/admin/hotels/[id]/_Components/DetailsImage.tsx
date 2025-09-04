@@ -9,8 +9,13 @@ import { ImageOff, Plus, Trash2 } from 'lucide-react';
 import { useUpload } from '@/components/providers/ImageProvider';
 import { useUploadToCloudinaryMutation } from '@/generated';
 import Image from 'next/image';
+import { HotelType } from '@/app/admin/_Components/HotelsPage';
 
-export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
+type DetailImageType = {
+  hotelData: HotelType;
+};
+
+export const DetailImage = ({ hotelData }: DetailImageType) => {
   const [uploadToCloudinaryMutation] = useUploadToCloudinaryMutation();
   const [open, setOpen] = useState(false);
   const [imgFiles, setImgFiles] = useState<File[]>([]);
@@ -39,7 +44,7 @@ export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
   };
 
   const handleUpload = async () => {
-    if (imgFiles.length === 0 || !hotelId) return;
+    if (imgFiles.length === 0 || !hotelData._id) return;
 
     try {
       const uploadedUrls = await uploadFiles(imgFiles);
@@ -49,7 +54,7 @@ export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
       const finalImages = [...imgUrls, ...uploadedUrls];
       const { data } = await uploadToCloudinaryMutation({
         variables: {
-          hotelId: hotelId,
+          hotelId: hotelData._id,
           image: finalImages,
         },
       });
@@ -76,6 +81,18 @@ export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
     handleRemove(i);
   };
 
+  // map доторх callback-ийг нэг удаа зарлаж ашиглая (function declaration тул arrow биш)
+  const renderPreview = (img: string, index: number) => {
+    return (
+      <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
+        <Image src={img} alt={`preview-${index}`} width={220} height={40} style={{ objectFit: 'cover' }} />
+        <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" data-index={index} onClick={onRemoveClick}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
+      </div>
+    );
+  };
+
   return (
     <Card className="pt-4 pr-6 pb-6 pl-6">
       <div className="flex items-center justify-between">
@@ -96,23 +113,10 @@ export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
               </Label>
             </div>
 
-            {preview.length > 0 && (
-              <div className="grid grid-cols-5 gap-4 mb-6">
-                {preview.map((img, index) => {
-                  return (
-                    <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
-                      <Image src={img} alt={`preview-${index}`} width={220} height={40} style={{ objectFit: 'cover' }} />
-                      <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" data-index={index} onClick={onRemoveClick}>
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+            {preview.length > 0 && <div className="grid grid-cols-5 gap-4 mb-6">{preview.map(renderPreview)}</div>}
 
             <div className="flex justify-between">
-              <DialogClose asChild>
+              <DialogClose>
                 <Button variant="secondary">Cancel</Button>
               </DialogClose>
               <Button variant="hotel" type="button" onClick={handleUpload}>

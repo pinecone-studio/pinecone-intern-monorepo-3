@@ -1,10 +1,9 @@
 'use client';
 
-import { createContext, Dispatch, PropsWithChildren, SetStateAction } from 'react';
-import { useContext, useState } from 'react';
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState } from 'react';
 
 type UploadContextType = {
-  uploadImage: (_file: File, _hotelId: string) => Promise<string | null>;
+  uploadImage: (_file: File) => Promise<string | null>;
   uploading: boolean;
   setUploading: Dispatch<SetStateAction<boolean>>;
 };
@@ -14,11 +13,10 @@ const UploadContext = createContext<UploadContextType | undefined>(undefined);
 export const UploadProvider = ({ children }: PropsWithChildren) => {
   const [uploading, setUploading] = useState(false);
 
-  const uploadImage = async (file: File, _hotelId: string): Promise<string | null> => {
+  const uploadImage = async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'hotel-booking');
-    formData.append('cloud_name', 'dip9rajob');
 
     try {
       setUploading(true);
@@ -29,29 +27,12 @@ export const UploadProvider = ({ children }: PropsWithChildren) => {
 
       const data = await res.json();
 
-      if (!process.env.BACKEND_URI) {
-        throw new Error('Missing BACKEND_URI environment variable');
+      if (data.secure_url) {
+        return data.secure_url;
+      } else {
+        console.error('No secure_url in response:', data);
+        return null;
       }
-
-      await fetch(process.env.BACKEND_URI, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: `
-            mutation UploadImage($hotelId:ID!, $image:[String!]) {
-              uploadImage(hotelId:$hotelId, image:$image) {
-                # return fields here
-              }
-            }
-          `,
-          variables: {
-            hotelId: _hotelId,
-            image: [data.secure_url],
-          },
-        }),
-      });
-
-      return data.secure_url;
     } catch (err) {
       console.error('Upload error:', err);
       return null;

@@ -40,7 +40,7 @@ export const AppSidebar = () => {
           </li>
         </ul>
       </nav>
-      =
+
       <div className="flex items-center justify-between border-t px-3 py-4">
         <div className="flex items-center gap-2">
           <Image src="/photo.png" alt="admin" width={32} height={28} className="rounded-full" />

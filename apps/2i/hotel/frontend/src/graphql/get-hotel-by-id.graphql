@@ -1,10 +1,10 @@
-query GetHotel {
-  getHotel {
+query GetHotelById($getHotelByIdId: ID!) {
+  getHotelById(id: $getHotelByIdId) {
     _id
     hotelName
     description
-
     location
+
     starRating
     userRating {
       rating
