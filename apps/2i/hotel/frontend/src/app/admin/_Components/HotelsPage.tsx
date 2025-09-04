@@ -37,6 +37,7 @@ export const HotelsPage = () => {
   // const [selectedRating, setSelectedRating] = useState<string>('User Rating');
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddHotel, setShowAddHotel] = useState<boolean>(false);
+
   const { data } = useGetHotelQuery();
 
   console.log(data);

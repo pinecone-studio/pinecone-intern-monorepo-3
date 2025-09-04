@@ -1,0 +1,13 @@
+query GetFilteredRoom($filter: RoomFilterInput) {
+  getFilterRoom(filter: $filter) {
+    roomType
+    amenities {
+      technology
+      bathroom
+      foodAndDrink
+      accessibility
+      bedroom
+      more
+    }
+  }
+}

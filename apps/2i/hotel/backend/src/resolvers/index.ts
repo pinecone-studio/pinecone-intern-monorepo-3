@@ -21,5 +21,6 @@ export const resolvers = {
     getUserData: Query.getUserData,
     getBooking: Query.getBooking,
     getFiltered: Query.getFiltered,
+    getFilterRoom: Query.getFilterRoom,
   },
 };

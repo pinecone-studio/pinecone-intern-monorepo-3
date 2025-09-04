@@ -12,9 +12,8 @@ describe('getFiltered', () => {
     {
       _id: '001',
       hotelName: 'Test Hotel',
-      location: 'Test Location',
+      locations: 'Test Location',
       starRating: '5',
-      roomType: 'Deluxe',
     },
   ];
 
@@ -32,8 +31,7 @@ describe('getFiltered', () => {
     const result = await getFiltered(null, args);
 
     expect(HotelModel.find).toHaveBeenCalledWith({
-      roomType: 'Deluxe',
-      location: 'Test Location',
+      locations: 'Test Location',
       starRating: '5',
     });
 
@@ -41,9 +39,8 @@ describe('getFiltered', () => {
       {
         id: '001',
         hotelName: 'Test Hotel',
-        location: 'Test Location',
+        locations: 'Test Location',
         starRating: '5',
-        roomType: 'Deluxe',
       },
     ]);
   });
