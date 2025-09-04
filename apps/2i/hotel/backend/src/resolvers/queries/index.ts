@@ -7,3 +7,5 @@ export * from './get-user-query';
 export * from './get-booking-query';
 export * from './get-filtered-query';
 export * from './get-filter-room-query';
+export * from './get-mostBookedHotels';
+export * from './get-popularHotels-query';

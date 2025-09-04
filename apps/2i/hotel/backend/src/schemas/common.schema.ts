@@ -102,6 +102,8 @@ export const typeDefs = gql`
     getBooking(userId: ID): Booking
     getFiltered: [Hotel]!
     getFilterRoom(filter: RoomFilterInput): [Room]!
+    getpopularHotels: [Hotel!]!
+    getmostBookedHotels: [Hotel!]!
   }
 
   type Booking {

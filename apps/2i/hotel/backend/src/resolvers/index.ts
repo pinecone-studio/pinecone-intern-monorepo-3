@@ -22,5 +22,7 @@ export const resolvers = {
     getBooking: Query.getBooking,
     getFiltered: Query.getFiltered,
     getFilterRoom: Query.getFilterRoom,
+    getpopularHotels: Query.getpopularHotels,
+    getmostBookedHotels: Query.getmostBookedHotels,
   },
 };
