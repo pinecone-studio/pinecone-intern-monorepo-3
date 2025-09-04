@@ -16,7 +16,7 @@ const formSchema = z.object({
 
 export const AddHotelAmenities = ({ hotelId }: { hotelId: string | undefined }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [updateHotelMutation] = useUpdateHotelMutation();
+  // const [updateHotelMutation] = useUpdateHotelMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,6 +52,7 @@ export const AddHotelAmenities = ({ hotelId }: { hotelId: string | undefined }) 
     //   console.log(err);
     // }
     console.log(values);
+    console.log(hotelId);
   };
 
   return (
