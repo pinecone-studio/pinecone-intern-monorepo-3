@@ -57,6 +57,7 @@ mutation Sign($signup: SignupInput!) {
 
 mutation Login($login: LoginInput!) {
   login(login: $login) {
+    token
     user {
       email
     }

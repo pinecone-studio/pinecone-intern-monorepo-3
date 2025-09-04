@@ -70,7 +70,7 @@ beforeEach(() => {
           }
         }
       })
-      await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/troublelogin'))
+      await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/otpverify'))
     })
 
     it('handles error state gracefully', async () => {

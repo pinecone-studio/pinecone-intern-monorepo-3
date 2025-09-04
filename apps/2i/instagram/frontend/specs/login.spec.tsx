@@ -23,10 +23,14 @@ describe('LoginPage Component', () => {
     const button = screen.getByRole('button', { name: /log in/i })
     return { user, email, password, button }
   }
-  beforeEach(() => {
+   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
     (useLoginMutation as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: null }])
+    const store: Record<string, string> = {}
+    jest.spyOn(window.localStorage.__proto__, 'setItem').mockImplementation((key, value) => {
+      store[key] = value as string
+    }); jest.spyOn(window.localStorage.__proto__, 'getItem').mockImplementation((key) => store[key] || null)
   })
   describe('UI Rendering', () => {
     it('renders main elements', () => {
@@ -79,14 +83,10 @@ describe('LoginPage Component', () => {
     })
     it('maintains focus order', async () => {
       const { user } = await setup()
-      await user.tab()
-      expect(screen.getByPlaceholderText('Phone number, username, or email')).toHaveFocus()
-      await user.tab()
-      expect(screen.getByPlaceholderText('Password')).toHaveFocus()
-      await user.tab()
-      expect(screen.getByRole('button', { name: /log in/i })).toHaveFocus()
-      await user.tab()
-      expect(screen.getByText('Forgot password?')).toHaveFocus()
+      await user.tab(); expect(screen.getByPlaceholderText('Phone number, username, or email')).toHaveFocus()
+      await user.tab();expect(screen.getByPlaceholderText('Password')).toHaveFocus()
+      await user.tab();expect(screen.getByRole('button', { name: /log in/i })).toHaveFocus()
+      await user.tab();expect(screen.getByText('Forgot password?')).toHaveFocus()
     })
   })
   describe('Authentication', () => {
@@ -95,38 +95,36 @@ describe('LoginPage Component', () => {
       mockLogin.mockResolvedValue({ data: { login: { success: true } } })
       await user.type(email, 'test@example.com')
       await user.type(password, 'password123')
-      await user.click(button)
-      expect(mockLogin).toHaveBeenCalledWith({
+      await user.click(button);expect(mockLogin).toHaveBeenCalledWith({
         variables: { login: { email: 'test@example.com', password: 'password123' } }
       })
     })
-    it('navigates on successful login', async () => {
+        it('navigates and stores token on successful login', async () => {
       const { user, email, password, button } = await setup()
-      mockLogin.mockResolvedValue({ data: { login: { success: true } } })
+      mockLogin.mockResolvedValue({ data: { login: { token: 'fake-token' } } })
       await user.type(email, 'success@test.com')
       await user.type(password, 'correctpass')
       await user.click(button)
-      await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'))
+      await waitFor(() => {
+        expect(window.localStorage.setItem).toHaveBeenCalledWith('token', 'fake-token')
+        expect(mockPush).toHaveBeenCalledWith('/')
+      })
     })
     it('handles login failure gracefully', async () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       const spy = jest.spyOn(console, "error").mockImplementation(() => {})
       const { user, email, password, button } = await setup()
       mockLogin.mockRejectedValue(new Error('Invalid credentials'))
-      await user.type(email, 'wrong@test.com')
-      await user.type(password, 'wrongpass')
-      await user.click(button)
-      await waitFor(() => expect(mockLogin).toHaveBeenCalled())
+      await user.type(email, 'wrong@test.com'); await user.type(password, 'wrongpass')
+      await user.click(button);await waitFor(() => expect(mockLogin).toHaveBeenCalled())
       expect(mockPush).not.toHaveBeenCalled()
       spy.mockRestore()
     })
     it('prevents submission with incomplete form', async () => {
       const { user, email, password, button } = await setup()
-      await user.click(button)
-      expect(mockLogin).not.toHaveBeenCalled()
+      await user.click(button); expect(mockLogin).not.toHaveBeenCalled()
       await user.type(email, 'onlyemail@test.com')
-      await user.click(button)
-      expect(mockLogin).not.toHaveBeenCalled()
+      await user.click(button); expect(mockLogin).not.toHaveBeenCalled()
       await user.clear(email); await user.type(password, 'onlypass')
       await user.click(button)
       expect(mockLogin).not.toHaveBeenCalled()
@@ -144,15 +142,13 @@ describe('LoginPage Component', () => {
   describe('Loading and Error States', () => {
     it('displays loading', () => {
       (useLoginMutation as jest.Mock).mockReturnValue([mockLogin, { loading: true, error: null }]);
-      render(<LoginPage />)
-      expect(screen.getByText('Loading...')).toBeInTheDocument()
+      render(<LoginPage />);expect(screen.getByText('Loading...')).toBeInTheDocument()
       expect(screen.queryByTestId('login-form')).not.toBeInTheDocument()
     })
     it('shows form with error', () => {
       const testError = { message: 'Login failed' };
       (useLoginMutation as jest.Mock).mockReturnValue([mockLogin, { loading: false, error: testError }])
-      render(<LoginPage />)
-      expect(screen.getByText('Error: Login failed')).toBeInTheDocument()
+      render(<LoginPage />); expect(screen.getByText('Error: Login failed')).toBeInTheDocument()
       expect(screen.getByTestId('login-form')).toBeInTheDocument()
       expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument()
     })

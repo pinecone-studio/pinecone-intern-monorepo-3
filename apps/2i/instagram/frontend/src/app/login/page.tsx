@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useLoginMutation } from '@/generated';
+import { useLoginMutation} from '@/generated';
 import { useRouter } from 'next/navigation';
 
 const LoginPage = () => {
@@ -24,20 +24,28 @@ const router = useRouter();
     e.preventDefault();
 
        try {
-      await Login({
+      const response = await Login({
         variables: {
-          login: {
+         login: {
             email: formData.email,
             password: formData.password
           }
         }
       });
-      router.push('/');
-    } catch (err) {
-      console.error('Failed to login:', err);
+            const result = response.data?.login;
+
+    if ( result?.token) {
+    
+      localStorage.setItem("token", result.token);
+      router.push("/");
     }
-  
+
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong!");
+  } 
   };
+
   if (loading) return <div>Loading...</div>
 
   return (
