@@ -61,7 +61,6 @@ const  InstagramOtpVerify = () => {
     const result = response.data?.verifyOtp;
 
     if (result?.message && result?.token) {
-    
       localStorage.setItem("token", result.token);
       router.push("/");
     } else {
