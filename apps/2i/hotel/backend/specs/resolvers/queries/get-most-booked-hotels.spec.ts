@@ -58,11 +58,16 @@ describe('getmostBookedHotels', () => {
   });
 
   it('should return empty array when aggregation fails', async () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // suppress console.error
+
     (BookingModel.aggregate as jest.Mock).mockRejectedValue(new Error('Aggregation failed'));
 
     const result = await getmostBookedHotels();
 
-    expect(result).toEqual([]); // function catches error, does not throw
+    expect(result).toEqual([]);
     expect(BookingModel.aggregate).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalled(); // хүсвэл шалгаж болно
+
+    consoleSpy.mockRestore();
   });
 });
