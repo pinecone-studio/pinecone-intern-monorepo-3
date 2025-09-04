@@ -34,7 +34,7 @@ export const FixedHotelPage = () => {
                   <div className="w-[48px] h-[48px]">
                     <Image src={hotel?.image?.[0] || ''} alt={hotel?.hotelName || ''} width={50} height={50} className=" rounded-sm w-full h-full object-cover" />
                   </div>
-                  <Button variant="link" onClick={() => handleHotelById(hotel?._id!)}>
+                  <Button variant="link" onClick={() => hotel?._id && handleHotelById(hotel._id)}>
                     {hotel?.hotelName}
                   </Button>
                 </div>
