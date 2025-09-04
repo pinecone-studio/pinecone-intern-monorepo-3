@@ -1,0 +1,10 @@
+query GetFiltered {
+  getFiltered {
+    hotelName
+    rooms {
+      roomType
+    }
+    location
+    starRating
+  }
+}

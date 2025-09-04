@@ -64,6 +64,11 @@ export const typeDefs = gql`
     amenities: Amenities!
   }
 
+  input RoomFilterInput {
+    roomType: String
+    amenities: AmenitiesInput
+  }
+
   type EmergencyNumber {
     phoneNumber: String
     relation: String
@@ -96,6 +101,7 @@ export const typeDefs = gql`
     getUserData(id: ID): [User]!
     getBooking(userId: ID): Booking
     getFiltered: [Hotel]!
+    getFilterRoom(filter: RoomFilterInput): [Room]!
   }
 
   type Booking {
