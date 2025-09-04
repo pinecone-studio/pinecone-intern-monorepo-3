@@ -7,7 +7,7 @@ import { X } from 'lucide-react';
 
 type TagInputProps = {
   value: string[];
-  onChange: (value: string[]) => void;
+  onChange: (_value: string[]) => void;
   placeholder?: string;
 };
 

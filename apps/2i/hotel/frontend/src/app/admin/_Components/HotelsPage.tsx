@@ -13,20 +13,17 @@ import Link from 'next/link';
 export type HotelType = {
   _id: string;
   hotelName: string;
-  description: string;
+  description?: string | null;
   location: string;
+  phoneNumber?: string | null;
+  about?: string | null;
+  languages?: string[] | null;
   starRating: string;
   image: string[];
-  userRating: {
-    rating?: number;
-    comment?: string;
-    hotel?: string;
-  }[];
-  rooms: {
-    roomType?: string;
-    price?: number;
-    availability?: number;
-  }[];
+  // amenities?: AmenitiesType | null;
+  // policies?: PolicyType[] | null;
+  // userRating: UserRatingType[];
+  // rooms: RoomType[];
 };
 
 export const HotelsPage = () => {

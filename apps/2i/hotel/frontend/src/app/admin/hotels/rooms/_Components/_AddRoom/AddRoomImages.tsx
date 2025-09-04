@@ -9,7 +9,7 @@ import { useState } from 'react';
 export const AddRoomImages = () => {
   const [preview, setPreview] = useState<string[]>([]);
   const [imgFiles, setImgFiles] = useState<File[]>([]);
-  const [imgUrl, setImgUrl] = useState<string[]>([]);
+  const [, setImgUrl] = useState<string[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;

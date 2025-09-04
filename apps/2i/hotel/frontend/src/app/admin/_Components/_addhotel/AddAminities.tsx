@@ -37,20 +37,21 @@ export const AddHotelAmenities = ({ hotelId }: { hotelId: string | undefined }) 
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const { data } = await updateHotelMutation({
-        variables: {
-          updateHotelId: hotelId!,
-          input: {
-            amenities: values.amenities,
-          },
-        },
-      });
-      console.log(data?.updateHotel);
-      setOpen(false);
-    } catch (err) {
-      console.log(err);
-    }
+    // try {
+    //   const { data } = await updateHotelMutation({
+    //     variables: {
+    //       updateHotelId: hotelId!,
+    //       input: {
+    //         amenities: values.amenities,
+    //       },
+    //     },
+    //   });
+    //   console.log(data?.updateHotel);
+    //   setOpen(false);
+    // } catch (err) {
+    //   console.log(err);
+    // }
+    console.log(values);
   };
 
   return (
