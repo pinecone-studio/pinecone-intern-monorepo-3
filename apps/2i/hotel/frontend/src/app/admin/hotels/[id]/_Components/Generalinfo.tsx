@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Phone, Star } from 'lucide-react';
-import { HotelType } from './HotelsPage';
+import { HotelType } from '@/app/admin/_Components/HotelsPage';
 
 type HotelCompType = {
   data?: HotelType | undefined | null;

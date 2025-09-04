@@ -49,7 +49,7 @@ export const AddAbout = ({ hotelId }: { hotelId: string | undefined }) => {
           <h1 className="text-lg font-semibold text-gray-800">About This Property</h1>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button variant="link" className="text-[#2563EB] text-lg">
               Edit
             </Button>

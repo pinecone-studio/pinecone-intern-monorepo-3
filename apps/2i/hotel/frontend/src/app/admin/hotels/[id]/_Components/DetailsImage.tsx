@@ -9,7 +9,7 @@ import { ImageOff, Plus, Trash2 } from 'lucide-react';
 import { useUpload } from '@/components/providers/ImageProvider';
 import { useUploadToCloudinaryMutation } from '@/generated';
 import Image from 'next/image';
-import { HotelType } from './HotelsPage';
+import { HotelType } from '@/app/admin/_Components/HotelsPage';
 
 type DetailImageType = {
   hotelData: HotelType;

@@ -76,18 +76,6 @@ export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
     handleRemove(i);
   };
 
-  // map доторх callback-ийг нэг удаа зарлаж ашиглая (function declaration тул arrow биш)
-  const renderPreview = (img: string, index: number) => {
-    return (
-      <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
-        <Image src={img} alt={`preview-${index}`} width={220} height={40} style={{ objectFit: 'cover' }} />
-        <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" data-index={index} onClick={onRemoveClick}>
-          <Trash2 className="w-4 h-4" />
-        </Button>
-      </div>
-    );
-  };
-
   return (
     <Card className="pt-4 pr-6 pb-6 pl-6">
       <div className="flex items-center justify-between">
@@ -108,10 +96,23 @@ export const AddImage = ({ hotelId }: { hotelId: string | undefined }) => {
               </Label>
             </div>
 
-            {preview.length > 0 && <div className="grid grid-cols-5 gap-4 mb-6">{preview.map(renderPreview)}</div>}
+            {preview.length > 0 && (
+              <div className="grid grid-cols-5 gap-4 mb-6">
+                {preview.map((img, index) => {
+                  return (
+                    <div key={index} className="relative w-full h-32 border rounded overflow-hidden">
+                      <Image src={img} alt={`preview-${index}`} width={220} height={40} style={{ objectFit: 'cover' }} />
+                      <Button size="sm" variant="destructive" className="absolute top-1 right-1 p-1 rounded-full" data-index={index} onClick={onRemoveClick}>
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             <div className="flex justify-between">
-              <DialogClose>
+              <DialogClose asChild>
                 <Button variant="secondary">Cancel</Button>
               </DialogClose>
               <Button variant="hotel" type="button" onClick={handleUpload}>

@@ -5,8 +5,8 @@ import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGetHotelByIdQuery } from '@/generated';
 
-import { HotelsPage } from './HotelsPage';
-import { HotelType } from './HotelsPage';
+import { HotelsPage } from '../../../_Components/HotelsPage';
+import { HotelType } from '../../../_Components/HotelsPage';
 import { LeftColumn } from './LeftColumn';
 import { RightColumn } from './RightColumn';
 
