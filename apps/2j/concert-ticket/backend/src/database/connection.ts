@@ -30,7 +30,7 @@ export async function connectDatabase() {
     });
     
   } catch (error) {
-    console.error('❌ Database холбогдох боломжгүй:', error);
+    console.error('❌ Database холбогдох боломжгүй байна:', error);
     process.exit(1);
   }
 }
@@ -40,7 +40,7 @@ export async function disconnectDatabase() {
     await mongoose.disconnect();
     console.log('✅ MongoDB холболт тасарлаа');
   } catch (error) {
-    console.error('❌ Database холболт тасаргахад алдаа:', error);
+    console.error('❌ Database холболт тасрахад алдаа:', error);
   }
 }
 
