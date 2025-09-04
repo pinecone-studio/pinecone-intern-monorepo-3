@@ -3,14 +3,7 @@ query GetHotel {
     _id
     hotelName
     description
-    phoneNumber
-    about
-    policies {
-      title
-      description
-    }
-    languages
-    amenities
+
     location
     starRating
     userRating {

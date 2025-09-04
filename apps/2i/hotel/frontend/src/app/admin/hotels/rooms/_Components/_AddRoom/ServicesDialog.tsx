@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 
 type ServicesDialogType = {
   form: UseFormReturn<FormType>;
-  onSubmit: (values: FormType) => void;
+  onSubmit: (_values: FormType) => void;
 };
 
 const amenities: { label: string; name: keyof FormType }[] = [

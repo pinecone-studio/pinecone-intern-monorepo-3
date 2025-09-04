@@ -11,21 +11,21 @@ import React from 'react';
 
 type ImagesDialogType = {
   preview: string[];
-  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleRemove: (index: number) => void;
+  handleFileChange: (_e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemove: (_index: number) => void;
   imgFiles: File[];
 };
 
-export const ImagesDialog = ({ preview, handleFileChange, handleRemove, imgFiles }: ImagesDialogType) => {
-  const { uploading, uploadImage } = useUpload();
+export const ImagesDialog = ({ preview, handleFileChange, handleRemove }: ImagesDialogType) => {
+  const { uploading } = useUpload();
 
-  const uploadFiles = (files: File[]) => {
-    const uploaded = files.map(async (file) => {
-      return await uploadImage(file);
-    });
-  };
+  // const uploadFiles = (files: File[]) => {
+  //   const uploaded = files.map(async (file) => {
+  //     return await uploadImage(file);
+  //   });
+  // };
 
-  const handleUplaod = async () => {};
+  // const handleUplaod = async () => {};
 
   return (
     <DialogContent className="w-[1160px] max-h-[800px] overflow-y-scroll">
@@ -41,7 +41,7 @@ export const ImagesDialog = ({ preview, handleFileChange, handleRemove, imgFiles
         </Label>
         {preview.map((el, index) => {
           return (
-            <div className="w-[552px] h-[300px]">
+            <div className="w-[552px] h-[300px]" key={index}>
               <Image src={el} className="w-full h-full object-cover rounded-md" width={500} height={300} alt={`${index} photo`} />
               <Button size="icon" className="w-[24px] h-[24px] translate-x-[520px] -translate-y-[290px]" variant="destructive" onClick={() => handleRemove(index)}>
                 <Trash2 className="w-[16px]" />

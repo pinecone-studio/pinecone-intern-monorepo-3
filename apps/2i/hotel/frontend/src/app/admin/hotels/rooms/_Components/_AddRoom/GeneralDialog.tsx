@@ -11,7 +11,7 @@ import { FormType } from './AddRoomGeneral';
 
 type GeneralDialogType = {
   form: UseFormReturn<FormType>;
-  onSubmit: (values: FormType) => void;
+  onSubmit: (_values: FormType) => void;
 };
 
 export const GeneralDialog = ({ form, onSubmit }: GeneralDialogType) => {

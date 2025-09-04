@@ -5,8 +5,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DoorClosed, Plus } from 'lucide-react';
-import { useState } from 'react';
-import { AddRoom } from '../../hotels/rooms/_Components/_AddRoom/AddRoom';
 import { useRouter } from 'next/navigation';
 
 export const AddHotelRoom = () => {
