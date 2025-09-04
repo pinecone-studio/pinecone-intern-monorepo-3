@@ -1,9 +1,13 @@
-import { HotelsPage } from '../_Components/HotelsPage';
+import { FixedHotelPage } from '../_Components/FixedHotelPage';
+import { SearchInput } from '../_Components/SearchInput';
+import { TopBar } from '../_Components/TopBar';
 
 const HotelHomePage = () => {
   return (
-    <div>
-      <HotelsPage />
+    <div className="flex flex-col gap-4">
+      <TopBar />
+      <SearchInput />
+      <FixedHotelPage />
     </div>
   );
 };

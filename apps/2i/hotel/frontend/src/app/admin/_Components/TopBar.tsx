@@ -1,17 +1,21 @@
+'use client';
+
+import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
-type Props = {
-  onAddHotel: () => void;
-};
-
-export const TopBar = ({ onAddHotel }: Props) => {
+export const TopBar = () => {
+  const router = useRouter();
+  const handleCreateHotel = () => {
+    router.push('/admin/hotels/create-hotel');
+  };
   return (
     <div className="flex items-center justify-between mb-6">
       <h1 className="text-xl font-semibold">Hotels</h1>
-      <button className="flex items-center gap-2 rounded-md   px-4 py-2 text-sm text-black" onClick={() => onAddHotel()}>
+      <Button variant="hotel" onClick={handleCreateHotel}>
         <Plus className="h-4 w-4" />
         Add Hotel
-      </button>
+      </Button>
     </div>
   );
 };
