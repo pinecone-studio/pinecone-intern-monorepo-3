@@ -1,11 +1,19 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
 
 export const RoomTypes = () => {
+  const { hotelId } = useParams();
+  const router = useRouter();
+  const handleAddRoom = () => {
+    router.push(`/admin/hotels/${hotelId}/rooms/add-room`);
+  };
   return (
     <Card className="bg-white p-6 rounded-lg shadow-sm">
       <Table>
@@ -13,8 +21,7 @@ export const RoomTypes = () => {
           <div className="mb-4">
             <h1 className="text-lg font-semibold text-gray-800">Room Types</h1>
           </div>
-          <Button variant="ghost" className="text-[#2563EB]">
-            {' '}
+          <Button variant="ghost" className="text-[#2563EB]" onClick={handleAddRoom}>
             <Plus />
             Add Room
           </Button>

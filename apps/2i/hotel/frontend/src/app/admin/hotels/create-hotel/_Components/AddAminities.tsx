@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-// import { useUpdateHotelMutation } from '@/generated';
+import { useUpdateHotelMutation } from '@/generated';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,7 +16,7 @@ const formSchema = z.object({
 
 export const AddHotelAmenities = ({ hotelId }: { hotelId: string | undefined }) => {
   const [open, setOpen] = useState<boolean>(false);
-  // const [updateHotelMutation] = useUpdateHotelMutation();
+  const [updateHotelMutation] = useUpdateHotelMutation();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,22 +37,20 @@ export const AddHotelAmenities = ({ hotelId }: { hotelId: string | undefined }) 
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // try {
-    //   const { data } = await updateHotelMutation({
-    //     variables: {
-    //       updateHotelId: hotelId!,
-    //       input: {
-    //         amenities: values.amenities,
-    //       },
-    //     },
-    //   });
-    //   console.log(data?.updateHotel);
-    //   setOpen(false);
-    // } catch (err) {
-    //   console.log(err);
-    // }
-    console.log(values);
-    console.log(hotelId);
+    try {
+      const { data } = await updateHotelMutation({
+        variables: {
+          updateHotelId: hotelId!,
+          input: {
+            amenities: values.amenities,
+          },
+        },
+      });
+      console.log(data?.updateHotel);
+      setOpen(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (

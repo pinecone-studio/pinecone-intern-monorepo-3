@@ -4,7 +4,14 @@ query GetHotelById($getHotelByIdId: ID!) {
     hotelName
     description
     location
-
+    phoneNumber
+    about
+    languages
+    policies {
+      title
+      description
+    }
+    amenities
     starRating
     userRating {
       rating

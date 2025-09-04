@@ -1,33 +1,31 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
-import { HotelsPage } from './HotelsPage';
-import { AddHotelRoom } from './_addhotel/AddRoom';
-import { AddHotelGeneral } from './_addhotel/AddGeneral';
-import { AddHotelAmenities } from './_addhotel/AddAminities';
-import { AddAbout } from './_addhotel/AddAbout';
-import { AddPolicies } from './_addhotel/AddPolicies';
-import { AddQuestions } from './_addhotel/AddQuestions';
-import { AddLocation } from './_addhotel/AddLocation';
-import { AddImage } from './_addhotel/AddImages';
+import { AddHotelRoom } from './AddRoom';
+import { AddHotelGeneral } from './AddGeneral';
+import { AddHotelAmenities } from './AddAminities';
+import { AddAbout } from './AddAbout';
+import { AddPolicies } from './AddPolicies';
+import { AddQuestions } from './AddQuestions';
+import { AddLocation } from './AddLocation';
+import { AddImage } from './AddImages';
+import { useRouter } from 'next/navigation';
 
 export const AddHotel = () => {
-  const [backButton, setBackButton] = useState<string | null>(null);
+  const router = useRouter();
+
+  const backHotels = () => {
+    router.push('/admin/hotels');
+  };
   const [hotelId, setHotelId] = useState<string | undefined>(undefined);
 
-  if (backButton) {
-    return <HotelsPage />;
-  }
   return (
     <div className=" space-y-6 p-6">
       <div className="flex gap-3 items-center">
         {' '}
-        <Button
-          variant={'outline'}
-          onClick={() => {
-            setBackButton('back');
-          }}
-        >
+        <Button variant={'outline'} onClick={backHotels}>
           <ChevronLeft className="w-4 h-4" />
         </Button>
         <h1 className="font-bold text-[16px]">Please add new Hotel</h1>
@@ -37,7 +35,7 @@ export const AddHotel = () => {
         {/* left */}
         <div className="lg:col-span-2 flex flex-col gap-4">
           <AddHotelGeneral setHotelId={setHotelId} />
-          <AddHotelRoom />
+          <AddHotelRoom hotelId={hotelId} />
           <AddHotelAmenities hotelId={hotelId} />
           <AddAbout hotelId={hotelId} />
           <AddPolicies hotelId={hotelId} />

@@ -7,13 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DoorClosed, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-export const AddHotelRoom = () => {
+export const AddHotelRoom = ({ hotelId }: { hotelId: string | undefined }) => {
   const router = useRouter();
 
   const handleRoom = () => {
-    router.push('/admin/hotels/rooms');
+    router.push(`/admin/hotels/${hotelId}/rooms/add-room`);
   };
-
+  // if (!hotelId) return <p>Loading...</p>;
   return (
     <Card className="bg-white p-6 rounded-lg shadow-sm">
       {/* Header хэсэг */}
