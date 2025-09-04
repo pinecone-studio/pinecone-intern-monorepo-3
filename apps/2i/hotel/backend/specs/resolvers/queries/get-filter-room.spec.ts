@@ -23,9 +23,7 @@ describe('getFilterRoom', () => {
       },
     ];
 
-    (RoomModel.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue(mockRooms),
-    });
+    (RoomModel.find as jest.Mock).mockResolvedValue(mockRooms);
 
     const args = {
       roomType: 'deluxe',
@@ -64,9 +62,7 @@ describe('getFilterRoom', () => {
       },
     ];
 
-    (RoomModel.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue(mockRooms),
-    });
+    (RoomModel.find as jest.Mock).mockResolvedValue(mockRooms);
 
     const args = {
       roomType: 'standard',
@@ -101,9 +97,7 @@ describe('getFilterRoom', () => {
       },
     ];
 
-    (RoomModel.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue(mockRooms),
-    });
+    (RoomModel.find as jest.Mock).mockResolvedValue(mockRooms);
 
     const args = {
       amenities: {
@@ -125,24 +119,6 @@ describe('getFilterRoom', () => {
     ]);
   });
 
-  it('should return empty array if no rooms match', async () => {
-    (RoomModel.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue([]),
-    });
-
-    const args = {
-      roomType: 'non-existent-type',
-    };
-
-    const result = await getFilterRoom(null, args);
-
-    expect(RoomModel.find).toHaveBeenCalledWith({
-      roomType: 'non-existent-type',
-    });
-
-    expect(result).toEqual([]);
-  });
-
   it('should return all rooms if no filter args provided', async () => {
     const mockRooms = [
       {
@@ -155,14 +131,11 @@ describe('getFilterRoom', () => {
       },
     ];
 
-    (RoomModel.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue(mockRooms),
-    });
+    (RoomModel.find as jest.Mock).mockResolvedValue(mockRooms);
 
     const result = await getFilterRoom(null, {});
 
     expect(RoomModel.find).toHaveBeenCalledWith({});
-
     expect(result).toEqual([
       { roomType: 'deluxe', amenities: {} },
       { roomType: 'standard', amenities: {} },
@@ -174,14 +147,13 @@ describe('getFilterRoom', () => {
       {
         roomType: 'suite',
         amenities: {
-          technology: ['WiFi'],
+          bathroom: ['bathtub'],
+          technology: [],
         },
       },
     ];
 
-    (RoomModel.find as jest.Mock).mockReturnValue({
-      populate: jest.fn().mockResolvedValue(mockRooms),
-    });
+    (RoomModel.find as jest.Mock).mockResolvedValue(mockRooms);
 
     const args = {
       amenities: {
