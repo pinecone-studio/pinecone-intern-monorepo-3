@@ -1,7 +1,7 @@
 import { RoomModel } from '../../../src/models/room-model';
 import { updateRoom } from '../../../src/resolvers/mutations/update-room';
 
-jest.mock('../../models/room-model', () => ({
+jest.mock('../../../src/models/room-model', () => ({
   RoomModel: {
     findByIdAndUpdate: jest.fn(),
   },
