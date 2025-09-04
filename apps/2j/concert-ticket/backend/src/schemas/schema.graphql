@@ -1,0 +1,230 @@
+# ==============================
+# Concert Ticket Booking Schema
+# ==============================
+
+scalar Date
+scalar Time
+scalar Money
+scalar Image
+
+directive @auth(requires: UserRole = USER) on FIELD_DEFINITION | OBJECT
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum TicketType {
+  VIP
+  REGULAR
+  GENERAL_ADMISSION
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  CANCELLATION_REQUESTED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+type User {
+  id: ID!
+  email: String!
+  username: String
+  phoneNumber: String
+  address: String
+  role: UserRole!
+  createdAt: String!
+  updatedAt: String!
+  bookings: [Booking!]
+}
+
+type Artist {
+  id: ID!
+  name: String!
+  bio: String
+  image: String
+  concerts: [Concert!]
+}
+
+type TicketCategory {
+  id: ID!
+  type: TicketType!
+  totalQuantity: Int!
+  availableQuantity: Int!
+  unitPrice: Float!
+  description: String
+  features: [String!]
+}
+
+type Concert {
+  id: ID!
+  name: String!
+  description: String
+  venue: String!
+  date: String!
+  time: String!
+  mainArtist: Artist!
+  otherArtists: [Artist!]
+  image: String
+  isActive: Boolean!
+  ticketCategories: [TicketCategory!]!
+  totalAvailableTickets: Int!
+}
+
+type Booking {
+  id: ID!
+  user: User!
+  concert: Concert!
+  ticketCategory: TicketCategory!
+  quantity: Int!
+  unitPrice: Float!
+  totalPrice: Float!
+  bookingDate: String!
+  status: BookingStatus!
+  paymentStatus: PaymentStatus!
+  canCancel: Boolean!
+  cancellationDeadline: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
+type SearchResult {
+  concerts: [Concert!]!
+  totalCount: Int!
+  hasMore: Boolean!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  username: String
+  phoneNumber: String
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input ResetPasswordInput {
+  token: String!
+  newPassword: String!
+}
+
+input ArtistInput {
+  name: String!
+  bio: String
+  image: String
+}
+
+input TicketCategoryInput {
+  type: TicketType!
+  totalQuantity: Int!
+  unitPrice: Float!
+  description: String
+  features: [String!]
+}
+
+input CreateConcertInput {
+  name: String!
+  description: String
+  venue: String!
+  date: String!
+  time: String!
+  mainArtistId: ID!
+  otherArtistIds: [ID!]
+  image: String
+  ticketCategories: [TicketCategoryInput!]!
+}
+
+input UpdateConcertInput {
+  name: String
+  description: String
+  venue: String
+  date: String
+  time: String
+  mainArtistId: ID
+  otherArtistIds: [ID!]
+  image: String
+  ticketCategories: [TicketCategoryInput!]
+}
+
+input CreateBookingInput {
+  concertId: ID!
+  ticketCategoryId: ID!
+  quantity: Int!
+}
+
+input UpdateUserInput {
+  username: String
+  phoneNumber: String
+  address: String
+}
+
+input ConcertFilterInput {
+  name: String
+  artistId: ID
+  date: String
+  ticketType: TicketType
+  hasAvailableTickets: Boolean
+  minPrice: Float
+  maxPrice: Float
+}
+
+input PaginationInput {
+  limit: Int = 10
+  offset: Int = 0
+}
+
+type Query {
+  concerts(filter: ConcertFilterInput, pagination: PaginationInput): SearchResult!
+  concert(id: ID!): Concert
+  myBookings: [Booking!]! @auth(requires: USER)
+  user(id: ID!): User @auth(requires: ADMIN)
+  users(pagination: PaginationInput): [User!]! @auth(requires: ADMIN)
+  artists: [Artist!]!
+  artist(id: ID!): Artist
+  checkTicketAvailability(concertId: ID!, ticketCategoryId: ID!): TicketCategory!
+  searchSuggestions(query: String!): [String!]!
+}
+
+type Mutation {
+  register(input: RegisterInput!): AuthPayload!
+  login(input: LoginInput!): AuthPayload!
+  forgotPassword(email: String!): String!
+  resetPassword(input: ResetPasswordInput!): AuthPayload!
+  logout: Boolean!
+
+  createConcert(input: CreateConcertInput!): Concert! @auth(requires: ADMIN)
+  updateConcert(id: ID!, input: UpdateConcertInput!): Concert! @auth(requires: ADMIN)
+  deleteConcert(id: ID!): Boolean! @auth(requires: ADMIN)
+
+  createArtist(input: ArtistInput!): Artist! @auth(requires: ADMIN)
+  updateArtist(id: ID!, input: ArtistInput!): Artist! @auth(requires: ADMIN)
+  deleteArtist(id: ID!, input: ArtistInput!): Boolean! @auth(requires: ADMIN)
+
+  createBooking(input: CreateBookingInput!): Booking! @auth(requires: USER)
+  cancelBooking(id: ID!): Booking! @auth(requires: USER)
+  requestCancellation(id: ID!): Booking! @auth(requires: USER)
+
+  updateUserProfile(input: UpdateUserInput!): User! @auth(requires: USER)
+  updateTicketQuantity(ticketCategoryId: ID!, newQuantity: Int!): TicketCategory! @auth(requires: ADMIN)
+  updateTicketPrice(ticketCategoryId: ID!, newPrice: Float!): TicketCategory! @auth(requires: ADMIN)
+}
+
+type Subscription {
+  ticketAvailabilityChanged(concertId: ID!): TicketCategory!
+  newBookingCreated: Booking! @auth(requires: ADMIN)
+  bookingCancelled: Booking! @auth(requires: ADMIN)
+}
