@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 
 export const typeDefs = gql`
+  # ---------- Inputs ----------
   input AmenitiesInput {
     bathroom: [String]!
     foodAndDrink: [String]!
@@ -28,15 +29,26 @@ export const typeDefs = gql`
     policies: [PolicyInput]
   }
 
+  # ---------- Types ----------
   type Hotel {
     _id: ID!
     hotelName: String!
     description: String
+    phoneNumber: String
+    about: String
     location: String!
+    languages: [String]
     starRating: String!
-    userRating: [UserRating]!
     image: [String!]!
+    amenities: Amenities
+    policies: [Policy]
+    userRating: [UserRating]!
     rooms: [Room]!
+  }
+
+  type Policy {
+    title: String
+    description: String
   }
 
   type UserRating {
@@ -44,6 +56,7 @@ export const typeDefs = gql`
     comment: String
     hotel: ID
   }
+
   type Amenities {
     bathroom: [String]!
     foodAndDrink: [String]!
@@ -92,6 +105,7 @@ export const typeDefs = gql`
     message: String!
   }
 
+  # ---------- Queries ----------
   type Query {
     getRoomById(id: ID!): Room
     getRooms: [Room]!
@@ -118,15 +132,23 @@ export const typeDefs = gql`
     totalPrice: Float
   }
 
+  # ---------- Mutations ----------
   type Mutation {
     addRoom(hotelName: ID!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomImgs: [String]!, roomInfos: [String]!, amenities: AmenitiesInput!): Room!
+
     addHotel(hotelName: String!, description: String!, starRating: String!, phoneNumber: String!): Hotel!
+
     updateHotel(id: ID!, input: UpdateHotelInput!): UpdateResponse!
     deleteHotel(id: ID!): Boolean!
+
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
+
     uploadToCloudinary(hotelId: ID!, image: [String]): Hotel!
+
     userSignUp(email: String!, password: String!): SignUpResponse!
+
     roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
+
     bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
   }
 `;

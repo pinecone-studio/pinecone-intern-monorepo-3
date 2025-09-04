@@ -9,7 +9,7 @@ type AmenitiesType = {
   more: string[];
 };
 
-type RoomType = {
+export type RoomType = {
   _id: Schema.Types.ObjectId;
   hotelName: Schema.Types.ObjectId;
   roomNumber: string;
