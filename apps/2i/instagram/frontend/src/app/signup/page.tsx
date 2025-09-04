@@ -37,7 +37,7 @@ const [ Sign,{ loading, error }] = useSignMutation()
           }
         }
       });
-      router.push('/troublelogin');
+      router.push('/otpverify');
     } catch (err) {
       console.error('Failed to signup:', err);
     }

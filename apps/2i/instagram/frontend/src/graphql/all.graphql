@@ -57,6 +57,7 @@ mutation Sign($signup: SignupInput!) {
 
 mutation Login($login: LoginInput!) {
   login(login: $login) {
+    token
     user {
     email
     }
@@ -137,9 +138,4 @@ mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
   }
 }
 
-mutation Troublelogin($trouble: TroubleLoginInput!) {
-  troublelogin(trouble: $trouble) {
-    message
-  }
-}
 
