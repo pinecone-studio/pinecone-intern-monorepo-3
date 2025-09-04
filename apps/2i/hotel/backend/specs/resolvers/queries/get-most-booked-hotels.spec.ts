@@ -33,7 +33,7 @@ describe('getmostBookedHotels', () => {
     expect(BookingModel.aggregate).toHaveBeenCalledWith([
       {
         $group: {
-          _id: '$hotelName',
+          _id: '$hotel', // Corrected field to group by hotel ID
           count: { $sum: 1 },
         },
       },
@@ -42,7 +42,7 @@ describe('getmostBookedHotels', () => {
       {
         $lookup: {
           from: 'hotels',
-          localField: '_id',
+          localField: '_id', // Corrected localField to match the group's _id
           foreignField: '_id',
           as: 'hotel',
         },
@@ -50,7 +50,6 @@ describe('getmostBookedHotels', () => {
       { $unwind: '$hotel' },
     ]);
 
-    // since getmostBookedHotels() maps to b.hotel
     expect(result).toEqual([
       { _id: 'hotel1', hotelName: 'Hotel One', location: 'UB' },
       { _id: 'hotel2', hotelName: 'Hotel Two', location: 'NY' },
@@ -58,7 +57,7 @@ describe('getmostBookedHotels', () => {
   });
 
   it('should return empty array when aggregation fails', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {}); // suppress console.error
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     (BookingModel.aggregate as jest.Mock).mockRejectedValue(new Error('Aggregation failed'));
 
@@ -66,7 +65,7 @@ describe('getmostBookedHotels', () => {
 
     expect(result).toEqual([]);
     expect(BookingModel.aggregate).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalled(); // хүсвэл шалгаж болно
+    expect(consoleSpy).toHaveBeenCalled();
 
     consoleSpy.mockRestore();
   });

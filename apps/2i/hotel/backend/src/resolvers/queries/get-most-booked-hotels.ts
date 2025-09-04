@@ -2,10 +2,10 @@ import { BookingModel } from '../../models/room-booking-model';
 
 export const getmostBookedHotels = async () => {
   try {
-    const bookings = await BookingModel.aggregate([
+    const mostBookedHotels = await BookingModel.aggregate([
       {
         $group: {
-          _id: '$hotelName',
+          _id: '$hotel',
           count: { $sum: 1 },
         },
       },
@@ -21,10 +21,9 @@ export const getmostBookedHotels = async () => {
       },
       { $unwind: '$hotel' },
     ]);
-
-    return bookings?.map((b) => b.hotel) || [];
-  } catch (error) {
-    console.error('Failed to fetch most booked hotels:', error);
+    return mostBookedHotels.map((b) => b.hotel);
+  } catch (err) {
+    console.error(err);
     return [];
   }
 };

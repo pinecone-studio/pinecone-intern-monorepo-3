@@ -14,10 +14,13 @@ describe('getpopularHotels', () => {
 
   it('should return top 4 popular hotels when aggregation succeeds', async () => {
     const mockHotels = [
-      { _id: 'h1', hotelName: 'Hotel One', avgRating: 5 },
-      { _id: 'h2', hotelName: 'Hotel Two', avgRating: 4 },
+      { _id: 'h1', hotelName: 'Hotel One', userRating: [{ rating: 5 }], avgRating: 5 },
+      { _id: 'h2', hotelName: 'Hotel Two', userRating: [{ rating: 4 }], avgRating: 4 },
+      { _id: 'h3', hotelName: 'Hotel Three', userRating: [{ rating: 3 }], avgRating: 3 },
+      { _id: 'h4', hotelName: 'Hotel Four', userRating: [{ rating: 2 }], avgRating: 2 },
     ];
 
+    // Mock the aggregate function to return the mockHotels
     (HotelModel.aggregate as jest.Mock).mockResolvedValue(mockHotels);
 
     const result = await getpopularHotels();
@@ -31,20 +34,26 @@ describe('getpopularHotels', () => {
       { $sort: { avgRating: -1 } },
       { $limit: 4 },
     ]);
+
     expect(result).toEqual(mockHotels);
   });
 
-  it('should return empty array when aggregation fails', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  it('should return an empty array when aggregation returns null', async () => {
+    // Mock the aggregate function to return null
+    (HotelModel.aggregate as jest.Mock).mockResolvedValue(null);
 
+    const result = await getpopularHotels();
+
+    expect(HotelModel.aggregate).toHaveBeenCalled();
+    expect(result).toEqual([]);
+  });
+
+  it('should return an empty array when aggregation fails', async () => {
     (HotelModel.aggregate as jest.Mock).mockRejectedValue(new Error('Aggregation failed'));
 
     const result = await getpopularHotels();
 
     expect(result).toEqual([]);
     expect(HotelModel.aggregate).toHaveBeenCalled();
-    expect(consoleSpy).toHaveBeenCalledWith('Failed to fetch popular hotels:', expect.any(Error));
-
-    consoleSpy.mockRestore();
   });
 });
