@@ -18,24 +18,21 @@ export const typeDefs = gql`
   }
 
   input ForgetPass {
-     email: String!
+    email: String!
   }
- 
 
   input VerifyOtpInput {
     otp: String!
   }
 
-
-
   input UpdatePrivacyInput {
     isPrivate: Boolean!
   }
 
-input UpdatePasswordInput {
-  email: String!
-  password: String!
-}
+  input UpdatePasswordInput {
+    email: String!
+    password: String!
+  }
 
   input CreateStoryInput {
     mediaUrl: String!
@@ -51,12 +48,12 @@ input UpdatePasswordInput {
 
   type Mutation {
     signup(signup: SignupInput!): AuthPayload!
-    login(login: LoginInput!): AuthPayload!
+    login(login: LoginInput!): LoginResult!
     updateProfile(update: UpdateProfileInput!): User!
-    forgetverify(forget: ForgetPass):TroubleLoginResponse!
+    forgetverify(forget: ForgetPass): TroubleLoginResponse!
     troublelogin(trouble: TroubleLoginInput!): TroubleLoginResponse!
-    updatePassword(input: UpdatePasswordInput):updatepasswordResponse!
-    forgetverifyOtp(verifyOtp: VerifyOtpInput!):forgetOtpResponse!
+    updatePassword(input: UpdatePasswordInput): updatepasswordResponse!
+    forgetverifyOtp(verifyOtp: VerifyOtpInput!): forgetOtpResponse!
     verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
     updatePrivacy(input: UpdatePrivacyInput!): User!
     sendFollowRequest(userId: ID!): MessageResponse!
@@ -64,6 +61,8 @@ input UpdatePasswordInput {
     unfollowUser(userId: ID!): MessageResponse!
     createStory(input: CreateStoryInput!): Story!
     markStorySeen(storyId: ID!): Story!
+    createNotification(input: CreateNotificationInput!): Notification!
+    markNotificationRead(notificationId: ID!): Notification!
   }
 
   type Query {
@@ -72,24 +71,29 @@ input UpdatePasswordInput {
     followRequests: [User!]!
     getStories: [Story!]!
     getUserStories(userId: ID!): [Story!]!
+    getNotifications: [Notification]!
+    getUnreadNotifications: [Notification]!
+    getSearchResults: [User!]
   }
 
-   type TroubleLoginResponse {
+  type TroubleLoginResponse {
     message: String!
   }
 
-   type updatepasswordResponse {
+  type updatepasswordResponse {
     message: String!
   }
 
-   type forgetOtpResponse {
+  type forgetOtpResponse {
     message: String!
   }
   type AuthPayload {
     user: User!
   }
-
-
+  type LoginResult {
+    token: String!
+    user: User!
+  }
 
   type MessageResponse {
     token: String!
@@ -119,5 +123,30 @@ input UpdatePasswordInput {
     followers: [User!]
     following: [User!]
     followRequests: [User!]
+  }
+
+  enum NotificationType {
+    FOLLOW
+    LIKE
+    COMMENT
+  }
+
+  input CreateNotificationInput {
+    userId: ID!
+    fromUserId: ID
+    type: NotificationType!
+    message: String!
+    postId: ID
+  }
+
+  type Notification {
+    id: ID!
+    user: User!
+    fromUser: User
+    type: NotificationType!
+    message: String!
+    postId: ID
+    createdAt: String!
+    isRead: Boolean
   }
 `;
