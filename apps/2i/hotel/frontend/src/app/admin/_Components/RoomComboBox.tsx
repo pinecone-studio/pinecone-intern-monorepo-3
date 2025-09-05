@@ -31,7 +31,7 @@ export const RoomComboBox = () => {
             <CommandGroup>
               {rooms?.map((room) => (
                 <CommandItem
-                  key={room._id}
+                  key={room?._id}
                   value={room.roomNumber}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? '' : currentValue);
