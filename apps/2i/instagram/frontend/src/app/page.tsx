@@ -1,7 +1,12 @@
-
+import { Sidebar } from '@/components/Sidebar/Sidebar';
 
 const Page = () => {
-return <div>Hello World</div>
-}
+  return (
+    <div>
+      <Sidebar />
+      Hello World
+    </div>
+  );
+};
 
 export default Page;
