@@ -7,9 +7,10 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { useState } from 'react';
 import { useGetHotelQuery } from '@/generated';
 
-export const LocationComboBox = () => {
+export const RoomComboBox = () => {
   const { data } = useGetHotelQuery();
-  const locations = data?.getHotel.map((hotel) => hotel?.location);
+
+  const rooms = data?.getHotel.flatMap((hotel) => hotel?.rooms?.filter((room) => room !== null) || []) ?? [];
 
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
@@ -18,26 +19,26 @@ export const LocationComboBox = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-          {value ? locations?.find((el) => el === value) : 'Location'}
+          {value || 'Rooms'}
           <ChevronDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Location" className="h-9" />
+          <CommandInput placeholder="Rooms" className="h-9" />
           <CommandList>
-            <CommandEmpty>No location found.</CommandEmpty>
+            <CommandEmpty>No Room found.</CommandEmpty>
             <CommandGroup>
-              {locations?.map((loc, index) => (
+              {rooms?.map((room) => (
                 <CommandItem
-                  key={index}
-                  value={loc}
+                  key={room._id}
+                  value={room.roomNumber}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
                   }}
                 >
-                  {loc}
+                  {room.roomType}-{room.roomNumber}
                   {/* <Check className={cn('ml-auto', value === loc ? 'opacity-100' : 'opacity-0')} /> */}
                 </CommandItem>
               ))}
