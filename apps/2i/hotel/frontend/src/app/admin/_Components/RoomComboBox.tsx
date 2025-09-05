@@ -32,13 +32,13 @@ export const RoomComboBox = () => {
               {rooms?.map((room) => (
                 <CommandItem
                   key={room?._id}
-                  value={room.roomNumber}
+                  value={room?.roomNumber}
                   onSelect={(currentValue) => {
                     setValue(currentValue === value ? '' : currentValue);
                     setOpen(false);
                   }}
                 >
-                  {room.roomType}-{room.roomNumber}
+                  {room?.roomType}-{room?.roomNumber}
                   {/* <Check className={cn('ml-auto', value === loc ? 'opacity-100' : 'opacity-0')} /> */}
                 </CommandItem>
               ))}
