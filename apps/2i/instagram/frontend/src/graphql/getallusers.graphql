@@ -1,0 +1,7 @@
+query GetSearchResults {
+  getSearchResults {
+    username
+    fullname
+    profilePicture
+  }
+}
