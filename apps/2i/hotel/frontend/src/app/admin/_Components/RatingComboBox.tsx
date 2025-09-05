@@ -38,7 +38,7 @@ export const RatingComboBox = () => {
                     setOpen(false);
                   }}
                 >
-                  {rate.rating}
+                  {rate?.rating}
                   {/* <Check className={cn('ml-auto', value === loc ? 'opacity-100' : 'opacity-0')} /> */}
                 </CommandItem>
               ))}
