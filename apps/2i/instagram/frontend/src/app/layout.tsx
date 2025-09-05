@@ -13,6 +13,7 @@ const RootLayout = ({ children }: PropsWithChildren) => {
     <html lang="en">
       <body>
         <ApolloWrapper>
+          
           <div className="flex">
             <main className="transition-all duration-300">{children}</main>
           </div>

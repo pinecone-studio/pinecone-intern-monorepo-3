@@ -47,7 +47,7 @@ query FollowRequests {
 
 mutation Sign($signup: SignupInput!) {
   signup(signup: $signup) {
-    user { 
+    user {
       username
       email
       fullname
@@ -58,18 +58,16 @@ mutation Sign($signup: SignupInput!) {
 mutation Login($login: LoginInput!) {
   login(login: $login) {
     user {
-    email
+      email
     }
   }
 }
-
 
 mutation Forgetverify($forget: ForgetPass) {
   forgetverify(forget: $forget) {
     message
   }
 }
-
 
 mutation UpdateProfile($update: UpdateProfileInput!) {
   updateProfile(update: $update) {
@@ -89,7 +87,7 @@ query GetUser($id: ID!) {
     bio
     gender
     profilePicture
-      followers {
+    followers {
       id
       username
       email
@@ -99,7 +97,7 @@ query GetUser($id: ID!) {
       profilePicture
       isPrivate
     }
-      following {
+    following {
       id
       username
       email
@@ -122,9 +120,8 @@ query GetUser($id: ID!) {
   }
 }
 
-
 mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
-   verifyOtp(verifyOtp: $verifyOtp) {
+  verifyOtp(verifyOtp: $verifyOtp) {
     token
     user {
       id
@@ -136,10 +133,3 @@ mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
     message
   }
 }
-
-mutation Troublelogin($trouble: TroubleLoginInput!) {
-  troublelogin(trouble: $trouble) {
-    message
-  }
-}
-
