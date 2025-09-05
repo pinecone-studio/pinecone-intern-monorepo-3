@@ -14,23 +14,23 @@ export const typeDefs = gql`
   }
 
   input ForgetPass {
-     email: String!
+    email: String!
   }
 
   input UpdatePrivacyInput {
     isPrivate: Boolean!
   }
 
-input UpdatePasswordInput {
-  email: String!
-  password: String!
-}
+  input UpdatePasswordInput {
+    email: String!
+    password: String!
+  }
 
   input CreateStoryInput {
     mediaUrl: String!
   }
   input VerifyOtpInput {
-    otp : String!
+    otp: String!
   }
 
   input UpdateProfileInput {
@@ -45,9 +45,9 @@ input UpdatePasswordInput {
     signup(signup: SignupInput!): AuthPayload!
     login(login: LoginInput!): AuthPayload!
     updateProfile(update: UpdateProfileInput!): User!
-    forgetverify(forget: ForgetPass):TroubleLoginResponse!
-    updatePassword(input: UpdatePasswordInput):updatepasswordResponse!
-    forgetverifyOtp(verifyOtp: VerifyOtpInput!):forgetOtpResponse!
+    forgetverify(forget: ForgetPass): TroubleLoginResponse!
+    updatePassword(input: UpdatePasswordInput): updatepasswordResponse!
+    forgetverifyOtp(verifyOtp: VerifyOtpInput!): forgetOtpResponse!
     verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
     updatePrivacy(input: UpdatePrivacyInput!): User!
     sendFollowRequest(userId: ID!): MessageResponse!
@@ -63,25 +63,24 @@ input UpdatePasswordInput {
     followRequests: [User!]!
     getStories: [Story!]!
     getUserStories(userId: ID!): [Story!]!
+    getSearchResults: [User]!
   }
 
-   type TroubleLoginResponse {
+  type TroubleLoginResponse {
     message: String!
   }
 
-   type updatepasswordResponse {
+  type updatepasswordResponse {
     message: String!
   }
 
-   type forgetOtpResponse {
+  type forgetOtpResponse {
     message: String!
   }
   type AuthPayload {
     token: String!
     user: User!
   }
-
-
 
   type MessageResponse {
     token: String!
@@ -111,7 +110,7 @@ input UpdatePasswordInput {
     followers: [User!]
     following: [User!]
     followRequests: [User!]
-    otp: String    
-  otpExpires: String 
+    otp: String
+    otpExpires: String
   }
 `;
