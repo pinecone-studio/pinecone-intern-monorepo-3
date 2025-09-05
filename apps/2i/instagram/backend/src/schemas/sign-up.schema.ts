@@ -13,10 +13,6 @@ export const typeDefs = gql`
     password: String!
   }
 
-  input TroubleLoginInput {
-    email: String!
-  }
-
   input ForgetPass {
     email: String!
   }
@@ -37,6 +33,9 @@ export const typeDefs = gql`
   input CreateStoryInput {
     mediaUrl: String!
   }
+  input VerifyOtpInput {
+    otp: String!
+  }
 
   input UpdateProfileInput {
     bio: String
@@ -51,7 +50,6 @@ export const typeDefs = gql`
     login(login: LoginInput!): LoginResult!
     updateProfile(update: UpdateProfileInput!): User!
     forgetverify(forget: ForgetPass): TroubleLoginResponse!
-    troublelogin(trouble: TroubleLoginInput!): TroubleLoginResponse!
     updatePassword(input: UpdatePasswordInput): updatepasswordResponse!
     forgetverifyOtp(verifyOtp: VerifyOtpInput!): forgetOtpResponse!
     verifyOtp(verifyOtp: VerifyOtpInput!): MessageResponse!
@@ -88,6 +86,7 @@ export const typeDefs = gql`
     message: String!
   }
   type AuthPayload {
+    token: String!
     user: User!
   }
   type LoginResult {
@@ -123,6 +122,8 @@ export const typeDefs = gql`
     followers: [User!]
     following: [User!]
     followRequests: [User!]
+    otp: String
+    otpExpires: String
   }
 
   enum NotificationType {

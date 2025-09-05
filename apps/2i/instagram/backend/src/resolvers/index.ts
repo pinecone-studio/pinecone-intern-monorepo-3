@@ -8,7 +8,6 @@ import { verifyOtp } from './mutations/otp-verify';
 import { updateProfile } from './mutations/profile-update';
 import { updatePrivacy } from './mutations/public-private';
 import { signup } from './mutations/sign-up';
-import { troublelogin } from './mutations/trouble-login';
 import { updatePassword } from './mutations/up-password';
 import { getSearchResults } from './queries/get-search-result';
 
@@ -18,7 +17,6 @@ export const resolvers = {
   Mutation: {
     signup,
     login,
-    troublelogin,
     verifyOtp,
     updatePrivacy,
     respondFollowRequest,
