@@ -1,20 +1,28 @@
 {
-  "name": "ticket-backend",
+  "name": "concert-ticket-backend",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/2j/concert-ticket/backend",
   "projectType": "application",
   "targets": {
+    "get-secrets:dev": {
+      "executor": "@pinecone-intern-monorepo/secrets:get",
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {
+          "groups": ["concert-ticket-backend"],
+          "env": "dev"
+        }
+      }
+    },
     "build": {
-      "executor": "@nx/next:build",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/2j/concert-ticket/backend"
-      },
-      "configurations": {
-        "development": {
-          "outputPath": "dist/apps/2j/concert-ticket/backend"
-        }
+        "outputPath": "dist/apps/2j/concert-ticket/backend",
+        "main": "apps/2j/concert-ticket/backend/src/index.ts",
+        "tsConfig": "apps/2j/concert-ticket/backend/tsconfig.json",
+        "assets": ["apps/2j/concert-ticket/backend/src/schemas"]
       },
       "dependsOn": [
         {
@@ -24,26 +32,27 @@
       ]
     },
     "serve": {
-      "executor": "@nx/next:server",
+      "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "ticket-backend:build",
-        "dev": true
+        "command": "tsx apps/2j/concert-ticket/backend/src/index.ts",
+        "cwd": "."
       },
       "configurations": {
         "development": {
-          "buildTarget": "ticket-backend:build:development",
-          "dev": true
+          "command": "tsx apps/2j/concert-ticket/backend/src/index.ts"
         },
         "production": {
-          "buildTarget": "ticket-backend:build:production",
-          "dev": false
+          "command": "node dist/apps/2j/concert-ticket/backend/main.js"
         }
       },
       "dependsOn": [
         {
           "target": "codegen",
           "params": "forward"
+        },
+        {
+          "target": "export-env"
         }
       ]
     },
@@ -67,7 +76,7 @@
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["ticket-backend"],
+          "groups": ["concert-ticket-backend"],
           "env": "test"
         }
       }
@@ -77,7 +86,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["ticket-backend"],
+          "groups": ["concert-ticket-backend"],
           "env": "prod"
         }
       }

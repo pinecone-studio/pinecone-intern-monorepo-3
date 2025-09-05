@@ -4,14 +4,19 @@ const config: CodegenConfig = {
   overwrite: true,
   schema: 'apps/2j/concert-ticket/backend/src/schemas',
   generates: {
-    'apps/2j/concert-ticket/backend/src/generated/index.ts': {
-      plugins: ['typescript', 'typescript-resolvers'],
+    'apps/2j/concert-ticket/backend/src/generated/types.ts': {
+      plugins: ['typescript'],
       config: {
-        contextType: '../types#Context',
-        makeResolverTypeCallable: true,
-        maybeValue: 'T',
-      },
+        maybeValue: 'T'
+      }
     },
+    'apps/2j/concert-ticket/backend/src/generated/resolvers-types.ts': {
+      plugins: ['typescript-resolvers'],
+      config: {
+        makeResolverTypeCallable: true,
+        maybeValue: 'T'
+      }
+    }
   },
 };
 
