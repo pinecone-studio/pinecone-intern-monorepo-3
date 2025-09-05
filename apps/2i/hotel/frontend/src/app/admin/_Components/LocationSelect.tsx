@@ -13,7 +13,6 @@ export const LocationSelectWithSearch = ({ onChange }: LocationSelectProps) => {
   const [selected, setSelected] = useState('Locations');
   const containerRef = useRef<HTMLDivElement>(null);
   const { data } = useGetHotelQuery();
-  console.log(data, 'data');
 
   const locations = data?.getHotel.map((hotel) => hotel?.location) as string[];
 

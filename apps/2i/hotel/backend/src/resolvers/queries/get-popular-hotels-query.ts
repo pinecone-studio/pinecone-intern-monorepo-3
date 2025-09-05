@@ -14,7 +14,7 @@ export const getpopularHotels = async () => {
 
     return hotels || [];
   } catch (error) {
-    console.error('Failed to fetch popular hotels:', error);
-    return [];
+    console.error('Aggregation error:', error);
+    throw new Error('Failed to fetch popular hotels');
   }
 };

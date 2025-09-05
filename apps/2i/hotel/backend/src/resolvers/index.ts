@@ -11,6 +11,8 @@ export const resolvers = {
     userSignUp: Mutation.userSignUp,
     roomBooking: Mutation.roomBooking,
     bookingUpdate: Mutation.bookingUpdate,
+    sendOtp: Mutation.sendOtp,
+    verifyOtp: Mutation.verifyOtp,
   },
   Query: {
     getRoomById: Query.getRoomById,
