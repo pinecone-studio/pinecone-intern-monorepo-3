@@ -41,7 +41,7 @@ describe('ForgotPage Component', () => {
         variables: { forget: { email: 'success@test.com' } }
       })
     )
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/'))
+    await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/forgetotpverify'))
   })
 
   it('handles submission failure gracefully', async () => {

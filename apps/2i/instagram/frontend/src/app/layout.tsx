@@ -1,6 +1,7 @@
 import { PropsWithChildren } from 'react';
 import './global.css';
 import { ApolloWrapper } from '@/components/providers';
+import { AuthProvider } from './Provider';
 
 
 export const metadata = {
@@ -13,10 +14,11 @@ const RootLayout = ({ children }: PropsWithChildren) => {
     <html lang="en">
       <body>
         <ApolloWrapper>
-          
+          <AuthProvider>
           <div className="flex">
             <main className="transition-all duration-300">{children}</main>
           </div>
+          </AuthProvider>
         </ApolloWrapper>
       </body>
     </html>

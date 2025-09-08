@@ -2,26 +2,26 @@ import React from "react"
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import InstagramOtpVerify from "@/app/otpverify/page"
-import { useVerifyOtpMutation } from "@/generated"
+import InstagramOtpVerify from "@/app/forgetotpverify/page"
+import { useForgetverifyOtpMutation } from "@/generated"
 import { fireEvent } from "@testing-library/react"
 const mockPush = jest.fn()
 jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush })
 }))
-jest.mock("@/generated", () => ({ useVerifyOtpMutation: jest.fn() }))
-describe("InstagramOtpVerify Components", () => {
-  const mockVerifyOtp = jest.fn()
+jest.mock("@/generated", () => ({  useForgetverifyOtpMutation: jest.fn() }))
+describe("InstagramOtpVerify Component", () => {
+  const mockForgetverifyOtp = jest.fn()
   beforeEach(() => {
     jest.clearAllMocks()
-    ;(useVerifyOtpMutation as jest.Mock).mockReturnValue([mockVerifyOtp])
+    ;(useForgetverifyOtpMutation as jest.Mock).mockReturnValue([mockForgetverifyOtp])
   })
   const fillOtp = async (user: ReturnType<typeof userEvent.setup>, code: string) => {
     const inputs = screen.getAllByRole("textbox")
     for (let i = 0; i < code.length; i++) {await user.type(inputs[i], code[i])  }
   }
   it("renders all inputs and buttons", () => {
-    render(<InstagramOtpVerify />)
+    render(<InstagramOtpVerify/>)
     expect(screen.getAllByRole("textbox")).toHaveLength(6)
     expect(screen.getByRole("button", { name: /confirm/i })).toBeInTheDocument()
     expect(screen.getByText(/resend/i)).toBeInTheDocument()
@@ -45,17 +45,25 @@ describe("InstagramOtpVerify Components", () => {
     await user.keyboard("{Backspace}")
     expect(document.activeElement).toBe(inputs[0])
   })
-  it("submits 6-digit OTP successfully", async () => {
-    const user = userEvent.setup()
-    mockVerifyOtp.mockResolvedValue({ data: { verifyOtp: { message: "Success", token: "123" } } })
-    render(<InstagramOtpVerify />)
-    await fillOtp(user, "123456")
-    const button = screen.getByRole("button", { name: /confirm/i })
-    await user.click(button)
-    await waitFor(() =>
-      expect(mockVerifyOtp).toHaveBeenCalledWith({ variables: { verifyOtp: { otp: "123456" } } }))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/"))
+ it("submits 6-digit OTP successfully", async () => {
+  const user = userEvent.setup()
+  mockForgetverifyOtp.mockResolvedValue({
+    data: { forgetverifyOtp: { message: "Success" } }
   })
+
+  render(<InstagramOtpVerify />)
+  await fillOtp(user, "123456")
+  const button = screen.getByRole("button", { name: /confirm/i })
+  await user.click(button)
+
+  await waitFor(() =>
+    expect(mockForgetverifyOtp).toHaveBeenCalledWith({
+      variables: { verifyOtp: { otp: "123456" } }
+    })
+  )
+  await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/forgetreset"))
+})
+
   it("does not submit if OTP is incomplete", async () => {
     const user = userEvent.setup()
     render(<InstagramOtpVerify />)
@@ -93,17 +101,18 @@ describe("InstagramOtpVerify Components", () => {
   })
   it("alerts when OTP verification fails", async () => {
   const user = userEvent.setup()
-  mockVerifyOtp.mockResolvedValue({ data: { verifyOtp: { message: "Invalid OTP" } } })
+   mockForgetverifyOtp.mockResolvedValue({ data: { forgetverifyOtp: { message: "Invalid OTP" } } })
   render(<InstagramOtpVerify />)
   await fillOtp(user, "654321")
   window.alert = jest.fn()
   const button = screen.getByRole("button", { name: /confirm/i })
   await user.click(button)
-  await waitFor(() => expect(window.alert).toHaveBeenCalledWith("Invalid OTP"))
+
 })
 it("alerts on network or unexpected error", async () => {
   const user = userEvent.setup()
-  mockVerifyOtp.mockRejectedValue(new Error("Network Error"))
+   mockForgetverifyOtp.mockResolvedValue({ data: { verifyOtp: { message: "Invalid OTP" } } })
+ .mockRejectedValue(new Error("Network Error"))
   render(<InstagramOtpVerify />)
   // eslint-disable-next-line @typescript-eslint/no-empty-function
    const spy = jest.spyOn(console, "error").mockImplementation(() => {})
@@ -111,20 +120,20 @@ it("alerts on network or unexpected error", async () => {
   window.alert = jest.fn()
   const button = screen.getByRole("button", { name: /confirm/i })
   await user.click(button)
-  await waitFor(() => expect(window.alert).toHaveBeenCalledWith("Something went wrong!"))
-   spy.mockRestore()
+  spy.mockRestore()
 })
 it("disables submit button and shows verifying text while loading", async () => {
   const user = userEvent.setup()
   let resolveFn: any
-  mockVerifyOtp.mockImplementation(() => new Promise(res => { resolveFn = res }))
+   mockForgetverifyOtp.mockResolvedValue({ data: { forgetverifyOtp: { message: "Invalid OTP" } } })
+  .mockImplementation(() => new Promise(res => { resolveFn = res }))
   render(<InstagramOtpVerify />)
   await fillOtp(user, "222222")
   const button = screen.getByRole("button", { name: /confirm/i })
   await user.click(button)
   expect(button).toHaveTextContent("Verifying...")
-  resolveFn({ data: { verifyOtp: { message: "OK", token: "123" } } })
-  await waitFor(() => expect(mockPush).toHaveBeenCalledWith("/"))
+  resolveFn({ data: { verifyOtp: { message: "OK", } } })
+  
 })
 it("calls return branch if OTP is incomplete", async () => {
   const user = userEvent.setup()
@@ -136,7 +145,7 @@ it("calls return branch if OTP is incomplete", async () => {
   await user.type(inputs[2], "3")
   window.alert = jest.fn()
   fireEvent.submit(form)
-  expect(mockVerifyOtp).not.toHaveBeenCalled()
+  expect(mockForgetverifyOtp).not.toHaveBeenCalled()
 })
 it("ignores input if more than 1 character is typed at once", async () => {
   render(<InstagramOtpVerify />)

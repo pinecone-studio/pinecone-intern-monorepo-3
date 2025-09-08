@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
-import { useVerifyOtpMutation } from "@/generated"
+import { useForgetverifyOtpMutation,  } from "@/generated"
 
 const  InstagramOtpVerify = () => {
 
@@ -15,7 +15,9 @@ const  InstagramOtpVerify = () => {
   const [isLoading, setIsLoading] = useState(false)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]) 
   const router = useRouter()
-  const [ VerifyOtp] = useVerifyOtpMutation()
+  const [ ForgetverifyOtp] = useForgetverifyOtpMutation()
+
+
 
 
   const handleChange = (index: number, value: string) => {
@@ -46,32 +48,23 @@ const  InstagramOtpVerify = () => {
     if (otpCode.length !== 6) {
       return
     }
-
     setIsLoading(true)
  
     try {
-    const response = await VerifyOtp({
-      variables: {
-        verifyOtp: {
-        otp: otpCode
-        }
+  const response = await ForgetverifyOtp({
+        variables: { verifyOtp: {  otp: otpCode  } },
+      });
+
+   
+     if (response.data?.forgetverifyOtp) {
+        router.push('/forgetreset'); 
+      } else {
+        alert('OTP verification failed');
       }
-    });
-
-    const result = response.data?.verifyOtp;
-
-    if (result?.message && result?.token) {
-      localStorage.setItem("token", result.token);
-      router.push("/");
-    } else {
-      alert(result?.message );
-    }
   } catch (err) {
     console.error(err);
-    alert("Something went wrong!");
-  } finally {
-    setIsLoading(false);
-  }
+    
+  } 
   }
 
   const handleResend = () => {
@@ -110,6 +103,7 @@ const  InstagramOtpVerify = () => {
                     key={index}
                     ref={(el) => {inputRefs.current[index] = el;}}
                     type="text"
+                    role="textbox"
                     inputMode="numeric"
                     maxLength={1}
                     value={digit}

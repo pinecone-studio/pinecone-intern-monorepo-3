@@ -32,7 +32,8 @@ const [Forgetverify,{ loading, error }]= useForgetverifyMutation()
           }
         }
       });
-      router.push('/');
+      localStorage.setItem("resetEmail", email.email);
+      router.push("/forgetotpverify");
     } catch (err) {
       console.error('Failed to signup:', err);
     }

@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 
 import React, { useState } from 'react';
 
+
 const SignupPage = () => {
   const router = useRouter();
 const [ Sign,{ loading, error }] = useSignMutation()
-
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -37,7 +37,7 @@ const [ Sign,{ loading, error }] = useSignMutation()
           }
         }
       });
-      router.push('/troublelogin');
+      router.push('/otpverify');
     } catch (err) {
       console.error('Failed to signup:', err);
     }
