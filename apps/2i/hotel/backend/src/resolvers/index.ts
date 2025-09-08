@@ -1,4 +1,5 @@
 import * as Mutation from './mutations';
+
 import * as Query from './queries';
 
 export const resolvers = {
@@ -13,6 +14,9 @@ export const resolvers = {
     bookingUpdate: Mutation.bookingUpdate,
     sendOtp: Mutation.sendOtp,
     verifyOtp: Mutation.verifyOtp,
+    uploadToCloudinary: Mutation.uploadToCloudinary,
+    updateRoom: Mutation.updateRoom,
+    uploadRoomImages: Mutation.uploadRoomImages,
   },
   Query: {
     getRoomById: Query.getRoomById,
