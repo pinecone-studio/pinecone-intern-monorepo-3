@@ -17,6 +17,10 @@ export const typeDefs = gql`
     email: String!
   }
 
+  input VerifyOtpInput {
+    otp: String!
+  }
+
   input UpdatePrivacyInput {
     isPrivate: Boolean!
   }
