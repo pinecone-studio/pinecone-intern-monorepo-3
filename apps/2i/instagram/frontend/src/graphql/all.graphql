@@ -146,8 +146,4 @@ mutation ForgetverifyOtp($verifyOtp: VerifyOtpInput!) {
   forgetverifyOtp(verifyOtp: $verifyOtp) {
     message
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 6cd6cee (fix(instagram): conflict bug)
