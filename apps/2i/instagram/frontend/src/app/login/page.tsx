@@ -1,18 +1,24 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLoginMutation} from '@/generated';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../Provider';
+
+
 
 const LoginPage = () => {
 const router = useRouter();
-  const [ Login,{ loading, error }] = useLoginMutation()
+   const { token,loading,login: setAuthToken } = useAuth();
+  const [ Login,{  error }] = useLoginMutation()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
-
+ useEffect(() => {
+    if (token) router.push('/');
+  }, [token, router]);
 
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -32,11 +38,10 @@ const router = useRouter();
           }
         }
       });
-            const result = response.data?.login;
+        const result = response.data?.login;
 
     if ( result?.token) {
-    
-      localStorage.setItem("token", result.token);
+      setAuthToken(result.token);
       router.push("/");
     }
 
@@ -45,8 +50,11 @@ const router = useRouter();
     alert("Something went wrong!");
   } 
   };
+ if (loading) return <div>Loading...</div>
 
-  if (loading) return <div>Loading...</div>
+
+
+if (token) return null;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -71,12 +79,13 @@ const router = useRouter();
             type="password"
             placeholder="Password"
             name='password'
+          
             value={formData.password}
             onChange={handleChange}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
-          <button  type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
+          <button  type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors" >
             Log in
           </button>
           {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}
