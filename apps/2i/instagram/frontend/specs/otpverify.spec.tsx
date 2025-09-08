@@ -10,7 +10,7 @@ jest.mock("next/navigation", () => ({
   useRouter: () => ({ push: mockPush })
 }))
 jest.mock("@/generated", () => ({ useVerifyOtpMutation: jest.fn() }))
-describe("InstagramOtpVerify Component", () => {
+describe("InstagramOtpVerify Components", () => {
   const mockVerifyOtp = jest.fn()
   beforeEach(() => {
     jest.clearAllMocks()
