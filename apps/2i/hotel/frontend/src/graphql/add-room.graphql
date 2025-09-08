@@ -1,5 +1,5 @@
-mutation AddRoom($hotelName: ID!, $roomNumber: String!, $roomType: String!, $pricePerNight: Int!, $roomInfos: [String]!) {
-  addRoom(hotelName: $hotelName, roomNumber: $roomNumber, roomType: $roomType, pricePerNight: $pricePerNight, roomInfos: $roomInfos) {
+mutation AddRoom($hotelName: ID!, $roomNumber: String!, $roomType: String!, $pricePerNight: Int!, $roomImgs: [String]!, $roomInfos: [String]!, $amenities: AmenitiesInput!) {
+  addRoom(hotelName: $hotelName, roomNumber: $roomNumber, roomType: $roomType, pricePerNight: $pricePerNight, roomImgs: $roomImgs, roomInfos: $roomInfos, amenities: $amenities) {
     _id
   }
 }

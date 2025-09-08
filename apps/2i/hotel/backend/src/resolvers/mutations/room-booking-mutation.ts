@@ -2,7 +2,6 @@ import { BookingModel } from '../../models/room-booking-model';
 import { RoomModel } from '../../models/room-model';
 import { HotelModel } from '../../models/hotel-model';
 
-
 export const roomBooking = async (
   _: unknown,
   args: {
@@ -19,7 +18,6 @@ export const roomBooking = async (
   const existingRoom = await RoomModel.findById(args.roomNumber);
   if (!existingRoom) throw new Error('Room not found');
 
- 
   const overlappingBooking = await BookingModel.findOne({
     roomNumber: args.roomNumber,
     $or: [
@@ -34,24 +32,21 @@ export const roomBooking = async (
     throw new Error('This room is already booked for the selected dates.');
   }
 
- 
- const checkInDate = new Date(args.checkIn);
- const checkOutDate = new Date(args.checkOut);
+  const checkInDate = new Date(args.checkIn);
+  const checkOutDate = new Date(args.checkOut);
 
   const nights = Math.round((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
 
- 
-
-  const pricePerNight = existingRoom.pricePerNight; 
-  const taxes = pricePerNight * nights * 0.1; 
+  const pricePerNight = existingRoom.pricePerNight;
+  const taxes = pricePerNight * nights * 0.1;
   const totalPrice = pricePerNight * nights + taxes;
 
   const newBooking = new BookingModel({
     userId: args.userId,
     hotelName: args.hotelName,
     roomNumber: args.roomNumber,
-    checkIn: args.checkIn,
-    checkOut: args.checkOut,
+    checkIn: checkInDate,
+    checkOut: checkOutDate,
     nights,
     pricePerNight,
     taxes,
@@ -60,6 +55,6 @@ export const roomBooking = async (
 
   await newBooking.save();
 
-  return newBooking;
+  return { ...newBooking.toObject(), room: existingRoom, hotel: existingHotel, user: args.userId, checkIn: checkInDate.toISOString(), checkOut: checkOutDate.toISOString() };
 };
 //

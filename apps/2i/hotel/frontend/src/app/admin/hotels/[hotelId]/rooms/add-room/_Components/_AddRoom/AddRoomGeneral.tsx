@@ -58,6 +58,15 @@ export const AddRoomGeneral = ({ setRoomId, hotelId }: RoomGeneralType) => {
           roomType: values.roomType,
           roomInfos: values.roomInfo,
           pricePerNight: Number(values.price),
+          roomImgs: null,
+          amenities: {
+            accessibility: undefined,
+            bathroom: undefined,
+            bedroom: undefined,
+            foodAndDrink: undefined,
+            more: undefined,
+            technology: undefined,
+          },
         },
       });
       console.log(data?.addRoom);

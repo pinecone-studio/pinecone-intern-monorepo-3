@@ -24,7 +24,9 @@ export const GuestInfo: React.FC<GuestInfoProps> = ({ guest }) => {
       <h2 className="text-xl font-semibold mb-6 text-gray-800">Guest Info</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-        <InfoRow label="First name" value={guest.firstName} />
+        {/* <InfoRow label="First name" value={data?.getBooking?.user?.map((el, index)=> el.firstName 
+        )}
+        } /> */}
         <InfoRow label="Last name" value={guest.lastName} />
         {guest.status && (
           <div className="flex flex-col">
