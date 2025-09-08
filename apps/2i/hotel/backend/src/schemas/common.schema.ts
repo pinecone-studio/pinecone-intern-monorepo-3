@@ -9,12 +9,10 @@ export const typeDefs = gql`
     bedroom: [String]!
     more: [String]!
   }
-
   input PolicyInput {
     title: String
     description: String
   }
-
   input UpdateHotelInput {
     hotelName: String
     description: String
@@ -27,14 +25,9 @@ export const typeDefs = gql`
     amenities: [String]
     policies: [PolicyInput]
   }
-<<<<<<< HEAD
-
-=======
   input UpdateRoomInput {
     amenities: AmenitiesInput
   }
-  # ---------- Types ----------
->>>>>>> 18e07b5 (feat(backend-hotel): room add be)
   type Hotel {
     _id: ID!
     hotelName: String!
@@ -44,32 +37,21 @@ export const typeDefs = gql`
     location: String!
     languages: [String]!
     starRating: String!
-<<<<<<< HEAD
-    image: [String!]!
-    amenities: [String]
-    policies: [Policy]
-    userRating: [UserRating]!
-    rooms: [Room]!
-=======
     image: [String]!
     amenities: [String]!
     policies: [Policy]!
     userRating: [UserRating]
     rooms: [Room]
->>>>>>> 18e07b5 (feat(backend-hotel): room add be)
   }
-
   type Policy {
     title: String
     description: String
   }
-
   type UserRating {
     rating: Int
     comment: String
     hotel: ID
   }
-
   type Amenities {
     bathroom: [String]!
     foodAndDrink: [String]!
@@ -78,7 +60,6 @@ export const typeDefs = gql`
     bedroom: [String]!
     more: [String]!
   }
-
   type Room {
     _id: ID!
     hotelName: ID
@@ -89,17 +70,14 @@ export const typeDefs = gql`
     roomInfos: [String]
     amenities: Amenities
   }
-
   input RoomFilterInput {
     roomType: String
     amenities: AmenitiesInput
   }
-
   type EmergencyNumber {
     phoneNumber: String
     relation: String
   }
-
   type User {
     _id: ID!
     email: String!
@@ -123,7 +101,6 @@ export const typeDefs = gql`
   type UplodedImageResponse {
     message: String!
   }
-
   type Query {
     getRoomById(id: ID!): Room
     getRooms: [Room]!
@@ -137,7 +114,6 @@ export const typeDefs = gql`
     getpopularHotels: [Hotel!]!
     getmostBookedHotels: [Hotel!]!
   }
-
   type Booking {
     _id: ID!
     user: ID!
@@ -151,22 +127,18 @@ export const typeDefs = gql`
     taxes: Float
     totalPrice: Float
   }
-
   type Otp {
     email: String!
     code: String!
     verified: Boolean!
   }
-
   type OtpResponse {
     success: Boolean!
     message: String!
   }
-
   type Mutation {
     addRoom(hotelName: ID!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomInfos: [String]!): Room!
     updateRoom(roomId: ID!, input: UpdateRoomInput!): UpdateResponse!
-
     addHotel(hotelName: String!, description: String!, starRating: String!, phoneNumber: String!): Hotel!
     updateHotel(id: ID!, input: UpdateHotelInput!): UpdateResponse!
     deleteHotel(id: ID!): Boolean!
