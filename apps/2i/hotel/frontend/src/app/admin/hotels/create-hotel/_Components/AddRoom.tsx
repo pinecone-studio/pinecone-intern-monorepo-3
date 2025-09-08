@@ -13,7 +13,7 @@ export const AddHotelRoom = ({ hotelId }: { hotelId: string | undefined }) => {
   const handleRoom = () => {
     router.push(`/admin/hotels/${hotelId}/rooms/add-room`);
   };
-  // if (!hotelId) return <p>Loading...</p>;
+
   return (
     <Card className="bg-white p-6 rounded-lg shadow-sm">
       {/* Header хэсэг */}

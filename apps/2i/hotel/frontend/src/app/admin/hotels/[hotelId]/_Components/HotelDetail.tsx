@@ -3,31 +3,15 @@
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useGetHotelByIdQuery } from '@/generated';
-// import { LeftColumn } from './LeftColumn';
-// import { RightColumn } from './RightColumn';
+import { LeftColumn } from './LeftColumn';
+import { RightColumn } from './RightColumn';
 import { useRouter } from 'next/navigation';
+import { GetHotelByIdQuery } from '@/generated';
+
+export type HotelType = NonNullable<GetHotelByIdQuery['getHotelById']>;
 
 type PropsType = {
   hotelId: string;
-};
-
-export type HotelType = {
-  _id: string;
-  hotelName: string;
-  description: string;
-  location: string;
-  starRating: string;
-  image: string[];
-  userRating: {
-    rating: number;
-    comment: string;
-    hotel: string;
-  }[];
-  rooms: {
-    roomType: string;
-    price: number;
-    availability: number;
-  }[];
 };
 
 export const HotelDetail = ({ hotelId }: PropsType) => {
@@ -47,11 +31,12 @@ export const HotelDetail = ({ hotelId }: PropsType) => {
         </Button>
         <h1 className="font-bold text-[16px]">{data?.getHotelById?.hotelName}</h1>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* <LeftColumn hotel={data?.getHotelById} />
-        <RightColumn hotel={data?.getHotelById} /> */}
-      </div>
+      {data?.getHotelById && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <LeftColumn hotel={data?.getHotelById} />
+          <RightColumn hotel={data?.getHotelById} />
+        </div>
+      )}
     </div>
   );
 };

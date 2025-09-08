@@ -1,6 +1,5 @@
-mutation UploadToCloudinary($hotelId: ID!, $image: [String!]!) {
+mutation UploadToCloudinary($hotelId: ID!, $image: [String]!) {
   uploadToCloudinary(hotelId: $hotelId, image: $image) {
-    image
-    _id
+    message
   }
 }

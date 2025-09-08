@@ -1,0 +1,5 @@
+mutation UpdateRoom($roomId: ID!, $input: UpdateRoomInput!) {
+  updateRoom(roomId: $roomId, input: $input) {
+    message
+  }
+}

@@ -79,9 +79,7 @@ export const AddLocation = ({ hotelId }: { hotelId: string | undefined }) => {
       </div>
 
       <CardContent className="flex flex-col gap-3">
-        {/* {location.city && location.city.trim() !== '' ? ( */}
-
-        <span className="text-gray-400 italic">-/-</span>
+        <span className="text-gray-400 italic">{form.watch('location') !== '' ? form.watch('location') : '-/-'}</span>
       </CardContent>
     </Card>
   );
