@@ -1,0 +1,5 @@
+mutation AddRoom($hotelName: ID!, $roomNumber: String!, $roomType: String!, $pricePerNight: Int!, $roomInfos: [String]!) {
+  addRoom(hotelName: $hotelName, roomNumber: $roomNumber, roomType: $roomType, pricePerNight: $pricePerNight, roomInfos: $roomInfos) {
+    _id
+  }
+}

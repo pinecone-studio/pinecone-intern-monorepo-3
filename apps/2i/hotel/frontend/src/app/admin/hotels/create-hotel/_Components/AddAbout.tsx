@@ -37,6 +37,7 @@ export const AddAbout = ({ hotelId }: { hotelId: string | undefined }) => {
           },
         },
       });
+      setOpen(false);
       console.log(data?.updateHotel);
     } catch (err) {
       console.log(err);

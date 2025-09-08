@@ -3,15 +3,15 @@ query GetHotel {
     _id
     hotelName
     description
+    location
     phoneNumber
     about
+    languages
     policies {
       title
       description
     }
-    languages
     amenities
-    location
     starRating
     userRating {
       rating

@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Star } from 'lucide-react';
+import { useUpdateRoomMutation } from '@/generated';
 
 type ServiceLabelType = {
   label: string;
@@ -18,49 +18,71 @@ type ServiceLabelType = {
 
 export const formSchema = z.object({
   bathroom: z.array(z.string().nonempty('at least one required item')),
+  bedroom: z.array(z.string().nonempty('at least one required item')),
   accessibility: z.array(z.string().nonempty('at least one required item')),
   entertainment: z.array(z.string().nonempty('at least one required item')),
   foodAndDrink: z.array(z.string().nonempty('at least one required item')),
-  starsRating: z.string().nonempty('Choose star rating'),
   other: z.array(z.string().nonempty('at least one required item')),
 });
 
 export type FormType = z.infer<typeof formSchema>;
 
-export const AddRoomServices = () => {
+export const AddRoomServices = ({ roomId }: { roomId: string | undefined }) => {
+  const [updateRoomMutation] = useUpdateRoomMutation();
+  const [open, setOpen] = useState<boolean>(false);
   const [labels, setLabels] = useState<ServiceLabelType[]>([
     { label: 'Bathroom', value: ['-/-'], key: 'bathroom' },
+    { label: 'Bedroom', value: ['-/-'], key: 'bedroom' },
     { label: 'Accessibility', value: ['-/-'], key: 'accessibility' },
     { label: 'Entertainment', value: ['-/-'], key: 'entertainment' },
     { label: 'Food and Drink', value: ['-/-'], key: 'foodAndDrink' },
     { label: 'other', value: ['-/-'], key: 'other' },
   ]);
-  const [starRate, setStarRate] = useState<string>('');
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       bathroom: [],
+      bedroom: [],
       accessibility: [],
       entertainment: [],
       foodAndDrink: [],
-      starsRating: '',
       other: [],
     },
   });
+  console.log(roomId, 'roomID services');
 
   const onSubmit = async (values: FormType) => {
-    setLabels((prev) =>
-      prev.map((item) => {
-        const valueArray = values[item.key as keyof FormType] as string[];
-        return {
-          ...item,
-          value: valueArray.length > 0 ? valueArray : ['-/-'],
-        };
-      })
-    );
-
-    // Update star rate separately if needed
-    setStarRate(values.starsRating || '');
+    if (!roomId) return;
+    try {
+      const { data } = await updateRoomMutation({
+        variables: {
+          roomId: roomId,
+          input: {
+            amenities: {
+              bathroom: values.bathroom,
+              bedroom: values.bedroom,
+              accessibility: values.accessibility,
+              technology: values.entertainment,
+              foodAndDrink: values.foodAndDrink,
+              more: values.other,
+            },
+          },
+        },
+      });
+      console.log(data?.updateRoom.message);
+      setOpen(false);
+      setLabels((prev) =>
+        prev.map((item) => {
+          const valueArray = values[item.key as keyof FormType] as string[];
+          return {
+            ...item,
+            value: valueArray.length > 0 ? valueArray : ['-/-'],
+          };
+        })
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <Card className="w-[784px]">
@@ -68,7 +90,7 @@ export const AddRoomServices = () => {
         <CardHeader>
           <CardTitle className="text-[18px] font-semibold flex justify-between">
             Room services
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className="text-[#2563EB] text-[14px] font-medium">Edit</DialogTrigger>
               <ServicesDialog form={form} onSubmit={onSubmit} />
             </Dialog>
@@ -90,19 +112,6 @@ export const AddRoomServices = () => {
               </div>
             );
           })}
-          <div className="flex flex-col gap-2">
-            <h1 className="text-[#71717A]">Stars rating </h1>
-            <p className="flex items-center gap-1">
-              {starRate === '' ? (
-                '-/-'
-              ) : (
-                <>
-                  {starRate}
-                  <Star className="w-[16px]" />
-                </>
-              )}
-            </p>
-          </div>
         </div>
       </CardContent>
     </Card>

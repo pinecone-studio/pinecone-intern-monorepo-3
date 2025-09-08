@@ -6,7 +6,8 @@ import { GeneralDialog } from './GeneralDialog';
 import z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { useAddRoomMutation } from '@/generated';
 
 export type FormType = z.infer<typeof formSchema>;
 
@@ -15,7 +16,10 @@ type LabelsType = {
   value: string;
   key: string;
 };
-
+type RoomGeneralType = {
+  setRoomId: Dispatch<SetStateAction<string | undefined>>;
+  hotelId: string | undefined;
+};
 export const formSchema = z.object({
   roomNumber: z.string().nonempty('Please define your hotel room number'),
   roomType: z.string().nonempty('Choose your room type'),
@@ -23,7 +27,9 @@ export const formSchema = z.object({
   roomInfo: z.string().nonempty('Please add room information'),
 });
 
-export const AddRoomGeneral = () => {
+export const AddRoomGeneral = ({ setRoomId, hotelId }: RoomGeneralType) => {
+  const [addRoomMutation] = useAddRoomMutation();
+  const [open, setOpen] = useState<boolean>(false);
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,12 +48,30 @@ export const AddRoomGeneral = () => {
   ]);
 
   const onSubmit = async (values: FormType) => {
-    setLabels((prev) =>
-      prev.map((item) => ({
-        ...item,
-        value: values[item.key as keyof FormType] || '-/-',
-      }))
-    );
+    if (!hotelId) return;
+
+    try {
+      const { data } = await addRoomMutation({
+        variables: {
+          hotelName: hotelId,
+          roomNumber: values.roomNumber,
+          roomType: values.roomType,
+          roomInfos: values.roomInfo,
+          pricePerNight: Number(values.price),
+        },
+      });
+      console.log(data?.addRoom);
+      setRoomId(data?.addRoom._id);
+      setOpen(false);
+      setLabels((prev) =>
+        prev.map((item) => ({
+          ...item,
+          value: values[item.key as keyof FormType] || '-/-',
+        }))
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <Card className="w-[784px]">
@@ -55,7 +79,7 @@ export const AddRoomGeneral = () => {
         <CardHeader>
           <CardTitle className="text-[18px] font-semibold flex justify-between">
             General Info
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className="text-[#2563EB] text-[14px] font-medium">Edit</DialogTrigger>
               <GeneralDialog form={form} onSubmit={onSubmit} />
             </Dialog>

@@ -5,27 +5,60 @@ import { Button } from '@/components/ui/button';
 import { DialogClose, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useUploadRoomImagesMutation } from '@/generated';
 import { LoaderCircle, Plus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 type ImagesDialogType = {
   preview: string[];
   handleFileChange: (_e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRemove: (_index: number) => void;
   imgFiles: File[];
+  roomId: string | undefined;
+  setPreview: Dispatch<SetStateAction<string[]>>;
+  setImgFiles: Dispatch<SetStateAction<File[]>>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  setImgUrls: Dispatch<SetStateAction<string[]>>;
 };
 
-export const ImagesDialog = ({ preview, handleFileChange, handleRemove }: ImagesDialogType) => {
-  const { uploading } = useUpload();
+export const ImagesDialog = ({ preview, handleFileChange, handleRemove, imgFiles, roomId, setPreview, setImgFiles, setOpen, setImgUrls }: ImagesDialogType) => {
+  const { uploading, uploadImage } = useUpload();
+  const [uploadRoomImagesMutation] = useUploadRoomImagesMutation();
 
-  // const uploadFiles = (files: File[]) => {
-  //   const uploaded = files.map(async (file) => {
-  //     return await uploadImage(file);
-  //   });
-  // };
+  const uploadFiles = async (files: File[]) => {
+    const uploaded: string[] = [];
+    for (const file of files) {
+      const url = await uploadImage(file);
+      if (url) uploaded.push(url);
+    }
+    return uploaded;
+  };
 
-  // const handleUplaod = async () => {};
+  const handleUpload = async () => {
+    if (imgFiles.length === 0 || !roomId) return;
+
+    try {
+      const uploadedUrls = await uploadFiles(imgFiles);
+
+      setImgUrls((prev) => [...prev, ...uploadedUrls]);
+
+      const { data } = await uploadRoomImagesMutation({
+        variables: {
+          roomId: roomId,
+          image: uploadedUrls,
+        },
+      });
+
+      console.log(data?.uploadRoomImages);
+
+      setImgFiles([]);
+      setPreview([]);
+      setOpen(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <DialogContent className="w-[1160px] max-h-[800px] overflow-y-scroll">
@@ -53,7 +86,7 @@ export const ImagesDialog = ({ preview, handleFileChange, handleRemove }: Images
 
       <div className="justify-between flex">
         <DialogClose>Close</DialogClose>
-        <Button variant="hotel" type="button">
+        <Button variant="hotel" type="button" onClick={handleUpload}>
           Save
         </Button>
       </div>

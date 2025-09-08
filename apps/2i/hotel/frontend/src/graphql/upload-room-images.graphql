@@ -1,0 +1,5 @@
+mutation UploadRoomImages($roomId: ID!, $image: [String]!) {
+  uploadRoomImages(roomId: $roomId, image: $image) {
+    message
+  }
+}
