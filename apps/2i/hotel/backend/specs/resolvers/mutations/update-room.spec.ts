@@ -1,38 +1,43 @@
 import { RoomModel } from '../../../src/models/room-model';
 import { updateRoom } from '../../../src/resolvers/mutations/update-room';
 
-jest.mock('../../../src/models/room-model', () => ({
-  RoomModel: {
-    findByIdAndUpdate: jest.fn(),
-  },
-}));
+jest.mock('../../../src/models/room-model', () => {
+  return {
+    RoomModel: {
+      findByIdAndUpdate: jest.fn(),
+    },
+  };
+});
 
-describe('updateRoom resolver', () => {
-  const mockId = '12345';
-  const mockInput = { roomNumber: 'Deluxe Room', pricePerNight: 100 };
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+describe('updateRoom mutation', () => {
+  const mockRoomId = '12345';
+  const mockInput = { roomNumber: '202', pricePerNight: 150 };
 
-  it('should update and return success message', async () => {
-    // Arrange
+  it('should update a room and return success message', async () => {
     (RoomModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
-      _id: mockId,
+      _id: mockRoomId,
       ...mockInput,
     });
 
-    // Act
-    const result = await updateRoom({}, { id: mockId, input: mockInput });
+    const result = await updateRoom(null, { roomId: mockRoomId, input: mockInput });
 
-    // Assert
-    expect(RoomModel.findByIdAndUpdate).toHaveBeenCalledWith(mockId, { $set: mockInput }, { new: true });
+    expect(RoomModel.findByIdAndUpdate).toHaveBeenCalledWith(mockRoomId, { $set: mockInput }, { new: true });
     expect(result).toEqual({ message: 'Successfully updated' });
   });
 
-  it('should throw error if room not found', async () => {
+  it('should throw an error if room is not found', async () => {
     (RoomModel.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
 
-    await expect(updateRoom({}, { id: mockId, input: mockInput })).rejects.toThrow('Room not found');
+    await expect(updateRoom(null, { roomId: mockRoomId, input: mockInput })).rejects.toThrow('Room not found');
+  });
+
+  it('should propagate unexpected errors', async () => {
+    (RoomModel.findByIdAndUpdate as jest.Mock).mockRejectedValue(new Error('DB error'));
+
+    await expect(updateRoom(null, { roomId: mockRoomId, input: mockInput })).rejects.toThrow('DB error');
   });
 });

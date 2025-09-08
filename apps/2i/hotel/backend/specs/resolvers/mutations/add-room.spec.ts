@@ -1,43 +1,74 @@
 import { RoomModel } from '../../../src/models/room-model';
-import { updateRoom } from '../../../src/resolvers/mutations/update-room';
+import { addRoom } from '../../../src/resolvers/mutations';
+import { HotelModel } from '../../../src/models/hotel-model';
 
 jest.mock('../../../src/models/room-model', () => {
   return {
     RoomModel: {
-      findByIdAndUpdate: jest.fn(),
+      findOne: jest.fn(),
+      create: jest.fn(),
     },
   };
 });
+
+jest.mock('../../../src/models/hotel-model', () => ({
+  HotelModel: {
+    findOneAndUpdate: jest.fn(),
+  },
+}));
 
 afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('updateRoom mutation', () => {
-  const mockRoomId = '12345';
-  const mockInput = { roomNumber: '202', pricePerNight: 150 };
+describe('addRoom mutation', () => {
+  const mockRoomData = {
+    hotelName: 'Test Hotel',
+    roomNumber: '101',
+    roomType: 'Deluxe',
+    pricePerNight: 100,
+    roomImgs: ['img1.jpg', 'img2.jpg'],
+    roomInfos: ['info1', 'info2'],
+    amenities: {
+      bathroom: ['shower'],
+      foodAndDrink: ['coffee'],
+      technology: ['TV'],
+      accessibility: ['wheelchair'],
+      bedroom: ['king bed'],
+      more: ['balcony'],
+    },
+  };
 
-  it('should update a room and return success message', async () => {
-    (RoomModel.findByIdAndUpdate as jest.Mock).mockResolvedValue({
-      _id: mockRoomId,
-      ...mockInput,
+  it('should throw an error if room already exists', async () => {
+    (RoomModel.findOne as jest.Mock).mockResolvedValue(mockRoomData);
+
+    await expect(addRoom(null, mockRoomData)).rejects.toThrow('This room already added');
+    expect(RoomModel.findOne).toHaveBeenCalledWith({
+      hotelName: 'Test Hotel',
+      roomNumber: '101',
     });
-
-    const result = await updateRoom(null, { roomId: mockRoomId, input: mockInput });
-
-    expect(RoomModel.findByIdAndUpdate).toHaveBeenCalledWith(mockRoomId, { $set: mockInput }, { new: true });
-    expect(result).toEqual({ message: 'Successfully updated' });
   });
 
-  it('should throw an error if room is not found', async () => {
-    (RoomModel.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
+  it('should add a new room if it does not exist', async () => {
+    (RoomModel.findOne as jest.Mock).mockResolvedValue(null);
+    (RoomModel.create as jest.Mock).mockResolvedValue({ ...mockRoomData, _id: '1' });
+    (HotelModel.findOneAndUpdate as jest.Mock).mockResolvedValue(true);
 
-    await expect(updateRoom(null, { roomId: mockRoomId, input: mockInput })).rejects.toThrow('Room not found');
+    const result = await addRoom(null, mockRoomData);
+
+    expect(RoomModel.findOne).toHaveBeenCalledWith({
+      hotelName: 'Test Hotel',
+      roomNumber: '101',
+    });
+    expect(RoomModel.create).toHaveBeenCalledWith(mockRoomData);
+    expect(HotelModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: 'Test Hotel' }, { $push: { rooms: { ...mockRoomData, _id: '1' } } });
+    expect(result).toBe('1'); // ✅ Only checking ID
   });
 
-  it('should propagate unexpected errors', async () => {
-    (RoomModel.findByIdAndUpdate as jest.Mock).mockRejectedValue(new Error('DB error'));
+  it('should throw a generic error on create failure', async () => {
+    (RoomModel.findOne as jest.Mock).mockResolvedValue(null);
+    (RoomModel.create as jest.Mock).mockRejectedValue({});
 
-    await expect(updateRoom(null, { roomId: mockRoomId, input: mockInput })).rejects.toThrow('DB error');
+    await expect(addRoom(null, mockRoomData)).rejects.toThrow('Something wrong happen');
   });
 });
