@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLoginMutation} from '@/generated';
@@ -10,7 +10,7 @@ import { useAuth } from '../Provider';
 const LoginPage = () => {
 const router = useRouter();
    const { token,loading,login: setAuthToken } = useAuth();
-  const [ Login,{  error }] = useLoginMutation()
+  const [ Login] = useLoginMutation()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -86,7 +86,7 @@ if (token) return null;
           <button  type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors" >
             Log in
           </button>
-          {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}
+         
         </form>
  
         <div className="mt-6 text-center">
