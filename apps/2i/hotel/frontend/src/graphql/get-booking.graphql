@@ -1,0 +1,23 @@
+query GetBooking {
+  getBooking {
+    _id
+    user {
+      _id
+    }
+    hotel {
+      _id
+      hotelName
+    }
+    room {
+      roomType
+      roomNumber
+      pricePerNight
+    }
+    checkIn
+    checkOut
+    nights
+    pricePerNight
+    taxes
+    totalPrice
+  }
+}

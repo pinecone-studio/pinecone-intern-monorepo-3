@@ -1,3 +1,5 @@
+'use client';
+
 import { GuestsPage } from '../_Components/GuestsPage';
 
 const GuestHomePage = () => {
