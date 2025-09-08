@@ -1,8 +1,8 @@
 import { RoomModel, RoomType } from '../../models/room-model';
 
-export const updateRoom = async (_: unknown, args: { id: string; input: Partial<RoomType> }) => {
+export const updateRoom = async (_: unknown, args: { roomId: string; input: Partial<RoomType> }) => {
   const updated = await RoomModel.findByIdAndUpdate(
-    args.id,
+    args.roomId,
     {
       $set: args.input,
     },

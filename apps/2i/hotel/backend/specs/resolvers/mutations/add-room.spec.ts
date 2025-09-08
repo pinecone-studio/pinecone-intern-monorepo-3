@@ -43,18 +43,26 @@ describe('addRoom mutation', () => {
     (RoomModel.findOne as jest.Mock).mockResolvedValue(mockRoomData);
 
     await expect(addRoom(null, mockRoomData)).rejects.toThrow('This room already added');
-    expect(RoomModel.findOne).toHaveBeenCalledWith({ hotelName: 'Test Hotel', roomNumber: '101' });
+    expect(RoomModel.findOne).toHaveBeenCalledWith({
+      hotelName: 'Test Hotel',
+      roomNumber: '101',
+    });
   });
 
   it('should add a new room if it does not exist', async () => {
     (RoomModel.findOne as jest.Mock).mockResolvedValue(null);
     (RoomModel.create as jest.Mock).mockResolvedValue({ ...mockRoomData, _id: '1' });
     (HotelModel.findOneAndUpdate as jest.Mock).mockResolvedValue(true);
+
     const result = await addRoom(null, mockRoomData);
 
-    expect(RoomModel.findOne).toHaveBeenCalledWith({ hotelName: 'Test Hotel', roomNumber: '101' });
+    expect(RoomModel.findOne).toHaveBeenCalledWith({
+      hotelName: 'Test Hotel',
+      roomNumber: '101',
+    });
     expect(RoomModel.create).toHaveBeenCalledWith(mockRoomData);
-    expect(result?.message).toBe('Succesfully added room in this hotel');
+    expect(HotelModel.findOneAndUpdate).toHaveBeenCalledWith({ _id: 'Test Hotel' }, { $push: { rooms: { ...mockRoomData, _id: '1' } } });
+    expect(result).toBe('1'); // ✅ Only checking ID
   });
 
   it('should throw a generic error on create failure', async () => {

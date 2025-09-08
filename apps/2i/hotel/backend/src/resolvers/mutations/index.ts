@@ -9,3 +9,5 @@ export * from './room-booking-mutation';
 export * from './booking-update-mutation';
 export * from './send-otp-mutation';
 export * from './verify-otp-mutation';
+export * from './update-room';
+export * from './upload-room-images';

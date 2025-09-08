@@ -9,12 +9,10 @@ export const typeDefs = gql`
     bedroom: [String]!
     more: [String]!
   }
-
   input PolicyInput {
     title: String
     description: String
   }
-
   input UpdateHotelInput {
     hotelName: String
     description: String
@@ -27,34 +25,33 @@ export const typeDefs = gql`
     amenities: [String]
     policies: [PolicyInput]
   }
-
+  input UpdateRoomInput {
+    amenities: AmenitiesInput
+  }
   type Hotel {
     _id: ID!
     hotelName: String!
-    description: String
-    phoneNumber: String
-    about: String
+    description: String!
+    phoneNumber: String!
+    about: String!
     location: String!
-    languages: [String]
+    languages: [String]!
     starRating: String!
-    image: [String!]!
-    amenities: [String]
-    policies: [Policy]
-    userRating: [UserRating]!
-    rooms: [Room]!
+    image: [String]!
+    amenities: [String]!
+    policies: [Policy]!
+    userRating: [UserRating]
+    rooms: [Room]
   }
-
   type Policy {
     title: String
     description: String
   }
-
   type UserRating {
     rating: Int
     comment: String
     hotel: ID
   }
-
   type Amenities {
     bathroom: [String]!
     foodAndDrink: [String]!
@@ -63,28 +60,24 @@ export const typeDefs = gql`
     bedroom: [String]!
     more: [String]!
   }
-
   type Room {
     _id: ID!
-    hotelName: ID!
-    roomNumber: String!
-    roomType: String!
-    pricePerNight: Int!
-    roomImgs: [String]!
-    roomInfos: [String]!
-    amenities: Amenities!
+    hotelName: ID
+    roomNumber: String
+    roomType: String
+    pricePerNight: Int
+    roomImgs: [String]
+    roomInfos: [String]
+    amenities: Amenities
   }
-
   input RoomFilterInput {
     roomType: String
     amenities: AmenitiesInput
   }
-
   type EmergencyNumber {
     phoneNumber: String
     relation: String
   }
-
   type User {
     _id: ID!
     email: String!
@@ -102,7 +95,12 @@ export const typeDefs = gql`
   type UpdateResponse {
     message: String!
   }
-
+  type AddRoomResponse {
+    message: String!
+  }
+  type UplodedImageResponse {
+    message: String!
+  }
   type Query {
     getRoomById(id: ID!): Room
     getRooms: [Room]!
@@ -116,7 +114,6 @@ export const typeDefs = gql`
     getpopularHotels: [Hotel!]!
     getmostBookedHotels: [Hotel!]!
   }
-
   type Booking {
     _id: ID!
     user: ID!
@@ -130,27 +127,26 @@ export const typeDefs = gql`
     taxes: Float
     totalPrice: Float
   }
-
   type Otp {
     email: String!
     code: String!
     verified: Boolean!
   }
-
   type OtpResponse {
     success: Boolean!
     message: String!
   }
-
   type Mutation {
-    addRoom(hotelName: ID!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomImgs: [String]!, roomInfos: [String]!, amenities: AmenitiesInput!): Room!
+    addRoom(hotelName: ID!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomInfos: [String]!): Room!
+    updateRoom(roomId: ID!, input: UpdateRoomInput!): UpdateResponse!
     addHotel(hotelName: String!, description: String!, starRating: String!, phoneNumber: String!): Hotel!
     updateHotel(id: ID!, input: UpdateHotelInput!): UpdateResponse!
     deleteHotel(id: ID!): Boolean!
     submitUserRating(hotelId: String!, rating: Int!, comment: String): [UserRating]!
-    uploadToCloudinary(hotelId: ID!, image: [String!]!): Hotel!
     sendOtp(email: String!): OtpResponse!
     verifyOtp(email: String!, code: String!): Boolean!
+    uploadToCloudinary(hotelId: ID!, image: [String]!): UplodedImageResponse!
+    uploadRoomImages(roomId: ID!, image: [String]!): UplodedImageResponse!
     userSignUp(email: String!, password: String!): SignUpResponse!
     roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
     bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!

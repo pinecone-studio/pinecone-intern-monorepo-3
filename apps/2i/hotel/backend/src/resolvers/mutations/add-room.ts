@@ -6,16 +6,7 @@ type AddRoomArgs = {
   roomNumber: string;
   roomType: string;
   pricePerNight: number;
-  roomImgs: string[];
   roomInfos: string[];
-  amenities: {
-    bathroom: string[];
-    foodAndDrink: string[];
-    technology: string[];
-    accessibility: string[];
-    bedroom: string[];
-    more: string[];
-  };
 };
 
 export const addRoom = async (_: unknown, args: AddRoomArgs) => {
@@ -31,9 +22,8 @@ export const addRoom = async (_: unknown, args: AddRoomArgs) => {
 
     const newRoom = await RoomModel.create(args);
 
-    await HotelModel.findOneAndUpdate({ _id: args.hotelName }, { $push: { rooms: newRoom._id } });
-
-    return { message: 'Succesfully added room in this hotel' };
+    await HotelModel.findOneAndUpdate({ _id: args.hotelName }, { $push: { rooms: newRoom } });
+    return newRoom._id;
   } catch (err: unknown) {
     if (err instanceof Error) {
       throw new Error(err.message);
