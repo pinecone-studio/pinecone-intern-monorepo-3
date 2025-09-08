@@ -33,6 +33,11 @@ export const typeDefs = gql`
   input CreateStoryInput {
     mediaUrl: String!
   }
+
+  input CreatePostInput {
+    images: [String!]!
+    caption: String
+  }
   input VerifyOtpInput {
     otp: String!
   }
@@ -59,6 +64,10 @@ export const typeDefs = gql`
     unfollowUser(userId: ID!): MessageResponse!
     createStory(input: CreateStoryInput!): Story!
     markStorySeen(storyId: ID!): Story!
+    createPost(input: CreatePostInput!): Post!
+    likePost(postId: ID!): Post!
+    unlikePost(postId: ID!): Post!
+    addComment(postId: ID!, text: String!): Comment!
   }
 
   type Query {
@@ -68,6 +77,8 @@ export const typeDefs = gql`
     getStories: [Story!]!
     getUserStories(userId: ID!): [Story!]!
     getSearchResults: [User]!
+    getPosts: [Post!]!
+    getPost(postId: ID!): Post!
   }
 
   type TroubleLoginResponse {
@@ -116,5 +127,23 @@ export const typeDefs = gql`
     followRequests: [User!]
     otp: String
     otpExpires: String
+  }
+
+  type Post {
+    id: ID!
+    user: User!
+    images: [String!]!
+    caption: String
+    likes: [User!]!
+    comments: [Comment!]!
+    createdAt: String!
+  }
+
+  type Comment {
+    id: ID!
+    user: User!
+    post: Post!
+    text: String!
+    createdAt: String!
   }
 `;
