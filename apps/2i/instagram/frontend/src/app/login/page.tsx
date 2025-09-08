@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLoginMutation} from '@/generated';
@@ -25,10 +24,10 @@ const router = useRouter();
       setFormData(prev => ({ ...prev, [name]: value }));
     };
   
-
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+ 
        try {
       const response = await Login({
         variables: {
@@ -39,7 +38,6 @@ const router = useRouter();
         }
       });
         const result = response.data?.login;
-
     if ( result?.token) {
       setAuthToken(result.token);
       router.push("/");
@@ -62,7 +60,7 @@ if (token) return null;
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Instagram</h1>
         </div>
-
+ 
         <form  data-testid="login-form"  onSubmit={handleSubmit} className="space-y-4">
           <input
            
@@ -90,13 +88,13 @@ if (token) return null;
           </button>
           {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}
         </form>
-
+ 
         <div className="mt-6 text-center">
           <Link href="/forgot" className="text-blue-900 hover:underline text-sm">
             Forgot password?
           </Link>
         </div>
-
+ 
         <div className="mt-6 text-center">
           <p className="text-xs text-gray-500 mb-4">
             People who use our service may have uploaded your contact information to Instagram.{' '}
@@ -116,7 +114,7 @@ if (token) return null;
             .
           </p>
         </div>
-
+ 
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-600">
             Don&apos;t have an account?{' '}
@@ -129,5 +127,5 @@ if (token) return null;
     </div>
   );
 };
-
+ 
 export default LoginPage;
