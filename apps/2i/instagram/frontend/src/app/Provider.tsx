@@ -5,11 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 type AuthContextType = {
   token: string | null;
-<<<<<<< HEAD
-  login: (_Token: string) => void;
-=======
   login: (_token: string) => void;
->>>>>>> 6cd6cee (fix(instagram): conflict bug)
   logout: () => void;
   loading: boolean;
 };

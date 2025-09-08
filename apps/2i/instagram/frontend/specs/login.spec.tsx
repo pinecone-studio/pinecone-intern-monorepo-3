@@ -32,8 +32,6 @@ jest.mock('@/app/Provider', () => ({
   useAuth: jest.fn(),
 }))
  
-
-
 describe('LoginPage Component', () => {
   const mockPush = jest.fn()
   const mockLogin = jest.fn()
