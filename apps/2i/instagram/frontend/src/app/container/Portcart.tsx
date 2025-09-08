@@ -58,7 +58,7 @@ export const PostCard = ({ post, liked, saved, onLike, onSave }: any) => {
             <AvatarImage src="/diverse-user-avatars.png" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <Input placeholder="Add a comment..." className="border-none p-0 text-sm focus-visible:ring-0" />
+          <Input placeholder="Add a comment..." className="border-none p-0 text-sm focus-visible:ring-0"/>
         </div>
       </div>
     </article>

@@ -139,3 +139,14 @@ mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
 }
 
 
+mutation updatePassword($input: UpdatePasswordInput) {
+  updatePassword(input: $input) {
+    message
+  }
+}
+
+mutation ForgetverifyOtp($verifyOtp: VerifyOtpInput!) {
+  forgetverifyOtp(verifyOtp: $verifyOtp) {
+    message
+  }
+}

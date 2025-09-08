@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 
 import React, { useState } from 'react';
 
+
 const SignupPage = () => {
   const router = useRouter();
 const [ Sign,{ loading, error }] = useSignMutation()
-
   const [formData, setFormData] = useState({
     email: '',
     name: '',
