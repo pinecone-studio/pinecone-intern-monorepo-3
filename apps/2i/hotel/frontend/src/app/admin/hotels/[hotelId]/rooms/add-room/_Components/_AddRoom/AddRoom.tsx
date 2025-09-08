@@ -5,7 +5,7 @@ import { AddRoomGeneral } from './AddRoomGeneral';
 import { ChevronLeft } from 'lucide-react';
 import { AddRoomServices } from './AddRoomServices';
 import { AddRoomImages } from './AddRoomImages';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction } from 'react';
 
 type AddRoomType = {
