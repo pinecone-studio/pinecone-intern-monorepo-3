@@ -51,7 +51,7 @@ export const HotelCard = ({ hotels }: Props) => {
                 <Star className="w-[16px] h-[16px] fill-yellow-300 text-yellow-300" />
               </div>
               <div className="flex flex-wrap gap-2">
-                {hotel?.amenities.map((el, index) => {
+                {hotel?.amenities?.map((el, index) => {
                   return (
                     <Badge key={index} variant="outline">
                       {el}
