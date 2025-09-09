@@ -94,6 +94,11 @@ export const typeDefs = gql`
     pricePerNight: Int
     taxes: Float
     totalPrice: Float
+    email: String
+    firstName: String
+    lastName: String
+    phoneNumber: String
+    cardNumber: String
   }
 
   type Otp {

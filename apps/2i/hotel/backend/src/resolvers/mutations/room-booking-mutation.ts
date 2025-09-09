@@ -10,6 +10,11 @@ export const roomBooking = async (
     roomNumber: string;
     checkIn: string;
     checkOut: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    cardNumber: string;
   }
 ) => {
   const existingHotel = await HotelModel.findById(args.hotelName);
@@ -34,7 +39,6 @@ export const roomBooking = async (
 
   const checkInDate = new Date(args.checkIn);
   const checkOutDate = new Date(args.checkOut);
-
   const nights = Math.round((checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24));
 
   const pricePerNight = existingRoom.pricePerNight;
@@ -51,10 +55,23 @@ export const roomBooking = async (
     pricePerNight,
     taxes,
     totalPrice,
+    email: args.email,
+    firstName: args.firstName,
+    lastName: args.lastName,
+    phoneNumber: args.phoneNumber,
+    cardNumber: args.cardNumber,
   });
 
   await newBooking.save();
 
-  return { ...newBooking.toObject(), room: existingRoom, hotel: existingHotel, user: args.userId, checkIn: checkInDate.toISOString(), checkOut: checkOutDate.toISOString() };
+  const populatedBooking = await BookingModel.findById(newBooking._id).populate('userId').populate('hotelName').populate('roomNumber').exec();
+
+  return {
+    ...populatedBooking.toObject(),
+    user: populatedBooking.userId,
+    hotel: populatedBooking.hotelName,
+    room: populatedBooking.roomNumber,
+  };
 };
+
 //

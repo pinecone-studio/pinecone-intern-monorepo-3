@@ -66,9 +66,39 @@ export const mutationDefs = gql`
 
     userSignUp(email: String!, password: String!): SignUpResponse!
 
-    roomBooking(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
+    roomBooking(
+      userId: String
+      hotelName: String
+      roomNumber: String
+      checkIn: String
+      checkOut: String
+      nights: Int
+      pricePerNight: Int
+      taxes: Float
+      totalPrice: Float
+      email: String
+      firstName: String
+      lastName: String
+      phoneNumber: String
+      cardNumber: String
+    ): Booking!
 
-    bookingUpdate(userId: String, hotelName: String, roomNumber: String, checkIn: String, checkOut: String, nights: Int, pricePerNight: Int, taxes: Float, totalPrice: Float): Booking!
+    bookingUpdate(
+      userId: String
+      hotelName: String
+      roomNumber: String
+      checkIn: String
+      checkOut: String
+      nights: Int
+      pricePerNight: Int
+      taxes: Float
+      totalPrice: Float
+      email: String
+      firstName: String
+      lastName: String
+      phoneNumber: String
+      cardNumber: String
+    ): Booking!
 
     updateRoom(roomId: ID!, input: UpdateRoomInput!): UpdateResponse!
 

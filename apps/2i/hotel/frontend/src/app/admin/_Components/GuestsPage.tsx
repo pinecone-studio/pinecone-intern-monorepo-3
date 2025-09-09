@@ -13,14 +13,6 @@ export const GuestsPage = () => {
   if (loading) return <div>Loading...</div>;
   console.log(data, 'booking');
 
-  // const guests = [
-  //   { id: '0001', name: 'Baatar Erdenebat', hotel: 'Chinggis Khan Hotel', room: 'Economy Double Room, City View', guests: '1 Adult', date: 'Nov 5 - Nov 7', status: 'Booked' },
-  //   { id: '0002', name: 'Tsetsenbayar Munkhbat', hotel: 'Chinggis Khan Hotel', room: 'Standard Twin Room, City View', guests: '2 Adults', date: 'Jan 10 - Jan 12', status: 'Completed' },
-  //   { id: '0003', name: 'Munkhbayar Tserendorj', hotel: 'Chinggis Khan Hotel', room: 'Deluxe Twin Room, City View', guests: '2 Adults', date: 'Dec 15 - Dec 17', status: 'Completed' },
-  //   { id: '0004', name: 'Chuluunbat Sukhbaatar', hotel: 'Chinggis Khan Hotel', room: 'Economy Double Room, City View', guests: '2 Adults', date: 'Jul 4 - Jul 6', status: 'Completed' },
-  //   { id: '0005', name: 'Sarnai Erdenetsetseg', hotel: 'Chinggis Khan Hotel', room: 'Economy Double Room, City View', guests: '1 Adult', date: 'Dec 5 - Dec 7', status: 'Cancelled' },
-  // ];
-
   // const getStatusColor = (status: string) => {
   //   switch (status) {
   //     case 'Booked':
@@ -34,10 +26,10 @@ export const GuestsPage = () => {
   //   }
   // };
 
-  // const users = Array.isArray(data?.getBooking?.user) ? data.getBooking.user : [];
-
-  // const filteredGuests = users.filter((guest: { status: string; name: string }) => {
-  //   const matchesStatus = statusFilter ? guest.status === statusFilter : true;
+  // const filteredGuests = data?.getBooking.map((user)=>{
+  //   return user?.user?
+  // }).filter(() => {
+  //   const matchesStatus = statusFilter ? data.getBooking.map((user)=>()).status === statusFilter : true;
   //   const matchesSearch = searchTerm ? guest.name.toLowerCase().includes(searchTerm.toLowerCase()) : true;
   //   return matchesStatus && matchesSearch;
   // });
@@ -79,7 +71,7 @@ export const GuestsPage = () => {
             {data?.getBooking?.map((book) => {
               return (
                 <tr key={book?._id} className="border-t">
-                  <td className="px-4 py-3">{book?.user?._id}</td>
+                  <td className="px-4 py-3">{book?.user?._id.slice(0, 4)}</td>
                   <td className="px-4 py-3">
                     {/* <Link href={`/admin/guestInfo/${book?.user}`} className="hover:underline text-blue-600">
                       View Details
@@ -87,9 +79,9 @@ export const GuestsPage = () => {
                   </td>
                   <td className="px-4 py-3">{book?.hotel?.hotelName}</td>
                   <td className="px-4 py-3">{book?.room?.roomType}</td>
-                  <td className="px-4 py-3">{book?.user?._id}</td>
+                  <td className="px-4 py-3">{book?.user?._id[0]}</td>
                   {/* <td className="px-4 py-3">{book?.checkIn ? format(new Date(Number(book?.checkIn)), 'yyyy-MM-dd') : 'N/A'}</td> */}
-                  <td className="px-4 py-3">{book?.checkIn}</td>
+                  <td className="px-4 py-3">{book?.checkIn.slice(0, 10)}</td>
                   <td className="px-4 py-3">{/* <span className={`rounded-md px-2 py-1 text-xs font-medium ${getStatusColor(book?.status)}`}>{book?.status}</span> */}</td>
                 </tr>
               );
