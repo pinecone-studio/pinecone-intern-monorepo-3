@@ -30,7 +30,15 @@ export const HotelCard = ({ hotels }: Props) => {
 
       <div className=" grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {hotels?.map((hotel) => (
-          <Card key={hotel?.hotelName} className="overflow-hidden rounded-md cursor-pointer bg-white shadow-sm transition hover:shadow-md" onClick={() => hotelHandle(hotel?._id!)}>
+          <Card
+            key={hotel?.hotelName}
+            className="overflow-hidden rounded-md cursor-pointer bg-white shadow-sm transition hover:shadow-md"
+            onClick={() => {
+              if (hotel?._id) {
+                hotelHandle(hotel._id);
+              }
+            }}
+          >
             <div className="relative w-full h-[216px]">
               <Image src={hotel?.image[0] ?? '/placeholder.png'} alt={hotel?.hotelName ?? 'Room image'} fill className="object-cover " />
             </div>
