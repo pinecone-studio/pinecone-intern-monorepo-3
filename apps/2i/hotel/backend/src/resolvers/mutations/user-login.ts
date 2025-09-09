@@ -12,7 +12,7 @@ export const userLogin = async (_: unknown, args: { email: string; password: str
     if (!isPasswordValid) {
       throw new Error('Email or password incorrect, please check again');
     }
-    const tokenPassword = process.env.JWT_PASSWORD;
+    const tokenPassword = process.env.JWT_TOKEN;
     const token = await jwt.sign({ userId: userExisting._id }, tokenPassword as string);
 
     return { message: 'Login successful', token };
