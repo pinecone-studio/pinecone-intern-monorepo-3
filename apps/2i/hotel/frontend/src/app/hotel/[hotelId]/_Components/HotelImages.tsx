@@ -11,7 +11,7 @@ export const HotelImages = ({ data }: HotelImagesType) => {
       {data?.image.map((img, index) => {
         return (
           <div key={index} className="w-[300px] h-[150px]">
-            <Image src={img || ''} alt={img || ''} width={300} height={150} className="object-cover w-full h-full" />
+            <Image src={img ?? '/placeholder.png'} alt={img ?? 'Room'} width={300} height={150} className="object-cover w-full h-full" />
           </div>
         );
       })}

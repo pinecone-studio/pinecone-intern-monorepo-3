@@ -139,7 +139,7 @@ export const DetailImage = ({ hotelData }: DetailImageType) => {
         ) : (
           <div className="grid grid-cols-2 gap-4">
             {hotelData.image.map((img, index) => {
-              return <Image key={index} src={img || ''} alt={img || ''} width={200} height={200} className="object-cover rounded-md" />;
+              return <Image key={index} src={img ?? '/placeholder.png'} alt={img ?? 'room'} width={200} height={200} className="object-cover rounded-md" />;
             })}
           </div>
         )}

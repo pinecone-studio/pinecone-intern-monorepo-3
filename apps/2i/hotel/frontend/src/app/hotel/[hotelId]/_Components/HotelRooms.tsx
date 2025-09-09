@@ -15,7 +15,7 @@ export const HotelRooms = ({ data }: HotelRoomsType) => {
         return (
           <Card key={room?._id}>
             <CardHeader>
-              <Image src={room?.roomImgs?.[0] || ''} alt={room?.roomNumber || ''} width={350} height={210} className="" />
+              <Image src={room?.roomImgs?.[0] ?? '/placeholder.png'} alt={room?.roomNumber ?? 'room'} width={350} height={210} className="" />
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
               <p>{room?.roomType}</p>
