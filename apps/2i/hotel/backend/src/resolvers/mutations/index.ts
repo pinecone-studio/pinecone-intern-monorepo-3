@@ -11,3 +11,4 @@ export * from './send-otp-mutation';
 export * from './verify-otp-mutation';
 export * from './update-room';
 export * from './upload-room-images';
+export * from './user-login';

@@ -122,7 +122,7 @@ export const typeDefs = gql`
     getBooking: [Booking]!
     getFiltered: [Hotel]!
     getFilterRoom(filter: RoomFilterInput): [Room]!
-    getpopularHotels: [Hotel!]!
-    getmostBookedHotels: [Hotel!]!
+    getpopularHotels: [Hotel]!
+    getmostBookedHotels: [Hotel]!
   }
 `;

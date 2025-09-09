@@ -48,7 +48,19 @@ export const mutationDefs = gql`
   type UplodedImageResponse {
     message: String!
   }
-
+  type LoginResponse {
+    message: String!
+    token: String
+  }
+  type Otp {
+    email: String!
+    code: String!
+    verified: Boolean!
+  }
+  type OtpResponse {
+    success: Boolean!
+    message: String!
+  }
   type Mutation {
     addRoom(hotelName: ID!, roomNumber: String!, roomType: String!, pricePerNight: Int!, roomImgs: [String]!, roomInfos: [String]!, amenities: AmenitiesInput!): Room!
 
@@ -62,9 +74,10 @@ export const mutationDefs = gql`
     uploadToCloudinary(hotelId: ID!, image: [String]!): UplodedImageResponse!
 
     sendOtp(email: String!): OtpResponse!
-    verifyOtp(email: String!, code: String!): Boolean!
+    verifyOtp(email: String!, code: String!): OtpResponse!
 
     userSignUp(email: String!, password: String!): SignUpResponse!
+    userLogin(email: String!, password: String!): LoginResponse!
 
     roomBooking(
       userId: String

@@ -10,6 +10,7 @@ export const resolvers = {
     deleteHotel: Mutation.deleteHotel,
     submitUserRating: Mutation.submitUserRating,
     userSignUp: Mutation.userSignUp,
+    userLogin: Mutation.userLogin,
     roomBooking: Mutation.roomBooking,
     bookingUpdate: Mutation.bookingUpdate,
     sendOtp: Mutation.sendOtp,
