@@ -7,8 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
+import { HotelType } from './HotelDetail';
 
-export const RoomTypes = () => {
+type RoomType = {
+  hotel: HotelType | undefined;
+};
+
+export const RoomTypes = ({ hotel }: RoomType) => {
   const { hotelId } = useParams();
   const router = useRouter();
   const handleAddRoom = () => {
@@ -47,15 +52,19 @@ export const RoomTypes = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow className="hover:bg-gray-50">
-                      <TableCell className="font-medium">0001</TableCell>
-                      <TableCell className="flex items-center gap-2 text-sm">
-                        <Image src="/path/to/image.jpg" alt="Room Image" width={40} height={40} className="rounded-md object-cover" />
-                        Economy Single room
-                      </TableCell>
-                      <TableCell>$250.00</TableCell>
-                      <TableCell className="text-right">1 Bed</TableCell>
-                    </TableRow>
+                    {hotel?.rooms?.map((room) => {
+                      return (
+                        <TableRow className="hover:bg-gray-50" key={room?._id}>
+                          <TableCell className="font-medium">{room?.roomNumber}</TableCell>
+                          <TableCell className="flex items-center gap-2 text-sm">
+                            <Image src={room?.roomImgs?.[0] || ''} alt={room?.roomNumber || ''} width={40} height={40} className="rounded-md object-cover" />
+                            {room?.roomType}
+                          </TableCell>
+                          <TableCell>{room?.pricePerNight}₮</TableCell>
+                          <TableCell className="text-right">{room?.roomType}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>

@@ -17,7 +17,7 @@ export const SearchCard = () => {
 
   return (
     <div className="absolute inset-x-0 top-[212px] flex justify-center px-4">
-      <div className="flex w-[1160px] items-end justify-between gap-4 rounded-xl border-[3px] border-[#FFB700] bg-white p-3 shadow-xl">
+      <div className="flex w-[1160px] items-end justify-between gap-4 rounded-xl border-[3px]  bg-white p-3 shadow-xl">
         {/* Dates */}
         <div className="flex flex-col gap-1">
           <Label htmlFor="dates" className="px-1">

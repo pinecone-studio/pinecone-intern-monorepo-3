@@ -1,0 +1,6 @@
+mutation SendOtp($email: String!) {
+  sendOtp(email: $email) {
+    message
+    success
+  }
+}

@@ -1,9 +1,12 @@
 'use client';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export const Header = () => {
   const pathname = usePathname();
+  const router = useRouter();
+
   if (pathname.startsWith('/admin')) return null;
+
   return (
     <header className="relative w-full bg-[#013B94] h-[280px]">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
@@ -11,9 +14,14 @@ export const Header = () => {
           <div className="h-4 w-4  bg-white border rounded-full" />
           <span className="text-xl font-semibold">Pedia</span>
         </div>
+
         <div className="flex items-center gap-3">
-          <button className="rounded-md px-3 py-1.5 text-sm text-white/90 hover:bg-white/10">Register</button>
-          <button className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-[#013B94] hover:bg-white/90">Sign in</button>
+          <button className="rounded-md px-3 py-1.5 text-sm text-white/90 hover:bg-white/10" onClick={() => router.push('/signup')}>
+            Register
+          </button>
+          <button className="rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-[#013B94] hover:bg-white/90" onClick={() => router.push('/login')}>
+            Sign in
+          </button>
         </div>
       </div>
 

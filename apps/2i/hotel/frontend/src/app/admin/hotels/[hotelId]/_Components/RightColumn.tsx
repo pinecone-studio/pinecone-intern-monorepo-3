@@ -10,7 +10,7 @@ export const RightColumn = ({ hotel }: RightType) => {
   if (!hotel) return null;
   return (
     <div className="flex flex-col gap-4">
-      <DetailLocation />
+      <DetailLocation hotel={hotel} />
       {hotel && <DetailImage hotelData={hotel} />}
     </div>
   );

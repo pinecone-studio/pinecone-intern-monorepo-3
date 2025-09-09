@@ -1,6 +1,5 @@
 import { Amenities } from './Amenities';
 import { AboutProperty } from './DetailsAbout';
-import { DetailsQuestions } from './DetailsQuestions';
 import { Policies } from './Policies';
 import { RoomTypes } from './RoomTypes';
 import { UpcomingBookings } from './UpcomingBookings';
@@ -16,12 +15,11 @@ export const LeftColumn = ({ hotel }: LeftType) => {
   return (
     <div className="lg:col-span-2 flex flex-col gap-4">
       <UpcomingBookings />
-      <RoomTypes />
+      <RoomTypes hotel={hotel} />
       <Generalinfo data={hotel} />
-      <Amenities />
-      <AboutProperty />
-      <Policies />
-      <DetailsQuestions />
+      <Amenities hotel={hotel} />
+      <AboutProperty hotel={hotel} />
+      <Policies hotel={hotel} />
     </div>
   );
 };
