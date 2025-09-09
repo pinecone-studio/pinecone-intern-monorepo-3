@@ -1,21 +1,14 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 export const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
-
+  const token = localStorage.getItem('token');
   if (pathname.startsWith('/admin')) return null;
-  const [token, setToken] = useState<string | null>(null);
-
-  if (pathname.startsWith('/admin')) return null;
-
   const handleLogOut = () => {
     localStorage.removeItem('token');
-    setToken(null);
-    router.push('/login');
   };
   return (
     <header className="relative w-full bg-[#013B94] h-[280px]">
