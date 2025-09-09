@@ -1,7 +1,6 @@
 'use client';
 
 import { GetBookingQuery, useGetBookingQuery } from '@/generated';
-import { Link } from 'lucide-react';
 import { useState } from 'react';
 
 export type BookingType = NonNullable<GetBookingQuery['getBooking']>;
@@ -14,28 +13,27 @@ export const GuestsPage = () => {
   if (loading) return <div>Loading...</div>;
   console.log(data, 'booking');
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Booked':
-        return 'bg-blue-100 text-blue-700';
-      case 'Completed':
-        return 'bg-green-100 text-green-700';
-      case 'Cancelled':
-        return 'bg-red-100 text-red-700';
-      default:
-        return 'bg-gray-100 text-gray-600';
-    }
-  };
+  // const getStatusColor = (status: string) => {
+  //   switch (status) {
+  //     case 'Booked':
+  //       return 'bg-blue-100 text-blue-700';
+  //     case 'Completed':
+  //       return 'bg-green-100 text-green-700';
+  //     case 'Cancelled':
+  //       return 'bg-red-100 text-red-700';
+  //     default:
+  //       return 'bg-gray-100 text-gray-600';
+  //   }
+  // };
 
-  const filteredGuests = data?.getBooking?.filter((booking) => {
-    const guest = booking?.user;
-    if (!guest) return false;
+  // const filteredGuests = data?.getBooking.map((user)=>{
+  //   return user?.user?
+  // }).filter(() => {
+  //   const matchesStatus = statusFilter ? data.getBooking.map((user)=>()).status === statusFilter : true;
+  //   const matchesSearch = searchTerm ? guest.name.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+  //   return matchesStatus && matchesSearch;
+  // });
 
-    const matchesStatus = statusFilter ? booking.status === statusFilter : true;
-    const matchesSearch = searchTerm ? booking.name?.toLowerCase().includes(searchTerm.toLowerCase()) : true;
-
-    return matchesStatus && matchesSearch;
-  });
   return (
     <main className="flex-1 backdrop-brightness-125 p-6 rounded-md">
       <h1 className="text-xl font-semibold mb-6">Guests</h1>
@@ -70,27 +68,21 @@ export const GuestsPage = () => {
             </tr>
           </thead>
           <tbody>
-            {(filteredGuests ?? []).map((book) => {
+            {data?.getBooking?.map((book) => {
               return (
                 <tr key={book?._id} className="border-t">
                   <td className="px-4 py-3">{book?.user?._id.slice(0, 4)}</td>
                   <td className="px-4 py-3">
-                    {book?.user?._id ? (
-                      <Link href={`/admin/guestInfo/${book.user._id}`} className="hover:underline text-blue-600">
-                        View Details
-                      </Link>
-                    ) : (
-                      <p className="text-gray-400">No Info</p>
-                    )}
+                    {/* <Link href={`/admin/guestInfo/${book?.user}`} className="hover:underline text-blue-600">
+                      View Details
+                    </Link> */}
                   </td>
                   <td className="px-4 py-3">{book?.hotel?.hotelName}</td>
                   <td className="px-4 py-3">{book?.room?.roomType}</td>
                   <td className="px-4 py-3">{book?.user?._id[0]}</td>
-
+                  {/* <td className="px-4 py-3">{book?.checkIn ? format(new Date(Number(book?.checkIn)), 'yyyy-MM-dd') : 'N/A'}</td> */}
                   <td className="px-4 py-3">{book?.checkIn.slice(0, 10)}</td>
-                  <td className="px-4 py-3">
-                    <span className={`rounded-md px-2 py-1 text-xs font-medium ${getStatusColor(book?.status)}`}>{book?.status}</span>
-                  </td>
+                  <td className="px-4 py-3">{/* <span className={`rounded-md px-2 py-1 text-xs font-medium ${getStatusColor(book?.status)}`}>{book?.status}</span> */}</td>
                 </tr>
               );
             })}
