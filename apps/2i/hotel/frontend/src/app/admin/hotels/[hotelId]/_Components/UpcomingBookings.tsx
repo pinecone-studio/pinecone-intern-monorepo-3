@@ -1,10 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { HotelType } from './HotelDetail';
-
-type UpcomingBookingType = {
-  // hotel: HotelType | undefined;
-};
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export const UpcomingBookings = () => {
   return (

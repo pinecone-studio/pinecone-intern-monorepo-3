@@ -1,6 +1,5 @@
 import { Amenities } from './Amenities';
 import { AboutProperty } from './DetailsAbout';
-import { DetailsQuestions } from './DetailsQuestions';
 import { Policies } from './Policies';
 import { RoomTypes } from './RoomTypes';
 import { UpcomingBookings } from './UpcomingBookings';

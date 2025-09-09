@@ -10,12 +10,6 @@ export const Header = () => {
   if (pathname.startsWith('/admin')) return null;
   const [token, setToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setToken(localStorage.getItem('token'));
-    }
-  }, []);
-
   if (pathname.startsWith('/admin')) return null;
 
   const handleLogOut = () => {
