@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
-import { CircleParking, Flower, Star, Wifi } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GetHotelQuery } from '@/generated';
 import { Badge } from '@/components/ui/badge';

@@ -2,9 +2,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-export const Amenities = () => {
-  const Amenities = ['Airport Shuttle', 'Free Wi-Fi', 'Swimming Pool', 'Spa', 'Fitness Center', 'Restaurant', 'Bar'];
+import { HotelType } from './HotelDetail';
+import { Badge } from '@/components/ui/badge';
 
+type AmenitiesType = {
+  hotel: HotelType | undefined;
+};
+
+export const Amenities = ({ hotel }: AmenitiesType) => {
   return (
     <Card className="p-6">
       <div className="border-b flex justify-between">
@@ -20,7 +25,7 @@ export const Amenities = () => {
             </DialogHeader>
             <Label>Amenities</Label>
             <div className="border p-4 flex flex-wrap gap-2 ">
-              {Amenities.map((amenity, index) => (
+              {hotel?.amenities?.map((amenity, index) => (
                 <Button variant={'secondary'} key={index} className="rounded-full ">
                   {amenity}
                 </Button>
@@ -30,10 +35,10 @@ export const Amenities = () => {
         </Dialog>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        {Amenities.map((amenity, index) => (
-          <Button variant={'secondary'} key={index} className="rounded-full ">
+        {hotel?.amenities?.map((amenity, index) => (
+          <Badge variant={'secondary'} key={index} className="rounded-full ">
             {amenity}
-          </Button>
+          </Badge>
         ))}
       </div>
     </Card>

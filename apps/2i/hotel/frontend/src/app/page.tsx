@@ -13,9 +13,7 @@ const Page = () => {
     <div className="min-h-screen w-full bg-[#F6F7FB]">
       <Header />
       <SearchCard />
-
       <HotelCard hotels={data?.getHotel} />
-
       <Footer />
     </div>
   );

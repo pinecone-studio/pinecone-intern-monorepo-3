@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { UseFormReturn } from 'react-hook-form';
-import { SignUpFormType, signUpSchema } from '../page';
+import { SignUpFormType } from '../page';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,10 @@ import { useRouter } from 'next/navigation';
 
 type SignUpType = {
   form: UseFormReturn<SignUpFormType>;
-  onSubmit: (_values: SignUpFormType) => void;
   setIndex: Dispatch<SetStateAction<number>>;
 };
 
-export const SignUp = ({ form, onSubmit, setIndex }: SignUpType) => {
+export const SignUp = ({ form, setIndex }: SignUpType) => {
   const router = useRouter();
   const handleLogIn = () => {
     router.push('/login');

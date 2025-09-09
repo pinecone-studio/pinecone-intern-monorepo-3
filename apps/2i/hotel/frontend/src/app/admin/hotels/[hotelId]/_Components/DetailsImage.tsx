@@ -128,13 +128,19 @@ export const DetailImage = ({ hotelData }: DetailImageType) => {
       </div>
 
       <CardContent className="mt-4">
-        {preview.length === 0 && (
+        {hotelData.image.length === 0 ? (
           <div className="flex flex-col gap-1">
             <div className="font-medium flex flex-col gap-3 justify-center items-center">
               <ImageOff className="text-muted-foreground" />
               <p>No Photos Uploaded</p>
             </div>
             <p className="text-sm text-gray-400 text-center">Add photos of your rooms, amenities, or property to showcase your hotel.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            {hotelData.image.map((img, index) => {
+              return <Image key={index} src={img || ''} alt={img || ''} width={200} height={200} className="object-cover rounded-md" />;
+            })}
           </div>
         )}
       </CardContent>

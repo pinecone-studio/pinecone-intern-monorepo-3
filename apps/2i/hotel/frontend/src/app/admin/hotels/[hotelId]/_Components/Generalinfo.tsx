@@ -12,13 +12,15 @@ type HotelCompType = {
 };
 
 export const Generalinfo = ({ data }: HotelCompType) => {
+  const rating = data?.userRating?.map((el) => {
+    return el?.rating;
+  });
   return (
     <Card className="p-6">
       <div className="flex justify-between border-b">
         <div className="mb-4">
           <h1 className="text-lg font-semibold text-gray-800">General Info</h1>
         </div>
-        {/* dialog */}
         <Dialog>
           <DialogTrigger className="text-[#2563EB]">Edit</DialogTrigger>
           <DialogContent className="w-[626px] ">
@@ -66,17 +68,15 @@ export const Generalinfo = ({ data }: HotelCompType) => {
           <div>
             <label className="text-sm text-gray-500">Rating</label>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium border rounded-xl w-[39px] h-[20px] text-white flex justify-center bg-[#2563EB]">8.6</span>
-              <span className="font-medium text-sm  text-[#09090B] ">Excellent</span>
+              <span className="text-sm font-medium border rounded-xl w-[39px] h-[20px] text-white flex justify-center bg-[#2563EB]">{rating === null && 0}</span>
             </div>
           </div>
 
           <div>
             <label className="text-sm text-gray-500">Stars Rating</label>
-            <div className="flex gap-1 text-[#F97316] ">
-              <Star />
-              <Star />
-              <Star />
+            <div className="flex gap-1 items-center text-[#F97316] ">
+              {data?.starRating}
+              <Star className="w-[16px] h-[16px]" />
             </div>
           </div>
         </div>
