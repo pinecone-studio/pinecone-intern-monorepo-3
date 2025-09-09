@@ -24,6 +24,13 @@ describe('getBooking resolver', () => {
     pricePerNight: 100000,
     taxes: 20000,
     totalPrice: 220000,
+    email: 'test@gmail.com',
+
+    firstName: 'baabar',
+    lastName: 'baabar',
+
+    phoneNumber: '99999999',
+    cardNumber: '123456789',
   };
 
   afterEach(() => {
@@ -53,6 +60,13 @@ describe('getBooking resolver', () => {
         pricePerNight: mockBooking.pricePerNight,
         taxes: mockBooking.taxes,
         totalPrice: mockBooking.totalPrice,
+        email: mockBooking.email,
+
+        firstName: mockBooking.firstName,
+        lastName: mockBooking.lastName,
+
+        phoneNumber: mockBooking.phoneNumber,
+        cardNumber: mockBooking.cardNumber,
       },
     ]);
   });

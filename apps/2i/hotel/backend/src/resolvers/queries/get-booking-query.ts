@@ -18,5 +18,10 @@ export const getBooking = async () => {
     pricePerNight: booking.pricePerNight,
     taxes: booking.taxes,
     totalPrice: booking.totalPrice,
+    email: booking.email,
+    firstName: booking.firstName,
+    lastName: booking.lastName,
+    phoneNumber: booking.phoneNumber,
+    cardNumber: booking.cardNumber,
   }));
 };
