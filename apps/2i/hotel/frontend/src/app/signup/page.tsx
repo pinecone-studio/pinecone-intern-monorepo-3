@@ -9,20 +9,9 @@ import { VerifyOtp } from './_Components/VerifyOtp';
 import { Password } from './_Components/Password';
 import { useUserSignUpMutation } from '@/generated';
 import { useRouter } from 'next/navigation';
+import { signUpSchema } from './_Components/Validation';
 
 export type SignUpFormType = z.infer<typeof signUpSchema>;
-
-export const signUpSchema = z
-  .object({
-    email: z.string().nonempty('user@email.com'),
-    password: z.string().min(6, 'password should at least 6 character'),
-    otp: z.string(),
-    confirmPassword: z.string().nonempty("passwords don't match"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
 
 const SignUpPage = () => {
   const router = useRouter();
