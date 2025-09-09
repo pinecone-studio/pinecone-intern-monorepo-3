@@ -11,7 +11,7 @@ export const Policies = ({ hotel }: PoliciesType) => {
       <CardHeader className="font-bold text-[18px] border-b">Policies</CardHeader>
       <CardContent className="p-6">
         <div>
-          {hotel?.policies.map((el, index) => {
+          {hotel?.policies?.map((el, index) => {
             return (
               <div key={index} className="flex justify-between">
                 <h1>{el?.title}</h1>
