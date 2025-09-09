@@ -18,7 +18,7 @@ export const AboutProperty = ({ hotel }: AboutType) => {
         <h1 className="text-lg font-semibold ">{hotel?.hotelName}</h1>
         {hotel?.about}
         <h1 className="font-bold text-[18px]">Languages</h1>
-        {hotel?.languages.map((lan, index) => {
+        {hotel?.languages?.map((lan, index) => {
           return <p key={index}>{lan}</p>;
         })}
       </CardContent>
