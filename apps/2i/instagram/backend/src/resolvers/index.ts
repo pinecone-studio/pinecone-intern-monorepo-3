@@ -1,4 +1,8 @@
 import { createStory } from './mutations/create-story';
+import { createPost } from './mutations/create-post';
+import { likePost, unlikePost } from './mutations/like-post';
+import { addComment } from './mutations/add-comment';
+
 import { respondFollowRequest, sendFollowRequest, unfollowUser } from './mutations/followers';
 import { forgetverify } from './mutations/forget-verify';
 import { forgetverifyOtp } from './mutations/forget-verify-otp';
@@ -8,7 +12,10 @@ import { updateProfile } from './mutations/profile-update';
 import { updatePrivacy } from './mutations/public-private';
 import { signup } from './mutations/sign-up';
 import { updatePassword } from './mutations/up-password';
+
 import { getSearchResults } from './queries/get-search-result';
+import { getPosts, getPost } from './queries/get-posts';
+
 import { getuser } from './queries/get-signup';
 
 export const resolvers = {
@@ -25,10 +32,16 @@ export const resolvers = {
     forgetverifyOtp,
     updatePassword,
     createStory,
+    createPost,
+    likePost,
+    unlikePost,
+    addComment,
   },
 
   Query: {
     getuser,
     getSearchResults,
+    getPosts,
+    getPost,
   },
 };
