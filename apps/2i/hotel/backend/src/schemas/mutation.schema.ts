@@ -7,9 +7,9 @@ export const mutationDefs = gql`
     technology: [String!]
     accessibility: [String!]
     bedroom: [String!]
-    wifi: Boolean
-    parking: Boolean
-    spa: Boolean
+    wifi: boolean
+    parking: boolean
+    spa: boolean
     more: [String!]
   }
 
