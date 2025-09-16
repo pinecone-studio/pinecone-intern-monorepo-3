@@ -63,9 +63,9 @@ const hotelSchema = new Schema<HotelType>(
       technology: [{ type: String, required: true }],
       accessibility: [{ type: String, required: true }],
       bedroom: [{ type: String, required: true }],
-      wifi: { type: Boolean, required: true },
-      parking: { type: Boolean, required: true },
-      spa: { type: Boolean, required: true },
+      wifi: { type: Boolean, required: false },
+      parking: { type: Boolean, required: false },
+      spa: { type: Boolean, required: false },
       more: [{ type: String, required: true }],
     },
     policies: [
