@@ -6,9 +6,9 @@ type AmenitiesType = {
   technology: string[];
   accessibility: string[];
   bedroom: string[];
-  wifi: Boolean;
-  parking: Boolean;
-  spa: Boolean;
+  wifi: boolean;
+  parking: boolean;
+  spa: boolean;
   more: string[];
 };
 
