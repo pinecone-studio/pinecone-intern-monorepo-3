@@ -12,11 +12,22 @@ export type HotelType = {
   starRating: string;
   userRating?: UserRatingType[];
   image?: string[];
-  amenities: string[];
+  amenities: AmenitiesType;
   policies: {
     title: string;
     description: string;
   }[];
+};
+type AmenitiesType = {
+  bathroom: string[];
+  foodAndDrink: string[];
+  technology: string[];
+  accessibility: string[];
+  bedroom: string[];
+  wifi: Boolean;
+  parking: Boolean;
+  spa: Boolean;
+  more: string[];
 };
 
 export type UserRatingType = {
@@ -46,7 +57,17 @@ const hotelSchema = new Schema<HotelType>(
     languages: [{ type: String, required: false }],
     phoneNumber: { type: String, required: true },
     rooms: [{ type: Schema.Types.ObjectId, ref: 'Rooms' }],
-    amenities: [{ type: String, required: false }],
+    amenities: {
+      bathroom: [{ type: String, required: true }],
+      foodAndDrink: [{ type: String, required: true }],
+      technology: [{ type: String, required: true }],
+      accessibility: [{ type: String, required: true }],
+      bedroom: [{ type: String, required: true }],
+      wifi: { type: Boolean, required: true },
+      parking: { type: Boolean, required: true },
+      spa: { type: Boolean, required: true },
+      more: [{ type: String, required: true }],
+    },
     policies: [
       {
         title: { type: String, required: false },

@@ -11,7 +11,7 @@ export const typeDefs = gql`
     languages: [String]
     starRating: String!
     image: [String!]!
-    amenities: [String]
+    amenities: Amenities!
     policies: [Policy]
     userRating: [UserRating]!
     rooms: [Room]!

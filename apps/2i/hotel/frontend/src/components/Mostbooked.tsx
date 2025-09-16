@@ -24,7 +24,6 @@ export const MostBooked = ({ most }: Props) => {
   return (
     <div className="mx-auto max-w-[1280px] p-6">
       <div className="flex items-center justify-between mb-4 ">
-        {' '}
         <h2 className="text-xl font-semibold mb-4">Most booked hotels in Mongolia in past month</h2>
         <Button variant={'outline'} className="border">
           View All

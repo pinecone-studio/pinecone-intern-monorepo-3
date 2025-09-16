@@ -6,6 +6,9 @@ type AmenitiesType = {
   technology: string[];
   accessibility: string[];
   bedroom: string[];
+  wifi: Boolean;
+  parking: Boolean;
+  spa: Boolean;
   more: string[];
 };
 
@@ -35,6 +38,9 @@ const Rooms = new Schema(
       technology: [{ type: String, required: true }],
       accessibility: [{ type: String, required: true }],
       bedroom: [{ type: String, required: true }],
+      wifi: { type: Boolean, required: true },
+      parking: { type: Boolean, required: true },
+      spa: { type: Boolean, required: true },
       more: [{ type: String, required: true }],
     },
   },
