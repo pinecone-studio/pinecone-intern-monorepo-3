@@ -65,7 +65,7 @@ export default function LoginPage() {
               )}
             </div>
 
-            {/* Password    */}
+            {/* Password   */}
             <div>
               <div className="flex items-center justify-between">
                 <label className="block text-sm font-medium text-gray-700">Password</label>
