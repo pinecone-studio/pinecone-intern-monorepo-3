@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
-
 const emailSchema = z.object({
   email: z.string().trim().email('И-мэйл буруу байна'),
 });
