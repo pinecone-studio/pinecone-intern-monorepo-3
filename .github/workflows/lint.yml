@@ -1,0 +1,79 @@
+name: "CI / lint"
+on:
+  pull_request:
+    types: [labeled, synchronize, edited]
+    branches:
+      - main
+    paths-ignore:
+      - '.nxignore'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    if: "${{ github.event.label.name == 'PR status: code ready' }}"
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.19.1'
+          cache: 'npm'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.10
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: bun install -y
+        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
+
+      - name: Setup Canvas
+        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
+        run: npm rebuild canvas
+
+      - name: Setup NX
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Track main branch
+        run: git branch --track main origin/main
+
+      - name: Run lint on affected projects
+        run: bunx nx affected -t lint --parallel=5 --output-style=stream-without-prefixes
+
+      - name: Generate lint report
+        if: always()
+        run: bunx nx affected -t lint --parallel=5 --output-style=json > lint-report.json
+        continue-on-error: true
+
+      - name: Upload lint report
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: lint-report
+          path: lint-report.json
+          retention-days: 7

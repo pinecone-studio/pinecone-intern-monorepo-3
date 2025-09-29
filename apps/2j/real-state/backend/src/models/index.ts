@@ -1,16 +1,9 @@
-export { User, createUser, findUserByEmail, findUserById } from './User';
-export { PropertyFeature, createPropertyFeature, findPropertyFeatureById, findPropertyFeaturesByUserId } from './PropertyFeature';
-export { 
-  Post, 
-  createPost, 
-  findPostById, 
-  findPostsByOwner, 
-  findApprovedPosts, 
-  findPendingPosts, 
-  updatePostStatus 
-} from './Post';
+// Export all models and their convenience functions
+export * from './User';
+export * from './Post';
+export * from './PropertyFeature';
 
-// Re-export types
-export type { IUserDocument } from './User';
-export type { IPropertyFeatureDocument } from './PropertyFeature';
-export type { IPostDocument } from './Post';
+// Export model instances for direct use
+export { User } from './User';
+export { Post } from './Post';
+export { PropertyFeature } from './PropertyFeature';

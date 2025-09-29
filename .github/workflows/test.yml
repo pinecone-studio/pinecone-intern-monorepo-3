@@ -1,0 +1,136 @@
+name: "CI / test"
+on:
+  pull_request:
+    types: [labeled, synchronize, edited]
+    branches:
+      - main
+    paths-ignore:
+      - '.nxignore'
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: "${{ github.event.label.name == 'PR status: code ready' }}"
+    timeout-minutes: 15
+    
+    services:
+      mongodb:
+        image: mongo:6.0
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: test
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      MONGODB_URI: mongodb://root:password@localhost:27017/test?authSource=admin
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.19.1'
+          cache: 'npm'
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.1.10
+
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: bun install -y
+        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
+
+      - name: Setup Canvas
+        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
+        run: npm rebuild canvas
+
+      - name: Setup NX
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Track main branch
+        run: git branch --track main origin/main
+
+      - name: Wait for MongoDB
+        run: |
+          until mongosh --host localhost:27017 --eval "print('MongoDB is ready')"
+          do
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+
+      - name: Run tests on affected projects
+        run: bunx nx affected -t test --parallel=3 --output-style=stream-without-prefixes --code-coverage
+
+      - name: Generate test coverage report
+        if: always()
+        run: bunx nx affected -t test --parallel=3 --code-coverage --coverageReporters=json-summary
+        continue-on-error: true
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-coverage
+          path: coverage/
+          retention-days: 7
+
+      - name: Comment test results on PR
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const coverageReport = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
+              const coverage = coverageReport.total;
+              
+              const comment = `## Test Coverage Report
+              
+              | Metric | Coverage |
+              |--------|----------|
+              | Lines | ${coverage.lines.pct}% |
+              | Functions | ${coverage.functions.pct}% |
+              | Branches | ${coverage.branches.pct}% |
+              | Statements | ${coverage.statements.pct}% |
+              `;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('No coverage report found');
+            }
