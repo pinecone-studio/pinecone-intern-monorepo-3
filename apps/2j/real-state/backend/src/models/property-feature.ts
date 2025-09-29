@@ -60,9 +60,9 @@ export interface IPropertyFeatureDocument extends Document {
 
   // Methods
   calculateTotalArea(): number;
-  calculatePricePerSqM(price: number): number;
-  isInLocation(city?: string, district?: string): boolean;
-  hasAmenity(amenity: string): boolean;
+  calculatePricePerSqM(_price: number): number;
+  isInLocation(_city?: string, _district?: string): boolean;
+  hasAmenity(_amenity: string): boolean;
   getNearbyFacilities(): string[];
   toPublicJSON(): Partial<IPropertyFeature>;
   validateImages(): boolean;
@@ -70,12 +70,12 @@ export interface IPropertyFeatureDocument extends Document {
 
 // Interface for PropertyFeature static methods
 export interface IPropertyFeatureModel extends Model<IPropertyFeatureDocument> {
-  findByOwner(ownerId: string): Promise<IPropertyFeatureDocument[]>;
-  findByType(type: PropertyType): Promise<IPropertyFeatureDocument[]>;
-  findByLocation(city?: string, district?: string): Promise<IPropertyFeatureDocument[]>;
-  findByPriceRange(minPrice: number, maxPrice: number, prices: number[]): Promise<IPropertyFeatureDocument[]>;
-  findBySizeRange(minSize: number, maxSize: number): Promise<IPropertyFeatureDocument[]>;
-  searchProperties(filters: any): Promise<IPropertyFeatureDocument[]>;
+  findByOwner(_ownerId: string): Promise<IPropertyFeatureDocument[]>;
+  findByType(_type: PropertyType): Promise<IPropertyFeatureDocument[]>;
+  findByLocation(_city?: string, _district?: string): Promise<IPropertyFeatureDocument[]>;
+  findByPriceRange(_minPrice: number, _maxPrice: number, _prices: number[]): Promise<IPropertyFeatureDocument[]>;
+  findBySizeRange(_minSize: number, _maxSize: number): Promise<IPropertyFeatureDocument[]>;
+  searchProperties(_filters: any): Promise<IPropertyFeatureDocument[]>;
   getPropertyStats(): Promise<{
     total: number;
     byType: Record<PropertyType, number>;
@@ -83,7 +83,7 @@ export interface IPropertyFeatureModel extends Model<IPropertyFeatureDocument> {
     averageSize: number;
     sizeRange: { min: number; max: number };
   }>;
-  createPropertyFeature(input: CreatePropertyFeatureInput, ownerId: string): Promise<IPropertyFeatureDocument>;
+  createPropertyFeature(_input: CreatePropertyFeatureInput, _ownerId: string): Promise<IPropertyFeatureDocument>;
 }
 
 // Address sub-schema

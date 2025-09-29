@@ -453,7 +453,7 @@ describe('User Model', () => {
 
   describe('Indexes and Performance', () => {
     it('should have proper indexes', () => {
-      const indexes = User.collection.getIndexes ? User.collection.getIndexes() : [];
+      // const indexes = User.collection.getIndexes ? User.collection.getIndexes() : [];
       // Note: In test environment, we can't easily check indexes
       // This is more of a documentation of what should be indexed
       expect(true).toBe(true);

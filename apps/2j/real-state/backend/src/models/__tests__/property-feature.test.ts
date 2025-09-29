@@ -3,14 +3,13 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { 
   PropertyFeature, 
   createPropertyFeature, 
-  findPropertyFeatureById, 
   findPropertyFeaturesByOwner,
   findPropertyFeaturesByType,
   findPropertyFeaturesByLocation,
   searchPropertyFeatures,
   getPropertyFeatureStats
-} from '../PropertyFeature';
-import { User, createUser } from '../User';
+} from '../property-feature';
+import { createUser } from '../user';
 import { PropertyType, UserRole } from '../../types';
 
 describe('PropertyFeature Model', () => {

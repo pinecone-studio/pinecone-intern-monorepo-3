@@ -124,12 +124,12 @@ const AddressSchema = new Schema<Address>({
   },
   coordinates: {
     latitude: { 
-      type: Number,
+      type: Number
       min: [-90, 'Latitude must be between -90 and 90'],
       max: [90, 'Latitude must be between -90 and 90']
     },
     longitude: { 
-      type: Number,
+      type: Number
       min: [-180, 'Longitude must be between -180 and 180'],
       max: [180, 'Longitude must be between -180 and 180']
     }
@@ -293,9 +293,9 @@ const UserSchema = new Schema<IUserDocument>({
   verificationTokenExpiry: Date,
   passwordResetToken: String,
   passwordResetTokenExpiry: Date,
-  loginAttempts: { type: Number, default: 0 },
+  loginAttempts: { type: Number default: 0 },
   lockUntil: Date,
-  loginCount: { type: Number, default: 0 },
+  loginCount: { type: Number default: 0 },
   lastLoginAt: Date,
   // Timestamps
   createdAt: {

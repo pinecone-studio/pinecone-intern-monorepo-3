@@ -551,7 +551,7 @@ PostSchema.statics.findByStatus = async function(status: PropertyStatus): Promis
     .sort({ createdAt: -1 });
 };
 
-PostSchema.statics.findFeaturedPosts = async function(limit: number = 10): Promise<IPostDocument[]> {
+PostSchema.statics.findFeaturedPosts = async function(limit = 10): Promise<IPostDocument[]> {
   return this.find({ 
     status: PropertyStatus.APPROVED, 
     featured: true 
@@ -562,7 +562,7 @@ PostSchema.statics.findFeaturedPosts = async function(limit: number = 10): Promi
     .limit(limit);
 };
 
-PostSchema.statics.findRecentPosts = async function(limit: number = 20): Promise<IPostDocument[]> {
+PostSchema.statics.findRecentPosts = async function(limit = 20): Promise<IPostDocument[]> {
   return this.find({ 
     status: PropertyStatus.APPROVED,
     $or: [
