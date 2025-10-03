@@ -1,6 +1,6 @@
 {
   "root": true,
-  "ignorePatterns": ["!**/*", ".next/**/*"],
+  "ignorePatterns": ["!**/*", ".next/**/*", "**/src/generated/**/*", "**/generated/**/*", "apps/2j/concert-ticket/backend/src/generated/**/*", "**/generated/**/*.ts"],
 
   "plugins": ["@nx", "eslint-plugin-unicorn", "no-secrets", "promise", "@typescript-eslint"],
   "parser": "@typescript-eslint/parser",

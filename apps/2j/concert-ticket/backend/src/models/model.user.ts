@@ -12,7 +12,7 @@ export interface IUser extends Document {
   updatedAt: Date;
   
   // Methods
-  comparePassword(candidatePassword: string): Promise<boolean>;
+  comparePassword(_candidatePassword: string): Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>({
@@ -63,8 +63,8 @@ userSchema.pre('save', async function(next) {
 });
 
 // Password харьцуулах method
-userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+userSchema.methods.comparePassword = async function(_candidatePassword: string): Promise<boolean> {
+  return bcrypt.compare(_candidatePassword, this.password);
 };
 
 // Password field-ийг JSON-оос хасах

@@ -36,12 +36,11 @@ async function startApolloServer() {
       // JWT token-ийг header-оос авах
       const token = req.headers.authorization?.replace('Bearer ', '');
       
-      // TODO: JWT verify хийх
-      let user = null;
-      if (token) {
-        // JWT decode + verify logic
-        console.log('Token received:', token);
-      }
+          // TODO: JWT verify хийх
+          if (token) {
+            // JWT decode + verify logic
+            console.log('Token received:', token);
+          }
 
       return createContext();
     },
