@@ -1,7 +1,44 @@
-query Query {
-  sampleQuery
+query GetConcerts {
+  concerts {
+    concerts {
+      id
+      name
+      description
+      venue
+      date
+      time
+      image
+      isActive
+    }
+    totalCount
+    hasMore
+  }
 }
 
-mutation Mutation {
-  sampleMutation
+query GetConcert($id: ID!) {
+  concert(id: $id) {
+    id
+    name
+    description
+    venue
+    date
+    time
+    image
+    isActive
+    mainArtist {
+      id
+      name
+      bio
+      image
+    }
+    ticketCategories {
+      id
+      type
+      totalQuantity
+      availableQuantity
+      unitPrice
+      description
+      features
+    }
+  }
 }

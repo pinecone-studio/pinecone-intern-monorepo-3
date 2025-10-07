@@ -9,7 +9,7 @@
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "groups": ["concert-ticket-backend"],
+          "groups": ["2J-ticket-backend-2025"],
           "env": "dev"
         }
       }
