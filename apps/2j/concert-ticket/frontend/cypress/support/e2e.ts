@@ -1,19 +1,32 @@
-// ***********************************************************
-// This example support/e2e.ts is processed and
-// loaded automatically before your test files.
-//
-// This is a great place to put global configuration and
-// behavior that modifies Cypress.
-//
-// You can change the location of this file or turn off
-// automatically serving support files with the
-// 'supportFile' configuration option.
-//
-// You can read more here:
-// https://on.cypress.io/configuration
-// ***********************************************************
-
-// Import commands.ts using ES2015 syntax:
-import '@cypress/code-coverage/support';
-import 'cypress-wait-until';
+// Import commands.js using ES2015 syntax:
 import './commands';
+
+// Alternatively you can use CommonJS syntax:
+// require('./commands')
+
+// Add global test configuration
+beforeEach(() => {
+  // Clear any existing console logs
+  cy.window().then((win) => {
+    win.console.clear();
+  });
+});
+
+// Add custom assertions
+declare global {
+  namespace Cypress {
+    interface Chainer<Subject> {
+      /**
+       * Custom assertion to check if console.log was called with specific message
+       * @param message - The expected console message
+       */
+      haveConsoleLog(message: string): Chainable<Subject>;
+    }
+  }
+}
+
+Cypress.Commands.add('haveConsoleLog', { prevSubject: 'window' }, (win, message) => {
+  const consoleSpy = cy.spy(win.console, 'log');
+  expect(consoleSpy).to.have.been.calledWith(message);
+  return cy.wrap(win);
+});

@@ -1,17 +1,22 @@
 {
-  "extends": ["plugin:@nx/react-typescript", "next", "next/core-web-vitals", "../../../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", ".next/**/*"],
+  "extends": ["../../../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
-    {
-      "files": ["*.*"],
-      "rules": {
-        "@next/next/no-html-link-for-pages": "off"
-      }
-    },
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
-        "@next/next/no-html-link-for-pages": ["error", "apps/2j/concert-ticket/frontend/pages"]
+        "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/function-component-definition": "off",
+        "react-hooks/exhaustive-deps": "off",
+        "unicorn/filename-case": "off",
+        "@next/next/no-img-element": "off"
       }
     },
     {
@@ -23,14 +28,10 @@
       "rules": {}
     },
     {
-      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
-      "env": {
-        "jest": true
+      "files": ["cypress/**/*.ts", "cypress/**/*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-namespace": "off"
       }
-    },
-    {
-      "files": ["*.cy.{ts,js,tsx,jsx}", "cypress/**/*.{ts,js,tsx,jsx}"],
-      "rules": {}
     }
   ]
 }

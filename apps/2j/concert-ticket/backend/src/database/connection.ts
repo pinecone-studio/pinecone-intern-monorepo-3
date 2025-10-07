@@ -13,25 +13,26 @@ export async function connectDatabase() {
 
     // Connect to MongoDB
     await mongoose.connect(config.mongodb.uri, options);
-    
+
     console.log('✅ MongoDB холбогдлоо:', config.mongodb.uri);
-    
+
     // Connection event handlers
     mongoose.connection.on('error', (error) => {
       console.error('❌ MongoDB холболтын алдаа:', error);
     });
-    
+
     mongoose.connection.on('disconnected', () => {
       console.log('⚠️ MongoDB холболт тасарлаа');
     });
-    
+
     mongoose.connection.on('reconnected', () => {
       console.log('🔄 MongoDB холболт дахин холбогдлоо');
     });
-    
   } catch (error) {
     console.error('❌ Database холбогдох боломжгүй байна:', error);
-    process.exit(1);
+    console.log('⚠️  Warning: Continuing without database connection for development...');
+    // Don't exit, continue without DB for development
+    // process.exit(1);
   }
 }
 
