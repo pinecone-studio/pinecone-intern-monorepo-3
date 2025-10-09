@@ -45,7 +45,7 @@ describe('checkPreviewUrlResponse function', () => {
     const expectedResponse = { status: 404 };
     (axios.post as jest.Mock).mockRejectedValueOnce({ response: { data: expectedResponse, status: 404 } });
 
-    await expect(checkFederationResponse.checkPreviewUrlResponse(previewUrl)).rejects.toThrowError('Preview url is not responding');
+    await expect(checkFederationResponse.checkPreviewUrlResponse(previewUrl)).rejects.toThrow('Preview url is not responding');
   });
 });
 
