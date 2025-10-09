@@ -30,7 +30,7 @@ declare global {
 
 
 Cypress.Commands.add('haveConsoleLog', { prevSubject: 'window' }, (win, message) => {
-  const consoleSpy = cy.spy((win as any).console, 'log');
+  const consoleSpy = cy.spy((win as unknown as { console: { log: (...args: unknown[]) => void } }).console, 'log');
   expect(consoleSpy).to.have.been.calledWith(message);
   return cy.wrap(win);
 });

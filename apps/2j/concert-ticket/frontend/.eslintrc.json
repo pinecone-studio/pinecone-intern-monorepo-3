@@ -1,6 +1,10 @@
 {
   "extends": ["../../../../.eslintrc.json"],
+<<<<<<< HEAD
   "ignorePatterns": ["!**/*", ".nyc_output/**/*", "coverage/**/*", "cypress/results/**/*", "src/generated/**/*", "**/generated/**/*"],
+=======
+  "ignorePatterns": ["!**/*", ".nyc_output/**/*", "dist/**/*", "build/**/*", "coverage/**/*"],
+>>>>>>> 298390e (fixed minor problems)
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -17,7 +21,12 @@
         "react-hooks/exhaustive-deps": "off",
         "unicorn/filename-case": "off",
         "@next/next/no-img-element": "off",
+<<<<<<< HEAD
         "max-lines": "off"
+=======
+        "complexity": ["warn", 10],
+        "max-lines": ["warn", 1000]
+>>>>>>> 298390e (fixed minor problems)
       }
     },
     {

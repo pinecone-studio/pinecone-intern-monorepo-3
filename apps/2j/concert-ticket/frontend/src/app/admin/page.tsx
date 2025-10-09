@@ -6,6 +6,65 @@ import { GetConcertsDocument, UpdateConcertFeaturedDocument } from '../../genera
 
 type TabKey = 'tickets' | 'cancel';
 
+// Helper function to format date
+const formatDate = (dateString: string): string => {
+  return new Date(dateString).toLocaleDateString('en-US', { 
+    month: '2-digit', 
+    day: '2-digit',
+    year: 'numeric'
+  });
+};
+
+// Helper function to calculate totals
+const calculateTotals = (ticketCategories?: Array<{
+  type: string;
+  availableQuantity: number;
+}>) => {
+  return ticketCategories?.reduce((acc: Record<string, number>, category: {
+    type: string;
+    availableQuantity: number;
+  }) => {
+    acc.all += category.availableQuantity;
+    switch (category.type) {
+      case 'VIP':
+        acc.vip = category.availableQuantity;
+        break;
+      case 'REGULAR':
+        acc.regular = category.availableQuantity;
+        break;
+      case 'GENERAL_ADMISSION':
+        acc.general = category.availableQuantity;
+        break;
+    }
+    return acc;
+  }, { all: 0, vip: 0, regular: 0, general: 0 }) || { all: 0, vip: 0, regular: 0, general: 0 };
+};
+
+// Helper function to calculate revenue
+const calculateRevenue = (ticketCategories?: Array<{
+  totalQuantity: number;
+  availableQuantity: number;
+  unitPrice: number;
+}>) => {
+  return ticketCategories?.reduce((sum: number, cat: {
+    totalQuantity: number;
+    availableQuantity: number;
+    unitPrice: number;
+  }) => 
+    sum + (cat.totalQuantity - cat.availableQuantity) * cat.unitPrice, 0) || 0;
+};
+
+// Helper function to get artists names
+const getArtistsNames = (concert: {
+  mainArtist?: { name: string };
+  otherArtists?: Array<{ name: string }>;
+}): string => {
+  const artists = [concert.mainArtist?.name, ...(concert.otherArtists?.map((a: { name: string }) => a.name) || [])]
+    .filter(Boolean)
+    .join(', ');
+  return artists || 'Unknown Artist';
+};
+
 // Add Ticket Modal Component
 const AddTicketModal = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const [formData, setFormData] = useState({
@@ -490,12 +549,22 @@ type TicketRow = {
   featured: boolean;
 };
 
-const TicketsTab = () => {
-  // Pagination state
+// Pagination hook
+const usePagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; // Matches backend limit
+  const itemsPerPage = 10;
   
-  // Fetch concerts data from GraphQL with pagination
+  const handlePageChange = (page: number, totalPages: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+  
+  return { currentPage, itemsPerPage, handlePageChange };
+};
+
+// Data fetching hook
+const useConcertData = (currentPage: number, itemsPerPage: number) => {
   const { data: concertsData, loading, error, refetch } = useQuery(GetConcertsDocument, {
     variables: {
       pagination: {
@@ -505,8 +574,14 @@ const TicketsTab = () => {
     }
   });
   
-  // Mutation for updating featured status
   const [updateConcertFeatured] = useMutation(UpdateConcertFeaturedDocument);
+  
+  return { concertsData, loading, error, refetch, updateConcertFeatured };
+};
+
+const TicketsTab = () => {
+  const { currentPage, itemsPerPage, handlePageChange } = usePagination();
+  const { concertsData, loading, error, refetch, updateConcertFeatured } = useConcertData(currentPage, itemsPerPage);
   
   // Transform GraphQL data to match the table format
   const rows = useMemo<TicketRow[]>(() => {
@@ -528,45 +603,10 @@ const TicketsTab = () => {
         unitPrice: number;
       }>;
     }) => {
-      // Calculate totals from ticket categories
-      const totals = concert.ticketCategories?.reduce((acc: Record<string, number>, category: {
-        type: string;
-        availableQuantity: number;
-      }) => {
-        acc.all += category.availableQuantity;
-        switch (category.type) {
-          case 'VIP':
-            acc.vip = category.availableQuantity;
-            break;
-          case 'REGULAR':
-            acc.regular = category.availableQuantity;
-            break;
-          case 'GENERAL_ADMISSION':
-            acc.general = category.availableQuantity;
-            break;
-        }
-        return acc;
-      }, { all: 0, vip: 0, regular: 0, general: 0 }) || { all: 0, vip: 0, regular: 0, general: 0 };
-
-      // Calculate revenue (example calculation)
-      const revenue = concert.ticketCategories?.reduce((sum: number, cat: {
-        totalQuantity: number;
-        availableQuantity: number;
-        unitPrice: number;
-      }) => 
-        sum + (cat.totalQuantity - cat.availableQuantity) * cat.unitPrice, 0) || 0;
-
-      // Format date
-      const date = new Date(concert.date).toLocaleDateString('en-US', { 
-        month: '2-digit', 
-        day: '2-digit',
-        year: 'numeric'
-      });
-
-      // Get artists names
-      const artists = [concert.mainArtist?.name, ...(concert.otherArtists?.map((a: { name: string }) => a.name) || [])]
-        .filter(Boolean)
-        .join(', ');
+      const totals = calculateTotals(concert.ticketCategories);
+      const revenue = calculateRevenue(concert.ticketCategories);
+      const date = formatDate(concert.date);
+      const artists = getArtistsNames(concert);
 
       return {
         id: concert.id,
@@ -618,13 +658,6 @@ const TicketsTab = () => {
   // Calculate pagination info
   const totalCount = concertsData?.concerts?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
 
   const dateInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -793,7 +826,7 @@ const TicketsTab = () => {
           <div className="flex items-center justify-center gap-2 p-4">
             <button 
               className="h-8 w-8 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => handlePageChange(currentPage - 1, totalPages)}
               disabled={currentPage === 1}
             >
               ‹
@@ -820,7 +853,7 @@ const TicketsTab = () => {
                       ? 'bg-black text-white'
                       : 'bg-gray-100 hover:bg-gray-200'
                   }`}
-                  onClick={() => handlePageChange(pageNum)}
+                  onClick={() => handlePageChange(pageNum, totalPages)}
                 >
                   {pageNum}
                 </button>
@@ -829,7 +862,7 @@ const TicketsTab = () => {
             
             <button 
               className="h-8 w-8 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => handlePageChange(currentPage + 1)}
+              onClick={() => handlePageChange(currentPage + 1, totalPages)}
               disabled={currentPage === totalPages}
             >
               ›
