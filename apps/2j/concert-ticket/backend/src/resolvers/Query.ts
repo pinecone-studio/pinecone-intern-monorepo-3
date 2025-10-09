@@ -1,43 +1,62 @@
 import { Resolvers } from '../generated/resolvers-types';
+import { ConcertController } from '../controllers/concert.controller';
+import { UserController } from '../controllers/user.controller';
+import { ArtistController } from '../controllers/artist.controller';
+import { BookingController } from '../controllers/booking.controller';
+import { TicketCategoryController } from '../controllers/ticket-category.controller';
 
 export const Query: Resolvers['Query'] = {
-  concerts: async (_parent, _args, _ctx) => {
-    return {
-      concerts: [],
-      totalCount: 0,
-      hasMore: false,
-    };
+  // Концертуудыг хайх
+  concerts: async (_parent, args, _ctx) => {
+    return await ConcertController.getConcerts(args.filter, args.pagination);
   },
-  concert: async (_parent, _args, _ctx) => {
-    return null;
+
+  // Нэг концертыг ID-аар олох
+  concert: async (_parent, args, _ctx) => {
+    return await ConcertController.getConcertById(args.id);
   },
-  myBookings: async (_parent, _args, _ctx) => {
-    return [];
+
+  // Хэрэглэгчийн захиалгуудыг авах
+  myBookings: async (_parent, _args, ctx) => {
+    if (!ctx.user) {
+      throw new Error('Нэвтрэх шаардлагатай');
+    }
+    return await BookingController.getUserBookings(ctx.user.id);
   },
-  user: async (_parent, _args, _ctx) => {
-    return null;
+
+  // Нэг хэрэглэгчийг ID-аар олох (админ хэрэглэгчдэд зориулсан)
+  user: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await UserController.getUserById(args.id);
   },
-  users: async (_parent, _args, _ctx) => {
-    return [];
+
+  // Бүх хэрэглэгчдийг авах (админ хэрэглэгчдэд зориулсан)
+  users: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await UserController.getUsers(args.pagination);
   },
+
+  // Бүх дуучнуудыг авах
   artists: async () => {
-    return [];
+    return await ArtistController.getArtists();
   },
-  artist: async (_parent, _args) => {
-    return null;
+
+  // Нэг дуучныг ID-аар олох
+  artist: async (_parent, args) => {
+    return await ArtistController.getArtistById(args.id);
   },
-  checkTicketAvailability: async (_parent, _args) => {
-    return {
-      id: _args.ticketCategoryId,
-      type: 'REGULAR',
-      totalQuantity: 0,
-      availableQuantity: 0,
-      unitPrice: 0,
-      description: null,
-      features: [],
-    };
+
+  // Тасалбарын боломжийг шалгах
+  checkTicketAvailability: async (_parent, args) => {
+    return await TicketCategoryController.checkTicketAvailability(args.concertId, args.ticketCategoryId);
   },
-  searchSuggestions: async () => {
-    return [];
+
+  // Хайлтын санал олох
+  searchSuggestions: async (_parent, args) => {
+    return await ConcertController.getSearchSuggestions(args.query);
   },
 };

@@ -200,6 +200,34 @@
           "params": "forward"
         }
       ]
+    },
+    "seed-data": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx apps/2j/concert-ticket/backend/src/scripts/seed-data.ts",
+        "cwd": "."
+      }
+    },
+    "generate-mock-data": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx apps/2j/concert-ticket/backend/src/scripts/generate-mock-data.ts",
+        "cwd": "."
+      }
+    },
+    "clear-data": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx apps/2j/concert-ticket/backend/src/scripts/clear-data.ts",
+        "cwd": "."
+      }
+    },
+    "check-mongodb": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsx apps/2j/concert-ticket/backend/src/scripts/check-mongodb.ts",
+        "cwd": "."
+      }
     }
   },
   "tags": []
