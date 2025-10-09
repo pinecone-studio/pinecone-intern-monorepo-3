@@ -25,7 +25,7 @@ export const Query: Resolvers['Query'] = {
       const offset = pagination?.offset || 0;
 
       // Build query based on filters
-      let query: any = { isActive: true };
+        const query: any = { isActive: true };
       
       if (filter?.name) {
         query.name = { $regex: filter.name, $options: 'i' };

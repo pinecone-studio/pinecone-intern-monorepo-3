@@ -120,6 +120,13 @@
       }
     },
     {
+      "files": ["apps/2j/concert-ticket/**/*.ts", "apps/2j/concert-ticket/**/*.tsx"],
+      "rules": {
+        "complexity": ["warn", { "max": 10 }],
+        "max-lines": ["warn", { "max": 200 }]
+      }
+    },
+    {
       "files": ["*.ts", "*.tsx"],
       "extends": ["plugin:@nx/typescript"],
       "plugins": ["spellcheck"],
