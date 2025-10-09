@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 ["///","///cart","///checkout","///concerts/[id]","///detail","///payment","///search"]
+=======
+["///","///admin","///admin/forgot-password","///admin/login","///detail"]
+>>>>>>> 6328195 (admin page neej log in hiisen)

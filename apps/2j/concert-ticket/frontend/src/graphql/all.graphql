@@ -1,5 +1,5 @@
-query GetConcerts {
-  concerts {
+query GetConcerts($pagination: PaginationInput) {
+  concerts(pagination: $pagination) {
     concerts {
       id
       name
@@ -9,6 +9,28 @@ query GetConcerts {
       time
       image
       isActive
+      featured
+      mainArtist {
+        id
+        name
+        bio
+        image
+      }
+      otherArtists {
+        id
+        name
+        bio
+        image
+      }
+      ticketCategories {
+        id
+        type
+        totalQuantity
+        availableQuantity
+        unitPrice
+        description
+        features
+      }
     }
     totalCount
     hasMore
@@ -25,6 +47,7 @@ query GetConcert($id: ID!) {
     time
     image
     isActive
+    featured
     mainArtist {
       id
       name
@@ -45,6 +68,32 @@ query GetConcert($id: ID!) {
       unitPrice
       description
       features
+    }
+  }
+}
+
+mutation UpdateConcertFeatured($id: ID!, $featured: Boolean!) {
+  updateConcertFeatured(id: $id, featured: $featured) {
+    id
+    name
+    featured
+    date
+    time
+    venue
+    mainArtist {
+      id
+      name
+    }
+    otherArtists {
+      id
+      name
+    }
+    ticketCategories {
+      id
+      type
+      totalQuantity
+      availableQuantity
+      unitPrice
     }
   }
 }

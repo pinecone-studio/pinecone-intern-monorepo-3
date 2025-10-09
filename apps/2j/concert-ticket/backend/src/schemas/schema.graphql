@@ -75,6 +75,7 @@ type Concert {
   otherArtists: [Artist!]
   image: String
   isActive: Boolean!
+  featured: Boolean!
   ticketCategories: [TicketCategory!]!
   totalAvailableTickets: Int!
 }
@@ -208,6 +209,7 @@ type Mutation {
 
   createConcert(input: CreateConcertInput!): Concert! @auth(requires: ADMIN)
   updateConcert(id: ID!, input: UpdateConcertInput!): Concert! @auth(requires: ADMIN)
+  updateConcertFeatured(id: ID!, featured: Boolean!): Concert! @auth(requires: ADMIN)
   deleteConcert(id: ID!): Boolean! @auth(requires: ADMIN)
 
   createArtist(input: ArtistInput!): Artist! @auth(requires: ADMIN)

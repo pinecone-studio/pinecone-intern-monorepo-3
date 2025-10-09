@@ -10,6 +10,7 @@ export interface IConcert extends Document {
   otherArtists: Types.ObjectId[];
   image?: string;
   isActive: boolean;
+  featured: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -55,6 +56,10 @@ const concertSchema = new Schema<IConcert>({
     type: Boolean,
     default: true,
   },
+  featured: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });
@@ -64,5 +69,6 @@ concertSchema.index({ name: 'text', venue: 'text' });
 concertSchema.index({ date: 1 });
 concertSchema.index({ mainArtist: 1 });
 concertSchema.index({ isActive: 1 });
+concertSchema.index({ featured: 1 });
 
 export const Concert = mongoose.model<IConcert>('Concert', concertSchema);
