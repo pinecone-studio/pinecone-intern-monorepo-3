@@ -4,7 +4,6 @@ import { Artist } from '../models/model.artist';
 import { Concert } from '../models/model.concert';
 import { TicketCategory } from '../models/model.ticket-category';
 import { Booking } from '../models/model.booking';
-import { Types } from 'mongoose';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
