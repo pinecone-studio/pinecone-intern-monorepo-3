@@ -117,12 +117,25 @@
       }
     },
     "e2e": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/cypress:cypress",
       "options": {
-        "commands": ["npx nx execute-cypress scripts ticket-frontend"],
-        "parallel": false
+        "cypressConfig": "apps/2j/concert-ticket/frontend/cypress.config.ts",
+        "testingType": "e2e",
+        "reporter": "mochawesome",
+        "devServerTarget": "ticket-frontend:serve:development",
+        "browser": "chrome"
       },
-      "dependsOn": [{ "target": "cypress:clean" }]
+      "dependsOn": [
+        {
+          "target": "cypress:clean"
+        },
+        {
+          "target": "cypress-generate-all-page-json"
+        },
+        {
+          "target": "get-secrets:testing"
+        }
+      ]
     },
     "e2e:open": {
       "executor": "nx:run-commands",
