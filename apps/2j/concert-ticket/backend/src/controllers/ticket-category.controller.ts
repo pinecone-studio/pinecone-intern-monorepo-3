@@ -1,6 +1,5 @@
 import { Types } from 'mongoose';
-import { TicketCategory, ITicketCategory } from '../models/model.ticket-category';
-import { Concert } from '../models/model.concert';
+import { TicketCategory } from '../models/model.ticket-category';
 
 export class TicketCategoryController {
   // Тасалбарын ангилалыг ID-аар олох

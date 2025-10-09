@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Concert, IConcert } from '../models/model.concert';
+import { Concert } from '../models/model.concert';
 import { Artist } from '../models/model.artist';
 import { TicketCategory } from '../models/model.ticket-category';
 import { CreateConcertInput, UpdateConcertInput, ConcertFilterInput, PaginationInput } from '../generated/types';

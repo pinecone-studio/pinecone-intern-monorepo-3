@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Artist, IArtist } from '../models/model.artist';
+import { Artist } from '../models/model.artist';
 import { Concert } from '../models/model.concert';
 import { ArtistInput } from '../generated/types';
 

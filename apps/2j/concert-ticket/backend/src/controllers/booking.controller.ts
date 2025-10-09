@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Booking, IBooking } from '../models/model.booking';
+import { Booking } from '../models/model.booking';
 import { Concert } from '../models/model.concert';
 import { TicketCategory } from '../models/model.ticket-category';
 import { User } from '../models/model.user';

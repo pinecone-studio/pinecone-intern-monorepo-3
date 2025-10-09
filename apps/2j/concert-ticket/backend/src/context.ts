@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import { AuthController } from './controllers/auth.controller';
 
 export interface AuthUser {
@@ -19,7 +18,7 @@ export function createContext(): Context {
 }
 
 // Authentication middleware
-export async function createContextWithAuth(req: any): Promise<Context> {
+export async function createContextWithAuth(req: { headers: { authorization?: string } }): Promise<Context> {
   const context: Context = {
     user: null,
   };

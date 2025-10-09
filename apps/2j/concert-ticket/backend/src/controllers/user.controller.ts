@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { User, IUser } from '../models/model.user';
+import { User } from '../models/model.user';
 import { Booking } from '../models/model.booking';
 import { UpdateUserInput, PaginationInput } from '../generated/types';
 
