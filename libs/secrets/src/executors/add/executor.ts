@@ -77,6 +77,10 @@ const runAddSecretExecutor: Executor<AddSecretExecutorOptions> = async (options)
 
     return { success: true };
   } catch (error) {
+    if (error instanceof Error && error.message.includes('Value is required')) {
+      // Expected validation error, don't log
+      return { success: false };
+    }
     console.error('Error: ', error);
     return { success: false };
   } finally {
