@@ -1,6 +1,6 @@
 {
   "extends": ["plugin:@nx/react-typescript", "next", "next/core-web-vitals", "../../../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*", ".next/**/*"],
+  "ignorePatterns": ["!**/*", ".next/**/*", "src/generated/**/*", "dist/**/*", "build/**/*"],
   "overrides": [
     {
       "files": ["*.*"],
@@ -16,7 +16,13 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "rules": {}
+      "rules": {
+        "complexity": ["warn", 8],
+        "max-lines": ["warn", 200],
+        "@typescript-eslint/no-explicit-any": "warn",
+        "unicorn/filename-case": "off",
+        "prefer-const": "warn"
+      }
     },
     {
       "files": ["*.js", "*.jsx"],
