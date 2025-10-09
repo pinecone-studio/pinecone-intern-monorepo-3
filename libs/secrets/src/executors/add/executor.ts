@@ -23,62 +23,55 @@ const validatation = yup.object({
   value: yup.string().required('Value is required'),
 });
 
+const isExpectedValidationError = (error: unknown): boolean => {
+  return error instanceof Error && (error.message.includes('Value is required') || error.message.includes('is required'));
+};
+
+const createSecretGroup = async (group: string) => {
+  return await SecretGroupModel.create({
+    groupName: group,
+    secrets: {
+      test: {},
+      prod: {},
+      dev: {},
+    },
+  });
+};
+
+const updateSecretInGroup = async (group: string, secretGroup: any, env: string, key: string, value: string) => {
+  const secrets = secretGroup.secrets[env];
+  await SecretGroupModel.updateOne(
+    { groupName: group },
+    {
+      $set: {
+        secrets: {
+          ...secretGroup.secrets,
+          [env]: {
+            ...secrets,
+            [key.toUpperCase()]: value,
+          },
+        },
+      },
+    }
+  );
+};
+
 const runAddSecretExecutor: Executor<AddSecretExecutorOptions> = async (options) => {
   try {
     const { group = '', env = '', username = '', password = '', key = '', value = '' } = options;
 
-    await validatation.validate({
-      group,
-      env,
-      username,
-      password,
-      key,
-      value,
-    });
+    await validatation.validate({ group, env, username, password, key, value });
+    await connectToDatabase({ username, password });
 
-    await connectToDatabase({
-      username,
-      password,
-    });
-
-    let secretGroup = await SecretGroupModel.findOne({
-      groupName: group,
-    });
-
+    let secretGroup = await SecretGroupModel.findOne({ groupName: group });
     if (!secretGroup) {
-      secretGroup = await SecretGroupModel.create({
-        groupName: group,
-        secrets: {
-          test: {},
-          prod: {},
-          dev: {},
-        },
-      });
+      secretGroup = await createSecretGroup(group);
     }
 
-    const secrets = secretGroup.secrets[env];
-
-    await SecretGroupModel.updateOne(
-      {
-        groupName: group,
-      },
-      {
-        $set: {
-          secrets: {
-            ...secretGroup.secrets,
-            [env]: {
-              ...secrets,
-              [key.toUpperCase()]: value,
-            },
-          },
-        },
-      }
-    );
-
+    await updateSecretInGroup(group, secretGroup, env, key, value);
     return { success: true };
   } catch (error) {
-    if (error instanceof Error && error.message.includes('Value is required')) {
-      // Expected validation error, don't log
+    if (isExpectedValidationError(error)) {
       return { success: false };
     }
     console.error('Error: ', error);

@@ -14,6 +14,25 @@ const validatation = yup.object({
   env: yup.string().oneOf(['dev', 'prod', 'test'], 'Invalid env').required('Env is required'),
 });
 
+const isExpectedValidationError = (error: unknown): boolean => {
+  return error instanceof Error && (error.message.includes('Groups are empty') || error.message.includes('Groups are required'));
+};
+
+const generateEnvContent = (secretGroups: any[], env: string): string => {
+  const secrets = secretGroups.reduce((acc, group) => {
+    const secrets = group.secrets[env];
+    return { ...acc, ...secrets };
+  }, {});
+
+  let envContent = '';
+  for (const key in secrets) {
+    if (Object.hasOwnProperty.call(secrets, key)) {
+      envContent += `${key}=${secrets[key]}\n`;
+    }
+  }
+  return envContent;
+};
+
 const runGetSecretsExecutor: Executor<GetSecretsExecutorOptions> = async (options, context) => {
   try {
     const {
@@ -22,39 +41,21 @@ const runGetSecretsExecutor: Executor<GetSecretsExecutorOptions> = async (option
     } = context;
 
     const projectPath = projects[projectName].root;
-
     const { groups = [], env = 'dev' } = options;
 
-    await validatation.validate({
-      groups,
-      env,
-    });
-
+    await validatation.validate({ groups, env });
     await connectToDatabase({});
 
     const secretGroups = await SecretGroupModel.find({
       groupName: { $in: groups },
     });
 
-    const secrets = secretGroups.reduce((acc, group) => {
-      const secrets = group.secrets[env];
-      return { ...acc, ...secrets };
-    }, {});
-
-    let envContent = '';
-
-    for (const key in secrets) {
-      if (Object.hasOwnProperty.call(secrets, key)) {
-        envContent += `${key}=${secrets[key]}\n`;
-      }
-    }
-
+    const envContent = generateEnvContent(secretGroups, env);
     await writeFile(projectPath + '/.env', envContent);
 
     return { success: true };
   } catch (error) {
-    if (error instanceof Error && error.message.includes('Groups are empty')) {
-      // Expected validation error, don't log
+    if (isExpectedValidationError(error)) {
       return { success: false };
     }
     console.error('Error: ', error);
