@@ -53,8 +53,11 @@ const runGetSecretsExecutor: Executor<GetSecretsExecutorOptions> = async (option
 
     return { success: true };
   } catch (error) {
+    if (error instanceof Error && error.message.includes('Groups are empty')) {
+      // Expected validation error, don't log
+      return { success: false };
+    }
     console.error('Error: ', error);
-
     return { success: false };
   } finally {
     await disconnectFromDatabase();
