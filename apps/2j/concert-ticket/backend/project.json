@@ -50,6 +50,9 @@
         {
           "target": "codegen",
           "params": "forward"
+        },
+        {
+          "target": "export-env"
         }
         
       ]
@@ -121,19 +124,20 @@
         "commands": ["rm -rf dist/apps/2j/concert-ticket/backend", "rm -rf .vercel"]
       }
     },
-   "preview": {
+  "preview": {
   "executor": "nx:run-commands",
   "options": {
     "commands": [
-      "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
+      "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
       "npx env-cmd -f apps/2j/concert-ticket/backend/.env vercel build --token=$VERCEL_TOKEN",
-      "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
-    ],
+      "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
+          ],
     "parallel": false
   },
   "dependsOn": [
     { "target": "clean" },
     { "target": "get-secrets:testing" },
+    {"target": "export-env"},
     { "target": "codegen", "params": "forward" }
   ]
 },
@@ -154,7 +158,9 @@
         {
           "target": "get-secrets:testing"
         },
-        
+        {
+          "target": "export-env"
+        },
         {
           "target": "codegen",
           "params": "forward"
