@@ -126,7 +126,7 @@
   "options": {
     "commands": [
       "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
-      "npx env-cmd -f apps/2j/concert-ticket/backend/.env vercel build --token=$VERCEL_TOKEN --build-command=\"bun run vercel-build\"",
+      "npx env-cmd -f apps/2j/concert-ticket/backend/.env vercel build --token=$VERCEL_TOKEN",
       "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
     ],
     "parallel": false
