@@ -149,10 +149,10 @@ jobs:
         run: |
           mkdir -p apps/2j/concert-ticket/backend
           cat > apps/2j/concert-ticket/backend/.env << EOF
-          MONGODB_URI=${{ secrets.MONGODB_URI }}
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
-          PORT=${{ secrets.PORT }}
+          MONGODB_URI=mongodb+srv://kherlenchimeg:db1234dv@cluster0.lukncma.mongodb.net/ticket
+          JWT_SECRET=concert-ticket-jwt-secret-key-2025
+          CORS_ORIGIN=http://localhost:3000
+          PORT=4000
           EOF
       - name: Generate Preview Links
         run: bunx nx preview-action scripts
