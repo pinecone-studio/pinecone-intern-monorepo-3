@@ -83,7 +83,9 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
               <h3 className="mb-3 text-xl font-bold">Stage plan:</h3>
               <div className="relative w-3/4 mx-auto overflow-hidden rounded-lg">
                 <Image src="/images/stage-plan.png" alt="Stage Plan" width={450} height={300} className="w-full h-auto" />
-                <span className="sr-only">ТАЙЗ</span>
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+                  <span className="text-white font-bold text-sm">ТАЙЗ</span>
+                </div>
               </div>
             </div>
           </div>

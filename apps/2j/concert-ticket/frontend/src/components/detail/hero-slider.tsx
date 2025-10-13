@@ -63,7 +63,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 }}
                 data-testid="concert-title"
               >
-                MUSIC of the SPHERES
+                {title}
               </h1>
 
               {/* Dates */}

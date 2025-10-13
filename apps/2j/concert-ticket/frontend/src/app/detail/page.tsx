@@ -27,7 +27,7 @@ const Page = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
+    <div className="min-h-screen bg-gray-900 flex flex-col">
       <NavBar onSearch={handleSearch} onCartClick={handleCartClick} onRegisterClick={handleRegisterClick} onLoginClick={handleLoginClick} />
 
       {/* Hero Slider */}

@@ -40,9 +40,10 @@ describe('Detail Page', () => {
     render(<Page />);
 
     // Check that the page renders
-    expect(screen.getByText('Concert Ticket Booking')).toBeInTheDocument();
     expect(screen.getByTestId('nav-bar')).toBeInTheDocument();
     expect(screen.getByTestId('footer')).toBeInTheDocument();
+    expect(screen.getByTestId('hero-slider')).toBeInTheDocument();
+    expect(screen.getByTestId('concert-details')).toBeInTheDocument();
   });
 
   it('Should handle search functionality', () => {
@@ -74,9 +75,9 @@ describe('Detail Page', () => {
   });
 
   it('Should have correct layout structure', () => {
-    render(<Page />);
+    const { container } = render(<Page />);
 
-    const mainContainer = screen.getByText('Concert Ticket Booking').closest('div');
+    const mainContainer = container.querySelector('.min-h-screen');
     expect(mainContainer).toHaveClass('min-h-screen', 'bg-gray-900', 'flex', 'flex-col');
   });
 });
