@@ -113,6 +113,8 @@ jobs:
     timeout-minutes: 10
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
       ACTION_TYPE: PULL_REQUEST_ACTION
 
@@ -145,5 +147,14 @@ jobs:
           export VERCEL_TOKEN=${{ env.VERCEL_TOKEN }}
           export GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
           bash ./tools/scripts/export-action-env.sh
+      - name: Create backend .env file
+        run: |
+          mkdir -p apps/2j/concert-ticket/backend
+          cat > apps/2j/concert-ticket/backend/.env << EOF
+          MONGODB_URI=${{ secrets.MONGODB_URI }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
+          PORT=${{ secrets.PORT }}
+          EOF
       - name: Generate Preview Links
         run: bunx nx preview-action scripts
