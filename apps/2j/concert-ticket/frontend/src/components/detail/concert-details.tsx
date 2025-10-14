@@ -12,6 +12,17 @@ interface TicketCategory {
   color: string;
 }
 
+interface RelatedEvent {
+  id: string;
+  title: string;
+  artist: string;
+  price: number;
+  date: string;
+  venue: string;
+  image: string;
+  discount?: number;
+}
+
 interface ConcertDetailsProps {
   eventDate: string;
   eventTime: string;
@@ -26,12 +37,45 @@ interface ConcertDetailsProps {
 }
 
 export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, onBookTicket }) => {
+  // Mock data for related events
+  const relatedEvents: RelatedEvent[] = [
+    {
+      id: '1',
+      title: 'Music of the Spheres',
+      artist: 'coldplay',
+      price: 200000,
+      date: '10.31',
+      venue: 'UG ARENA',
+      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
+      discount: 20,
+    },
+    {
+      id: '2',
+      title: 'Summer Festival',
+      artist: 'Various Artists',
+      price: 150000,
+      date: '11.15',
+      venue: 'UG ARENA',
+      image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27c1a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
+    },
+    {
+      id: '3',
+      title: 'Rock Night',
+      artist: 'Rock Band',
+      price: 120000,
+      date: '11.20',
+      venue: 'UG ARENA',
+      image: 'https://images.unsplash.com/photo-1571266028243-d220c4b3b0c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
+      discount: 20,
+    },
+  ];
+
   return (
     <section className="py-8 text-white bg-black" data-testid="concert-details">
-      <div className="max-w-[1400px] mx-auto px-6 mt-8">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <div className="max-w-6xl px-6 mx-auto mt-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Left Panel - Concert Information */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:col-span-2">
             {/* Event Date, Time and Venue */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -48,9 +92,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
 
             {/* Special Artists */}
             <div>
-              <h3 className="mb-3 text-xl font-thin" style={{ color: '#FAFAFA' }}>
-                Special Artist
-              </h3>
+              <h3 className="mb-3 text-lg font-light text-gray-400">Special Artist</h3>
               <ul className="space-y-2">
                 {specialArtists.map((artist, index) => (
                   <li key={index} className="flex items-center gap-2">
@@ -63,9 +105,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
 
             {/* Concert Schedule */}
             <div>
-              <h3 className="mb-3 text-xl font-thin" style={{ color: '#FAFAFA' }}>
-                Тоглолтийн цагийн хуваарь:
-              </h3>
+              <h3 className="mb-3 text-lg font-light text-gray-400">Тоглолтийн цагийн хуваарь:</h3>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2">
                   <span className="font-bold text-white">•</span>
@@ -80,23 +120,20 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
 
             {/* Stage Plan */}
             <div>
-              <h3 className="mb-3 text-xl font-bold">Stage plan:</h3>
+              <h3 className="mb-3 text-lg font-light text-gray-400">Stage plan:</h3>
               <div className="relative w-3/4 mx-auto overflow-hidden rounded-lg">
                 <Image src="/images/stage-plan.png" alt="Stage Plan" width={450} height={300} className="w-full h-auto" />
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
-                  <span className="text-white font-bold text-sm">ТАЙЗ</span>
-                </div>
               </div>
             </div>
           </div>
 
           {/* Right Panel - Booking Options */}
-          <div className="space-y-6 max-w-md">
+          <div className="space-y-6 lg:col-span-1">
             {/* Date Selection */}
             <div>
-              <p className="mb-4 text-white font-normal">Тоглолт үзэх өдрөө сонгоно уу.</p>
+              <h3 className="mb-4 text-lg font-light text-gray-400">Тоглолт үзэх өдрөө сонгоно уу.</h3>
               <div className="relative">
-                <select className="w-full px-4 py-2 text-white rounded-lg appearance-none pr-10" style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}>
+                <select className="w-full px-4 py-2 pr-10 text-white rounded-lg appearance-none" style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}>
                   <option>Өдөр сонгох</option>
                   <option>2024.11.15</option>
                   <option>2024.11.16</option>
@@ -113,7 +150,6 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
 
             {/* Ticket Categories */}
             <div>
-              <h3 className="mb-4 text-xl font-bold">Тасалбарын ангилал</h3>
               <div className="space-y-3">
                 {ticketCategories.map((category) => (
                   <div key={category.id} className="flex items-center justify-between p-4 bg-black border border-gray-600 rounded-lg" style={{ borderStyle: 'dashed', borderWidth: '1px' }}>
@@ -123,7 +159,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
                         {category.name} ({category.available})
                       </span>
                     </div>
-                    <span className="text-white font-light">{category.price.toLocaleString()}₮</span>
+                    <span className="font-light text-white">{category.price.toLocaleString()}₮</span>
                   </div>
                 ))}
               </div>
@@ -133,6 +169,42 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
             <button onClick={onBookTicket} className="w-full px-6 py-4 font-bold text-white transition-colors rounded-lg" style={{ backgroundColor: '#00b7f4' }} data-testid="book-ticket-button">
               Тасалбар захиалах
             </button>
+          </div>
+        </div>
+
+        {/* Related Events Section */}
+        <div className="mt-12">
+          <h3 className="mb-6 text-lg font-light text-left text-gray-400">Холбоотой эвент болон тоглолтууд</h3>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {relatedEvents.map((event) => (
+              <div key={event.id} className="overflow-hidden rounded-lg" style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}>
+                <div className="relative">
+                  <img src={event.image} alt={event.title} className="object-cover w-full h-48" />
+                  {event.discount && <div className="absolute px-2 py-1 text-xs font-bold text-white bg-red-600 rounded top-2 left-2">{event.discount}%</div>}
+                </div>
+                <div className="p-4">
+                  <h4 className="mb-1 text-lg font-light text-white">{event.title}</h4>
+                  <p className="mb-4 text-sm font-light text-gray-400">{event.artist}</p>
+
+                  {/* Price - Prominent at top */}
+                  <div className="mb-4">
+                    <span className="text-xl font-bold text-white">{event.price.toLocaleString()}₮</span>
+                  </div>
+
+                  {/* Date and Venue */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-400">{event.date}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-400">{event.venue}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

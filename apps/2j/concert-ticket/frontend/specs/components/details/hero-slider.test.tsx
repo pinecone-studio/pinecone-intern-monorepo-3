@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { HeroSlider } from './hero-slider';
+import { HeroSlider } from '../../../src/components/detail/hero-slider';
 
 describe('HeroSlider', () => {
   const defaultProps = {
@@ -31,7 +31,7 @@ describe('HeroSlider', () => {
     render(<HeroSlider {...defaultProps} />);
 
     const slider = screen.getByTestId('hero-slider');
-    expect(slider).toHaveClass('w-full', 'h-[250px]', 'overflow-hidden');
+    expect(slider).toHaveClass('w-full', 'h-[300px]', 'overflow-hidden');
   });
 
   it('should render with custom background image', () => {

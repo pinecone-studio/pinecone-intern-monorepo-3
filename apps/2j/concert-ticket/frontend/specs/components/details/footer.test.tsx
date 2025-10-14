@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Footer } from './footer';
+import { Footer } from '../../../src/components/detail/footer';
 
 describe('Footer Component', () => {
   it('Should render all footer elements', () => {

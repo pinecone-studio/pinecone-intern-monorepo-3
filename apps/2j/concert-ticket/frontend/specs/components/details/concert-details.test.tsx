@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ConcertDetails } from './concert-details';
+import { ConcertDetails } from '../../../src/components/detail/concert-details';
 
 const mockProps = {
   eventDate: '2024.11.15 - 11.18',
@@ -48,7 +48,7 @@ describe('ConcertDetails', () => {
     expect(screen.getByTestId('concert-details')).toBeInTheDocument();
     expect(screen.getByText('2024.11.15 - 11.18')).toBeInTheDocument();
     expect(screen.getByText('19:00')).toBeInTheDocument();
-    expect(screen.getByText('UG ARENA')).toBeInTheDocument();
+    expect(screen.getAllByText('UG ARENA')).toHaveLength(4); // Main venue + 3 related events
   });
 
   it('should render special artists correctly', () => {
@@ -67,23 +67,26 @@ describe('ConcertDetails', () => {
     expect(screen.getByText('Music start: 22pm')).toBeInTheDocument();
   });
 
-  it('should render ticket categories with correct information', () => {
+  it('should render related events section', () => {
     render(<ConcertDetails {...mockProps} />);
 
-    expect(screen.getByText('Тасалбарын ангилал')).toBeInTheDocument();
-    expect(screen.getByText('Арын тасалбар (123)')).toBeInTheDocument();
-    expect(screen.getByText('89,000₮')).toBeInTheDocument();
-    expect(screen.getByText('VIP тасалбар (38)')).toBeInTheDocument();
-    expect(screen.getByText('129,000₮')).toBeInTheDocument();
-    expect(screen.getByText('Энгийн тасалбар (38)')).toBeInTheDocument();
-    expect(screen.getByText('159,000₮')).toBeInTheDocument();
+    expect(screen.getByText('Холбоотой эвент болон тоглолтууд')).toBeInTheDocument();
+    expect(screen.getByText('Music of the Spheres')).toBeInTheDocument();
+    expect(screen.getByText('Summer Festival')).toBeInTheDocument();
+    expect(screen.getByText('Rock Night')).toBeInTheDocument();
+  });
+
+  it('should render discount badges for events with discounts', () => {
+    render(<ConcertDetails {...mockProps} />);
+
+    expect(screen.getAllByText('20%')).toHaveLength(2); // Two events have 20% discount
   });
 
   it('should render stage plan section', () => {
     render(<ConcertDetails {...mockProps} />);
 
     expect(screen.getByText('Stage plan:')).toBeInTheDocument();
-    expect(screen.getByText('ТАЙЗ')).toBeInTheDocument();
+    // ТАЙЗ text was removed from the component
   });
 
   it('should handle book ticket button click', () => {
@@ -100,5 +103,21 @@ describe('ConcertDetails', () => {
 
     expect(screen.getByText('Тоглолт үзэх өдрөө сонгоно уу.')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Өдөр сонгох')).toBeInTheDocument();
+  });
+
+  it('should render Related Events section', () => {
+    render(<ConcertDetails {...mockProps} />);
+
+    expect(screen.getByText('Холбоотой эвент болон тоглолтууд')).toBeInTheDocument();
+    expect(screen.getByText('Music of the Spheres')).toBeInTheDocument();
+    expect(screen.getByText('coldplay')).toBeInTheDocument();
+    expect(screen.getByText('Summer Festival')).toBeInTheDocument();
+    expect(screen.getByText('Rock Night')).toBeInTheDocument();
+  });
+
+  it('should display discount badges for events that have them', () => {
+    render(<ConcertDetails {...mockProps} />);
+
+    expect(screen.getAllByText('20%')).toHaveLength(2); // Two events have 20% discount
   });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { NavBar } from './nav';
+import { NavBar } from '../../../src/components/detail/nav';
 
 describe('NavBar Component', () => {
   const mockProps = {
