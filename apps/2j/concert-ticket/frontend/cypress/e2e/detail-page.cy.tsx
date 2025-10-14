@@ -33,26 +33,33 @@ describe('Detail Page', () => {
   });
 
   it('Should handle search functionality', () => {
+    cy.window().then((win) => {
+      cy.spy(win.console, 'log').as('consoleLog');
+    });
+
     const searchQuery = 'concert';
     cy.get('[data-testid="search-input"]').type(searchQuery);
     cy.get('[data-testid="search-form"]').submit();
 
-    // Check if search was triggered (you can add console.log verification)
-    cy.window().its('console.log').should('be.calledWith', 'Search query:', searchQuery);
+    cy.get('@consoleLog').should('be.calledWith', 'Search query:', searchQuery);
   });
 
   it('Should handle button clicks', () => {
+    cy.window().then((win) => {
+      cy.spy(win.console, 'log').as('consoleLog');
+    });
+
     // Test register button
     cy.get('[data-testid="register-button"]').click();
-    cy.window().its('console.log').should('be.calledWith', 'Register clicked');
+    cy.get('@consoleLog').should('be.calledWith', 'Register clicked');
 
     // Test login button
     cy.get('[data-testid="login-button"]').click();
-    cy.window().its('console.log').should('be.calledWith', 'Login clicked');
+    cy.get('@consoleLog').should('be.calledWith', 'Login clicked');
 
     // Test cart button
     cy.get('[data-testid="cart-button"]').click();
-    cy.window().its('console.log').should('be.calledWith', 'Cart clicked');
+    cy.get('@consoleLog').should('be.calledWith', 'Cart clicked');
   });
 
   it('Should be responsive on mobile', () => {

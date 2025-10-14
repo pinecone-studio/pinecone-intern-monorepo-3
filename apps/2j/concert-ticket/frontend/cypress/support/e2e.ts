@@ -1,5 +1,6 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
+import '@cypress/code-coverage/support';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -27,6 +28,7 @@ declare global {
 
 Cypress.Commands.add('haveConsoleLog', { prevSubject: 'window' }, (win: Window, message: string) => {
   return cy.wrap(win).then(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const consoleSpy = cy.spy((win as any).console, 'log');
     expect(consoleSpy).to.have.been.calledWith(message);
   });

@@ -1,6 +1,6 @@
 {
   "extends": ["../../../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": ["!**/*", "src/generated/**/*", "**/generated/**/*", ".nyc_output/**/*", "coverage/**/*", "cypress/results/**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],

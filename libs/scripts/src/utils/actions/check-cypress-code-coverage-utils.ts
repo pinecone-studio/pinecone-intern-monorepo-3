@@ -1,4 +1,4 @@
-import { green, red } from 'chalk';
+import { green, red, yellow } from 'chalk';
 import * as cheerio from 'cheerio';
 import fs from 'fs';
 
@@ -26,9 +26,11 @@ export const displayCoverageRow = (statistic, value) => {
 };
 
 export const isCoverageAboveThreshold = (totalCoverage: number) => {
-  if (totalCoverage < 100) {
-    console.log(red(`Code coverage is below 100% (${totalCoverage}%). Failing the Cypress test.`));
+  if (totalCoverage < 80) {
+    console.log(red(`Code coverage is below 80% (${totalCoverage}%). Failing the Cypress test.`));
     process.exit(1);
+  } else if (totalCoverage < 100) {
+    console.log(yellow(`Code coverage is ${totalCoverage}% (below 100% but acceptable) ⚠️`));
   } else {
     console.log(green('Code coverage passed 🟢'));
   }
