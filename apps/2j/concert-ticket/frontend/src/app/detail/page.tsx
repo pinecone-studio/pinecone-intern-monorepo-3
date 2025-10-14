@@ -27,7 +27,7 @@ const Page = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
+    <div className="flex flex-col min-h-screen bg-gray-900">
       <NavBar onSearch={handleSearch} onCartClick={handleCartClick} onRegisterClick={handleRegisterClick} onLoginClick={handleLoginClick} />
 
       {/* Hero Slider */}
@@ -54,7 +54,7 @@ const Page = () => {
             name: 'Арын тасалбар',
             price: 89000,
             available: 123,
-            color: '#FFFFFF',
+            color: '#D7D7F8',
           },
           {
             id: '2',

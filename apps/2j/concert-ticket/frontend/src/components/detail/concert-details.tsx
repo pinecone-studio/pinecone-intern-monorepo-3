@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Calendar, Clock, Users, MapPin } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface TicketCategory {
   id: string;
@@ -37,7 +38,7 @@ interface ConcertDetailsProps {
 }
 
 export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, onBookTicket }) => {
-  // Mock data for related events
+  const router = useRouter();
   const relatedEvents: RelatedEvent[] = [
     {
       id: '1',
@@ -74,9 +75,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
     <section className="py-8 text-white bg-black" data-testid="concert-details">
       <div className="max-w-6xl px-6 mx-auto mt-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Left Panel - Concert Information */}
           <div className="space-y-6 lg:col-span-2">
-            {/* Event Date, Time and Venue */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <Calendar className="w-5 h-5" style={{ color: '#FAFAFA' }} />
@@ -90,7 +89,6 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
               </div>
             </div>
 
-            {/* Special Artists */}
             <div>
               <h3 className="mb-3 text-lg font-light text-gray-400">Special Artist</h3>
               <ul className="space-y-2">
@@ -103,7 +101,6 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
               </ul>
             </div>
 
-            {/* Concert Schedule */}
             <div>
               <h3 className="mb-3 text-lg font-light text-gray-400">Тоглолтийн цагийн хуваарь:</h3>
               <ul className="space-y-2">
@@ -118,7 +115,6 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
               </ul>
             </div>
 
-            {/* Stage Plan */}
             <div>
               <h3 className="mb-3 text-lg font-light text-gray-400">Stage plan:</h3>
               <div className="relative w-3/4 mx-auto overflow-hidden rounded-lg">
@@ -127,9 +123,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
             </div>
           </div>
 
-          {/* Right Panel - Booking Options */}
           <div className="space-y-6 lg:col-span-1">
-            {/* Date Selection */}
             <div>
               <h3 className="mb-4 text-lg font-light text-gray-400">Тоглолт үзэх өдрөө сонгоно уу.</h3>
               <div className="relative">
@@ -148,14 +142,13 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
               </div>
             </div>
 
-            {/* Ticket Categories */}
             <div>
               <div className="space-y-3">
                 {ticketCategories.map((category) => (
                   <div key={category.id} className="flex items-center justify-between p-4 bg-black border border-gray-600 rounded-lg" style={{ borderStyle: 'dashed', borderWidth: '1px' }}>
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: category.color }}></div>
-                      <span className="font-medium" style={{ color: category.id === '2' ? '#4651c9' : category.id === '3' ? '#c772c4' : 'white' }}>
+                      <span className="font-medium" style={{ color: category.color }}>
                         {category.name} ({category.available})
                       </span>
                     </div>
@@ -165,14 +158,17 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
               </div>
             </div>
 
-            {/* Book Ticket Button */}
-            <button onClick={onBookTicket} className="w-full px-6 py-4 font-bold text-white transition-colors rounded-lg" style={{ backgroundColor: '#00b7f4' }} data-testid="book-ticket-button">
+            <button
+              onClick={() => router.push('/cart')}
+              className="w-full px-6 py-4 font-bold text-white transition-colors rounded-lg"
+              style={{ backgroundColor: '#00b7f4' }}
+              data-testid="book-ticket-button"
+            >
               Тасалбар захиалах
             </button>
           </div>
         </div>
 
-        {/* Related Events Section */}
         <div className="mt-12">
           <h3 className="mb-6 text-lg font-light text-left text-gray-400">Холбоотой эвент болон тоглолтууд</h3>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -186,12 +182,10 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
                   <h4 className="mb-1 text-lg font-light text-white">{event.title}</h4>
                   <p className="mb-4 text-sm font-light text-gray-400">{event.artist}</p>
 
-                  {/* Price - Prominent at top */}
                   <div className="mb-4">
                     <span className="text-xl font-bold text-white">{event.price.toLocaleString()}₮</span>
                   </div>
 
-                  {/* Date and Venue */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-gray-400" />
