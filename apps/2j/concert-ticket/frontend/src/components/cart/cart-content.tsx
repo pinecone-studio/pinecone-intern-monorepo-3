@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ArrowLeft, Plus, Minus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { TicketCategoryItem } from './ticket-category-item';
+import { OrderSummary } from './order-summary';
+import { CartHeader } from './cart-header';
 
 interface TicketCategory {
   id: string;
@@ -72,18 +74,7 @@ export const CartContent: React.FC = () => {
 
   return (
     <div className="flex-1 text-white bg-black">
-      <div className="py-4 bg-black border-b border-gray-700">
-        <div className="relative flex items-center justify-center max-w-6xl px-6 mx-auto">
-          <button
-            onClick={handleBackToDetails}
-            className="absolute flex items-center justify-center w-12 h-12 text-white transition-colors bg-gray-800 rounded-lg left-6 hover:bg-gray-700"
-            data-testid="back-button"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <h1 className="text-2xl font-bold text-white">Тасалбар захиалах</h1>
-        </div>
-      </div>
+      <CartHeader onBackClick={handleBackToDetails} />
 
       <div className="max-w-6xl px-6 py-8 mx-auto">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
@@ -130,61 +121,11 @@ export const CartContent: React.FC = () => {
 
               <div className="space-y-0">
                 {ticketCategories.map((category, index) => (
-                  <div key={category.id}>
-                    <div className="flex items-start gap-3 py-3">
-                      <div className="w-3 h-3 mt-1 rounded-full" style={{ backgroundColor: category.color }}></div>
-                      <div className="flex-1">
-                        <div className="mb-1 text-base font-medium" style={{ color: category.color }}>
-                          {category.name} <span style={{ color: category.color }}>({category.available})</span>
-                        </div>
-                        <div className="text-sm font-light text-white">{category.price.toLocaleString()}₮</div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => updateQuantity(category.id, -1)}
-                          disabled={category.quantity === 0}
-                          className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                          style={{ backgroundColor: '#2d2d2d' }}
-                        >
-                          <Minus className="w-4 h-4" />
-                        </button>
-                        <span className="w-8 font-medium text-center text-white">{category.quantity}</span>
-                        <button
-                          onClick={() => updateQuantity(category.id, 1)}
-                          disabled={category.quantity >= category.available}
-                          className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                          style={{ backgroundColor: '#2d2d2d' }}
-                        >
-                          <Plus className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                    {index < ticketCategories.length - 1 && <div className="border-t border-gray-600 border-dashed"></div>}
-                  </div>
+                  <TicketCategoryItem key={category.id} category={category} onUpdateQuantity={updateQuantity} isLast={index === ticketCategories.length - 1} />
                 ))}
               </div>
 
-              {getTotalTickets() > 0 && (
-                <div className="pt-4 space-y-3 border-t border-gray-600">
-                  <h3 className="text-lg font-medium text-white">Захиалгын дэлгэрэнгүй</h3>
-                  {ticketCategories
-                    .filter((ticket) => ticket.quantity > 0)
-                    .map((ticket) => (
-                      <div key={ticket.id} className="flex items-center justify-between">
-                        <span className="font-light text-gray-300">
-                          {ticket.name} x {ticket.quantity}
-                        </span>
-                        <span className="font-medium text-white">{(ticket.price * ticket.quantity).toLocaleString()}₮</span>
-                      </div>
-                    ))}
-                  <div className="pt-3 border-t border-gray-600">
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-light text-gray-400">Нийт төлөх дүн:</span>
-                      <span className="text-xl font-bold text-white">{getTotalAmount().toLocaleString()}₮</span>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <OrderSummary ticketCategories={ticketCategories} getTotalTickets={getTotalTickets} getTotalAmount={getTotalAmount} />
 
               <button
                 onClick={handleProceedToPayment}

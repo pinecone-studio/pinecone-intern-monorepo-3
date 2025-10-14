@@ -20,7 +20,7 @@ describe('CartContent', () => {
       refresh: jest.fn(),
       replace: jest.fn(),
       prefetch: jest.fn(),
-    } as any);
+    });
   });
 
   afterEach(() => {

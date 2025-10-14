@@ -31,12 +31,7 @@ const Page = () => {
       <NavBar onSearch={handleSearch} onCartClick={handleCartClick} onRegisterClick={handleRegisterClick} onLoginClick={handleLoginClick} />
 
       {/* Hero Slider */}
-      <HeroSlider
-        title="MUSIC of the SPHERES"
-        artist="coldplay"
-        dates={['10.31', '11.01', '11.02']}
-        backgroundImage="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
-      />
+      <HeroSlider title="MUSIC of the SPHERES" artist="coldplay" dates={['10.31', '11.01', '11.02']} backgroundImage="/images/hero-bg.jpg" />
 
       {/* Concert Details Section */}
       <ConcertDetails

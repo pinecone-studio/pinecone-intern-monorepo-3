@@ -46,9 +46,9 @@ describe('ConcertDetails', () => {
     render(<ConcertDetails {...mockProps} />);
 
     expect(screen.getByTestId('concert-details')).toBeInTheDocument();
-    expect(screen.getByText('2024.11.15 - 11.18')).toBeInTheDocument();
-    expect(screen.getByText('19:00')).toBeInTheDocument();
-    expect(screen.getAllByText('UG ARENA')).toHaveLength(4); // Main venue + 3 related events
+    expect(screen.getAllByText('2024.11.15 - 11.18')).toHaveLength(2);
+    expect(screen.getAllByText('19:00')).toHaveLength(2);
+    expect(screen.getAllByText('UG ARENA')).toHaveLength(5); // Main venue + 3 related events
   });
 
   it('should render special artists correctly', () => {
@@ -88,13 +88,42 @@ describe('ConcertDetails', () => {
     expect(screen.getByText('Stage plan:')).toBeInTheDocument();
   });
 
-  it('should handle book ticket button click', () => {
+  it('should handle book ticket button click from ticket categories', () => {
+    const mockPush = jest.fn();
+    jest.spyOn(require('next/navigation'), 'useRouter').mockReturnValue({
+      push: mockPush,
+      back: jest.fn(),
+      forward: jest.fn(),
+      refresh: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
+    });
+
     render(<ConcertDetails {...mockProps} />);
 
-    const bookButton = screen.getByTestId('book-ticket-button');
-    fireEvent.click(bookButton);
+    const bookButtons = screen.getAllByText('Тасалбар захиалах');
+    fireEvent.click(bookButtons[0]);
 
-    expect(bookButton).toBeInTheDocument();
+    expect(mockPush).toHaveBeenCalledWith('/cart');
+  });
+
+  it('should handle main book ticket button click', () => {
+    const mockPush = jest.fn();
+    jest.spyOn(require('next/navigation'), 'useRouter').mockReturnValue({
+      push: mockPush,
+      back: jest.fn(),
+      forward: jest.fn(),
+      refresh: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
+    });
+
+    render(<ConcertDetails {...mockProps} />);
+
+    const mainBookButton = screen.getByTestId('book-ticket-button');
+    fireEvent.click(mainBookButton);
+
+    expect(mockPush).toHaveBeenCalledWith('/cart');
   });
 
   it('should render venue selection dropdown', () => {
