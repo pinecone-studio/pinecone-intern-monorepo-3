@@ -1,6 +1,6 @@
 {
   "extends": ["../../../../.eslintrc.json"],
-  "ignorePatterns": ["!**/*"],
+  "ignorePatterns": ["!**/*", ".nyc_output/**/*", "coverage/**/*", "cypress/results/**/*", "src/generated/**/*", "**/generated/**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -16,7 +16,8 @@
         "react/function-component-definition": "off",
         "react-hooks/exhaustive-deps": "off",
         "unicorn/filename-case": "off",
-        "@next/next/no-img-element": "off"
+        "@next/next/no-img-element": "off",
+        "max-lines": "off"
       }
     },
     {

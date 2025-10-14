@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Calendar, Clock, Users, MapPin } from 'lucide-react';
+import { Calendar, Clock, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface TicketCategory {
@@ -34,10 +34,10 @@ interface ConcertDetailsProps {
     musicStart: string;
   };
   ticketCategories: TicketCategory[];
-  onBookTicket: () => void;
+  _onBookTicket: () => void;
 }
 
-export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, onBookTicket }) => {
+export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, _onBookTicket }) => {
   const router = useRouter();
   const relatedEvents: RelatedEvent[] = [
     {
@@ -47,7 +47,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
       price: 200000,
       date: '10.31',
       venue: 'UG ARENA',
-      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
+      image: '/images/concert-1.jpg',
       discount: 20,
     },
     {
@@ -57,7 +57,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
       price: 150000,
       date: '11.15',
       venue: 'UG ARENA',
-      image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27c1a4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
+      image: '/images/concert-2.jpg',
     },
     {
       id: '3',
@@ -66,7 +66,7 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
       price: 120000,
       date: '11.20',
       venue: 'UG ARENA',
-      image: 'https://images.unsplash.com/photo-1571266028243-d220c4b3b0c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80',
+      image: '/images/concert-3.jpg',
       discount: 20,
     },
   ];
