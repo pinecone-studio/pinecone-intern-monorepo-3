@@ -169,4 +169,4 @@ jobs:
           NEXT_PUBLIC_BACKEND_URI=${{ secrets.BACKEND_URL }}
           EOF
       - name: Generate Preview Links
-        run: bunx nx run scripts:preview-action
+        run: npx nx run scripts:preview-action
