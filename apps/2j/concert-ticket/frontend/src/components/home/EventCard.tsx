@@ -8,6 +8,7 @@ interface Props {
 
 const EventCard: React.FC<Props> = ({ item }) => {
   // TicketCategory төрлийг ирээдүйд ашиглах тул type-level хэрэглээг хадгална
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   type __KeepTicketCategory__ = TicketCategory;
   const categories = Array.isArray(item.ticketCategories) ? item.ticketCategories : [];
   const lowestPrice = getLowestPrice(categories);

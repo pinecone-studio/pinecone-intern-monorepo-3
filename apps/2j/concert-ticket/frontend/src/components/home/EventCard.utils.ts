@@ -1,10 +1,10 @@
 // EventCard-ийн utility функцууд
-import { TicketCategory } from '@/types/Event.type';
+import type { TicketCategory } from '@/types/Event.type';
 
-export const getLowestPrice = (categories: TicketCategory[]): number | undefined => {
-  if (categories.length === 0) return undefined;
-  return categories.reduce((min, t) => Math.min(min, t.unitPrice), Number.POSITIVE_INFINITY);
-};
+export const getLowestPrice = (categories: TicketCategory[]): number | undefined =>
+  categories.length === 0
+    ? undefined
+    : categories.reduce((min, t) => (t.unitPrice < min ? t.unitPrice : min), Number.POSITIVE_INFINITY);
 
 export const formatDateTime = (dateStr?: string, timeStr?: string): string => {
   if (!dateStr) return '';
