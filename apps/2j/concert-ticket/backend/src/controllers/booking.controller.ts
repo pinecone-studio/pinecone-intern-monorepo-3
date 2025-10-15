@@ -200,7 +200,7 @@ export class BookingController {
       }
 
       // Статусыг өөрчлөх
-      booking.status = status as any;
+      booking.status = status as 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'REFUNDED';
       if (status === 'CANCELLED') {
         booking.canCancel = false;
       }

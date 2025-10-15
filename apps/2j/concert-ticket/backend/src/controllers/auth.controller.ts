@@ -97,7 +97,7 @@ export class AuthController {
   static async resetPassword(input: ResetPasswordInput) {
     try {
       // Token-г шалгах (энэ жишээнд JWT ашиглаж байна)
-      let decoded: any;
+      let decoded: Record<string, unknown>;
       try {
         decoded = jwt.verify(input.token, process.env.JWT_SECRET || 'fallback-secret');
       } catch (error) {
@@ -128,7 +128,7 @@ export class AuthController {
   // Token-г шалгах
   static async verifyToken(token: string) {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as Record<string, unknown>;
       
       const user = await User.findById(decoded.id).select('-password');
       if (!user) {
@@ -162,7 +162,7 @@ export class AuthController {
   // Хэрэглэгчийн мэдээллийг token-оос авах
   static async getUserFromToken(token: string) {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as Record<string, unknown>;
       
       const user = await User.findById(decoded.id).select('-password');
       if (!user) {

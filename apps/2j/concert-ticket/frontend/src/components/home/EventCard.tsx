@@ -1,33 +1,14 @@
 import React from 'react';
-import { EventItem } from '@/types/Event.type';
+import { EventItem, TicketCategory } from '@/types/Event.type';
+import { getLowestPrice, formatDateTime } from './EventCard.utils';
 
 interface Props {
   item: EventItem;
 }
 
 const EventCard: React.FC<Props> = ({ item }) => {
-  const categories = Array.isArray((item as any).ticketCategories) ? (item as any).ticketCategories : [];
-  const lowestPrice =
-    categories.length > 0
-      ? categories.reduce((min: number, t: any) => Math.min(min, t.unitPrice), Number.POSITIVE_INFINITY)
-      : undefined;
-
-  const formatDateTime = (dateStr?: string, timeStr?: string) => {
-    if (!dateStr) return '';
-    // Compose to local Date using provided date and time (fallback 00:00)
-    const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
-    const dt = new Date(iso);
-    try {
-      const tz = 'Asia/Ulaanbaatar';
-      const mm = new Intl.DateTimeFormat('en-US', { timeZone: tz, month: '2-digit' }).format(dt);
-      const dd = new Intl.DateTimeFormat('en-US', { timeZone: tz, day: '2-digit' }).format(dt);
-      const hh = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: '2-digit', hour12: false }).format(dt);
-      const min = new Intl.DateTimeFormat('en-US', { timeZone: tz, minute: '2-digit' }).format(dt);
-      return `${mm}.${dd} ${hh}:${min}`;
-    } catch {
-      return `${dateStr}${timeStr ? ` ${timeStr}` : ''}`;
-    }
-  };
+  const categories = Array.isArray(item.ticketCategories) ? item.ticketCategories : [];
+  const lowestPrice = getLowestPrice(categories);
 
   return (
     <div className="overflow-hidden rounded-[12px] bg-[#111111] ring-1 ring-white/5">
@@ -43,7 +24,7 @@ const EventCard: React.FC<Props> = ({ item }) => {
           <span>{item.venue}</span>
         </div>
         <div className="mt-[6px] flex items-center gap-[8px] text-[12px] text-gray-400">
-          <span>{formatDateTime(item.date as any, item.time as any)}</span>
+          <span>{formatDateTime(item.date, item.time)}</span>
         </div>
       </div>
     </div>

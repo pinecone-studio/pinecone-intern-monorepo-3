@@ -1,7 +1,7 @@
 "use client";
 import React from 'react';
 import EventCard from '@/components/home/EventCard';
-import { useHomeEventsQuery } from '@/generated';
+import { useHomeEventsQuery, HomeEventsQuery } from '@/generated';
 
 interface Props {
   className?: string;
@@ -29,7 +29,7 @@ const EventGrid: React.FC<Props> = ({ className }) => {
       <div className="grid grid-cols-1 gap-[16px] sm:grid-cols-2 md:grid-cols-3">
         {loading
           ? Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
-          : items.map((it) => <EventCard key={it.id} item={it as any} />)}
+          : items.map((it) => <EventCard key={it.id} item={it as HomeEventsQuery['concerts']['concerts'][0]} />)}
       </div>
     </section>
   );

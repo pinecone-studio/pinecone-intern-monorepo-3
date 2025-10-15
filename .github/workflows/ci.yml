@@ -156,5 +156,11 @@ jobs:
           CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
           PORT=${{ secrets.PORT }}
           EOF
+      - name: Create frontend .env file
+        run: |
+          mkdir -p apps/2j/concert-ticket/frontend
+          cat > apps/2j/concert-ticket/frontend/.env.local << EOF
+          NEXT_PUBLIC_BACKEND_URI=${{ secrets.BACKEND_URL }}
+          EOF
       - name: Generate Preview Links
         run: bunx nx preview-action scripts
