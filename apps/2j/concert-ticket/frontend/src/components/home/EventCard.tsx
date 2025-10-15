@@ -1,5 +1,5 @@
 import React from 'react';
-import { EventItem, TicketCategory } from '@/types/Event.type';
+import type { EventItem, TicketCategory } from '@/types/Event.type';
 import { getLowestPrice, formatDateTime } from './EventCard.utils';
 
 interface Props {
@@ -7,6 +7,8 @@ interface Props {
 }
 
 const EventCard: React.FC<Props> = ({ item }) => {
+  // TicketCategory төрлийг ирээдүйд ашиглах тул type-level хэрэглээг хадгална
+  type __KeepTicketCategory__ = TicketCategory;
   const categories = Array.isArray(item.ticketCategories) ? item.ticketCategories : [];
   const lowestPrice = getLowestPrice(categories);
 
