@@ -13,7 +13,6 @@ const EventCard: React.FC<Props> = ({ item }) => {
   return (
     <div className="overflow-hidden rounded-[12px] bg-[#111111] ring-1 ring-white/5">
       <div className="h-[140px] w-full bg-[#1a1a1a]">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={item.image ?? '/images/placeholder.jpg'} alt={item.name} className="h-full w-full object-cover" />
       </div>
       <div className="p-[12px]">
