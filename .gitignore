@@ -67,6 +67,7 @@ generated.tsx
 .vercel
 .env
 .env.preview
+vercel.json
 
 # Terraform
 

@@ -144,25 +144,22 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
+<<<<<<< Updated upstream
           "npx env-cmd -v VERCEL_ORG_ID=team_GcoSxSxP0tdBV7zgpH5E0dtY -v VERCEL_PROJECT_ID=prj_BKW4dAnQwuzAYiV9APJGoJB8pciX -- vercel pull --yes --environment=production --token=$VERCEL_TOKEN",
           "vercel build --prod --token=$VERCEL_TOKEN",
           "npx env-cmd -v VERCEL_ORG_ID=team_GcoSxSxP0tdBV7zgpH5E0dtY -v VERCEL_PROJECT_ID=prj_BKW4dAnQwuzAYiV9APJGoJB8pciX -- vercel --prebuilt --prod --token=$VERCEL_TOKEN"
+=======
+          "nx codegen restaurant-backend",
+          "mkdir -p .vercel && cp -r ./apps/2k/restaurant/backend/vercel.config.json .vercel/project.json",
+          "npx env-cmd -f apps/2k/restaurant/backend/.env sh -c 'vercel build --prod --token=\"$VERCEL_TOKEN\"'",
+          "npx env-cmd -f apps/2k/restaurant/backend/.env sh -c 'vercel --prebuilt --prod --yes --token=\"$VERCEL_TOKEN\"'"
+>>>>>>> Stashed changes
         ],
         "parallel": false
       },
       "dependsOn": [
         {
           "target": "clean"
-        },
-        {
-          "target": "get-secrets:testing"
-        },
-        {
-          "target": "export-env"
-        },
-        {
-          "target": "codegen",
-          "params": "forward"
         }
       ]
     },
