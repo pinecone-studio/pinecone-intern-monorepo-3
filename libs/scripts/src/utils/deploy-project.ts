@@ -104,7 +104,9 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
     // We construct the command carefully to avoid errors with empty variables.
     const vercelPullCommand = `npx vercel pull --yes --environment=preview --token=${VERCEL_TOKEN}`;
     const vercelBuildCommand = `npx vercel build --token=${VERCEL_TOKEN}`;
-    const vercelDeployCommand = `npx vercel --prebuilt --token=${VERCEL_TOKEN}`;
+    // We'll decide between prebuilt and remote build later
+    const vercelDeployPrebuilt = `npx vercel --prebuilt --token=${VERCEL_TOKEN} --confirm`;
+    const vercelDeployRemote = `npx vercel --token=${VERCEL_TOKEN} --confirm`;
 
     try {
       console.log(`\n> Setting project context with: vercel pull`);
@@ -139,18 +141,26 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
         }
       }
 
-      console.log(`\n> Executing: ${vercelBuildCommand}\n`);
-      execSync(vercelBuildCommand, { stdio: 'inherit', cwd: projectRoot });
-
-      // Check if .vercel/output exists after build
-      const vercelOutputPath = path.join(projectRoot, '.vercel', 'output');
-      if (!fs.existsSync(vercelOutputPath)) {
-        throw new Error(`Build completed but .vercel/output directory not found at ${vercelOutputPath}. Build may have failed.`);
+      // Try local prebuilt build, but fall back to remote build if it fails
+      let shouldUsePrebuilt = false;
+      try {
+        console.log(`\n> Executing: ${vercelBuildCommand}\n`);
+        execSync(vercelBuildCommand, { stdio: 'inherit', cwd: projectRoot });
+        const vercelOutputPath = path.join(projectRoot, '.vercel', 'output');
+        shouldUsePrebuilt = fs.existsSync(vercelOutputPath);
+        if (shouldUsePrebuilt) {
+          console.log(green(`✓ .vercel/output directory found at ${vercelOutputPath}`));
+        } else {
+          console.log(red(`! .vercel/output not found after build. Will use remote build on Vercel.`));
+        }
+      } catch (localBuildErr) {
+        console.log(red(`Local vercel build failed. Falling back to remote build on Vercel.`));
+        shouldUsePrebuilt = false;
       }
-      console.log(green(`✓ .vercel/output directory found at ${vercelOutputPath}`));
 
-      console.log(`\n> Executing: ${vercelDeployCommand}\n`);
-      const deploymentCommandResult = execSync(vercelDeployCommand, { stdio: 'pipe', cwd: projectRoot }).toString().trim();
+      const deployCmd = shouldUsePrebuilt ? vercelDeployPrebuilt : vercelDeployRemote;
+      console.log(`\n> Executing: ${deployCmd}\n`);
+      const deploymentCommandResult = execSync(deployCmd, { stdio: 'pipe', cwd: projectRoot }).toString().trim();
 
       console.log(green(`Preview command result for ${app}`));
       console.log(deploymentCommandResult);
