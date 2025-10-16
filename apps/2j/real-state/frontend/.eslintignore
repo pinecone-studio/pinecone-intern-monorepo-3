@@ -1,0 +1,6 @@
+# Generated files
+.nyc_output/
+coverage/
+dist/
+.next/
+node_modules/

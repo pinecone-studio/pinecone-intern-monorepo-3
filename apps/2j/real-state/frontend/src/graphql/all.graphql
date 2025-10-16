@@ -1,7 +1,112 @@
-query Query {
-  sampleQuery
+query GetProperties($filters: PropertyFilters) {
+  getProperties(filters: $filters) {
+    total
+    hasMore
+    properties {
+      _id
+      title
+      price
+      location
+      bedrooms
+      bathrooms
+      area
+      type
+      image
+      images
+      featured
+      description
+      features
+      yearBuilt
+      parking
+      garden
+      balcony
+      furnished
+      petFriendly
+      status
+      createdAt
+      updatedAt
+    }
+  }
 }
 
-mutation Mutation {
-  sampleMutation
+query GetPropertyById($id: ID!) {
+  getPropertyById(id: $id) {
+    _id
+    title
+    price
+    location
+    bedrooms
+    bathrooms
+    area
+    type
+    image
+    images
+    featured
+    description
+    features
+    yearBuilt
+    parking
+    garden
+    balcony
+    furnished
+    petFriendly
+    status
+    agent {
+      name
+      phone
+      email
+      image
+      title
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateProperty($input: PropertyInput!) {
+  createProperty(input: $input) {
+    _id
+    title
+    price
+    location
+    bedrooms
+    bathrooms
+    area
+    type
+    status
+    createdAt
+  }
+}
+
+mutation CreatePost($input: PostInput!) {
+  createPost(input: $input) {
+    _id
+    propertyOwnerId
+    title
+    description
+    price
+    status
+    createdAt
+  }
+}
+
+query GetPosts($filters: PropertyFilters) {
+  getPosts(filters: $filters) {
+    _id
+    propertyOwnerId
+    title
+    description
+    price
+    status
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdatePostStatus($id: ID!, $status: PostStatus!) {
+  updatePostStatus(id: $id, status: $status) {
+    _id
+    status
+    updatedAt
+  }
 }

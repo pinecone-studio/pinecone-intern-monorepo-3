@@ -1,0 +1,195 @@
+scalar ID
+scalar String
+scalar Int
+scalar Float
+scalar Boolean
+
+type Property {
+  _id: ID!
+  title: String!
+  price: Float!
+  location: String!
+  bedrooms: Int!
+  bathrooms: Int!
+  area: Float!
+  type: PropertyType!
+  image: String!
+  images: [String]
+  featured: Boolean!
+  description: String
+  features: [String]
+  yearBuilt: Int
+  parking: Int
+  garden: Boolean
+  balcony: Boolean
+  furnished: Boolean
+  petFriendly: Boolean
+  status: PropertyStatus!
+  agent: Agent
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Post {
+  _id: ID!
+  propertyOwnerId: ID!
+  title: String!
+  description: String!
+  price: Float!
+  propertyDetail: PropertyFeature!
+  status: PostStatus!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type PropertyFeature {
+  _id: ID!
+  userId: ID!
+  images: [String!]!
+  type: PropertyFeatureType!
+  size: Float!
+  totalRooms: Int!
+  garage: Boolean!
+  restrooms: Int!
+  location: Location!
+  details: PropertyDetails!
+  createdAt: String!
+  updatedAt: String!
+}
+
+type Location {
+  address: String!
+  city: Int!
+  district: String!
+}
+
+type PropertyDetails {
+  completionDate: String!
+  windowsCount: Int!
+  windowType: String!
+  floorMaterial: String!
+  floorNumber: Int!
+  balcony: Boolean!
+  totalFloors: Int!
+  lift: Boolean!
+}
+
+type Agent {
+  name: String
+  phone: String
+  email: String
+  image: String
+  title: String
+}
+
+enum PropertyType {
+  apartment
+  house
+  commercial
+  land
+}
+
+enum PropertyFeatureType {
+  house
+  apartment
+  office
+}
+
+enum PropertyStatus {
+  FOR_SALE
+  FOR_RENT
+  SOLD
+  RENTED
+}
+
+enum PostStatus {
+  pending
+  approved
+  declined
+}
+
+type PropertyConnection {
+  properties: [Property!]!
+  total: Int!
+  hasMore: Boolean!
+}
+
+input PropertyFilters {
+  type: String
+  priceMin: Float
+  priceMax: Float
+  areaMin: Float
+  areaMax: Float
+  bedrooms: Int
+  bathrooms: Int
+  location: String
+  featured: Boolean
+  limit: Int
+  offset: Int
+  sortBy: String
+  sortOrder: String
+}
+
+input PropertyInput {
+  title: String!
+  price: Float!
+  location: String!
+  bedrooms: Int!
+  bathrooms: Int!
+  area: Float!
+  type: PropertyType!
+  image: String!
+  images: [String]
+  featured: Boolean
+  description: String
+  features: [String]
+  yearBuilt: Int
+  parking: Int
+  garden: Boolean
+  balcony: Boolean
+  furnished: Boolean
+  petFriendly: Boolean
+  status: PropertyStatus
+  agent: AgentInput
+}
+
+input AgentInput {
+  name: String
+  phone: String
+  email: String
+  image: String
+  title: String
+}
+
+type Query {
+  getProperties(filters: PropertyFilters): PropertyConnection!
+  getPropertyById(id: ID!): Property
+  getFeaturedProperties(limit: Int): [Property!]!
+  searchProperties(query: String, filters: PropertyFilters): [Property!]!
+  getPosts(filters: PropertyFilters): [Post!]!
+  getPostById(id: ID!): Post
+  sampleQuery: String
+}
+
+type Mutation {
+  createProperty(input: PropertyInput!): Property!
+  updateProperty(id: ID!, input: PropertyInput!): Property!
+  deleteProperty(id: ID!): DeleteResponse!
+  toggleFeatured(id: ID!): Property!
+  createPost(input: PostInput!): Post!
+  updatePostStatus(id: ID!, status: PostStatus!): Post!
+  sampleMutation: String
+}
+
+input PostInput {
+  propertyOwnerId: ID!
+  title: String!
+  description: String!
+  price: Float!
+  propertyDetail: ID!
+}
+
+type DeleteResponse {
+  success: Boolean!
+  message: String!
+}
