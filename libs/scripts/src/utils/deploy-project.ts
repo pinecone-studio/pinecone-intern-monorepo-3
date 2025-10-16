@@ -115,6 +115,17 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
         console.log(`Skipping 'vercel pull' because VERCEL_PROJECT_ID is not set.`);
       }
 
+      // First, run Next.js build if it's a frontend project
+      if (app.includes('frontend')) {
+        console.log(`\n> Running Next.js build for ${app}\n`);
+        try {
+          execSync('npx nx build', { stdio: 'inherit', cwd: projectRoot });
+          console.log(green(`✓ Next.js build completed for ${app}`));
+        } catch (buildError) {
+          console.warn(red(`Warning: Next.js build failed for ${app}, continuing with vercel build`));
+        }
+      }
+
       console.log(`\n> Executing: ${vercelBuildCommand}\n`);
       execSync(vercelBuildCommand, { stdio: 'inherit', cwd: projectRoot });
 
