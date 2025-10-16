@@ -126,7 +126,7 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
       console.log(green(`✓ .vercel/output directory found at ${vercelOutputPath}`));
 
       console.log(`\n> Executing: ${vercelDeployCommand}\n`);
-      const deploymentCommandResult = execSync(vercelDeployCommand, { stdio: 'pipe' }).toString().trim();
+      const deploymentCommandResult = execSync(vercelDeployCommand, { stdio: 'pipe', cwd: projectRoot }).toString().trim();
 
       console.log(green(`Preview command result for ${app}`));
       console.log(deploymentCommandResult);
