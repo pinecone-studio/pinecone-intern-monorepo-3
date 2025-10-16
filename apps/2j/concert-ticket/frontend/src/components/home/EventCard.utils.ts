@@ -6,28 +6,34 @@ export const getLowestPrice = (categories: TicketCategory[]): number | undefined
     ? undefined
     : categories.reduce((min, t) => (t.unitPrice < min ? t.unitPrice : min), Number.POSITIVE_INFINITY);
 
+// Хүчинтэй огноо эсэхийг шалгах функц
+const isValidDate = (date: Date): boolean => !isNaN(date.getTime());
+
+// Огноо форматлах функц
+const formatDatePart = (date: Date, tz: string, part: string): string => {
+  return new Intl.DateTimeFormat('en-US', { timeZone: tz, [part]: '2-digit' }).format(date);
+};
+
+// Огноо форматлах үндсэн логик
+const formatValidDate = (date: Date): string => {
+  const tz = 'Asia/Ulaanbaatar';
+  const mm = formatDatePart(date, tz, 'month');
+  const dd = formatDatePart(date, tz, 'day');
+  const hh = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: '2-digit', hour12: false }).format(date);
+  const min = formatDatePart(date, tz, 'minute');
+  return `${mm}.${dd} ${hh}:${min}`;
+};
+
 export const formatDateTime = (dateStr?: string, timeStr?: string): string => {
   if (!dateStr) return '';
   
-  try {
-    // ISO форматтай болгох
-    const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
-    const dt = new Date(iso);
-    
-    // Хүчинтэй огноо эсэхийг шалгах
-    if (isNaN(dt.getTime())) {
-      console.warn('Invalid date format:', { dateStr, timeStr, iso });
-      return dateStr; // Анхны утгыг буцаах
-    }
-    
-    const tz = 'Asia/Ulaanbaatar';
-    const mm = new Intl.DateTimeFormat('en-US', { timeZone: tz, month: '2-digit' }).format(dt);
-    const dd = new Intl.DateTimeFormat('en-US', { timeZone: tz, day: '2-digit' }).format(dt);
-    const hh = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: '2-digit', hour12: false }).format(dt);
-    const min = new Intl.DateTimeFormat('en-US', { timeZone: tz, minute: '2-digit' }).format(dt);
-    return `${mm}.${dd} ${hh}:${min}`;
-  } catch (error) {
-    console.warn('Error formatting date:', error, { dateStr, timeStr });
-    return dateStr; // Анхны утгыг буцаах
+  const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
+  const dt = new Date(iso);
+  
+  if (!isValidDate(dt)) {
+    console.warn('Invalid date format:', { dateStr, timeStr, iso });
+    return dateStr;
   }
+  
+  return formatValidDate(dt);
 };
