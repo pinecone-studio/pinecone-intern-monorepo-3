@@ -12,7 +12,7 @@ export class ConcertController {
       const offset = pagination?.offset || 0;
 
       // Хайлтын query үүсгэх
-      const query: any = { isActive: true };
+      const query: Record<string, unknown> = { isActive: true };
 
       if (filter?.name) {
         query.$text = { $search: filter.name };
@@ -154,7 +154,7 @@ export class ConcertController {
       }
 
       // Концерт засах
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       if (input.name) updateData.name = input.name;
       if (input.description !== undefined) updateData.description = input.description;
       if (input.venue) updateData.venue = input.venue;

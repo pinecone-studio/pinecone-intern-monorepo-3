@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@200;400;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  /* Google Fonts - Lexend Deca */
+
   :root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
@@ -43,7 +46,10 @@
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    /* Figma (dark) tokens */
+    /* bg-background: #09090B ≈ hsl(240 6% 4%) */
+    --background: 240 6% 4%;
+    /* text/foreground: #FAFAFA */
     --foreground: 0 0% 98%;
 
     --card: 240 10% 3.9%;
@@ -59,7 +65,8 @@
     --secondary-foreground: 0 0% 98%;
 
     --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    /* text/muted-foreground: #A1A1AA ≈ hsl(240 3% 65%) */
+    --muted-foreground: 240 3% 65%;
 
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
@@ -67,9 +74,12 @@
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    /* border: #27272A ≈ hsl(240 4% 20%) but Tailwind zinc-800 uses ~16% */
+    --border: 240 4% 20%;
+    --input: 240 4% 20%;
 
+    /* brand accent: #00B7F4 ≈ hsl(193 100% 48%) */
+    --brand: 193 100% 48%;
     --ring: 240 4.9% 83.9%;
 
     --chart-1: 220 70% 50%;
@@ -83,11 +93,12 @@
 @layer base {
   * {
     @apply border-border;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Gabarito', 'Inter', sans-serif;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: 'rlig' 1, 'calt' 1;
+    overflow-x: hidden;
 
     .error {
       color: red;

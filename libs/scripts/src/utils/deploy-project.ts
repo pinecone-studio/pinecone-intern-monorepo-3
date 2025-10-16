@@ -43,11 +43,18 @@ export const runDeploymentCommand = async ({ deploymentCommand, app }: DeployPro
   return deploymentCommandResult;
 };
 
-export const handleError = (error) => {
+export const handleError = (error: any) => {
+  console.error(red('Deployment error details:'), error);
+  
   if (error.stderr) {
-    throw new Error(error.stdout.toString());
+    console.error(red('Error stderr:'), error.stderr.toString());
+    throw new Error(`Deployment failed: ${error.stderr.toString()}`);
+  } else if (error.message) {
+    console.error(red('Error message:'), error.message);
+    throw new Error(`Deployment failed: ${error.message}`);
   } else {
-    throw error;
+    console.error(red('Unknown error:'), error);
+    throw new Error(`Deployment failed: ${JSON.stringify(error)}`);
   }
 };
 
@@ -78,23 +85,28 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
 
     // 3. Validate required Vercel environment variables from process.env
     const { VERCEL_PROJECT_ID } = process.env;
-    const VERCEL_TOKEN = process.env.VERCEL_TOKEN && !process.env.VERCEL_TOKEN.includes('-') ? process.env.VERCEL_TOKEN : null;
+    const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
     const VERCEL_ORG_ID = process.env.VERCEL_ORG_ID || 'team_0ASDilhqwPl5fll9OnzqDM30';
+
+    console.log(green(`Environment variables check for ${app}:`));
+    console.log(`VERCEL_PROJECT_ID: ${VERCEL_PROJECT_ID ? 'SET' : 'NOT SET'}`);
+    console.log(`VERCEL_TOKEN: ${VERCEL_TOKEN ? 'SET' : 'NOT SET'}`);
+    console.log(`VERCEL_ORG_ID: ${VERCEL_ORG_ID}`);
 
     if (!VERCEL_PROJECT_ID) {
       console.warn(red(`Warning: Missing VERCEL_PROJECT_ID environment variable for ${app}. Vercel preview might fail or use a wrong project.`));
-      // In a strict environment, you might want to throw an error here.
-      // For now, we'll let it proceed and likely fail at the vercel CLI step with a clear message.
     }
     if (!VERCEL_TOKEN) {
-      throw new Error(`Missing VERCEL_TOKEN environment variable. This is required for all Vercel deployments.`);
+      throw new Error(`Missing VERCEL_TOKEN environment variable. This is required for all Vercel deployments. Please set VERCEL_TOKEN in your environment.`);
     }
 
     // 4. Construct and execute safe commands
     // We construct the command carefully to avoid errors with empty variables.
     const vercelPullCommand = `npx vercel pull --yes --environment=preview --token=${VERCEL_TOKEN}`;
     const vercelBuildCommand = `npx vercel build --token=${VERCEL_TOKEN}`;
-    const vercelDeployCommand = `npx vercel --prebuilt --token=${VERCEL_TOKEN}`;
+    // We'll decide between prebuilt and remote build later
+    const vercelDeployPrebuilt = `npx vercel --prebuilt --token=${VERCEL_TOKEN} --confirm`;
+    const vercelDeployRemote = `npx vercel --token=${VERCEL_TOKEN} --confirm`;
 
     try {
       console.log(`\n> Setting project context with: vercel pull`);
@@ -105,11 +117,50 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
         console.log(`Skipping 'vercel pull' because VERCEL_PROJECT_ID is not set.`);
       }
 
-      console.log(`\n> Executing: ${vercelBuildCommand}\n`);
-      execSync(vercelBuildCommand, { stdio: 'inherit', cwd: projectRoot });
+      // First, run Next.js build if it's a frontend project
+      if (app.includes('frontend')) {
+        console.log(`\n> Running Next.js build for ${app}\n`);
+        try {
+          // Run nx build from repository root, not project root
+          execSync(`npx nx build ${app}`, { stdio: 'inherit' });
+          console.log(green(`✓ Next.js build completed for ${app}`));
+          
+          // Copy build output from dist to project root for Vercel
+          const distPath = `dist/apps/2j/concert-ticket/frontend/.next`;
+          const projectNextPath = path.join(projectRoot, '.next');
+          
+          if (fs.existsSync(distPath)) {
+            console.log(`\n> Copying build output from ${distPath} to ${projectNextPath}\n`);
+            execSync(`cp -r ${distPath} ${projectNextPath}`, { stdio: 'inherit' });
+            console.log(green(`✓ Build output copied to project root`));
+          } else {
+            console.warn(red(`Warning: Build output not found at ${distPath}`));
+          }
+        } catch (buildError) {
+          console.warn(red(`Warning: Next.js build failed for ${app}, continuing with vercel build`));
+        }
+      }
 
-      console.log(`\n> Executing: ${vercelDeployCommand}\n`);
-      const deploymentCommandResult = execSync(vercelDeployCommand, { stdio: 'pipe' }).toString().trim();
+      // Try local prebuilt build, but fall back to remote build if it fails
+      let shouldUsePrebuilt = false;
+      try {
+        console.log(`\n> Executing: ${vercelBuildCommand}\n`);
+        execSync(vercelBuildCommand, { stdio: 'inherit', cwd: projectRoot });
+        const vercelOutputPath = path.join(projectRoot, '.vercel', 'output');
+        shouldUsePrebuilt = fs.existsSync(vercelOutputPath);
+        if (shouldUsePrebuilt) {
+          console.log(green(`✓ .vercel/output directory found at ${vercelOutputPath}`));
+        } else {
+          console.log(red(`! .vercel/output not found after build. Will use remote build on Vercel.`));
+        }
+      } catch (localBuildErr) {
+        console.log(red(`Local vercel build failed. Falling back to remote build on Vercel.`));
+        shouldUsePrebuilt = false;
+      }
+
+      const deployCmd = shouldUsePrebuilt ? vercelDeployPrebuilt : vercelDeployRemote;
+      console.log(`\n> Executing: ${deployCmd}\n`);
+      const deploymentCommandResult = execSync(deployCmd, { stdio: 'pipe', cwd: projectRoot }).toString().trim();
 
       console.log(green(`Preview command result for ${app}`));
       console.log(deploymentCommandResult);
