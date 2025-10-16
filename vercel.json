@@ -1,0 +1,6 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npx nx build ticket-frontend",
+  "outputDirectory": "dist/apps/2j/concert-ticket/frontend/.next"
+}
+
