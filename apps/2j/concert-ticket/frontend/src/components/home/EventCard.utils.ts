@@ -8,12 +8,26 @@ export const getLowestPrice = (categories: TicketCategory[]): number | undefined
 
 export const formatDateTime = (dateStr?: string, timeStr?: string): string => {
   if (!dateStr) return '';
-  const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
-  const dt = new Date(iso);
-  const tz = 'Asia/Ulaanbaatar';
-  const mm = new Intl.DateTimeFormat('en-US', { timeZone: tz, month: '2-digit' }).format(dt);
-  const dd = new Intl.DateTimeFormat('en-US', { timeZone: tz, day: '2-digit' }).format(dt);
-  const hh = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: '2-digit', hour12: false }).format(dt);
-  const min = new Intl.DateTimeFormat('en-US', { timeZone: tz, minute: '2-digit' }).format(dt);
-  return `${mm}.${dd} ${hh}:${min}`;
+  
+  try {
+    // ISO форматтай болгох
+    const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
+    const dt = new Date(iso);
+    
+    // Хүчинтэй огноо эсэхийг шалгах
+    if (isNaN(dt.getTime())) {
+      console.warn('Invalid date format:', { dateStr, timeStr, iso });
+      return dateStr; // Анхны утгыг буцаах
+    }
+    
+    const tz = 'Asia/Ulaanbaatar';
+    const mm = new Intl.DateTimeFormat('en-US', { timeZone: tz, month: '2-digit' }).format(dt);
+    const dd = new Intl.DateTimeFormat('en-US', { timeZone: tz, day: '2-digit' }).format(dt);
+    const hh = new Intl.DateTimeFormat('en-US', { timeZone: tz, hour: '2-digit', hour12: false }).format(dt);
+    const min = new Intl.DateTimeFormat('en-US', { timeZone: tz, minute: '2-digit' }).format(dt);
+    return `${mm}.${dd} ${hh}:${min}`;
+  } catch (error) {
+    console.warn('Error formatting date:', error, { dateStr, timeStr });
+    return dateStr; // Анхны утгыг буцаах
+  }
 };

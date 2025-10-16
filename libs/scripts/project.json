@@ -37,6 +37,12 @@
         "command": "ts-node libs/scripts/src/actions/deployment/deploy-prod-action.ts"
       },
       "dependsOn": [{ "target": "export-env" }]
+    },
+    "preview-action": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node libs/scripts/src/actions/preview/preview-action.ts"
+      }
     }
   },
   "tags": []
