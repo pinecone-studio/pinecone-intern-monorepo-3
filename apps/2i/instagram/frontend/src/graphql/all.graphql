@@ -70,6 +70,82 @@ mutation Forgetverify($forget: ForgetPass) {
   }
 }
 
+query GetPosts {
+  getPosts {
+    id
+    user {
+      id
+      username
+      fullname
+      profilePicture
+    }
+    images
+    caption
+    likes {
+      id
+      username
+    }
+    comments {
+      id
+      user {
+        id
+        username
+      }
+      text
+      createdAt
+    }
+    createdAt
+  }
+}
+
+mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    id
+    user {
+      id
+      username
+      fullname
+      profilePicture
+    }
+    images
+    caption
+    likes {
+      id
+      username
+    }
+    comments {
+      id
+      user {
+        id
+        username
+      }
+      text
+      createdAt
+    }
+    createdAt
+  }
+}
+
+mutation LikePost($postId: ID!) {
+  likePost(postId: $postId) {
+    id
+    likes {
+      id
+      username
+    }
+  }
+}
+
+mutation UnlikePost($postId: ID!) {
+  unlikePost(postId: $postId) {
+    id
+    likes {
+      id
+      username
+    }
+  }
+}
+
 mutation UpdateProfile($update: UpdateProfileInput!) {
   updateProfile(update: $update) {
     username
