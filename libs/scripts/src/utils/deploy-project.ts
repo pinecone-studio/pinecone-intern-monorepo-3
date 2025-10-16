@@ -119,8 +119,21 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
       if (app.includes('frontend')) {
         console.log(`\n> Running Next.js build for ${app}\n`);
         try {
-          execSync('npx nx build', { stdio: 'inherit', cwd: projectRoot });
+          // Run nx build from repository root, not project root
+          execSync(`npx nx build ${app}`, { stdio: 'inherit' });
           console.log(green(`✓ Next.js build completed for ${app}`));
+          
+          // Copy build output from dist to project root for Vercel
+          const distPath = `dist/apps/2j/concert-ticket/frontend/.next`;
+          const projectNextPath = path.join(projectRoot, '.next');
+          
+          if (fs.existsSync(distPath)) {
+            console.log(`\n> Copying build output from ${distPath} to ${projectNextPath}\n`);
+            execSync(`cp -r ${distPath} ${projectNextPath}`, { stdio: 'inherit' });
+            console.log(green(`✓ Build output copied to project root`));
+          } else {
+            console.warn(red(`Warning: Build output not found at ${distPath}`));
+          }
         } catch (buildError) {
           console.warn(red(`Warning: Next.js build failed for ${app}, continuing with vercel build`));
         }
