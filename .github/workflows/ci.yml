@@ -168,5 +168,14 @@ jobs:
           cat > apps/2j/concert-ticket/frontend/.env.local << EOF
           NEXT_PUBLIC_BACKEND_URI=${{ secrets.BACKEND_URL }}
           EOF
-      - name: Generate Preview Links
-        run: npx nx run scripts:preview-action
+      - name: Build frontend with Nx (repo root)
+        run: npx nx build ticket-frontend
+      - name: Prepare Vercel project context (frontend cwd)
+        working-directory: apps/2j/concert-ticket/frontend
+        run: npx vercel pull --yes --environment=preview --token=${{ env.VERCEL_TOKEN }}
+      - name: Vercel build (frontend cwd)
+        working-directory: apps/2j/concert-ticket/frontend
+        run: npx vercel build --token=${{ env.VERCEL_TOKEN }}
+      - name: Vercel deploy preview (frontend cwd)
+        working-directory: apps/2j/concert-ticket/frontend
+        run: npx vercel --prebuilt --token=${{ env.VERCEL_TOKEN }}
