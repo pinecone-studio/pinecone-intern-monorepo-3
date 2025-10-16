@@ -118,6 +118,13 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
       console.log(`\n> Executing: ${vercelBuildCommand}\n`);
       execSync(vercelBuildCommand, { stdio: 'inherit', cwd: projectRoot });
 
+      // Check if .vercel/output exists after build
+      const vercelOutputPath = path.join(projectRoot, '.vercel', 'output');
+      if (!fs.existsSync(vercelOutputPath)) {
+        throw new Error(`Build completed but .vercel/output directory not found at ${vercelOutputPath}. Build may have failed.`);
+      }
+      console.log(green(`✓ .vercel/output directory found at ${vercelOutputPath}`));
+
       console.log(`\n> Executing: ${vercelDeployCommand}\n`);
       const deploymentCommandResult = execSync(vercelDeployCommand, { stdio: 'pipe' }).toString().trim();
 
