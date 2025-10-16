@@ -43,11 +43,18 @@ export const runDeploymentCommand = async ({ deploymentCommand, app }: DeployPro
   return deploymentCommandResult;
 };
 
-export const handleError = (error) => {
+export const handleError = (error: any) => {
+  console.error(red('Deployment error details:'), error);
+  
   if (error.stderr) {
-    throw new Error(error.stdout.toString());
+    console.error(red('Error stderr:'), error.stderr.toString());
+    throw new Error(`Deployment failed: ${error.stderr.toString()}`);
+  } else if (error.message) {
+    console.error(red('Error message:'), error.message);
+    throw new Error(`Deployment failed: ${error.message}`);
   } else {
-    throw error;
+    console.error(red('Unknown error:'), error);
+    throw new Error(`Deployment failed: ${JSON.stringify(error)}`);
   }
 };
 
@@ -78,16 +85,19 @@ export const deployProject = async ({ deploymentCommand, app }: DeployProjectTyp
 
     // 3. Validate required Vercel environment variables from process.env
     const { VERCEL_PROJECT_ID } = process.env;
-    const VERCEL_TOKEN = process.env.VERCEL_TOKEN && !process.env.VERCEL_TOKEN.includes('-') ? process.env.VERCEL_TOKEN : null;
+    const VERCEL_TOKEN = process.env.VERCEL_TOKEN;
     const VERCEL_ORG_ID = process.env.VERCEL_ORG_ID || 'team_0ASDilhqwPl5fll9OnzqDM30';
+
+    console.log(green(`Environment variables check for ${app}:`));
+    console.log(`VERCEL_PROJECT_ID: ${VERCEL_PROJECT_ID ? 'SET' : 'NOT SET'}`);
+    console.log(`VERCEL_TOKEN: ${VERCEL_TOKEN ? 'SET' : 'NOT SET'}`);
+    console.log(`VERCEL_ORG_ID: ${VERCEL_ORG_ID}`);
 
     if (!VERCEL_PROJECT_ID) {
       console.warn(red(`Warning: Missing VERCEL_PROJECT_ID environment variable for ${app}. Vercel preview might fail or use a wrong project.`));
-      // In a strict environment, you might want to throw an error here.
-      // For now, we'll let it proceed and likely fail at the vercel CLI step with a clear message.
     }
     if (!VERCEL_TOKEN) {
-      throw new Error(`Missing VERCEL_TOKEN environment variable. This is required for all Vercel deployments.`);
+      throw new Error(`Missing VERCEL_TOKEN environment variable. This is required for all Vercel deployments. Please set VERCEL_TOKEN in your environment.`);
     }
 
     // 4. Construct and execute safe commands
