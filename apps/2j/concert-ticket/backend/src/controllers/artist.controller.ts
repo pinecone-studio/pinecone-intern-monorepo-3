@@ -108,7 +108,7 @@ export class ArtistController {
       }
 
       // Дуучны мэдээллийг засах
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       if (input.name) updateData.name = input.name;
       if (input.bio !== undefined) updateData.bio = input.bio;
       if (input.image !== undefined) updateData.image = input.image;

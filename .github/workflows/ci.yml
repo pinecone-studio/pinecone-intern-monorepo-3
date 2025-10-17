@@ -4,8 +4,14 @@ on:
     types: [labeled, synchronize, edited]
     branches:
       - main
-    paths-ignore:
-      - '.nxignore'
+    # Зөвхөн манай ticket төсөлд өөрчлөлт орсон тохиолдолд ажиллуулна
+    paths:
+      - 'apps/2j/concert-ticket/**'
+      - 'libs/**'
+      - 'nx.json'
+      - 'tsconfig.base.json'
+      - 'package.json'
+      - '.github/workflows/ci.yml'
 
 permissions:
   id-token: write
@@ -39,8 +45,8 @@ jobs:
         run: npm rebuild canvas
       - uses: nrwl/nx-set-shas@v4
       - run: git branch --track main origin/main
-      - name: Run lint on affected projects
-        run: bunx nx affected -t lint --parallel=5 --output-style=stream-without-prefixes
+      - name: Run lint for ticket projects only
+        run: bunx nx run-many -t lint -p=ticket-frontend,concert-ticket-backend --parallel=3 --output-style=stream-without-prefixes
 
   test:
     runs-on: ubuntu-latest
@@ -64,8 +70,8 @@ jobs:
         run: npm rebuild canvas
       - uses: nrwl/nx-set-shas@v4
       - run: git branch --track main origin/main
-      - name: Run test on affected projects
-        run: bunx nx affected -t test --parallel=5 --output-style=stream-without-prefixes
+      - name: Run test for ticket projects only
+        run: bunx nx run-many -t test -p=ticket-frontend,concert-ticket-backend --parallel=3 --output-style=stream-without-prefixes
 
   build:
     runs-on: ubuntu-latest
@@ -104,8 +110,8 @@ jobs:
           export VERCEL_TOKEN=${{ env.VERCEL_TOKEN }}
           export GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
           bash ./tools/scripts/export-action-env.sh
-      - name: Run build on affected projects
-        run: bunx nx affected -t build --parallel=5 --output-style=stream-without-prefixes
+      - name: Run build for ticket projects only
+        run: bunx nx run-many -t build -p=ticket-frontend,concert-ticket-backend --parallel=3 --output-style=stream-without-prefixes
 
   preview-and-E2E:
     runs-on: ubuntu-latest
@@ -156,5 +162,17 @@ jobs:
           CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
           PORT=${{ secrets.PORT }}
           EOF
-      - name: Generate Preview Links
-        run: bunx nx preview-action scripts
+      - name: Create frontend .env file
+        run: |
+          mkdir -p apps/2j/concert-ticket/frontend
+          cat > apps/2j/concert-ticket/frontend/.env.local << EOF
+          NEXT_PUBLIC_BACKEND_URI=${{ secrets.BACKEND_URL }}
+          EOF
+      - name: Build frontend with Nx (repo root)
+        run: npx nx build ticket-frontend
+      - name: Prepare Vercel project context (repo root)
+        run: npx vercel pull --yes --environment=preview --token=${{ env.VERCEL_TOKEN }}
+      - name: Vercel build (repo root)
+        run: npx vercel build --token=${{ env.VERCEL_TOKEN }}
+      - name: Vercel deploy preview (repo root)
+        run: npx vercel --prebuilt --token=${{ env.VERCEL_TOKEN }}

@@ -1,8 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Page from './page';
+import Page from '../../../src/app/detail/page';
 
-// Mock the components
 jest.mock('@/components/detail/nav', () => ({
   NavBar: ({ onSearch, onCartClick, onRegisterClick, onLoginClick }: Record<string, unknown>) => (
     <nav data-testid="nav-bar">
@@ -28,7 +27,6 @@ jest.mock('@/components/detail/footer', () => ({
 
 describe('Detail Page', () => {
   beforeEach(() => {
-    // Mock console.log to track function calls
     jest.spyOn(console, 'log').mockImplementation(() => {});
   });
 
@@ -39,7 +37,6 @@ describe('Detail Page', () => {
   it('Should render the page with navigation and footer', () => {
     render(<Page />);
 
-    // Check that the page renders
     expect(screen.getByTestId('nav-bar')).toBeInTheDocument();
     expect(screen.getByTestId('footer')).toBeInTheDocument();
     expect(screen.getByTestId('hero-slider')).toBeInTheDocument();

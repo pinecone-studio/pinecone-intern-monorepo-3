@@ -25,7 +25,9 @@
     "**/*.jsx",
     "../../../../apps/2j/real-state/backend/.next/types/**/*.ts",
     "../../../../dist/aapps/2j/real-state/backend/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    "../../../2k/restaurant/backend/src/schemas/user.schema.ts",
+    "../../../2k/restaurant/backend/src/models/user.model.ts"
   ],
   "exclude": ["node_modules", "jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]
 }

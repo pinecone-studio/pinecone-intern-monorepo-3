@@ -1,0 +1,17 @@
+query HomeEvents($limit: Int = 12, $offset: Int = 0) {
+  concerts(pagination: { limit: $limit, offset: $offset }) {
+    totalCount
+    hasMore
+    concerts {
+      id
+      name
+      venue
+      date
+      time
+      image
+      mainArtist { id name image }
+    }
+  }
+}
+
+

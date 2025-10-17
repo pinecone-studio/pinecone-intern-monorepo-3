@@ -35,12 +35,12 @@
       "executor": "nx:run-commands",
       "defaultConfiguration": "development",
       "options": {
-        "command": "tsx apps/2j/concert-ticket/backend/src/index.ts",
+        "command": "npx env-cmd -f ./.env tsx src/index.ts",
         "cwd": "apps/2j/concert-ticket/backend"
       },
       "configurations": {
         "development": {
-          "command": "tsx apps/2j/concert-ticket/backend/src/index.ts"
+          "command": "npx env-cmd -f ./.env tsx src/index.ts"
         },
         "production": {
           "command": "node dist/apps/2j/concert-ticket/backend/main.js"
@@ -50,9 +50,6 @@
         {
           "target": "codegen",
           "params": "forward"
-        },
-        {
-          "target": "export-env"
         }
         
       ]

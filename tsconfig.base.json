@@ -24,5 +24,9 @@
       "@pinecone-intern-monorepo/shadcn": ["libs/shadcn/src/lib/ui/*"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp",
+    "cypress/**"
+  ]
 }
