@@ -19,31 +19,31 @@ export const userTypeDefs = gql`
     updatedAt: String
   }
 
-  type sendResetCodeResponse {
+  type SendResetCodeResponse {
     message: String
     success: Boolean
   }
 
-  type verifyResetCodeResponse {
+  type VerifyResetCodeResponse {
     message: String
     success: Boolean
   }
 
-  type resetPasswordResponse {
+  type ResetPasswordResponse {
     message: String
     success: Boolean
   }
 
-  input sendResetCodeInput {
+  input SendResetCodeInput {
     email: String!
   }
 
-  input verifyResetCodeInput {
+  input VerifyResetCodeInput {
     email: String!
     code: String!
   }
 
-  input resetPasswordInput {
+  input ResetPasswordInput {
     email: String!
     newPassword: String!
   }
@@ -84,8 +84,8 @@ export const userTypeDefs = gql`
     userLogin(input: LoginInput!): LoginResponse!
     updateUser(userId: ID!, input: UpdateUserInput!): User!
     deleteUser(userId: ID!): User!
-    sendResetCode(input: sendResetCodeInput!): sendResetCodeResponse
-    verifyResetCode(input: verifyResetCodeInput!): verifyResetCodeResponse
-    resetPassword(input: resetPasswordInput!): resetPasswordResponse
+    sendResetCode(input: SendResetCodeInput!): SendResetCodeResponse
+    verifyResetCode(input: VerifyResetCodeInput!): VerifyResetCodeResponse
+    resetPassword(input: ResetPasswordInput!): ResetPasswordResponse
   }
 `;
