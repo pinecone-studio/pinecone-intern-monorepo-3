@@ -1,4 +1,4 @@
-import { getByIdCategory } from '../../../../src/resolvers/queries/category/get-by-id-category';
+import { getByIdCategory } from '../../../../src/resolvers/queries/category/get-By-Id-Category';
 import { CategoryModel } from '../../../../src/models/category.model';
 
 jest.mock('../../../../src/models/category.model', () => ({
