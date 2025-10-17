@@ -6,3 +6,6 @@ export * from './category/delete-category';
 export * from './discount/create-discount';
 export * from './discount/delete-discount';
 export * from './discount/update-discount';
+export * from './user/create-user';
+export * from './auth/login';
+export * from './user/update-user';

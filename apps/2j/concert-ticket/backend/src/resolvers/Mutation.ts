@@ -1,74 +1,128 @@
 import { Resolvers } from '../generated/resolvers-types';
+import { ConcertController } from '../controllers/concert.controller';
+import { UserController } from '../controllers/user.controller';
+import { ArtistController } from '../controllers/artist.controller';
+import { BookingController } from '../controllers/booking.controller';
+import { TicketCategoryController } from '../controllers/ticket-category.controller';
+import { AuthController } from '../controllers/auth.controller';
 
 export const Mutation: Resolvers['Mutation'] = {
-  register: async (_p, _a, _c) => {
-    return { token: 'TODO', user: { id: '0', email: '', role: 'USER', createdAt: '', updatedAt: '' } } as any;
+  // Хэрэглэгч бүртгэх
+  register: async (_parent, args, _ctx) => {
+    return await AuthController.register(args.input);
   },
-  login: async (_p, _a, _c) => {
-    return { token: 'TODO', user: { id: '0', email: '', role: 'USER', createdAt: '', updatedAt: '' } } as any;
+
+  // Хэрэглэгч нэвтрэх
+  login: async (_parent, args, _ctx) => {
+    return await AuthController.login(args.input);
   },
-  forgotPassword: async () => {
-    return 'SENT';
+
+  // Нууц үг мартсан тохиолдолд
+  forgotPassword: async (_parent, args, _ctx) => {
+    return await AuthController.forgotPassword(args.email);
   },
-  resetPassword: async () => {
-    return { token: 'TODO', user: { id: '0', email: '', role: 'USER', createdAt: '', updatedAt: '' } } as any;
+
+  // Нууц үг сэргээх
+  resetPassword: async (_parent, args, _ctx) => {
+    return await AuthController.resetPassword(args.input);
   },
+
+  // Гарах
   logout: async () => true,
 
-  createConcert: async () => {
-    return {
-      id: '0',
-      name: '',
-      venue: '',
-      date: '',
-      time: '',
-      mainArtist: { id: '0', name: '' },
-      otherArtists: [],
-      isActive: true,
-      ticketCategories: [],
-      totalAvailableTickets: 0,
-    } as any;
+  // Концерт үүсгэх (админ хэрэглэгчдэд зориулсан)
+  createConcert: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await ConcertController.createConcert(args.input);
   },
-  updateConcert: async () => {
-    return {
-      id: '0',
-      name: '',
-      venue: '',
-      date: '',
-      time: '',
-      mainArtist: { id: '0', name: '' },
-      otherArtists: [],
-      isActive: true,
-      ticketCategories: [],
-      totalAvailableTickets: 0,
-    } as any;
+
+  // Концерт засах (админ хэрэглэгчдэд зориулсан)
+  updateConcert: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await ConcertController.updateConcert(args.id, args.input);
   },
-  deleteConcert: async () => true,
 
-  createArtist: async () => ({ id: '0', name: '' } as any),
-  updateArtist: async () => ({ id: '0', name: '' } as any),
-  deleteArtist: async () => true,
-
-  createBooking: async () => {
-    return {
-      id: '0',
-      user: { id: '0', email: '', role: 'USER', createdAt: '', updatedAt: '' },
-      concert: { id: '0', name: '', venue: '', date: '', time: '', mainArtist: { id: '0', name: '' }, otherArtists: [], isActive: true, ticketCategories: [], totalAvailableTickets: 0 },
-      ticketCategory: { id: '0', type: 'REGULAR', totalQuantity: 0, availableQuantity: 0, unitPrice: 0 },
-      quantity: 1,
-      unitPrice: 0,
-      totalPrice: 0,
-      bookingDate: '',
-      status: 'PENDING',
-      paymentStatus: 'PENDING',
-      canCancel: true,
-      cancellationDeadline: '',
-    } as any;
+  // Концерт устгах (админ хэрэглэгчдэд зориулсан)
+  deleteConcert: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await ConcertController.deleteConcert(args.id);
   },
-  cancelBooking: async () => ({ id: '0' } as any),
-  requestCancellation: async () => ({ id: '0' } as any),
 
-  updateUserProfile: async () => ({ id: '0', email: '', role: 'USER', createdAt: '', updatedAt: '' } as any),
-  updateTicketQuantity: async () => ({ id: '0', type: 'REGULAR', totalQuantity: 0, availableQuantity: 0, unitPrice: 0 } as any),
-  updateTicketPrice: async () => ({ id: '0', type: 'REGULAR', totalQuantity: 0, availableQuantity: 0, unitPrice: 0 } as any),
+  // Дуучин үүсгэх (админ хэрэглэгчдэд зориулсан)
+  createArtist: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await ArtistController.createArtist(args.input);
+  },
+
+  // Дуучны мэдээлэл засах (админ хэрэглэгчдэд зориулсан)
+  updateArtist: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await ArtistController.updateArtist(args.id, args.input);
+  },
+
+  // Дуучин устгах (админ хэрэглэгчдэд зориулсан)
+  deleteArtist: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await ArtistController.deleteArtist(args.id);
+  },
+
+  // Захиалга үүсгэх
+  createBooking: async (_parent, args, ctx) => {
+    if (!ctx.user) {
+      throw new Error('Нэвтрэх шаардлагатай');
+    }
+    return await BookingController.createBooking(ctx.user.id, args.input);
+  },
+
+  // Захиалга цуцлах
+  cancelBooking: async (_parent, args, ctx) => {
+    if (!ctx.user) {
+      throw new Error('Нэвтрэх шаардлагатай');
+    }
+    return await BookingController.cancelBooking(args.id, ctx.user.id);
+  },
+
+  // Цуцлах хүсэлт илгээх
+  requestCancellation: async (_parent, args, ctx) => {
+    if (!ctx.user) {
+      throw new Error('Нэвтрэх шаардлагатай');
+    }
+    return await BookingController.requestCancellation(args.id, ctx.user.id);
+  },
+
+  // Хэрэглэгчийн мэдээлэл засах
+  updateUserProfile: async (_parent, args, ctx) => {
+    if (!ctx.user) {
+      throw new Error('Нэвтрэх шаардлагатай');
+    }
+    return await UserController.updateUserProfile(ctx.user.id, args.input);
+  },
+
+  // Тасалбарын тоо өөрчлөх (админ хэрэглэгчдэд зориулсан)
+  updateTicketQuantity: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await TicketCategoryController.updateTicketQuantity(args.ticketCategoryId, args.newQuantity);
+  },
+
+  // Тасалбарын үнэ өөрчлөх (админ хэрэглэгчдэд зориулсан)
+  updateTicketPrice: async (_parent, args, ctx) => {
+    if (!ctx.user || ctx.user.role !== 'ADMIN') {
+      throw new Error('Админ эрх шаардлагатай');
+    }
+    return await TicketCategoryController.updateTicketPrice(args.ticketCategoryId, args.newPrice);
+  },
 };

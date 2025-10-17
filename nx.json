@@ -52,6 +52,10 @@
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
+    },
+    "@pinecone-intern-monorepo/scripts:deploy": {
+      "dependsOn": ["build"],
+      "inputs": ["default", "^default"]
     }
   },
   "plugins": [],
