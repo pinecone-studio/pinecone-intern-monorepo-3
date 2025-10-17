@@ -78,7 +78,7 @@
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "groups": ["restaurant-frontend"],
+          "groups": ["2k-restaurant-frontend"],
           "env": "dev"
         }
       }
@@ -88,7 +88,7 @@
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["restaurant-frontend"],
+          "groups": ["2k-restaurant-frontend"],
           "env": "test"
         }
       }
@@ -98,7 +98,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["restaurant-frontend"],
+          "groups": ["2k-restaurant-frontend"],
           "env": "prod"
         }
       }
