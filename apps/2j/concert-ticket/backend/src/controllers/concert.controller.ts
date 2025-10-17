@@ -15,7 +15,17 @@ export class ConcertController {
       const query: Record<string, unknown> = { isActive: true };
 
       if (filter?.name) {
-        query.$text = { $search: filter.name };
+        // Юникод дэмжсэн case-insensitive regex хайлт
+        const nameRegex = new RegExp(filter.name, 'i');
+
+        // Артистын нэрээр хайхаар artist id-уудыг олж $or-д нэмнэ
+        const artistIds = await Artist.find({ name: nameRegex }).distinct('_id');
+
+        query.$or = [
+          { name: nameRegex },
+          { venue: nameRegex },
+          ...(artistIds.length > 0 ? [{ mainArtist: { $in: artistIds } }] : []),
+        ];
       }
       if (filter?.artistId) {
         query.$or = [

@@ -2,7 +2,8 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'apps/2j/concert-ticket/backend/src/schemas/schema.graphql',
+  schema: 'http://localhost:4000/api/graphql',
+  // Nx "codegen:dev" root-оос ажиллах тул project-absolute зам ашиглая
   documents: ['apps/2j/concert-ticket/frontend/src/**/*.graphql'],
   generates: {
     'apps/2j/concert-ticket/frontend/src/generated/index.ts': {
