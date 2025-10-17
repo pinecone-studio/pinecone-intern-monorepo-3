@@ -1,5 +1,5 @@
-import { CategoryModel } from 'apps/2k/restaurant/backend/src/models/category.model';
-import { deleteCategory } from 'apps/2k/restaurant/backend/src/resolvers/mutations';
+import { CategoryModel } from '../../../../src/models/category.model';
+import { deleteCategory } from '../../../../src/resolvers/mutations/category/delete-category';
 import { GraphQLResolveInfo } from 'graphql';
 
 jest.mock('../../../../src/models/category.model', () => ({

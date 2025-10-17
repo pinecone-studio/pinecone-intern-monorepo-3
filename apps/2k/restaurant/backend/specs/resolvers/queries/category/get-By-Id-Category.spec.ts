@@ -1,45 +1,41 @@
-import { CategoryModel } from "apps/2k/restaurant/backend/src/models/category.model";
-import { getByIdCategory } from "apps/2k/restaurant/backend/src/resolvers/queries/category/get-By-Id-Category"; // ← яг эндээс import хийх нь зөв
-import { GraphQLResolveInfo } from "graphql";
+import { getByIdCategory } from '../../../../src/resolvers/queries/category/get-by-id-category';
+import { CategoryModel } from '../../../../src/models/category.model';
 
-jest.mock("apps/2k/restaurant/backend/src/models/category.model", () => ({
+jest.mock('../../../../src/models/category.model', () => ({
   CategoryModel: {
     findById: jest.fn(),
   },
 }));
 
-describe("getByIdCategory", () => {
+describe('getByIdCategory resolver', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("should return a category when found", async () => {
-    const mockCategory = { categoryId: "2", categoryName: "Test Category" };
+  it('should return a category when found', async () => {
+    const mockCategory = { _id: '2', categoryName: 'Test Category' };
     (CategoryModel.findById as jest.Mock).mockResolvedValue(mockCategory);
 
-    const result = await getByIdCategory?.(
-      {},
-      { categoryId: "2" },
-      {},
-      {} as GraphQLResolveInfo
-    );
+    const result = await getByIdCategory({}, { categoryId: '2' });
 
-    expect(result).toEqual(expect.objectContaining(mockCategory));
+    expect(CategoryModel.findById).toHaveBeenCalledWith('2');
+    expect(result).toEqual(mockCategory);
   });
 
   it("should throw an error if category doesn't exist", async () => {
     (CategoryModel.findById as jest.Mock).mockResolvedValue(null);
 
-    await expect(
-      getByIdCategory?.({}, { categoryId: "3" }, {}, {} as GraphQLResolveInfo)
-    ).rejects.toThrow("Category with ID 3 not found");
+    await expect(getByIdCategory({}, { categoryId: '3' }))
+      .rejects
+      .toThrow('Category with ID 3 not found');
   });
 
-  it("should throw an error if database fails", async () => {
-    (CategoryModel.findById as jest.Mock).mockRejectedValue(new Error("DB error"));
+  it('should throw an error if database fails', async () => {
+    (CategoryModel.findById as jest.Mock).mockRejectedValue(new Error('DB error'));
 
-    await expect(
-      getByIdCategory?.({}, { categoryId: "2" }, {}, {} as GraphQLResolveInfo)
-    ).rejects.toThrow("Failed to fetch category by ID");
+    await expect(getByIdCategory({}, { categoryId: '2' }))
+      .rejects
+      .toThrow('DB error');
   });
 });
+

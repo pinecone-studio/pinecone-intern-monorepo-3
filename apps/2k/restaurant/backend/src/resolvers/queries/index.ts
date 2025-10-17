@@ -1,3 +1,4 @@
 export * from './sample-query';
-export * from './category/getCategories';
-export * from "./category/get-By-Id-Category";
+export * from './category/get-categories';
+export * from './category/get-by-id-category';
+export * from './discount/get-discount'
