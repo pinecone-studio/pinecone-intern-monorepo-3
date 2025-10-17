@@ -1,7 +1,13 @@
 'use client';
 
+import SignInPage from './(private)/sign-in/page';
+
 const Page = () => {
-  return <div>Home Page</div>;
+  return (
+    <div>
+      <SignInPage />
+    </div>
+  );
 };
 
 export default Page;
