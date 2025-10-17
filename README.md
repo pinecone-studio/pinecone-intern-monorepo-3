@@ -66,3 +66,4 @@ It will show tasks that you can run with Nx.
 # Testing CI
 # Final test
 # Test no condition
+# Test event action logic
