@@ -6,6 +6,3 @@ import { typeDefs as FoodOrder } from './food-order.schema';
 import { userTypeDefs } from './user.schema';
 
 export const typeDefs = mergeTypeDefs([CommonTypeDefs, FoodType, FoodOrder, userTypeDefs]);
-
-
-
