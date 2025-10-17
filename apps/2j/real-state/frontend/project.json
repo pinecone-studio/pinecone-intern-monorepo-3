@@ -15,13 +15,7 @@
         "development": {
           "outputPath": "dist/apps/2j/real-state/frontend"
         }
-      },
-      "dependsOn": [
-        {
-          "target": "codegen:dev",
-          "params": "forward"
-        }
-      ]
+      }
     },
     "serve": {
       "executor": "@nx/next:server",
@@ -40,17 +34,7 @@
           "buildTarget": "state-frontend:build:production",
           "dev": false
         }
-      },
-      "dependsOn": [
-        {
-          "target": "codegen:dev",
-          "params": "forward"
-        },
-        {
-          "target": "export-env",
-          "params": "forward"
-        }
-      ]
+      }
     },
     "export": {
       "executor": "@nx/next:export",

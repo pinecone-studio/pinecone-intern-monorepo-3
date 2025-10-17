@@ -26,6 +26,7 @@ const makeClient = () => {
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: authLink.concat(httpLink),
+    devtools: { enabled: process.env.NODE_ENV === 'development' },
   });
 };
 

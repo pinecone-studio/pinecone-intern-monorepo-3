@@ -1,0 +1,122 @@
+{
+  "common": {
+    "home": "Home",
+    "properties": "Properties",
+    "about": "About",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "welcome": "Welcome",
+    "profile": "Profile",
+    "viewDetails": "View Details",
+    "getStarted": "Get Started"
+  },
+  "header": {
+    "logo": "RealEstate MN",
+    "welcome": "Welcome"
+  },
+  "hero": {
+    "title": "Mongolia Real Estate Market",
+    "subtitle": "Find Your Dream Home",
+    "description": "Choose from the best properties in Ulaanbaatar and other cities, get professional advice with reliable service.",
+    "searchPlaceholder": "Search location, district...",
+    "search": "Search",
+    "browseProperties": "Browse Properties"
+  },
+  "property": {
+    "featured": "Featured",
+    "beds": "beds",
+    "baths": "baths",
+    "sqm": "m²",
+    "price": "Price",
+    "location": "Location",
+    "type": "Type",
+    "apartment": "Apartment",
+    "house": "House",
+    "commercial": "Commercial",
+    "land": "Land",
+    "villa": "Villa",
+    "cottage": "Cottage",
+    "loft": "Loft",
+    "condo": "Condo"
+  },
+  "search": {
+    "title": "Search Properties",
+    "searchPlaceholder": "Search by location or property name...",
+    "propertyType": "Property Type",
+    "allTypes": "All Types",
+    "priceRange": "Price Range",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "bedrooms": "Bedrooms",
+    "anyBedrooms": "Any",
+    "district": "District",
+    "allDistricts": "All Districts",
+    "resetFilters": "Reset Filters",
+    "applyFilters": "Search",
+    "resultsFound": "results found",
+    "noResults": "No Results Found",
+    "noResultsDescription": "No properties match your search criteria. Try adjusting your filters.",
+    "filters": "Filters"
+  },
+  "sections": {
+    "featuredProperties": "Featured Properties",
+    "featuredSubtitle": "Discover our handpicked selection of premium properties",
+    "recentProperties": "Recently Added",
+    "recentSubtitle": "Newly added properties to our platform",
+    "whyChooseUs": "Why Choose Us?",
+    "whyChooseUsSubtitle": "We provide exceptional service and local expertise",
+    "viewAll": "View All"
+  },
+  "features": {
+    "localExpertise": "Local Expertise",
+    "localExpertiseDesc": "Deep knowledge of the Mongolian real estate market",
+    "trustedService": "Trusted Service",
+    "trustedServiceDesc": "Over 10 years of experience helping clients",
+    "fastResults": "Fast Results",
+    "fastResultsDesc": "Quick and efficient property transactions"
+  },
+  "auth": {
+    "signInTitle": "Welcome Back",
+    "signInSubtitle": "Sign in to access your account and find your dream property",
+    "signUpTitle": "Create Your Account",
+    "signUpSubtitle": "Join RealEstate MN and start your property journey today",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?"
+  },
+  "profile": {
+    "title": "Your Profile",
+    "subtitle": "Manage your account settings and preferences",
+    "settings": "Settings",
+    "security": "Security",
+    "notifications": "Notifications"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with us",
+    "name": "Name",
+    "message": "Message",
+    "send": "Send",
+    "phone": "Phone",
+    "address": "Address",
+    "email": "Email"
+  },
+  "about": {
+    "title": "About Us",
+    "mission": "Mission",
+    "vision": "Vision",
+    "team": "Team"
+  },
+  "footer": {
+    "description": "Mongolia's leading real estate platform. Professional advice, reliable service.",
+    "quickLinks": "Quick Links",
+    "followUs": "Follow Us",
+    "allRightsReserved": "All rights reserved"
+  }
+}
+
