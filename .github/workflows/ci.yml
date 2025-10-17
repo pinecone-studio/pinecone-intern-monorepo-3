@@ -4,14 +4,6 @@ on:
     types: [labeled, synchronize, edited]
     branches:
       - main
-    # Зөвхөн манай ticket төсөлд өөрчлөлт орсон тохиолдолд ажиллуулна
-    paths:
-      - 'apps/2j/concert-ticket/**'
-      - 'libs/**'
-      - 'nx.json'
-      - 'tsconfig.base.json'
-      - 'package.json'
-      - '.github/workflows/ci.yml'
 
 permissions:
   id-token: write
@@ -25,7 +17,7 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    if: "${{ github.event.label.name == 'PR status: code ready' }}"
+    if: contains(github.event.pull_request.labels.*.name, 'PR status: code ready')
     timeout-minutes: 10
     steps:
       - name: Checkout code
@@ -50,7 +42,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    if: "${{ github.event.label.name == 'PR status: code ready' }}"
+    if: contains(github.event.pull_request.labels.*.name, 'PR status: code ready')
     timeout-minutes: 10
     steps:
       - name: Checkout code
@@ -75,7 +67,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    if: "${{ github.event.label.name == 'PR status: code ready' }}"
+    if: contains(github.event.pull_request.labels.*.name, 'PR status: code ready')
     timeout-minutes: 10
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -115,7 +107,7 @@ jobs:
 
   preview-and-E2E:
     runs-on: ubuntu-latest
-    if: "${{ github.event.label.name == 'PR status: code ready' }}"
+    if: contains(github.event.pull_request.labels.*.name, 'PR status: code ready')
     timeout-minutes: 10
     env:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
