@@ -1,20 +1,13 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 import { resolvers } from './resolvers';
 import { createContext } from './context';
 import { connectDatabase } from './database/connection';
+import { typeDefs } from './schemas';
 
 async function startApolloServer() {
   // Database холбогдох
   await connectDatabase();
-  
-  // GraphQL schema-г файлаас унших
-  const typeDefs = readFileSync(
-    join(__dirname, 'schemas', 'schema.graphql'),
-    'utf-8'
-  );
 
   // Apollo Server үүсгэх
   const server = new ApolloServer({

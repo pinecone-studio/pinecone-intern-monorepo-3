@@ -21,7 +21,8 @@ const makeClient = () => {
   });
 
   const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem('token');
+    // Server-side rendering үед localStorage ашиглахгүй
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     return {
       headers: {
         ...headers,

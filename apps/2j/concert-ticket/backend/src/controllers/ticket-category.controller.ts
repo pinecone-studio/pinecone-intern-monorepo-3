@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { TicketCategory } from '../models/model.ticket-category';
+import { TicketCategory, ITicketCategory } from '../models/model.ticket-category';
 
 export class TicketCategoryController {
   // Тасалбарын ангилалыг ID-аар олох
@@ -34,6 +34,7 @@ export class TicketCategoryController {
 
       return ticketCategories;
     } catch (error) {
+      console.error('Error in getConcertTicketCategories:', error);
       throw new Error(`Концертын тасалбарын ангиллуудыг олоход алдаа гарлаа: ${error}`);
     }
   }

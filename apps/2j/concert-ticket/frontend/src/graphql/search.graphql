@@ -1,5 +1,8 @@
-query HomeEvents($limit: Int = 12, $offset: Int = 0) {
-  concerts(pagination: { limit: $limit, offset: $offset }) {
+query SearchConcerts($name: String, $date: String, $limit: Int = 12, $offset: Int = 0) {
+  concerts(
+    filter: { name: $name, date: $date }
+    pagination: { limit: $limit, offset: $offset }
+  ) {
     totalCount
     hasMore
     concerts {
