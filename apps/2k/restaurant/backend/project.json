@@ -158,6 +158,23 @@
         }
       ]
     },
+    "preview-testing": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx codegen restaurant-backend",
+          "mkdir -p .vercel && cp -r ./apps/2k/restaurant/backend/vercel.config.json .vercel/project.json",
+          "npx env-cmd -f apps/2k/restaurant/backend/.env sh -c 'vercel build --token=\"$VERCEL_TOKEN\"'",
+          "npx env-cmd -f apps/2k/restaurant/backend/.env sh -c 'vercel --prebuilt --yes --token=\"$VERCEL_TOKEN\"'"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [
+        {
+          "target": "clean"
+        }
+      ]
+    },
     "deploy-prod": {
       "executor": "nx:run-commands",
       "options": {
