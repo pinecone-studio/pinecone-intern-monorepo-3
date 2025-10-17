@@ -60,7 +60,6 @@ describe('userLogin resolver', () => {
     expect(bcrypt.compare).toHaveBeenCalledWith('123456', 'hashedpassword');
     expect(jwt.sign).toHaveBeenCalledWith({ userId: mockUser._id.toString(), email: mockUser.email, role: mockUser.role }, expect.any(String), { expiresIn: '1d' });
 
-    // password устсан эсэхийг шалгах
     expect(result.user.password).toBeUndefined();
 
     expect(result.user.email).toBe('test@example.com');
