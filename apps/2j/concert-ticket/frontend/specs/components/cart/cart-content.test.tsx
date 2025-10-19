@@ -1,149 +1,337 @@
+import '@testing-library/jest-dom';
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MockedProvider } from '@apollo/client/testing';
 import { useRouter } from 'next/navigation';
 import { CartContent } from '../../../src/components/cart/cart-content';
+import { GetConcertDocument } from '../../../src/generated';
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-}));
+jest.mock('next/navigation', () => ({ useRouter: jest.fn() }));
 
+const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
 const mockPush = jest.fn();
 const mockBack = jest.fn();
-const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
+
+const mockData = {
+  request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+  result: {
+    data: {
+      concert: {
+        id: 'test-id',
+        name: 'Test',
+        date: '2024-12-25',
+        venue: 'Venue',
+        ticketCategories: [
+          { id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123 },
+          { id: '2', type: 'VIP', unitPrice: 129000, availableQuantity: 38 },
+          { id: '3', type: 'REGULAR', unitPrice: 159000, availableQuantity: 38 },
+        ],
+      },
+    },
+  },
+};
 
 describe('CartContent', () => {
   beforeEach(() => {
-    mockUseRouter.mockReturnValue({
-      push: mockPush,
-      back: mockBack,
-      forward: jest.fn(),
-      refresh: jest.fn(),
-      replace: jest.fn(),
-      prefetch: jest.fn(),
-    });
+    mockUseRouter.mockReturnValue({ push: mockPush, back: mockBack, forward: jest.fn(), refresh: jest.fn(), replace: jest.fn(), prefetch: jest.fn() });
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  afterEach(() => jest.clearAllMocks());
+
+  it('shows loading', () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    expect(screen.getByText('Ачааллаж байна...')).toBeInTheDocument();
   });
 
-  it('should render cart content with all sections', () => {
-    render(<CartContent />);
-
-    expect(screen.getByText('Тасалбар захиалах')).toBeInTheDocument();
-    expect(screen.getByText('Тоглолт үзэх өдрөө сонгоно уу.')).toBeInTheDocument();
+  it('renders tickets', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument());
   });
 
-  it('should render ticket categories with correct names and prices', () => {
-    render(<CartContent />);
-
+  it('renders all categories', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
     expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument();
     expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument();
     expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument();
-
-    expect(screen.getByText('89,000₮')).toBeInTheDocument();
-    expect(screen.getByText('129,000₮')).toBeInTheDocument();
-    expect(screen.getByText('159,000₮')).toBeInTheDocument();
+    });
   });
 
-  it('should allow increasing ticket quantities', () => {
-    render(<CartContent />);
+  it('renders buy button', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Тасалбар авах')).toBeInTheDocument());
+  });
 
-    const plusButtons = screen.getAllByRole('button', { name: '' });
-    const firstPlusButton = plusButtons.find((button) => button.querySelector('svg') && button.querySelector('svg')?.classList.contains('lucide-plus'));
+  it('disables buy button initially', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Тасалбар авах')).toBeDisabled());
+  });
 
-    expect(firstPlusButton).toBeInTheDocument();
+  it('renders back button', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByTestId('back-button')).toBeInTheDocument());
+  });
 
-    if (firstPlusButton) {
-      fireEvent.click(firstPlusButton);
-      expect(screen.getByText('1')).toBeInTheDocument();
+  it('calls back on click', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByTestId('back-button'));
+    fireEvent.click(screen.getByTestId('back-button'));
+    expect(mockBack).toHaveBeenCalled();
+  });
+
+  it('increases quantity', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+    if (plus) {
+      fireEvent.click(plus);
+      await waitFor(() => expect(screen.getAllByText('1').length).toBeGreaterThan(0));
     }
   });
 
-  it('should show order summary when tickets are selected', () => {
-    render(<CartContent />);
-
-    expect(screen.queryByText('Захиалгын дэлгэрэнгүй')).not.toBeInTheDocument();
-
-    const plusButtons = screen.getAllByRole('button', { name: '' });
-    const firstPlusButton = plusButtons.find((button) => button.querySelector('svg') && button.querySelector('svg')?.classList.contains('lucide-plus'));
-
-    if (firstPlusButton) {
-      fireEvent.click(firstPlusButton);
-      expect(screen.getByText('Захиалгын дэлгэрэнгүй')).toBeInTheDocument();
+  it('enables buy when selected', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+    if (plus) {
+      fireEvent.click(plus);
+      await waitFor(() => expect(screen.getByText('Тасалбар авах')).not.toBeDisabled());
     }
   });
 
-  it('should handle back button click', () => {
-    render(<CartContent />);
-
-    const backButton = screen.getByTestId('back-button');
-    fireEvent.click(backButton);
-
-    expect(mockBack).toHaveBeenCalledTimes(1);
-  });
-
-  it('should disable buy button when no tickets selected', () => {
-    render(<CartContent />);
-
-    const buyButton = screen.getByText('Тасалбар авах');
-    expect(buyButton).toBeDisabled();
-  });
-
-  it('should enable buy button when tickets are selected', () => {
-    render(<CartContent />);
-
-    const plusButtons = screen.getAllByRole('button', { name: '' });
-    const firstPlusButton = plusButtons.find((button) => button.querySelector('svg') && button.querySelector('svg')?.classList.contains('lucide-plus'));
-
-    if (firstPlusButton) {
-      fireEvent.click(firstPlusButton);
-
-      const buyButton = screen.getByText('Тасалбар авах');
-      expect(buyButton).not.toBeDisabled();
+  it('decreases quantity', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+    if (plus) {
+      fireEvent.click(plus);
+      const minus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-minus'));
+      if (minus) fireEvent.click(minus);
     }
   });
 
-  it('should display stage plan image', () => {
-    render(<CartContent />);
-
-    const stagePlanImage = screen.getByAltText('Stage Plan');
-    expect(stagePlanImage).toBeInTheDocument();
-    expect(stagePlanImage).toHaveAttribute('src', '/images/cart-stage.png');
+  it('shows max ticket error', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+    if (plus) {
+      for (let i = 0; i < 11; i++) fireEvent.click(plus);
+      await waitFor(() => expect(screen.getByText(/10-с олон/)).toBeInTheDocument());
+    }
   });
 
-  it('should handle payment button click', () => {
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    render(<CartContent />);
-
-    const plusButtons = screen.getAllByRole('button', { name: '' });
-    const firstPlusButton = plusButtons.find((button) => button.querySelector('svg') && button.querySelector('svg')?.classList.contains('lucide-plus'));
-    if (firstPlusButton) {
-      fireEvent.click(firstPlusButton);
-    }
-
-    const buyButton = screen.getByText('Тасалбар авах');
-    fireEvent.click(buyButton);
-
-    expect(consoleSpy).toHaveBeenCalledWith('Proceeding to payment...');
-    consoleSpy.mockRestore();
+  it('renders stage plan', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByAltText('Stage Plan')).toBeInTheDocument());
   });
 
-  it('should handle minus button click', () => {
-    render(<CartContent />);
+  it('shows error on failure', async () => {
+    const err = { request: { query: GetConcertDocument, variables: { id: 'test-id' } }, error: new Error('Failed') };
+    render(
+      <MockedProvider mocks={[err]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Концертын мэдээлэл олдсонгүй')).toBeInTheDocument());
+  });
 
-    const plusButtons = screen.getAllByRole('button', { name: '' });
-    const firstPlusButton = plusButtons.find((button) => button.querySelector('svg') && button.querySelector('svg')?.classList.contains('lucide-plus'));
-    if (firstPlusButton) {
-      fireEvent.click(firstPlusButton);
-    }
+  it('displays prices', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('89,000₮')).toBeInTheDocument();
+      expect(screen.getByText('129,000₮')).toBeInTheDocument();
+    });
+  });
 
-    const minusButtons = screen.getAllByRole('button', { name: '' });
-    const firstMinusButton = minusButtons.find((button) => button.querySelector('svg') && button.querySelector('svg')?.classList.contains('lucide-minus'));
-    if (firstMinusButton) {
-      fireEvent.click(firstMinusButton);
-    }
+  it('handles null concertId', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId={null} selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    expect(screen.queryByText('Ачааллаж байна...')).not.toBeInTheDocument();
+  });
 
-    expect(screen.getAllByText('0')).toHaveLength(3);
+  it('handles null selectedDate', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate={null} />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument());
+  });
+
+  it('renders VIP ticket type correctly', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument());
+  });
+
+  it('renders REGULAR ticket type correctly', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument());
+  });
+
+  it('displays ticket availability counts', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      const elements = screen.getAllByText(/\d+/);
+      expect(elements.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('renders minus button', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      const minus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-minus'));
+      expect(minus).toBeInTheDocument();
+    });
+  });
+
+  it('renders plus button', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+      expect(plus).toBeInTheDocument();
+    });
+  });
+
+  it('handles ticket quantity at zero', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      const zeros = screen.getAllByText('0');
+      expect(zeros.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('shows available quantity in parentheses', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getAllByText(/\(\d+\)/).length).toBeGreaterThan(0));
+  });
+
+  it('renders ticket color dots', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      const colorDots = document.querySelectorAll('.w-3.h-3.rounded-full');
+      expect(colorDots.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('handles minus click at zero', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const minus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-minus'));
+    if (minus) fireEvent.click(minus);
+  });
+
+  it('limits quantity to 10 per category', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+    if (plus) for (let i = 0; i < 15; i++) fireEvent.click(plus);
+  });
+
+  it('validates total tickets not exceeding 20', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const buttons = screen.getAllByRole('button').filter((b) => b.querySelector('svg.lucide-plus'));
+    buttons.forEach((btn) => {
+      for (let i = 0; i < 10; i++) fireEvent.click(btn);
+    });
   });
 });

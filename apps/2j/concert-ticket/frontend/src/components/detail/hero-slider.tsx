@@ -13,7 +13,6 @@ interface HeroSliderProps {
 export const HeroSlider: React.FC<HeroSliderProps> = ({ title, artist, dates, backgroundImage = '/images/hero-bg.jpg' }) => {
   return (
     <section className="relative w-full h-[300px] overflow-hidden" data-testid="hero-slider">
-      {/* Background Image */}
       <div
         className="absolute inset-0 bg-center bg-no-repeat bg-cover"
         style={{
@@ -21,16 +20,12 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ title, artist, dates, ba
         }}
       />
 
-      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-50" />
 
-      {/* Content */}
       <div className="relative z-10 flex items-center h-full">
         <div className="max-w-[1400px] mx-auto px-6 w-full">
           <div className="flex items-start gap-6">
-            {/* Main Content */}
             <div className="flex-1">
-              {/* Artist Name with rounded border */}
               <h2
                 className="inline-block px-3 py-1 mb-6 text-white border border-gray-300 rounded-full"
                 style={{
@@ -45,7 +40,6 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ title, artist, dates, ba
                 {artist}
               </h2>
 
-              {/* Main Title */}
               <h1
                 className="mb-8 text-white font-bold"
                 style={{
@@ -61,7 +55,6 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ title, artist, dates, ba
                 {title}
               </h1>
 
-              {/* Dates */}
               <div className="flex items-center gap-2 text-white">
                 <Calendar className="w-4 h-4 text-gray-400" data-testid="calendar-icon" />
                 <div className="flex items-center gap-2" data-testid="dates">
