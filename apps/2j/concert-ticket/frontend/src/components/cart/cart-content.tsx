@@ -88,7 +88,7 @@ const ErrorState = ({ onBack }: { onBack: () => void }) => (
   <div className="flex-1 text-white bg-black">
     <div className="py-4 bg-black border-b border-gray-700">
       <div className="relative flex items-center justify-center max-w-6xl px-6 mx-auto">
-        <button onClick={onBack} className="absolute flex items-center justify-center w-12 h-12 text-white transition-colors bg-gray-800 rounded-lg left-6 hover:bg-gray-700">
+        <button onClick={onBack} data-testid="back-button" className="absolute flex items-center justify-center w-12 h-12 text-white transition-colors bg-gray-800 rounded-lg left-6 hover:bg-gray-700">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <h1 className="text-2xl font-bold text-white">Тасалбар захиалах</h1>
@@ -293,8 +293,12 @@ const CartSidebar = ({ selectedDate, ticketCategories, updateQuantity, getTotalT
   </div>
 );
 
+interface RouterLike {
+  back: () => void;
+}
+
 interface CartLayoutProps {
-  router: { back: () => void };
+  router: RouterLike;
   selectedDate: string | null;
   ticketCategories: TicketCategory[];
   updateQuantity: (id: string, delta: number) => void;

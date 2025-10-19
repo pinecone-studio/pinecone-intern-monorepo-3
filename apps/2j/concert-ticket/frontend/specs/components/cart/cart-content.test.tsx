@@ -63,9 +63,9 @@ describe('CartContent', () => {
       </MockedProvider>
     );
     await waitFor(() => {
-    expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument();
-    expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument();
-    expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument();
+      expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument();
+      expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument();
+      expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument();
     });
   });
 
