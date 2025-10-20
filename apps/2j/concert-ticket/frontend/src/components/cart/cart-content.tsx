@@ -73,8 +73,8 @@ const mapToTicketCategories = (categories: ConcertCategory[]): TicketCategory[] 
 
 const validateQuantity = (newQuantity: number, ticket: TicketCategory): string | null => {
   if (newQuantity < 0) return 'Тасалбарын тоо 0-с бага байж болохгүй!';
-  if (newQuantity > ticket.available) return `${ticket.available}-н тасалбар захиалах боломжтой байна!`;
   if (newQuantity > 10) return 'Нэг ангилалд 10-с олон тасалбар захиалах боломжгүй!';
+  if (newQuantity > ticket.available) return `${ticket.available}-н тасалбар захиалах боломжтой байна!`;
   return null;
 };
 
