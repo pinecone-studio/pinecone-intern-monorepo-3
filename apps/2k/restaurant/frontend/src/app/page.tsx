@@ -3,7 +3,7 @@
 
 
 import HomePage from "@/components/home/HomePage";
-import SignInPage from "./(private)/sign-in/page";
+// import SignInPage from "./(private)/sign-in/page";
 
 const Page = () => {
   return(
