@@ -1,9 +1,15 @@
 'use client';
 
-import { OrderFilter } from './orderFilter';
-import { OrderItemCard } from './orderItemCard';
+import { OrderFilter } from "./OrderFilter";
+import { OrderItemCard } from "./OrderItemCard";
+
+
+
+
 
 export const AdminOrderStyle = () => {
+
+  const img = "zurag";
   const mockOrders = [
     {
       id: 1,
@@ -18,7 +24,7 @@ export const AdminOrderStyle = () => {
           desc: 'Шоколадтай бялуу',
           price: 15600,
           quantity: 3,
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxRmYX4OqLGoOrbQXe2XFcDAbNphmu7dgkdQ&s',
+          image: img,
         },
         {
           id: 2,
@@ -26,7 +32,7 @@ export const AdminOrderStyle = () => {
           desc: 'Кофе сүүтэй',
           price: 9900,
           quantity: 2,
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxRmYX4OqLGoOrbQXe2XFcDAbNphmu7dgkdQ&s',
+          image: img,
         },
       ],
     },
@@ -44,7 +50,7 @@ export const AdminOrderStyle = () => {
           desc: 'Шоколадтай бялуу',
           price: 15600,
           quantity: 3,
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxRmYX4OqLGoOrbQXe2XFcDAbNphmu7dgkdQ&s',
+          image: img,
         },
         {
           id: 2,
@@ -52,7 +58,7 @@ export const AdminOrderStyle = () => {
           desc: 'Кофе сүүтэй',
           price: 9900,
           quantity: 2,
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxRmYX4OqLGoOrbQXe2XFcDAbNphmu7dgkdQ&s',
+          image: img,
         },
         {
           id: 2,
@@ -60,7 +66,7 @@ export const AdminOrderStyle = () => {
           desc: 'Кофе сүүтэй',
           price: 9900,
           quantity: 2,
-          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxRmYX4OqLGoOrbQXe2XFcDAbNphmu7dgkdQ&s',
+          image: img,
         },
       ],
     },

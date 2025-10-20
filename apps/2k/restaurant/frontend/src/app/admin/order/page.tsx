@@ -1,10 +1,12 @@
-import { AdminOrderStyle } from "@/components/admin/order/order";
+import { AdminOrderStyle } from "@/components/admin/order/Order";
 
-
-export default function AdminOrder() {
+ const AdminOrderPage: React.FC = () => {
   return (
     <div>
       <AdminOrderStyle />
     </div>
   );
 }
+
+
+export default AdminOrderPage;

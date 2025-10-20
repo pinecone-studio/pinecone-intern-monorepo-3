@@ -6,9 +6,10 @@ import { usePathname } from 'next/navigation';
 const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const tabs = [
-    { name: 'Order', href: '/admin/order' },
-    { name: 'Menu', href: '/admin/menu' },
-    { name: 'Table', href: '/admin/table' },
+    { name: 'Захиалга', href: '/admin/order' },
+    { name: 'Цэс', href: '/admin/menu' },
+    { name: 'Хоол', href: '/admin/food' },
+    { name: 'Ширээ', href: '/admin/table' },
   ];
 
   return (

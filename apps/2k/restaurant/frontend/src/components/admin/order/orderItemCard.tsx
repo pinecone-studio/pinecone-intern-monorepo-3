@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { OrderItemType, typeOrderItemType } from '@/types/orderType';
+import { OrderItemType, typeOrderItemType } from '@/types/OrderType';
+
+
 
 export const OrderItemCard = ({ order }: { order: OrderItemType }) => {
   const [isOrderDetail, setIsOrderDetail] = useState(false);

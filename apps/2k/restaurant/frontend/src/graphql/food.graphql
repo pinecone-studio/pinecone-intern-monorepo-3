@@ -1,0 +1,9 @@
+query allFood {
+    allFood{
+        id
+        name
+        price
+        available
+        image
+    }
+}
