@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { resolvers } from './resolvers';
-import { createContext } from './context';
+import { createContext, createContextWithAuth } from './context';
 import { connectDatabase } from './database/connection';
 import { typeDefs } from './schemas';
 
@@ -26,16 +26,7 @@ async function startApolloServer() {
   const { url } = await startStandaloneServer(server, {
     listen: { port: process.env.PORT ? parseInt(process.env.PORT) : 4000 },
     context: async ({ req }) => {
-      // JWT token-ийг header-оос авах
-      const token = req.headers.authorization?.replace('Bearer ', '');
-      
-          // TODO: JWT verify хийх
-          if (token) {
-            // JWT decode + verify logic
-            console.log('Token received:', token);
-          }
-
-      return createContext();
+      return await createContextWithAuth(req);
     },
     // CORS тохиргоо
     cors: {

@@ -191,6 +191,7 @@ type Query {
   concerts(filter: ConcertFilterInput, pagination: PaginationInput): SearchResult!
   concert(id: ID!): Concert
   myBookings: [Booking!]! @auth(requires: USER)
+  myProfile: User
   user(id: ID!): User @auth(requires: ADMIN)
   users(pagination: PaginationInput): [User!]! @auth(requires: ADMIN)
   artists: [Artist!]!

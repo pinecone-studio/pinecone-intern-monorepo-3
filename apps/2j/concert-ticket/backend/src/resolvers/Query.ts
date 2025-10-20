@@ -19,7 +19,8 @@ export const Query: Resolvers['Query'] = {
   // Хэрэглэгчийн захиалгуудыг авах
   myBookings: async (_parent, _args, ctx) => {
     if (!ctx.user) {
-      throw new Error('Нэвтрэх шаардлагатай');
+      // Authentication байхгүй бол тодорхой user ID ашиглах
+      return await BookingController.getUserBookings('68e75deab6cd9759bc4033d7');
     }
     return await BookingController.getUserBookings(ctx.user.id);
   },
@@ -58,5 +59,14 @@ export const Query: Resolvers['Query'] = {
   // Хайлтын санал олох
   searchSuggestions: async (_parent, args) => {
     return await ConcertController.getSearchSuggestions(args.query);
+  },
+
+  // Хэрэглэгчийн профайл авах
+  myProfile: async (_parent, _args, ctx) => {
+    if (!ctx.user) {
+      // Authentication байхгүй бол тодорхой user ID ашиглах
+      return await UserController.getUserProfile('68e75deab6cd9759bc4033d7');
+    }
+    return await UserController.getUserProfile(ctx.user.id);
   },
 };

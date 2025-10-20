@@ -1,0 +1,25 @@
+query MyProfile {
+  myProfile {
+    id
+    email
+    username
+    phoneNumber
+    address
+    role
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateUserProfile($input: UpdateUserInput!) {
+  updateUserProfile(input: $input) {
+    id
+    email
+    username
+    phoneNumber
+    address
+    role
+    createdAt
+    updatedAt
+  }
+}
