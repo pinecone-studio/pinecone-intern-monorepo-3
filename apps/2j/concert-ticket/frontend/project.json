@@ -1,7 +1,7 @@
 {
-  "name": "ticket-frontend",
+  "name": "restaurant-frontend",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/2j/concert-ticket/frontend",
+  "sourceRoot": "apps/2k/restaurant/frontend",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,11 +9,11 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/2j/concert-ticket/frontend"
+        "outputPath": "dist/apps/2k/restaurant/frontend"
       },
       "configurations": {
         "development": {
-          "outputPath": "dist/apps/2j/concert-ticket/frontend"
+          "outputPath": "dist/apps/2k/restaurant/frontend"
         }
       },
       "dependsOn": [
@@ -27,17 +27,17 @@
       "executor": "@nx/next:server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "ticket-frontend:build",
+        "buildTarget": "restaurant-frontend:build",
         "dev": true
       },
       "configurations": {
         "development": {
-          "buildTarget": "ticket-frontend:build:development",
+          "buildTarget": "restaurant-frontend:build:development",
           "dev": true,
-          "port": 3000
+          "port": 4201
         },
         "production": {
-          "buildTarget": "ticket-frontend:build:production",
+          "buildTarget": "restaurant-frontend:build:production",
           "dev": false
         }
       },
@@ -55,7 +55,7 @@
     "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "ticket-frontend:build:production"
+        "buildTarget": "restaurant-frontend:build:production"
       }
     },
     "test": {
@@ -78,7 +78,7 @@
       "defaultConfiguration": "development",
       "configurations": {
         "development": {
-          "groups": ["ticket-frontend"],
+          "groups": ["2k-restaurant-frontend"],
           "env": "dev"
         }
       }
@@ -88,7 +88,7 @@
       "defaultConfiguration": "testing",
       "configurations": {
         "testing": {
-          "groups": ["ticket-frontend"],
+          "groups": ["2k-restaurant-frontend"],
           "env": "test"
         }
       }
@@ -98,7 +98,7 @@
       "defaultConfiguration": "prod",
       "configurations": {
         "prod": {
-          "groups": ["ticket-frontend"],
+          "groups": ["2k-restaurant-frontend"],
           "env": "prod"
         }
       }
@@ -106,20 +106,20 @@
     "export-env": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["export $(cat apps/2j/concert-ticket/frontend/.env | xargs)"],
+        "commands": ["export $(cat apps/2k/restaurant/frontend/.env | xargs)"],
         "parallel": false
       }
     },
     "clean": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["rm -rf dist/apps/2j/concert-ticket/frontend", "rm -rf .vercel"]
+        "commands": ["rm -rf dist/apps/2k/restaurant/frontend", "rm -rf .vercel"]
       }
     },
     "e2e": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx nx execute-cypress scripts ticket-frontend"],
+        "commands": ["npx nx execute-cypress scripts restaurant-frontend"],
         "parallel": false
       },
       "dependsOn": [{ "target": "cypress:clean" }]
@@ -127,7 +127,7 @@
     "e2e:open": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx nx cypress ticket-frontend --watch"],
+        "commands": ["npx nx cypress restaurant-frontend --watch"],
         "parallel": false
       },
       "dependsOn": [{ "target": "cypress:clean" }]
@@ -136,10 +136,10 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "rm -rf apps/2j/concert-ticket/frontend/cypress/results",
-          "rm -rf apps/2j/concert-ticket/frontend/.nyc_output",
-          "rm -rf apps/2j/concert-ticket/frontend/.cy",
-          "rm -rf apps/2j/concert-ticket/frontend/coverage"
+          "rm -rf apps/2k/restaurant/frontend/cypress/results",
+          "rm -rf apps/2k/restaurant/frontend/.nyc_output",
+          "rm -rf apps/2k/restaurant/frontend/.cy",
+          "rm -rf apps/2k/restaurant/frontend/coverage"
         ],
         "parallel": false
       }
@@ -147,10 +147,10 @@
     "cypress": {
       "executor": "@nx/cypress:cypress",
       "options": {
-        "cypressConfig": "apps/2j/concert-ticket/frontend/cypress.config.ts",
+        "cypressConfig": "apps/2k/restaurant/frontend/cypress.config.ts",
         "testingType": "e2e",
         "reporter": "mochawesome",
-        "devServerTarget": "ticket-frontend:serve:development",
+        "devServerTarget": "restaurant-frontend:serve:development",
         "browser": "chrome"
       },
       "dependsOn": [
@@ -168,14 +168,19 @@
     "cypress-generate-all-page-json": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["npx ts-node apps/2j/concert-ticket/frontend/cypress/utils/get-all-pages.ts"],
+        "commands": ["npx ts-node apps/2k/restaurant/frontend/cypress/utils/get-all-pages.ts"],
         "parallel": false
       }
     },
     "preview": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "ts-node libs/scripts/src/commands/run-preview.ts ticket-frontend"
+        "commands": [
+          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
+          "npx env-cmd -f apps/2k/restaurant/frontend/.env vercel build --token=$VERCEL_TOKEN",
+          "npx dotenv -v VERCEL_ORG_ID=team_0ASDilhqwPl5fll9OnzqDM30 -v VERCEL_PROJECT_ID= -- vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
+        ],
+        "parallel": false
       },
       "dependsOn": [
         {
@@ -223,13 +228,13 @@
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/2j/concert-ticket/frontend/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/2k/restaurant/frontend/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "codegen:prod": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./apps/2j/concert-ticket/frontend/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2k/restaurant/frontend/codegen.ts"]
       },
       "dependsOn": [
         {
@@ -240,14 +245,14 @@
     "codegen:dev": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./apps/2j/concert-ticket/frontend/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2k/restaurant/frontend/codegen.ts"]
       },
       "dependsOn": [{ "target": "get-secrets:dev" }]
     },
     "codegen:testing": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["graphql-codegen --config ./apps/2j/concert-ticket/frontend/codegen.ts"]
+        "commands": ["graphql-codegen --config ./apps/2k/restaurant/frontend/codegen.ts"]
       },
       "dependsOn": [
         {
