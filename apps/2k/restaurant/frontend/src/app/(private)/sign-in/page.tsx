@@ -2,6 +2,7 @@
 
 import Login from '@/components/auth/Login';
 
-export default function SignInPage() {
+const SignInPage = () => {
   return <Login />;
 }
+export default SignInPage;

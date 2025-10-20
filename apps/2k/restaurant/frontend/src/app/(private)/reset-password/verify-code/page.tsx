@@ -2,6 +2,8 @@
 
 import { StepTwo } from '@/components/features/reset-password/VerifyResetCode';
 
-export default function VerifyCodePage() {
+const VerifyCodePage=() =>{
   return <StepTwo />;
 }
+
+export default VerifyCodePage;

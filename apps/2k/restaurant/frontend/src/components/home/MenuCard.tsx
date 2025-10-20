@@ -1,3 +1,4 @@
+'use client';
 import { X } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -12,7 +13,7 @@ export type Props = {
   onRemove: (_id: string) => void;
   discount: any;
 };
-export const MenuCard = ({ id, image, foodName, price, count = 0, onAdd, onRemove, discount }: Props) => {
+const MenuCard = ({ id, image, foodName, price, count = 0, onAdd, onRemove, discount }: Props) => {
   const [isDiscounted, setIsDiscounted] = useState<number | null>(null);
   useEffect(() => {
     if (discount?.discountRate != null) {
@@ -70,3 +71,4 @@ export const MenuCard = ({ id, image, foodName, price, count = 0, onAdd, onRemov
     </div>
   );
 };
+export default MenuCard;

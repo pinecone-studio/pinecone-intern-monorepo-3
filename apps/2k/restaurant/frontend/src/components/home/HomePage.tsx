@@ -1,9 +1,10 @@
 'use client';
-import { MenuCard } from './MenuCard';
-import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { OrderList } from './OrderList';
 import { AddPayload, CartItem } from '@/types/cart';
 import { useState } from 'react';
+import MenuCard from './MenuCard';
 
 export function removeItemReducer(prev: CartItem[], id: string): CartItem[] {
   const norm = (v: string) => String(v).trim();
@@ -30,7 +31,7 @@ export function removeOneReducer(prev: CartItem[], id: string): CartItem[] {
   return next;
 }
 
-export const HomePage = () => {
+const HomePage = () => {
   const foods = [
     {
       foodId: '1',
@@ -54,9 +55,9 @@ export const HomePage = () => {
       discount: null,
     },
   ];
-    const [cart, setCart] = useState<CartItem[]>([]);
-  
-   const addToCart = (id: string, image: string, foodName: string, price: string) => {
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  const addToCart = (id: string, image: string, foodName: string, price: string) => {
     setCart((prev) => addToCartReducer(prev, { id, image, foodName, price }));
   };
   const removeOne = (id: string) => setCart((prev) => removeOneReducer(prev, id));
@@ -74,7 +75,7 @@ export const HomePage = () => {
             <button>Үндсэн</button>
           </div>
           <div className="grid max-w-2xl grid-cols-2 gap-4 p-4 mx-auto overflow-scroll h-fit pb-23">
-             {foods.map((food) => {
+            {foods.map((food) => {
               const count = cart.find((x) => x.id === food.foodId)?.selectCount || 0;
               return (
                 <MenuCard
@@ -100,8 +101,25 @@ export const HomePage = () => {
                 <DrawerTitle>Таны захиалга</DrawerTitle>
               </DrawerHeader>
 
-              <div className="py-10 text-sm text-center text-zinc-500">Хоосон байна.</div>
-              <OrderList />
+              {cart.length === 0 ? (
+                <div className="py-10 text-sm text-center text-zinc-500">Хоосон байна.</div>
+              ) : (
+                <div className="py-4 space-y-4">
+                  {cart.map((item) => (
+                    <OrderList
+                      key={item.id}
+                      id={item.id}
+                      image={item.image}
+                      foodName={item.foodName}
+                      price={item.price}
+                      count={item.selectCount}
+                      onAdd={addToCart}
+                      onRemove={removeOne}
+                      removeItem={removeItem}
+                    />
+                  ))}
+                </div>
+              )}
             </DrawerContent>
           </Drawer>
         </div>
@@ -109,3 +127,4 @@ export const HomePage = () => {
     </div>
   );
 };
+export default HomePage;

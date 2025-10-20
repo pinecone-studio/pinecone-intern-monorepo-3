@@ -2,6 +2,7 @@
 
 import { StepThree } from '@/components/features/reset-password/UpdatePassword';
 
-export default function UpdatePasswordPage() {
+const UpdatePasswordPage = () => {
   return <StepThree />;
 }
+export default UpdatePasswordPage;

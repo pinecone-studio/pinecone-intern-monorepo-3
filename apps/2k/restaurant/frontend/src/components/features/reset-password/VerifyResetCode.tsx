@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
@@ -11,9 +12,13 @@ import { Input } from '@/components/ui/input';
 
 export const StepTwo: React.FC = () => {
   const router = useRouter();
+  const [storedEmail, setStoredEmail] = useState('');
 
-  // StepOne page дээр хадгалсан email-г аваад шалгана
-  const storedEmail = localStorage.getItem('emailAddress') || '';
+  // ✅ localStorage-г зөвхөн browser дээр дуудах
+  useEffect(() => {
+    const email = localStorage.getItem('emailAddress');
+    if (email) setStoredEmail(email);
+  }, []);
 
   const formSchema = z.object({
     code: z.string().min(6, { message: '6 оронтой код оруулна уу' }).max(6, { message: '6 оронтой код оруулна уу' }),
@@ -25,9 +30,7 @@ export const StepTwo: React.FC = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Backend-гүй хувилбар: ямар ч код зөв бол дараагийн page руу
     if (values.code === '123456') {
-      // frontend dummy verification
       router.push('/reset-password/new-password');
     } else {
       form.setError('code', { type: 'manual', message: 'Код буруу байна' });
@@ -50,7 +53,7 @@ export const StepTwo: React.FC = () => {
                   <FormControl>
                     <Input type="text" placeholder="6 оронтой код" {...field} data-testid="code-input" />
                   </FormControl>
-                  <FormMessage data-testid="code-error" className="text-red-500 text-sm" />
+                  <FormMessage data-testid="code-error" className="text-sm text-red-500" />
                 </FormItem>
               )}
             />

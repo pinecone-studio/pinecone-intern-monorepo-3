@@ -2,6 +2,7 @@
 
 import { StepOne } from '@/components/features/reset-password/SendResetCode';
 
-export default function SendResetCodePage() {
+const SendResetCodePage = () => {
   return <StepOne />;
 }
+export default SendResetCodePage;
