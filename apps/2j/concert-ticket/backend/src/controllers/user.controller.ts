@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { User, IUser } from '../models/model.user';
+import { User } from '../models/model.user';
 
 export interface UpdateUserProfileInput {
   email?: string;
@@ -30,7 +30,7 @@ export class UserController {
         phoneNumber: user.phoneNumber,
         phone: user.phone,
         address: user.address,
-        role: user.role
+        role: user.role,
       });
 
       return user;
@@ -46,11 +46,7 @@ export class UserController {
         throw new Error('Буруу хэрэглэгчийн ID');
       }
 
-      const user = await User.findByIdAndUpdate(
-        userId,
-        { $set: updateData },
-        { new: true, runValidators: true }
-      ).select('-password');
+      const user = await User.findByIdAndUpdate(userId, { $set: updateData }, { new: true, runValidators: true }).select('-password');
 
       if (!user) {
         throw new Error('Хэрэглэгч олдсонгүй');

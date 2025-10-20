@@ -1,5 +1,4 @@
 import { Resolvers } from '../generated/resolvers-types';
-import { UserController } from '../controllers/user.controller';
 
 export const User: Resolvers['User'] = {
   // User type-ийн field-уудыг resolve хийх

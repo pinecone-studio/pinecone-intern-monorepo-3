@@ -23,8 +23,12 @@ const OrdersPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // GraphQL query
-  const { data: bookingsData, loading: bookingsLoading, error: bookingsError } = useMyBookingsQuery({
-    errorPolicy: 'all'
+  const {
+    data: bookingsData,
+    loading: bookingsLoading,
+    error: bookingsError,
+  } = useMyBookingsQuery({
+    errorPolicy: 'all',
   });
 
   // Debug logs
@@ -33,83 +37,46 @@ const OrdersPage: React.FC = () => {
     bookingsLoading,
     bookingsError,
     hasData: !!bookingsData?.myBookings,
-    dataLength: bookingsData?.myBookings?.length || 0
+    dataLength: bookingsData?.myBookings?.length || 0,
   });
-  
+
   // Backend дата-г Order interface-д хөрвүүлэх
-  const orders: Order[] = bookingsData?.myBookings?.map((booking) => ({
-    id: booking.id,
-    orderNumber: `#${booking.id.slice(-4).toUpperCase()}`,
-    date: new Date(booking.bookingDate).toLocaleDateString('mn-MN').replace(/\//g, '.'),
-    artist: booking.concert?.mainArtist?.name || 'Unknown Artist',
-    concert: booking.concert?.name || 'Unknown Concert',
-    ticketType: booking.ticketCategory?.type || 'Unknown',
-    price: `${booking.unitPrice.toLocaleString('en-US').replace(/,/g, "'")}₮`,
-    quantity: booking.quantity,
-    total: `${booking.totalPrice.toLocaleString('en-US').replace(/,/g, "'")}₮`
-  })) || [];
+  const orders: Order[] =
+    bookingsData?.myBookings?.map((booking) => ({
+      id: booking.id,
+      orderNumber: `#${booking.id.slice(-4).toUpperCase()}`,
+      date: new Date(booking.bookingDate).toLocaleDateString('mn-MN').replace(/\//g, '.'),
+      artist: booking.concert?.mainArtist?.name || 'Unknown Artist',
+      concert: booking.concert?.name || 'Unknown Concert',
+      ticketType: booking.ticketCategory?.type || 'Unknown',
+      price: `${booking.unitPrice.toLocaleString('en-US').replace(/,/g, "'")}₮`,
+      quantity: booking.quantity,
+      total: `${booking.totalPrice.toLocaleString('en-US').replace(/,/g, "'")}₮`,
+    })) || [];
 
   const handleCancelOrder = (orderId: string) => {
     // TODO: API call to cancel order
     console.log('Cancelling order:', orderId);
   };
 
-  // Loading state
-  if (bookingsLoading) {
-    return (
-      <div className="min-h-screen bg-black text-white">
-        <Navbar />
-        <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">Order History</h1>
-          </div>
-          <div className="flex gap-[24px]">
-            <ProfileMenu />
-            <div className="flex-1">
-              <div className="animate-pulse">
-                <div className="h-[20px] bg-gray-700 rounded mb-[20px]"></div>
-                <div className="space-y-[16px]">
-                  <div className="h-[60px] bg-gray-700 rounded"></div>
-                  <div className="h-[60px] bg-gray-700 rounded"></div>
-                  <div className="h-[60px] bg-gray-700 rounded"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  if (bookingsLoading) return <LoadingState />;
+  if (bookingsError) return <ErrorState />;
 
-  // Error state
-  if (bookingsError) {
-    return (
-      <div className="min-h-screen bg-black text-white">
-        <Navbar />
-        <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">Order History</h1>
-          </div>
-          <div className="flex gap-[24px]">
-            <ProfileMenu />
-            <div className="flex-1">
-              <div className="rounded-[12px] bg-red-900/30 p-[24px] text-red-200">
-                <h2 className="text-[20px] font-semibold mb-[12px]">Алдаа</h2>
-                <p>Захиалгын түүх авахад алдаа гарлаа. Дахин оролдоно уу.</p>
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  return <OrdersPageContent orders={orders} searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleCancelOrder={handleCancelOrder} />;
+};
 
+interface OrdersPageContentProps {
+  orders: Order[];
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+  handleCancelOrder: (orderId: string) => void;
+}
+
+const OrdersPageContent: React.FC<OrdersPageContentProps> = ({ orders, searchQuery, setSearchQuery, handleCancelOrder }) => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      
+
       <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
         <div className="mb-[24px]">
           <h1 className="text-[32px] font-bold">Order History</h1>
@@ -117,7 +84,7 @@ const OrdersPage: React.FC = () => {
 
         <div className="flex gap-[24px]">
           <ProfileMenu />
-          
+
           <div className="flex-1">
             {/* Search */}
             <div className="mb-[24px] flex items-center gap-[12px]">
@@ -140,7 +107,9 @@ const OrdersPage: React.FC = () => {
                   <div className="mb-[16px] flex items-center justify-between">
                     <div>
                       <span className="text-[14px] text-gray-400">Захиалгын дугаар: </span>
-                      <span className="text-[14px] font-medium">{order.orderNumber}, {order.date}</span>
+                      <span className="text-[14px] font-medium">
+                        {order.orderNumber}, {order.date}
+                      </span>
                     </div>
                   </div>
 
@@ -175,10 +144,7 @@ const OrdersPage: React.FC = () => {
                   </div>
 
                   <div className="flex justify-end">
-                    <button
-                      onClick={() => handleCancelOrder(order.id)}
-                      className="rounded-[8px] bg-red-600 px-[16px] py-[8px] text-[12px] font-medium text-white hover:bg-red-700 transition-colors"
-                    >
+                    <button onClick={() => handleCancelOrder(order.id)} className="rounded-[8px] bg-red-600 px-[16px] py-[8px] text-[12px] font-medium text-white hover:bg-red-700 transition-colors">
                       Цуцлах
                     </button>
                   </div>
@@ -200,5 +166,51 @@ const OrdersPage: React.FC = () => {
     </div>
   );
 };
+
+const LoadingState = () => (
+  <div className="min-h-screen bg-black text-white">
+    <Navbar />
+    <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
+      <div className="mb-[24px]">
+        <h1 className="text-[32px] font-bold">Order History</h1>
+      </div>
+      <div className="flex gap-[24px]">
+        <ProfileMenu />
+        <div className="flex-1">
+          <div className="animate-pulse">
+            <div className="h-[20px] bg-gray-700 rounded mb-[20px]"></div>
+            <div className="space-y-[16px]">
+              <div className="h-[60px] bg-gray-700 rounded"></div>
+              <div className="h-[60px] bg-gray-700 rounded"></div>
+              <div className="h-[60px] bg-gray-700 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </div>
+);
+
+const ErrorState = () => (
+  <div className="min-h-screen bg-black text-white">
+    <Navbar />
+    <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
+      <div className="mb-[24px]">
+        <h1 className="text-[32px] font-bold">Order History</h1>
+      </div>
+      <div className="flex gap-[24px]">
+        <ProfileMenu />
+        <div className="flex-1">
+          <div className="rounded-[12px] bg-red-900/30 p-[24px] text-red-200">
+            <h2 className="text-[20px] font-semibold mb-[12px]">Алдаа</h2>
+            <p>Захиалгын түүх авахад алдаа гарлаа. Дахин оролдоно уу.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </div>
+);
 
 export default OrdersPage;

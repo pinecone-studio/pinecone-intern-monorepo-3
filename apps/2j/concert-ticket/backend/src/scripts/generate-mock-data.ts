@@ -1,8 +1,8 @@
 import { connectToDb } from '../utils/connect-to-db';
-import { User } from '../models/model.user';
-import { Artist } from '../models/model.artist';
-import { Concert } from '../models/model.concert';
-import { TicketCategory } from '../models/model.ticket-category';
+import { User, IUser } from '../models/model.user';
+import { Artist, IArtist } from '../models/model.artist';
+import { Concert, IConcert } from '../models/model.concert';
+import { TicketCategory, ITicketCategory } from '../models/model.ticket-category';
 import { Booking } from '../models/model.booking';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
@@ -14,23 +14,23 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 async function generateMockData() {
   try {
     console.log('🎭 Дэлгэрэнгүй mock data үүсгэж эхлэж байна...');
-    
+
     // Environment variables тохируулах
     if (!process.env.MONGODB_URI && !process.env.MONGO_URI) {
       process.env.MONGO_URI = 'mongodb://localhost:27017/concert-ticket';
       console.log('⚠️  MONGODB_URI тохируулагдаагүй, default утга ашиглаж байна');
     }
-    
+
     // MONGODB_URI-г MONGO_URI болгон хувиргах
     if (process.env.MONGODB_URI && !process.env.MONGO_URI) {
       process.env.MONGO_URI = process.env.MONGODB_URI;
     }
-    
+
     if (!process.env.JWT_SECRET) {
       process.env.JWT_SECRET = 'fallback-secret-key-for-development';
       console.log('⚠️  JWT_SECRET тохируулагдаагүй, default утга ашиглаж байна');
     }
-    
+
     // Database холбоос үүсгэх
     await connectToDb();
     console.log('✅ Database холбогдлоо');
@@ -63,7 +63,7 @@ async function generateMockData() {
     await showStats();
 
     console.log('\n🎉 Дэлгэрэнгүй mock data амжилттай үүсгэгдлээ!');
-    
+
     process.exit(0);
   } catch (error) {
     console.error('❌ Mock data үүсгэхэд алдаа гарлаа:', error);
@@ -89,7 +89,7 @@ async function createMockUsers() {
       phoneNumber: '99119911',
       address: 'Улаанбаатар хот',
       role: 'ADMIN',
-      password: 'admin123'
+      password: 'admin123',
     },
     {
       email: 'user1@concert.com',
@@ -97,7 +97,7 @@ async function createMockUsers() {
       phoneNumber: '99119912',
       address: 'Улаанбаатар хот, Сүхбаатар дүүрэг',
       role: 'USER',
-      password: 'user123'
+      password: 'user123',
     },
     {
       email: 'user2@concert.com',
@@ -105,7 +105,7 @@ async function createMockUsers() {
       phoneNumber: '99119913',
       address: 'Улаанбаатар хот, Хан-Уул дүүрэг',
       role: 'USER',
-      password: 'user123'
+      password: 'user123',
     },
     {
       email: 'user3@concert.com',
@@ -113,7 +113,7 @@ async function createMockUsers() {
       phoneNumber: '99119914',
       address: 'Улаанбаатар хот, Баянгол дүүрэг',
       role: 'USER',
-      password: 'user123'
+      password: 'user123',
     },
     {
       email: 'user4@concert.com',
@@ -121,7 +121,7 @@ async function createMockUsers() {
       phoneNumber: '99119915',
       address: 'Улаанбаатар хот, Чингэлтэй дүүрэг',
       role: 'USER',
-      password: 'user123'
+      password: 'user123',
     },
     {
       email: 'user5@concert.com',
@@ -129,8 +129,8 @@ async function createMockUsers() {
       phoneNumber: '99119916',
       address: 'Улаанбаатар хот, Сонгинохайрхан дүүрэг',
       role: 'USER',
-      password: 'user123'
-    }
+      password: 'user123',
+    },
   ];
 
   return await User.insertMany(users);
@@ -142,71 +142,71 @@ async function createMockArtists() {
     {
       name: 'The Hu',
       bio: 'Монголын алдартай рок хамтлаг. Монголын уламжлалт хөгжим болон рок хөгжмийг хослуулсан тусгай хөгжмийн хэв маягтай.',
-      image: 'https://example.com/the-hu.jpg'
+      image: 'https://example.com/the-hu.jpg',
     },
     {
       name: 'Алтан Ураг',
       bio: 'Монголын алдартай поп хамтлаг. Залуучуудын дунд маш алдартай.',
-      image: 'https://example.com/altan-uraag.jpg'
+      image: 'https://example.com/altan-uraag.jpg',
     },
     {
       name: 'Батбаяр',
       bio: 'Монголын алдартай дуучин. Уламжлалт болон орчин үеийн хөгжмийг хослуулсан.',
-      image: 'https://example.com/batbayar.jpg'
+      image: 'https://example.com/batbayar.jpg',
     },
     {
       name: 'Сара',
       bio: 'Монголын алдартай эмэгтэй дуучин. Поп болон R&B хөгжмийн хэв маягтай.',
-      image: 'https://example.com/sara.jpg'
+      image: 'https://example.com/sara.jpg',
     },
     {
       name: 'Төмөр',
       bio: 'Монголын алдартай рэп дуучин. Залуучуудын дунд маш алдартай.',
-      image: 'https://example.com/tomor.jpg'
+      image: 'https://example.com/tomor.jpg',
     },
     {
       name: 'Оюунчимэг',
       bio: 'Монголын алдартай эмэгтэй дуучин. Уламжлалт хөгжмийн хэв маягтай.',
-      image: 'https://example.com/oyunchimeg.jpg'
+      image: 'https://example.com/oyunchimeg.jpg',
     },
     {
       name: 'Баттулга',
       bio: 'Монголын алдартай дуучин. Поп болон рок хөгжмийн хэв маягтай.',
-      image: 'https://example.com/battulga.jpg'
+      image: 'https://example.com/battulga.jpg',
     },
     {
       name: 'Мөнхбаяр',
       bio: 'Монголын алдартай дуучин. Уламжлалт болон орчин үеийн хөгжмийг хослуулсан.',
-      image: 'https://example.com/munkhbayar.jpg'
-    }
+      image: 'https://example.com/munkhbayar.jpg',
+    },
   ];
 
   return await Artist.insertMany(artists);
 }
 
 // Mock концертуудыг үүсгэх
-async function createMockConcerts(artists: any[]) {
+async function createMockConcerts(artists: IArtist[]) {
   const venues = [
     'Улаанбаатар хотын төв талбай',
     'Улаанбаатар хотын спорт ордон',
     'Улаанбаатар хотын театр',
     'Улаанбаатар хотын клуб',
     'Улаанбаатар хотын концертын танхим',
-    'Улаанбаатар хотын их сургуулийн танхим'
+    'Улаанбаатар хотын их сургуулийн танхим',
   ];
 
   const concerts = [];
   const currentDate = new Date();
-  
+
   for (let i = 0; i < 12; i++) {
     const mainArtist = artists[Math.floor(Math.random() * artists.length)];
     const otherArtists = artists
-      .filter(a => a._id.toString() !== mainArtist._id.toString())
+      .filter((a) => a._id.toString() !== mainArtist._id.toString())
       .sort(() => 0.5 - Math.random())
       .slice(0, Math.floor(Math.random() * 3) + 1);
 
     const concertDate = new Date(currentDate);
-    concertDate.setDate(concertDate.getDate() + (i * 15) + Math.floor(Math.random() * 30));
+    concertDate.setDate(concertDate.getDate() + i * 15 + Math.floor(Math.random() * 30));
 
     concerts.push({
       name: `${mainArtist.name} - ${getConcertTitle()}`,
@@ -215,9 +215,9 @@ async function createMockConcerts(artists: any[]) {
       date: concertDate,
       time: getRandomTime(),
       mainArtist: mainArtist._id,
-      otherArtists: otherArtists.map(a => a._id),
+      otherArtists: otherArtists.map((a) => a._id),
       image: `https://example.com/concert-${i + 1}.jpg`,
-      isActive: true
+      isActive: true,
     });
   }
 
@@ -225,7 +225,7 @@ async function createMockConcerts(artists: any[]) {
 }
 
 // Mock тасалбарын ангиллуудыг үүсгэх
-async function createMockTicketCategories(concerts: any[]) {
+async function createMockTicketCategories(concerts: IConcert[]) {
   const ticketCategories = [];
 
   for (const concert of concerts) {
@@ -237,7 +237,7 @@ async function createMockTicketCategories(concerts: any[]) {
       unitPrice: Math.floor(Math.random() * 100000) + 100000,
       description: 'VIP тасалбар - хамгийн сайн байрлал, тусгай үйлчилгээ',
       features: ['Хамгийн сайн байрлал', 'Тусгай үйлчилгээ', 'Арын талбай', 'Тусгай орц'],
-      concert: concert._id
+      concert: concert._id,
     });
 
     // Regular тасалбар
@@ -248,7 +248,7 @@ async function createMockTicketCategories(concerts: any[]) {
       unitPrice: Math.floor(Math.random() * 50000) + 50000,
       description: 'Энгийн тасалбар - сайн байрлал, хямд үнэ',
       features: ['Сайн байрлал', 'Хямд үнэ', 'Арын талбай'],
-      concert: concert._id
+      concert: concert._id,
     });
 
     // General Admission тасалбар
@@ -259,12 +259,12 @@ async function createMockTicketCategories(concerts: any[]) {
       unitPrice: Math.floor(Math.random() * 30000) + 20000,
       description: 'Ерөнхий тасалбар - хамгийн хямд үнэ',
       features: ['Хамгийн хямд үнэ', 'Ерөнхий байрлал'],
-      concert: concert._id
+      concert: concert._id,
     });
   }
 
   const createdCategories = await TicketCategory.insertMany(ticketCategories);
-  
+
   // Available quantity-г тохируулах
   for (const category of createdCategories) {
     category.availableQuantity = category.totalQuantity;
@@ -275,9 +275,9 @@ async function createMockTicketCategories(concerts: any[]) {
 }
 
 // Mock захиалгуудыг үүсгэх
-async function createMockBookings(users: any[], ticketCategories: any[]) {
+async function createMockBookings(users: IUser[], ticketCategories: ITicketCategory[]) {
   const bookings = [];
-  const userUsers = users.filter(u => u.role === 'USER');
+  const userUsers = users.filter((u) => u.role === 'USER');
 
   for (let i = 0; i < 50; i++) {
     const user = userUsers[Math.floor(Math.random() * userUsers.length)];
@@ -297,7 +297,7 @@ async function createMockBookings(users: any[], ticketCategories: any[]) {
         paymentStatus: getRandomPaymentStatus(),
         canCancel: Math.random() > 0.3,
         cancellationDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        bookingDate: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000)
+        bookingDate: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000),
       };
 
       bookings.push(booking);
@@ -321,7 +321,7 @@ function getConcertTitle() {
     'Рок хөгжмийн орой',
     'Поп хөгжмийн тоглолт',
     'Уламжлалт болон орчин үеийн хөгжим',
-    'Хөгжмийн наадам'
+    'Хөгжмийн наадам',
   ];
   return titles[Math.floor(Math.random() * titles.length)];
 }
@@ -336,7 +336,7 @@ function getRandomStatus() {
   const weights = [0.2, 0.7, 0.1]; // 20% pending, 70% confirmed, 10% cancelled
   const random = Math.random();
   let cumulative = 0;
-  
+
   for (let i = 0; i < statuses.length; i++) {
     cumulative += weights[i];
     if (random <= cumulative) {
@@ -351,7 +351,7 @@ function getRandomPaymentStatus() {
   const weights = [0.1, 0.85, 0.05]; // 10% pending, 85% completed, 5% failed
   const random = Math.random();
   let cumulative = 0;
-  
+
   for (let i = 0; i < statuses.length; i++) {
     cumulative += weights[i];
     if (random <= cumulative) {
@@ -368,7 +368,7 @@ async function showStats() {
     artists: await Artist.countDocuments(),
     concerts: await Concert.countDocuments(),
     ticketCategories: await TicketCategory.countDocuments(),
-    bookings: await Booking.countDocuments()
+    bookings: await Booking.countDocuments(),
   };
 
   console.log('\n📊 Өгөгдлийн статистик:');

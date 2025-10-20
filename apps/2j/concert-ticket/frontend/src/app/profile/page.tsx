@@ -9,14 +9,18 @@ import { useMyProfileQuery, useUpdateUserProfileMutation } from '@/generated';
 const ProfilePage: React.FC = () => {
   const [customerData, setCustomerData] = useState({
     phone: '',
-    email: ''
+    email: '',
   });
 
   const [isLoading, setIsLoading] = useState(false);
 
   // GraphQL queries
-  const { data: profileData, loading: profileLoading, error: profileError } = useMyProfileQuery({
-    errorPolicy: 'all' // Error гарсан ч data харуулах
+  const {
+    data: profileData,
+    loading: profileLoading,
+    error: profileError,
+  } = useMyProfileQuery({
+    errorPolicy: 'all', // Error гарсан ч data харуулах
   });
   const [updateUserProfile, { loading: updateLoading }] = useUpdateUserProfileMutation();
 
@@ -25,16 +29,16 @@ const ProfilePage: React.FC = () => {
     if (profileData?.myProfile) {
       setCustomerData({
         phone: profileData.myProfile.phoneNumber || '',
-        email: profileData.myProfile.email || ''
+        email: profileData.myProfile.email || '',
       });
     }
   }, [profileData]);
 
   const handleCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCustomerData(prev => ({
+    setCustomerData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -45,9 +49,9 @@ const ProfilePage: React.FC = () => {
         variables: {
           input: {
             phoneNumber: customerData.phone,
-            username: customerData.email.split('@')[0] // Email-ээс username үүсгэх
-          }
-        }
+            username: customerData.email.split('@')[0], // Email-ээс username үүсгэх
+          },
+        },
       });
       alert('Мэдээлэл амжилттай хадгалагдлаа!');
     } catch (error) {
@@ -58,63 +62,24 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  // Loading state
-  if (profileLoading) {
-    return (
-      <div className="min-h-screen bg-black text-white">
-        <Navbar />
-        <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">User Profile</h1>
-          </div>
-          <div className="flex gap-[24px]">
-            <ProfileMenu />
-            <div className="flex-1">
-              <div className="rounded-[12px] bg-[#111111] p-[24px]">
-                <div className="animate-pulse">
-                  <div className="h-[20px] bg-gray-700 rounded mb-[20px]"></div>
-                  <div className="space-y-[16px]">
-                    <div className="h-[40px] bg-gray-700 rounded"></div>
-                    <div className="h-[40px] bg-gray-700 rounded"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  if (profileLoading) return <LoadingState />;
+  if (profileError) return <ErrorState />;
 
-  // Error state
-  if (profileError) {
-    return (
-      <div className="min-h-screen bg-black text-white">
-        <Navbar />
-        <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">User Profile</h1>
-          </div>
-          <div className="flex gap-[24px]">
-            <ProfileMenu />
-            <div className="flex-1">
-              <div className="rounded-[12px] bg-red-900/30 p-[24px] text-red-200">
-                <h2 className="text-[20px] font-semibold mb-[12px]">Алдаа</h2>
-                <p>Профайл авахад алдаа гарлаа. Дахин оролдоно уу.</p>
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  return <ProfilePageContent customerData={customerData} handleCustomerChange={handleCustomerChange} handleSaveCustomer={handleSaveCustomer} isLoading={isLoading || updateLoading} />;
+};
 
+interface ProfilePageContentProps {
+  customerData: { phone: string; email: string };
+  handleCustomerChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSaveCustomer: () => void;
+  isLoading: boolean;
+}
+
+const ProfilePageContent: React.FC<ProfilePageContentProps> = ({ customerData, handleCustomerChange, handleSaveCustomer, isLoading }) => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      
+
       <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
         <div className="mb-[24px]">
           <h1 className="text-[32px] font-bold">User Profile</h1>
@@ -122,16 +87,14 @@ const ProfilePage: React.FC = () => {
 
         <div className="flex gap-[24px]">
           <ProfileMenu />
-          
+
           <div className="flex-1">
             <div className="rounded-[12px] bg-[#111111] p-[24px]">
               <h2 className="mb-[20px] text-[20px] font-semibold">Захиалагчийн мэдээлэл</h2>
-              
+
               <div className="space-y-[16px]">
                 <div>
-                  <label className="mb-[8px] block text-[14px] text-gray-300">
-                    Утасны дугаар
-                  </label>
+                  <label className="mb-[8px] block text-[14px] text-gray-300">Утасны дугаар</label>
                   <input
                     type="tel"
                     name="phone"
@@ -143,9 +106,7 @@ const ProfilePage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="mb-[8px] block text-[14px] text-gray-300">
-                    И-мэйл хаяг
-                  </label>
+                  <label className="mb-[8px] block text-[14px] text-gray-300">И-мэйл хаяг</label>
                   <input
                     type="email"
                     name="email"
@@ -173,5 +134,52 @@ const ProfilePage: React.FC = () => {
     </div>
   );
 };
+
+const LoadingState = () => (
+  <div className="min-h-screen bg-black text-white">
+    <Navbar />
+    <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
+      <div className="mb-[24px]">
+        <h1 className="text-[32px] font-bold">User Profile</h1>
+      </div>
+      <div className="flex gap-[24px]">
+        <ProfileMenu />
+        <div className="flex-1">
+          <div className="rounded-[12px] bg-[#111111] p-[24px]">
+            <div className="animate-pulse">
+              <div className="h-[20px] bg-gray-700 rounded mb-[20px]"></div>
+              <div className="space-y-[16px]">
+                <div className="h-[40px] bg-gray-700 rounded"></div>
+                <div className="h-[40px] bg-gray-700 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </div>
+);
+
+const ErrorState = () => (
+  <div className="min-h-screen bg-black text-white">
+    <Navbar />
+    <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
+      <div className="mb-[24px]">
+        <h1 className="text-[32px] font-bold">User Profile</h1>
+      </div>
+      <div className="flex gap-[24px]">
+        <ProfileMenu />
+        <div className="flex-1">
+          <div className="rounded-[12px] bg-red-900/30 p-[24px] text-red-200">
+            <h2 className="text-[20px] font-semibold mb-[12px]">Алдаа</h2>
+            <p>Профайл авахад алдаа гарлаа. Дахин оролдоно уу.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </div>
+);
 
 export default ProfilePage;
