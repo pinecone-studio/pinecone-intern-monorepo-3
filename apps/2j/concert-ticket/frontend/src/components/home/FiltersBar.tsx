@@ -4,7 +4,6 @@ interface Props {
   className?: string;
 }
 
-// FiltersBar — UI-only (үйлдэлгүй)
 const FiltersBar: React.FC<Props> = ({ className }) => {
   return (
     <div className={`flex items-center justify-between rounded-[12px] bg-[#0f0f0f] px-[12px] py-[10px] ${className ?? ''}`}>

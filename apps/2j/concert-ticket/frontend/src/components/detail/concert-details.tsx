@@ -3,7 +3,6 @@
 import React from 'react';
 import Image from 'next/image';
 import { Calendar, Clock, MapPin } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
 interface TicketCategory {
   id: string;
@@ -11,17 +10,6 @@ interface TicketCategory {
   price: number;
   available: number;
   color: string;
-}
-
-interface RelatedEvent {
-  id: string;
-  title: string;
-  artist: string;
-  price: number;
-  date: string;
-  venue: string;
-  image: string;
-  discount?: number;
 }
 
 interface ConcertDetailsProps {
@@ -35,45 +23,14 @@ interface ConcertDetailsProps {
   };
   ticketCategories: TicketCategory[];
   _onBookTicket: () => void;
+  selectedDate: string;
+  onDateChange: (date: string) => void;
 }
 
-export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, _onBookTicket }) => {
-  const router = useRouter();
-  const relatedEvents: RelatedEvent[] = [
-    {
-      id: '1',
-      title: 'Music of the Spheres',
-      artist: 'coldplay',
-      price: 200000,
-      date: '10.31',
-      venue: 'UG ARENA',
-      image: '/images/concert-1.jpg',
-      discount: 20,
-    },
-    {
-      id: '2',
-      title: 'Summer Festival',
-      artist: 'Various Artists',
-      price: 150000,
-      date: '11.15',
-      venue: 'UG ARENA',
-      image: '/images/concert-2.jpg',
-    },
-    {
-      id: '3',
-      title: 'Rock Night',
-      artist: 'Rock Band',
-      price: 120000,
-      date: '11.20',
-      venue: 'UG ARENA',
-      image: '/images/concert-3.jpg',
-      discount: 20,
-    },
-  ];
-
+export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, _onBookTicket, selectedDate, onDateChange }) => {
   return (
     <section className="py-8 text-white bg-black" data-testid="concert-details">
-      <div className="max-w-6xl px-6 mx-auto mt-8">
+      <div className="max-w-6xl px-6 mx-auto">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
             <div className="flex items-center justify-between">
@@ -127,12 +84,17 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
             <div>
               <h3 className="mb-4 text-lg font-light text-gray-400">Тоглолт үзэх өдрөө сонгоно уу.</h3>
               <div className="relative">
-                <select className="w-full px-4 py-2 pr-10 text-white rounded-lg appearance-none" style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}>
-                  <option>Өдөр сонгох</option>
-                  <option>2024.11.15</option>
-                  <option>2024.11.16</option>
-                  <option>2024.11.17</option>
-                  <option>2024.11.18</option>
+                <select
+                  value={selectedDate}
+                  onChange={(e) => onDateChange(e.target.value)}
+                  className="w-full px-4 py-2 pr-10 text-gray-400 rounded-lg appearance-none"
+                  style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}
+                >
+                  <option value="">Өдөр сонгох</option>
+                  <option value="2024.11.15">2024.11.15</option>
+                  <option value="2024.11.16">2024.11.16</option>
+                  <option value="2024.11.17">2024.11.17</option>
+                  <option value="2024.11.18">2024.11.18</option>
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,47 +120,9 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
               </div>
             </div>
 
-            <button
-              onClick={() => router.push('/cart')}
-              className="w-full px-6 py-4 font-bold text-white transition-colors rounded-lg"
-              style={{ backgroundColor: '#00b7f4' }}
-              data-testid="book-ticket-button"
-            >
+            <button onClick={_onBookTicket} className="w-full px-6 py-4 font-bold text-white transition-colors rounded-lg" style={{ backgroundColor: '#00b7f4' }} data-testid="book-ticket-button">
               Тасалбар захиалах
             </button>
-          </div>
-        </div>
-
-        <div className="mt-12">
-          <h3 className="mb-6 text-lg font-light text-left text-gray-400">Холбоотой эвент болон тоглолтууд</h3>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {relatedEvents.map((event) => (
-              <div key={event.id} className="overflow-hidden rounded-lg" style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}>
-                <div className="relative">
-                  <img src={event.image} alt={event.title} className="object-cover w-full h-48" />
-                  {event.discount && <div className="absolute px-2 py-1 text-xs font-bold text-white bg-red-600 rounded top-2 left-2">{event.discount}%</div>}
-                </div>
-                <div className="p-4">
-                  <h4 className="mb-1 text-lg font-light text-white">{event.title}</h4>
-                  <p className="mb-4 text-sm font-light text-gray-400">{event.artist}</p>
-
-                  <div className="mb-4">
-                    <span className="text-xl font-bold text-white">{event.price.toLocaleString()}₮</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-400">{event.date}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-400">{event.venue}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

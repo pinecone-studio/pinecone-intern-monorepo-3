@@ -5,7 +5,6 @@ import HeroCarousel from '@/components/home/HeroCarousel';
 import EventGrid from '@/components/home/EventGrid';
 import Footer from '@/components/home/Footer';
 
-// Энэхүү хуудас нь Home page-ийн үндсэн контейнер бөгөөд UI компонентуудыг нэгтгэнэ
 const Page = () => {
   return (
     <div className="min-h-screen bg-black text-white">

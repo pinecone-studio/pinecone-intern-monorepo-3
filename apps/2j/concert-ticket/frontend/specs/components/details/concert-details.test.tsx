@@ -34,7 +34,9 @@ const mockProps = {
       color: '#A855F7',
     },
   ],
-  onBookTicket: jest.fn(),
+  _onBookTicket: jest.fn(),
+  selectedDate: '',
+  onDateChange: jest.fn(),
 };
 
 describe('ConcertDetails', () => {
@@ -48,7 +50,7 @@ describe('ConcertDetails', () => {
     expect(screen.getByTestId('concert-details')).toBeInTheDocument();
     expect(screen.getByText('2024.11.15 - 11.18')).toBeInTheDocument();
     expect(screen.getByText('19:00')).toBeInTheDocument();
-    expect(screen.getAllByText('UG ARENA')).toHaveLength(4); // Main venue + 3 related events
+    expect(screen.getByText('UG ARENA')).toBeInTheDocument();
   });
 
   it('should render special artists correctly', () => {
@@ -67,19 +69,20 @@ describe('ConcertDetails', () => {
     expect(screen.getByText('Music start: 22pm')).toBeInTheDocument();
   });
 
-  it('should render related events section', () => {
+  it('should render ticket categories correctly', () => {
     render(<ConcertDetails {...mockProps} />);
 
-    expect(screen.getByText('Холбоотой эвент болон тоглолтууд')).toBeInTheDocument();
-    expect(screen.getByText('Music of the Spheres')).toBeInTheDocument();
-    expect(screen.getByText('Summer Festival')).toBeInTheDocument();
-    expect(screen.getByText('Rock Night')).toBeInTheDocument();
+    expect(screen.getByText('Арын тасалбар (123)')).toBeInTheDocument();
+    expect(screen.getByText('VIP тасалбар (38)')).toBeInTheDocument();
+    expect(screen.getByText('Энгийн тасалбар (38)')).toBeInTheDocument();
   });
 
-  it('should render discount badges for events with discounts', () => {
+  it('should display ticket prices correctly', () => {
     render(<ConcertDetails {...mockProps} />);
 
-    expect(screen.getAllByText('20%')).toHaveLength(2); // Two events have 20% discount
+    expect(screen.getByText('89,000₮')).toBeInTheDocument();
+    expect(screen.getByText('129,000₮')).toBeInTheDocument();
+    expect(screen.getByText('159,000₮')).toBeInTheDocument();
   });
 
   it('should render stage plan section', () => {
@@ -97,26 +100,43 @@ describe('ConcertDetails', () => {
     expect(bookButton).toBeInTheDocument();
   });
 
-  it('should render venue selection dropdown', () => {
+  it('should render date selection dropdown', () => {
     render(<ConcertDetails {...mockProps} />);
 
     expect(screen.getByText('Тоглолт үзэх өдрөө сонгоно уу.')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Өдөр сонгох')).toBeInTheDocument();
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
   });
 
-  it('should render Related Events section', () => {
-    render(<ConcertDetails {...mockProps} />);
+  it('should handle date selection change', () => {
+    const mockOnDateChange = jest.fn();
+    const propsWithCallback = { ...mockProps, onDateChange: mockOnDateChange };
 
-    expect(screen.getByText('Холбоотой эвент болон тоглолтууд')).toBeInTheDocument();
-    expect(screen.getByText('Music of the Spheres')).toBeInTheDocument();
-    expect(screen.getByText('coldplay')).toBeInTheDocument();
-    expect(screen.getByText('Summer Festival')).toBeInTheDocument();
-    expect(screen.getByText('Rock Night')).toBeInTheDocument();
+    render(<ConcertDetails {...propsWithCallback} />);
+
+    const dateSelect = screen.getByRole('combobox');
+    fireEvent.change(dateSelect, { target: { value: '2024.11.15' } });
+
+    expect(mockOnDateChange).toHaveBeenCalledWith('2024.11.15');
   });
 
-  it('should display discount badges for events that have them', () => {
+  it('should call onBookTicket when button is clicked', () => {
     render(<ConcertDetails {...mockProps} />);
 
-    expect(screen.getAllByText('20%')).toHaveLength(2); // Two events have 20% discount
+    const bookButton = screen.getByTestId('book-ticket-button');
+    fireEvent.click(bookButton);
+
+    expect(mockProps._onBookTicket).toHaveBeenCalled();
+  });
+
+  it('should render all available date options', () => {
+    render(<ConcertDetails {...mockProps} />);
+
+    const options = screen.getAllByRole('option');
+
+    expect(options).toHaveLength(5); // Өдөр сонгох + 4 dates
+    expect(screen.getByText('2024.11.15')).toBeInTheDocument();
+    expect(screen.getByText('2024.11.16')).toBeInTheDocument();
+    expect(screen.getByText('2024.11.17')).toBeInTheDocument();
+    expect(screen.getByText('2024.11.18')).toBeInTheDocument();
   });
 });

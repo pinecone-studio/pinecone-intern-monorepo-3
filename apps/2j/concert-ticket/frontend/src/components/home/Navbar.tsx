@@ -7,7 +7,6 @@ interface Props {
   className?: string;
 }
 
-// Navbar компонент: Search талбар дээр бичихэд /search рүү чиглүүлнэ
 const Navbar: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -34,7 +33,6 @@ const Navbar: React.FC<Props> = ({ className }) => {
           <span className="text-[14px] font-semibold tracking-wide">TICKET BOOKING</span>
         </div>
 
-        {/* Фигматай тааруулж: хайлт талбар */}
         <div className="flex items-center gap-[12px]">
           <div className="relative h-[32px] w-[180px] overflow-hidden rounded-[8px] bg-[#1a1a1a] sm:h-[36px] sm:w-[240px] md:w-[360px]">
             <input
@@ -52,13 +50,10 @@ const Navbar: React.FC<Props> = ({ className }) => {
         </div>
 
         <div className="flex items-center gap-[12px]">
-          {/* cart icon button */}
           <button aria-label="Сагс" className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px]">
             <ShoppingCart size={16} />
           </button>
-          {/* secondary button */}
           <button className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex">Бүртгүүлэх</button>
-          {/* primary brand button */}
           <button className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px]"
             style={{ backgroundColor: '#00B7F4' }}>Нэвтрэх</button>
         </div>

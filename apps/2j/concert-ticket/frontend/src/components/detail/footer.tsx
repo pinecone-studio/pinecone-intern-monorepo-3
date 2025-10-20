@@ -7,7 +7,6 @@ export const Footer: React.FC = () => {
   return (
     <footer className="px-6 py-8 text-white bg-black">
       <div className="max-w-[1400px] mx-auto flex justify-between items-start">
-        {/* Left Section - Branding */}
         <div className="flex flex-col">
           <div className="flex items-center gap-2 mb-2" data-testid="footer-logo">
             <div className="w-3 h-3 rounded-full bg-cyan-400" />
@@ -18,7 +17,6 @@ export const Footer: React.FC = () => {
           </p>
         </div>
 
-        {/* Right Section - Contact Information */}
         <div className="flex flex-col space-y-3">
           <h3 className="mb-2 text-sm font-medium text-gray-500" data-testid="contact-header">
             Contact Information
