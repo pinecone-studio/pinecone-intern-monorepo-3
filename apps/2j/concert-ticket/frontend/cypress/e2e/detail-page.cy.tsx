@@ -37,11 +37,17 @@ describe('Detail Page', () => {
     cy.get('[data-testid="search-input"]').type(searchQuery);
     cy.get('[data-testid="search-form"]').submit();
 
+<<<<<<< HEAD
     // Check that search input has the value
+=======
+    // For now, just verify the form submission works without errors
+    // The actual search functionality can be tested in unit tests
+>>>>>>> 2610c65 (update)
     cy.get('[data-testid="search-input"]').should('have.value', searchQuery);
   });
 
   it('Should handle button clicks', () => {
+<<<<<<< HEAD
     // Test register button
     cy.get('[data-testid="register-button"]').click();
     cy.get('[data-testid="register-button"]').should('be.visible');
@@ -52,6 +58,16 @@ describe('Detail Page', () => {
 
     // Test cart button
     cy.get('[data-testid="cart-button"]').click();
+=======
+    // Test that buttons are clickable and don't cause errors
+    cy.get('[data-testid="register-button"]').should('be.visible').click();
+    cy.get('[data-testid="login-button"]').should('be.visible').click();
+    cy.get('[data-testid="cart-button"]').should('be.visible').click();
+    
+    // Verify buttons are still visible after clicking (no navigation occurred)
+    cy.get('[data-testid="register-button"]').should('be.visible');
+    cy.get('[data-testid="login-button"]').should('be.visible');
+>>>>>>> 2610c65 (update)
     cy.get('[data-testid="cart-button"]').should('be.visible');
   });
 
