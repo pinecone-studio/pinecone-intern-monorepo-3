@@ -27,14 +27,6 @@ const OrdersPage: React.FC = () => {
     errorPolicy: 'all'
   });
 
-  // Debug logs
-  console.log('Orders page debug:', {
-    bookingsData,
-    bookingsLoading,
-    bookingsError,
-    hasData: !!bookingsData?.myBookings,
-    dataLength: bookingsData?.myBookings?.length || 0
-  });
   
   // Backend дата-г Order interface-д хөрвүүлэх
   const orders: Order[] = bookingsData?.myBookings?.map((booking) => ({
@@ -49,9 +41,8 @@ const OrdersPage: React.FC = () => {
     total: `${booking.totalPrice.toLocaleString('en-US').replace(/,/g, "'")}₮`
   })) || [];
 
-  const handleCancelOrder = (orderId: string) => {
+  const handleCancelOrder = (_orderId: string) => {
     // TODO: API call to cancel order
-    console.log('Cancelling order:', orderId);
   };
 
   // Loading state

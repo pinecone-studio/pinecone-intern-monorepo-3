@@ -9,6 +9,15 @@ jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
 }));
 
+// Apollo Client mock
+jest.mock('@/generated', () => ({
+  useMyProfileQuery: jest.fn(() => ({
+    data: { myProfile: null },
+    loading: false,
+    error: null
+  }))
+}));
+
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
 

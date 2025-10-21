@@ -6,21 +6,16 @@ import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
 import { useMyProfileQuery, useUpdateUserProfileMutation } from '@/generated';
 
-const ProfilePage: React.FC = () => {
+const useCustomerData = () => {
   const [customerData, setCustomerData] = useState({
     phone: '',
     email: ''
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  // GraphQL queries
   const { data: profileData, loading: profileLoading, error: profileError } = useMyProfileQuery({
-    errorPolicy: 'all' // Error гарсан ч data харуулах
+    errorPolicy: 'all'
   });
-  const [updateUserProfile, { loading: updateLoading }] = useUpdateUserProfileMutation();
 
-  // Profile data-г default утгаар тохируулах
   useEffect(() => {
     if (profileData?.myProfile) {
       setCustomerData({
@@ -38,14 +33,21 @@ const ProfilePage: React.FC = () => {
     }));
   };
 
-  const handleSaveCustomer = async () => {
+  return { customerData, handleCustomerChange, profileLoading, profileError };
+};
+
+const useProfileSave = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [updateUserProfile, { loading: updateLoading }] = useUpdateUserProfileMutation();
+
+  const handleSaveCustomer = async (customerData: { phone: string; email: string }) => {
     try {
       setIsLoading(true);
       await updateUserProfile({
         variables: {
           input: {
             phoneNumber: customerData.phone,
-            username: customerData.email.split('@')[0] // Email-ээс username үүсгэх
+            username: customerData.email.split('@')[0]
           }
         }
       });
@@ -57,6 +59,60 @@ const ProfilePage: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  return { handleSaveCustomer, isLoading, updateLoading };
+};
+
+const ProfileForm = ({ customerData, handleCustomerChange, handleSaveCustomer, isLoading, updateLoading }: {
+  customerData: { phone: string; email: string };
+  handleCustomerChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSaveCustomer: (customerData: { phone: string; email: string }) => Promise<void>;
+  isLoading: boolean;
+  updateLoading: boolean;
+}) => (
+  <div className="flex-1">
+    <div className="max-w-[600px]">
+      <div className="rounded-[12px] bg-[#111111] p-[24px]">
+        <h2 className="mb-[24px] text-[20px] font-bold">Хувийн мэдээлэл</h2>
+        <div className="space-y-[20px]">
+          <div>
+            <label className="mb-[8px] block text-[14px] text-gray-300">Утасны дугаар</label>
+            <input
+              type="tel"
+              name="phone"
+              value={customerData.phone}
+              onChange={handleCustomerChange}
+              placeholder="Утасны дугаар оруулах"
+              className="w-full rounded-[8px] border border-gray-700 bg-[#1a1a1a] px-[12px] py-[10px] text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="mb-[8px] block text-[14px] text-gray-300">И-мэйл хаяг</label>
+            <input
+              type="email"
+              name="email"
+              value={customerData.email}
+              onChange={handleCustomerChange}
+              placeholder="И-мэйл хаяг оруулах"
+              className="w-full rounded-[8px] border border-gray-700 bg-[#1a1a1a] px-[12px] py-[10px] text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+            />
+          </div>
+        </div>
+        <button
+          onClick={() => handleSaveCustomer(customerData)}
+          disabled={isLoading || updateLoading}
+          className="mt-[24px] rounded-[8px] bg-[#00B7F4] px-[24px] py-[12px] text-[14px] font-medium text-black hover:bg-[#0099CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isLoading || updateLoading ? 'Хадгалагдаж байна...' : 'Хадгалах'}
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+const ProfilePage: React.FC = () => {
+  const { customerData, handleCustomerChange, profileLoading, profileError } = useCustomerData();
+  const { handleSaveCustomer, isLoading, updateLoading } = useProfileSave();
 
   // Loading state
   if (profileLoading) {
@@ -123,49 +179,13 @@ const ProfilePage: React.FC = () => {
         <div className="flex gap-[24px]">
           <ProfileMenu />
           
-          <div className="flex-1">
-            <div className="rounded-[12px] bg-[#111111] p-[24px]">
-              <h2 className="mb-[20px] text-[20px] font-semibold">Захиалагчийн мэдээлэл</h2>
-              
-              <div className="space-y-[16px]">
-                <div>
-                  <label className="mb-[8px] block text-[14px] text-gray-300">
-                    Утасны дугаар
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={customerData.phone}
-                    onChange={handleCustomerChange}
-                    placeholder="Утасны дугаар оруулах"
-                    className="w-full rounded-[8px] border border-gray-700 bg-[#1a1a1a] px-[12px] py-[10px] text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-[8px] block text-[14px] text-gray-300">
-                    И-мэйл хаяг
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={customerData.email}
-                    onChange={handleCustomerChange}
-                    placeholder="И-мэйл хаяг оруулах"
-                    className="w-full rounded-[8px] border border-gray-700 bg-[#1a1a1a] px-[12px] py-[10px] text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              <button
-                onClick={handleSaveCustomer}
-                disabled={isLoading || updateLoading}
-                className="mt-[24px] rounded-[8px] bg-[#00B7F4] px-[24px] py-[12px] text-[14px] font-medium text-black hover:bg-[#0099CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading || updateLoading ? 'Хадгалагдаж байна...' : 'Хадгалах'}
-              </button>
-            </div>
-          </div>
+          <ProfileForm 
+            customerData={customerData}
+            handleCustomerChange={handleCustomerChange}
+            handleSaveCustomer={handleSaveCustomer}
+            isLoading={isLoading}
+            updateLoading={updateLoading}
+          />
         </div>
       </main>
 

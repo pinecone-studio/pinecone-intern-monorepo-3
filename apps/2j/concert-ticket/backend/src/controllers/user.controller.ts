@@ -21,17 +21,6 @@ export class UserController {
         throw new Error('Хэрэглэгч олдсонгүй');
       }
 
-      // Debug log - MongoDB-с ирсэн мэдээллийг харах
-      console.log('MongoDB user data:', {
-        _id: user._id,
-        email: user.email,
-        username: user.username,
-        name: user.name,
-        phoneNumber: user.phoneNumber,
-        phone: user.phone,
-        address: user.address,
-        role: user.role
-      });
 
       return user;
     } catch (error) {

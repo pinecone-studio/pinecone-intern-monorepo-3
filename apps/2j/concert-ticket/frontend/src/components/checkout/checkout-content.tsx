@@ -76,7 +76,6 @@ export const CheckoutContent: React.FC<CheckoutContentProps> = ({ _concertId, _s
 
   const handleContinue = () => {
     if (validateForm()) {
-      console.log('Processing payment...', { formData, ticketItems, totalAmount });
       setErrorMessage('Төлбөр боловсруулах хэсэг хөгжүүлэгдэж байна...');
     }
   };

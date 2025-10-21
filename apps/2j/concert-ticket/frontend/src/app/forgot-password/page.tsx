@@ -12,7 +12,6 @@ const ForgotPasswordPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: API call to reset password
-    console.log('Password reset request for:', email);
     setIsSubmitted(true);
   };
 
