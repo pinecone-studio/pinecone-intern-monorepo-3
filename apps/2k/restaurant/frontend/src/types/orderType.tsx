@@ -13,5 +13,6 @@ export type OrderItemType = {
   orderNumber: string;
   time: string;
   total: number;
+  status: string;
   items: typeOrderItemType[];
 };

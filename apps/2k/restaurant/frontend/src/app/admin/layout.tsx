@@ -15,7 +15,7 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="p-4 min-h-screen flex flex-col">
       {/* Navbar */}
-      <nav className="flex space-x-4 border-b mb-4">
+      <nav className="flex space-x-4 border-b border-gray-300">
         {tabs.map((tab) => (
           <Link key={tab.name} href={tab.href} className={`px-4 py-2 ${pathname === tab.href ? 'border-b-2 border-blue-500 font-bold' : ''}`}>
             {tab.name}
