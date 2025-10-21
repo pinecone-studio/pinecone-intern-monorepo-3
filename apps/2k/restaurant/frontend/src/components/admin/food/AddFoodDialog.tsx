@@ -1,66 +1,141 @@
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { useState } from 'react';
+import { ImagePlus } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+interface FoodItem {
+  id: number;
+  name: string;
+  price: string;
+  status: 'идэвхитэй' | 'идэвхгүй';
+  image: string;
+}
 
-export const AddFoodDialog: React.FC = () => {
+interface AddFoodDialogProps {
+  mode: 'add' | 'edit';
+  food?: FoodItem;
+}
+
+export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ mode, food }) => {
+  const [name, setName] = useState(food?.name || '');
+  const [price, setPrice] = useState(food?.price || '');
+  const [status, setStatus] = useState<'идэвхитэй' | 'идэвхгүй'>(food?.status || 'идэвхитэй');
+  const [image, setImage] = useState(food?.image || '');
+  const [preview, setPreview] = useState(food?.image || '');
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(reader.result as string);
+      reader.readAsDataURL(file);
+      setImage(file.name);
+    }
+  };
+
+  console.log("image:", image);
+  console.log("preview:", preview);
+
+  const handleSubmit = () => {
+    const data = { id: food?.id, name, price, status, image: preview };
+    if (mode === 'add') {
+      console.log('🟢 Шинэ хоол нэмэх:', data);
+    } else {
+      console.log('🟡 Хоол update хийх:', data);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-blue-600 text-white hover:bg-blue-700">➕ Хоол нэмэх</Button>
+        <button
+          className={`px-4 py-2 rounded-lg font-medium ${
+            mode === 'add' ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700'
+          }`}
+        >
+          {mode === 'add' ? 'Хоол нэмэх' : 'Засах'}
+        </button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[450px]">
+      <DialogContent className="p-6 sm:max-w-[400px] space-y-5 rounded-2xl">
         <DialogHeader>
-          <DialogTitle>Хоол нэмэх</DialogTitle>
-          <DialogDescription>Шинэ хоолны мэдээллийг бөглөнө үү.</DialogDescription>
+          <DialogTitle className="text-lg font-semibold text-gray-800">
+            {mode === 'add' ? 'Шинэ хоол нэмэх' : 'Хоол засах'}
+          </DialogTitle>
         </DialogHeader>
 
-        <form className="grid gap-4 py-2">
-          {/* Хоолны нэр */}
-          <div className="grid gap-2">
-            <Label htmlFor="foodName">Хоолны нэр</Label>
-            <Input id="foodName" name="foodName" placeholder="ж: Taso, Burger Deluxe" />
+        {/* Form */}
+        <div className="flex flex-col gap-4">
+          {/* Зураг оруулах */}
+          <div className="flex flex-col items-center">
+            <label
+              htmlFor="image-upload"
+              className="w-28 h-28 bg-gray-100 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 transition"
+            >
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="preview"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              ) : (
+                <>
+                  <ImagePlus size={28} className="text-gray-500" />
+                  <span className="text-xs text-gray-500 mt-1">Зураг нэмэх</span>
+                </>
+              )}
+            </label>
+            <input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
           </div>
 
-          {/* Үнэ */}
-          <div className="grid gap-2">
-            <Label htmlFor="price">Үнэ (₮)</Label>
-            <Input id="price" name="price" placeholder="ж: 15600" type="number" />
-          </div>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Хоолны нэр"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          />
 
-          {/* Зураг */}
-          <div className="grid gap-2">
-            <Label htmlFor="image">Зурагны линк</Label>
-            <Input id="image" name="image" placeholder="ж: https://images.unsplash.com/photo-..." type="url" />
-          </div>
+          <input
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            placeholder="Үнэ (ж: 15.6k)"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          />
 
-          {/* Төлөв */}
-          <div className="grid gap-2">
-            <Label htmlFor="status">Төлөв</Label>
-            <Select>
-              <SelectTrigger id="status">
-                <SelectValue placeholder="Төлөв сонгох" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="active">Идэвхтэй</SelectItem>
-                <SelectItem value="inactive">Идэвхгүй</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as 'идэвхитэй' | 'идэвхгүй')}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            <option value="идэвхитэй">идэвхитэй</option>
+            <option value="идэвхгүй">идэвхгүй</option>
+          </select>
+        </div>
 
-          <DialogFooter className="pt-2">
-            <DialogClose asChild>
-              <Button variant="outline">Цуцлах</Button>
-            </DialogClose>
-            <Button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white">
-              Хадгалах
-            </Button>
-          </DialogFooter>
-        </form>
+        {/* Footer */}
+        <DialogFooter className="flex justify-between mt-4">
+          <DialogClose asChild>
+            <button className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition">
+              Хаах
+            </button>
+          </DialogClose>
+          <DialogClose asChild>
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
+            >
+              {mode === 'add' ? 'Нэмэх' : 'Хадгалах'}
+            </button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-}
+};

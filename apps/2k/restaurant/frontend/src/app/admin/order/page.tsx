@@ -1,8 +1,9 @@
 import { AdminOrderStyle } from "@/components/admin/order/Order";
 
+
  const AdminOrderPage: React.FC = () => {
   return (
-    <div>
+    <div className="w-full flex justify-center bg-gray-100 ">
       <AdminOrderStyle />
     </div>
   );
