@@ -42,16 +42,14 @@ async function startApolloServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Webhook endpoint
+  // Webhook endpoint (Clerk)
   app.post('/api/webhooks/clerk', WebhookController.handleClerkWebhook);
 
   // GraphQL endpoint
   app.use(
     '/api/graphql',
     expressMiddleware(server, {
-      context: async ({ req }) => {
-        return createContextWithAuth(req);
-      },
+      context: async ({ req }) => createContextWithAuth(req),
     })
   );
 

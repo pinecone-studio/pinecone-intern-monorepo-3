@@ -1,0 +1,26 @@
+query SearchConcerts($name: String, $date: String, $limit: Int = 12, $offset: Int = 0) {
+  concerts(
+    filter: { name: $name, date: $date }
+    pagination: { limit: $limit, offset: $offset }
+  ) {
+    totalCount
+    hasMore
+    concerts {
+      id
+      name
+      venue
+      date
+      time
+      image
+      mainArtist { id name image }
+      ticketCategories {
+        id
+        type
+        unitPrice
+        availableQuantity
+      }
+    }
+  }
+}
+
+

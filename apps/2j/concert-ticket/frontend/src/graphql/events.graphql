@@ -9,9 +9,17 @@ query HomeEvents($limit: Int = 12, $offset: Int = 0) {
       date
       time
       image
-      mainArtist { id name image }
+      mainArtist {
+        id
+        name
+        image
+      }
+      ticketCategories {
+        id
+        type
+        unitPrice
+        availableQuantity
+      }
     }
   }
 }
-
-

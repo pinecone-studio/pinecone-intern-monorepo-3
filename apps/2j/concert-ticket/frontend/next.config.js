@@ -16,9 +16,10 @@ const nextConfig = {
   },
   images: {
     remotePatterns: [
-      {
-        hostname: '*',
-      },
+      // Cloudinary
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
+      // Example.com (seed data-д ашиглагдаж байгаа)
+      { protocol: 'https', hostname: 'example.com' },
     ],
   },
 };

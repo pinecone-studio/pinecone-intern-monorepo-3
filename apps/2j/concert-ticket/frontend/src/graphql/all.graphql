@@ -31,6 +31,12 @@ query GetConcert($id: ID!) {
       bio
       image
     }
+    otherArtists {
+      id
+      name
+      bio
+      image
+    }
     ticketCategories {
       id
       type
