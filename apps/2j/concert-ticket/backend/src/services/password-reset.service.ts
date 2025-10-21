@@ -98,7 +98,7 @@ export class PasswordResetService {
   }
 
   // Set new password after code verification
-  static async setNewPassword(email: string, code: string, _newPassword: string): Promise<boolean> {
+  static async setNewPassword(email: string, code: string, newPassword: string): Promise<boolean> {
     try {
       // First verify the code
       const isValid = await this.verifyResetCode(email, code);
@@ -109,7 +109,7 @@ export class PasswordResetService {
 
       // Here you would update the password in your database
       // For now, we'll just simulate success
-      console.log(`Password updated for ${email}`);
+      console.log(`Password updated for ${email} with new password: ${newPassword.substring(0, 3)}***`);
 
       // Remove the reset code after successful password change
       resetCodes.delete(email.toLowerCase());

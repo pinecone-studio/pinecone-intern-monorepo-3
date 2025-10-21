@@ -9,12 +9,12 @@ import { PasswordResetService } from '../services/password-reset.service';
 
 export const Mutation: Resolvers['Mutation'] = {
   // Хэрэглэгч бүртгэх
-  register: async (_parent, args, _ctx) => {
+  register: async (_parent, args) => {
     return await AuthController.register(args.input);
   },
 
   // Хэрэглэгч нэвтрэх
-  login: async (_parent, args, _ctx) => {
+  login: async (_parent, args) => {
     return await AuthController.login(args.input);
   },
 

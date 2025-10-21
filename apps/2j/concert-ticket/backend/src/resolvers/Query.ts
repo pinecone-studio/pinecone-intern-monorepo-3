@@ -7,12 +7,12 @@ import { TicketCategoryController } from '../controllers/ticket-category.control
 
 export const Query: Resolvers['Query'] = {
   // Концертуудыг хайх
-  concerts: async (_parent, args, _ctx) => {
+  concerts: async (_parent, args) => {
     return await ConcertController.getConcerts(args.filter, args.pagination);
   },
 
   // Нэг концертыг ID-аар олох
-  concert: async (_parent, args, _ctx) => {
+  concert: async (_parent, args) => {
     return await ConcertController.getConcertById(args.id);
   },
 

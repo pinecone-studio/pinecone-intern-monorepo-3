@@ -7,26 +7,33 @@ export default function VerifyCode() {
   const router = useRouter();
   const [code, setCode] = useState(['', '', '', '']);
 
+  const focusNextInput = (index: number) => {
+    if (index < 3) {
+      const nextInput = document.getElementById(`code-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+  const handleAutoSubmit = (newCode: string[]) => {
+    const fullCode = newCode.join('');
+    if (fullCode.length === 4) {
+      setTimeout(() => {
+        verifyCode(fullCode);
+      }, 500);
+    }
+  };
+
   const handleInputChange = (index: number, value: string) => {
-    if (value.length > 1) return; // Prevent multiple characters
+    if (value.length > 1) return;
 
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
 
-    // Auto-focus next input
-    if (value && index < 3) {
-      const nextInput = document.getElementById(`code-${index + 1}`);
-      nextInput?.focus();
-    }
-
-    // Auto-submit when all 4 digits are entered
-    if (value && index === 3) {
-      const fullCode = newCode.join('');
-      if (fullCode.length === 4) {
-        setTimeout(() => {
-          verifyCode(fullCode);
-        }, 500); // Small delay to show the last digit
+    if (value) {
+      focusNextInput(index);
+      if (index === 3) {
+        handleAutoSubmit(newCode);
       }
     }
   };
@@ -48,8 +55,8 @@ export default function VerifyCode() {
 
       // Navigate to sign-in page after successful verification
       router.push('/sign-in');
-    } catch (error: any) {
-      alert(error.message || 'Invalid verification code');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Invalid verification code');
     }
   };
 
@@ -61,8 +68,8 @@ export default function VerifyCode() {
     try {
       // TODO: Implement resend code functionality
       alert('Verification code has been resent to your email');
-    } catch (error: any) {
-      alert(error.message || 'Failed to resend code');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Failed to resend code');
     }
   };
 

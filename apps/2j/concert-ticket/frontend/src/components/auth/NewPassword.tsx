@@ -21,63 +21,77 @@ export default function NewPassword() {
     }
   }, [email, router]);
 
+  const validatePasswords = (): boolean => {
+    if (password !== confirmPassword) {
+      setError('Нууц үг таарахгүй байна.');
+      return false;
+    }
+
+    if (password.length < 6) {
+      setError('Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой.');
+      return false;
+    }
+
+    return true;
+  };
+
+  const resetPassword = async (code: string): Promise<boolean> => {
+    const response = await fetch('http://localhost:4000/api/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          mutation SetNewPassword($input: SetNewPasswordInput!) {
+            setNewPassword(input: $input)
+          }
+        `,
+        variables: {
+          input: {
+            email: email,
+            code: code,
+            newPassword: password,
+          },
+        },
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.errors) {
+      throw new Error(result.errors[0].message);
+    }
+
+    return result.data.setNewPassword;
+  };
+
+  const handlePasswordReset = async (code: string) => {
+    const success = await resetPassword(code);
+
+    if (success) {
+      setSuccess(true);
+    } else {
+      throw new Error('Нууц үг солихөд алдаа гарлаа');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    if (password !== confirmPassword) {
-      setError('Нууц үг таарахгүй байна.');
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой.');
+    if (!validatePasswords()) {
       setIsLoading(false);
       return;
     }
 
     try {
-      // Get the verification code from URL params or localStorage
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get('code') || '';
-
-      // Call the backend API to set new password
-      const response = await fetch('http://localhost:4000/api/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `
-            mutation SetNewPassword($input: SetNewPasswordInput!) {
-              setNewPassword(input: $input)
-            }
-          `,
-          variables: {
-            input: {
-              email: email,
-              code: code,
-              newPassword: password,
-            },
-          },
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
-      }
-
-      if (result.data.setNewPassword) {
-        setSuccess(true);
-      } else {
-        throw new Error('Нууц үг солихөд алдаа гарлаа');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Нууц үг солихөд алдаа гарлаа. Дахин оролдоно уу.');
+      await handlePasswordReset(code);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Нууц үг солихөд алдаа гарлаа. Дахин оролдоно уу.');
     } finally {
       setIsLoading(false);
     }

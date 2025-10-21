@@ -20,26 +20,33 @@ export default function ResetPasswordVerify() {
     }
   }, [email, router]);
 
+  const focusNextInput = (index: number) => {
+    if (index < 3) {
+      const nextInput = document.getElementById(`code-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+  const handleAutoSubmit = (newCode: string[]) => {
+    const fullCode = newCode.join('');
+    if (fullCode.length === 4) {
+      setTimeout(() => {
+        verifyCode(fullCode);
+      }, 500);
+    }
+  };
+
   const handleInputChange = (index: number, value: string) => {
-    if (value.length > 1) return; // Prevent multiple characters
+    if (value.length > 1) return;
 
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
 
-    // Auto-focus next input
-    if (value && index < 3) {
-      const nextInput = document.getElementById(`code-${index + 1}`);
-      nextInput?.focus();
-    }
-
-    // Auto-submit when all 4 digits are entered
-    if (value && index === 3) {
-      const fullCode = newCode.join('');
-      if (fullCode.length === 4) {
-        setTimeout(() => {
-          verifyCode(fullCode);
-        }, 500); // Small delay to show the last digit
+    if (value) {
+      focusNextInput(index);
+      if (index === 3) {
+        handleAutoSubmit(newCode);
       }
     }
   };
@@ -88,8 +95,8 @@ export default function ResetPasswordVerify() {
       } else {
         throw new Error('Буруу код байна');
       }
-    } catch (error: any) {
-      setError(error.message || 'Буруу код байна. Дахин оролдоно уу.');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Буруу код байна. Дахин оролдоно уу.');
     } finally {
       setIsLoading(false);
     }
@@ -126,8 +133,8 @@ export default function ResetPasswordVerify() {
       } else {
         throw new Error('Код дахин илгээхэд алдаа гарлаа');
       }
-    } catch (error: any) {
-      alert(error.message || 'Код дахин илгээхэд алдаа гарлаа.');
+    } catch (error: unknown) {
+      alert(error instanceof Error ? error.message : 'Код дахин илгээхэд алдаа гарлаа.');
     }
   };
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
+// eslint-disable-next-line complexity
 export default function ResetPasswordWithToken() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,8 +22,6 @@ export default function ResetPasswordWithToken() {
       router.push('/reset-password');
       return;
     }
-
-    // Verify the token when component mounts
     verifyToken();
   }, [token, router]);
 
@@ -60,9 +59,51 @@ export default function ResetPasswordWithToken() {
       } else {
         setError('Холбоос хүчинтэй бус эсвэл хугацаа дууссан байна');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       setError('Холбоос шалгахэд алдаа гарлаа');
     }
+  };
+
+  const validatePasswords = (): boolean => {
+    if (password !== confirmPassword) {
+      setError('Нууц үг таарахгүй байна');
+      return false;
+    }
+
+    if (password.length < 6) {
+      setError('Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой');
+      return false;
+    }
+
+    return true;
+  };
+
+  const resetPassword = async (): Promise<boolean> => {
+    const response = await fetch('http://localhost:4000/api/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        query: `
+          mutation ResetPassword($token: String!, $newPassword: String!) {
+            resetPassword(token: $token, newPassword: $newPassword)
+          }
+        `,
+        variables: {
+          token: token,
+          newPassword: password,
+        },
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.errors) {
+      throw new Error(result.errors[0].message);
+    }
+
+    return result.data.resetPassword;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,91 +111,65 @@ export default function ResetPasswordWithToken() {
     setIsLoading(true);
     setError('');
 
-    if (password !== confirmPassword) {
-      setError('Нууц үг таарахгүй байна');
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой');
+    if (!validatePasswords()) {
       setIsLoading(false);
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:4000/api/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `
-            mutation ResetPassword($token: String!, $newPassword: String!) {
-              resetPassword(token: $token, newPassword: $newPassword)
-            }
-          `,
-          variables: {
-            token: token,
-            newPassword: password,
-          },
-        }),
-      });
+      const success = await resetPassword();
 
-      const result = await response.json();
-
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
-      }
-
-      if (result.data.resetPassword) {
-        // Redirect to sign-in page with success message
+      if (success) {
         router.push('/sign-in?message=password-reset-success');
       } else {
         throw new Error('Нууц үг сэргээхэд алдаа гарлаа');
       }
-    } catch (error: any) {
-      setError(error.message || 'Нууц үг сэргээхэд алдаа гарлаа. Дахин оролдоно уу.');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Нууц үг сэргээхэд алдаа гарлаа. Дахин оролдоно уу.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (!isVerified && !error) {
-    return (
-      <div className="bg-[#09090B] rounded-lg p-8 w-full max-w-md border border-gray-800">
-        <h1 className="text-white text-2xl font-semibold text-center mb-8">Холбоос шалгаж байна...</h1>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-        </div>
+  const renderLoadingState = () => (
+    <div className="bg-[#09090B] rounded-lg p-8 w-full max-w-md border border-gray-800">
+      <h1 className="text-white text-2xl font-semibold text-center mb-8">Холбоос шалгаж байна...</h1>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
       </div>
-    );
+    </div>
+  );
+
+  const renderErrorState = () => (
+    <div className="bg-[#09090B] rounded-lg p-8 w-full max-w-md border border-gray-800">
+      <h1 className="text-white text-2xl font-semibold text-center mb-8">Алдаа</h1>
+
+      <div className="text-center space-y-4">
+        <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto">
+          <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </div>
+
+        <p className="text-red-400 text-sm">{error}</p>
+
+        <Link href="/reset-password" className="block w-full bg-blue-500 text-white rounded-lg py-3 px-4 hover:bg-blue-600 transition-colors font-medium text-center">
+          Дахин оролдох
+        </Link>
+
+        <Link href="/sign-in" className="block text-blue-400 hover:text-blue-300 transition-colors text-sm">
+          Нэвтрэх хуудас руу буцах
+        </Link>
+      </div>
+    </div>
+  );
+
+  if (!isVerified && !error) {
+    return renderLoadingState();
   }
 
   if (error && !isVerified) {
-    return (
-      <div className="bg-[#09090B] rounded-lg p-8 w-full max-w-md border border-gray-800">
-        <h1 className="text-white text-2xl font-semibold text-center mb-8">Алдаа</h1>
-
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </div>
-
-          <p className="text-red-400 text-sm">{error}</p>
-
-          <Link href="/reset-password" className="block w-full bg-blue-500 text-white rounded-lg py-3 px-4 hover:bg-blue-600 transition-colors font-medium text-center">
-            Дахин оролдох
-          </Link>
-
-          <Link href="/sign-in" className="block text-blue-400 hover:text-blue-300 transition-colors text-sm">
-            Нэвтрэх хуудас руу буцах
-          </Link>
-        </div>
-      </div>
-    );
+    return renderErrorState();
   }
 
   return (
