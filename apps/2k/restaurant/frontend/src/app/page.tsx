@@ -1,15 +1,11 @@
 'use client';
 
-
-
-import HomePage from "@/components/home/HomePage";
-// import SignInPage from "./(private)/sign-in/page";
+import HomePage from '@/components/home/HomePage';
 
 const Page = () => {
-  return(
+  return (
     <div>
-      <HomePage/>
-      {/* <SignInPage/> */}
+      <HomePage />
     </div>
   );
 };
