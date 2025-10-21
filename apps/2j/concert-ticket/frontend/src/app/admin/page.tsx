@@ -118,29 +118,33 @@ const AddTicketModal = ({ open, onClose }: { open: boolean; onClose: () => void 
     dateInputRef.current?.showPicker?.();
   };
 
+  const validateImageFile = (file: File): boolean => {
+    if (!file.type.startsWith('image/')) {
+      alert('Зөвхөн зураг файл сонгоно уу');
+      return false;
+    }
+    
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Зурагийн хэмжээ 5MB-аас бага байх ёстой');
+      return false;
+    }
+    
+    return true;
+  };
+
+  const createImagePreview = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImagePreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Зөвхөн зураг файл сонгоно уу');
-        return;
-      }
-      
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Зурагийн хэмжээ 5MB-аас бага байх ёстой');
-        return;
-      }
-
+    if (file && validateImageFile(file)) {
       setImageFile(file);
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      createImagePreview(file);
     }
   };
 
@@ -579,6 +583,38 @@ const useConcertData = (currentPage: number, itemsPerPage: number) => {
   return { concertsData, loading, error, refetch, updateConcertFeatured };
 };
 
+const transformConcertToRow = (concert: {
+  id: string;
+  name: string;
+  date: string;
+  time: string;
+  venue: string;
+  featured?: boolean;
+  mainArtist?: { name: string };
+  otherArtists?: Array<{ name: string }>;
+  ticketCategories?: Array<{
+    type: string;
+    totalQuantity: number;
+    availableQuantity: number;
+    unitPrice: number;
+  }>;
+}): TicketRow => {
+  const totals = calculateTotals(concert.ticketCategories);
+  const revenue = calculateRevenue(concert.ticketCategories);
+  const date = formatDate(concert.date);
+  const artists = getArtistsNames(concert);
+
+  return {
+    id: concert.id,
+    title: concert.name,
+    artists: artists || 'Unknown Artist',
+    totals,
+    date,
+    revenue: `${revenue.toLocaleString()}₮`,
+    featured: concert.featured || false,
+  };
+};
+
 const TicketsTab = () => {
   const { currentPage, itemsPerPage, handlePageChange } = usePagination();
   const { concertsData, loading, error, refetch, updateConcertFeatured } = useConcertData(currentPage, itemsPerPage);
@@ -586,38 +622,7 @@ const TicketsTab = () => {
   // Transform GraphQL data to match the table format
   const rows = useMemo<TicketRow[]>(() => {
     if (!concertsData?.concerts?.concerts) return [];
-    
-    return concertsData.concerts.concerts.map((concert: {
-      id: string;
-      name: string;
-      date: string;
-      time: string;
-      venue: string;
-      featured?: boolean;
-      mainArtist?: { name: string };
-      otherArtists?: Array<{ name: string }>;
-      ticketCategories?: Array<{
-        type: string;
-        totalQuantity: number;
-        availableQuantity: number;
-        unitPrice: number;
-      }>;
-    }) => {
-      const totals = calculateTotals(concert.ticketCategories);
-      const revenue = calculateRevenue(concert.ticketCategories);
-      const date = formatDate(concert.date);
-      const artists = getArtistsNames(concert);
-
-      return {
-        id: concert.id,
-        title: concert.name,
-        artists: artists || 'Unknown Artist',
-        totals,
-        date,
-        revenue: `${revenue.toLocaleString()}₮`,
-        featured: concert.featured || false,
-      };
-    });
+    return concertsData.concerts.concerts.map(transformConcertToRow);
   }, [concertsData]);
   const [modal, setModal] = useState<{ open: boolean; rowId?: string; value: 'yes' | 'no' }>(
     { open: false, rowId: undefined, value: 'no' }
@@ -628,19 +633,15 @@ const TicketsTab = () => {
     setModal({ open: true, rowId, value: current ? 'yes' : 'no' });
   };
 
-  const saveFeatured = async () => {
+  const handleFeaturedUpdate = async () => {
     if (!modal.rowId) return;
     
     try {
       const featured = modal.value === 'yes';
       await updateConcertFeatured({
-        variables: {
-          id: modal.rowId,
-          featured: featured
-        }
+        variables: { id: modal.rowId, featured }
       });
       
-      // Refetch the data to update the list with current pagination
       await refetch({
         pagination: {
           limit: itemsPerPage,
@@ -896,7 +897,7 @@ const TicketsTab = () => {
           </label>
         </div>
         <button
-          onClick={saveFeatured}
+          onClick={handleFeaturedUpdate}
           className="w-full rounded-md bg-gray-900 text-white py-3 text-lg"
         >
           Хадгалах

@@ -30,14 +30,20 @@ const ForgotPasswordPage = () => {
   };
 
   const handleCodeKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && code[index] === '' && index > 0) {
+    const { key } = e;
+    
+    if (key === 'Backspace' && code[index] === '' && index > 0) {
       inputsRef.current[index - 1]?.focus();
+      return;
     }
-    if (e.key === 'ArrowLeft' && index > 0) {
+    
+    if (key === 'ArrowLeft' && index > 0) {
       e.preventDefault();
       inputsRef.current[index - 1]?.focus();
+      return;
     }
-    if (e.key === 'ArrowRight' && index < 3) {
+    
+    if (key === 'ArrowRight' && index < 3) {
       e.preventDefault();
       inputsRef.current[index + 1]?.focus();
     }
