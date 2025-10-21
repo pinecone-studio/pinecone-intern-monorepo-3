@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export interface IUser extends Document {
+  clerkId?: string; // Clerk user ID for webhook tracking
   email: string;
   username?: string;
   phoneNumber?: string;
@@ -10,49 +11,57 @@ export interface IUser extends Document {
   password: string;
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Methods
   comparePassword(_candidatePassword: string): Promise<boolean>;
 }
 
-const userSchema = new Schema<IUser>({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true,
+const userSchema = new Schema<IUser>(
+  {
+    clerkId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allow null values but ensure uniqueness when present
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    username: {
+      type: String,
+      trim: true,
+    },
+    phoneNumber: {
+      type: String,
+      trim: true,
+    },
+    address: {
+      type: String,
+      trim: true,
+    },
+    role: {
+      type: String,
+      enum: ['USER', 'ADMIN'],
+      default: 'USER',
+    },
+    password: {
+      type: String,
+      required: true,
+      minlength: 6,
+    },
   },
-  username: {
-    type: String,
-    trim: true,
-  },
-  phoneNumber: {
-    type: String,
-    trim: true,
-  },
-  address: {
-    type: String,
-    trim: true,
-  },
-  role: {
-    type: String,
-    enum: ['USER', 'ADMIN'],
-    default: 'USER',
-  },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
-  },
-}, {
-  timestamps: true, // createdAt, updatedAt автоматаар үүсгэнэ
-});
+  {
+    timestamps: true, // createdAt, updatedAt автоматаар үүсгэнэ
+  }
+);
 
 // Password hash хийх middleware
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  
+
   try {
     const saltRounds = 12;
     this.password = await bcrypt.hash(this.password, saltRounds);
@@ -63,12 +72,12 @@ userSchema.pre('save', async function(next) {
 });
 
 // Password харьцуулах method
-userSchema.methods.comparePassword = async function(_candidatePassword: string): Promise<boolean> {
+userSchema.methods.comparePassword = async function (_candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(_candidatePassword, this.password);
 };
 
 // Password field-ийг JSON-оос хасах
-userSchema.methods.toJSON = function() {
+userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;
   return user;

@@ -1,6 +1,5 @@
 'use client';
 
-
 import { HttpLink } from '@apollo/client';
 import { ApolloNextAppProvider, ApolloClient, InMemoryCache } from '@apollo/experimental-nextjs-app-support';
 import { PropsWithChildren } from 'react';
@@ -20,12 +19,17 @@ const makeClient = () => {
     },
   });
 
-  const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem('token');
+  const authLink = setContext(async (_, { headers }) => {
+    // Get token from localStorage for backward compatibility
+    let token = null;
+    if (typeof window !== 'undefined') {
+      token = localStorage.getItem('token');
+    }
+
     return {
       headers: {
         ...headers,
-        authorization: token ?? '',
+        authorization: token ? `Bearer ${token}` : '',
       },
     };
   });

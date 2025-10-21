@@ -1,25 +1,31 @@
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import express from 'express';
+import http from 'http';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { resolvers } from './resolvers';
-import { createContext } from './context';
+import { createContextWithAuth } from './context';
 import { connectDatabase } from './database/connection';
+import { WebhookController } from './controllers/webhook.controller';
 
 async function startApolloServer() {
   // Database холбогдох
   await connectDatabase();
-  
+
+  // Express app үүсгэх
+  const app = express();
+  const httpServer = http.createServer(app);
+
   // GraphQL schema-г файлаас унших
-  const typeDefs = readFileSync(
-    join(__dirname, 'schemas', 'schema.graphql'),
-    'utf-8'
-  );
+  const typeDefs = readFileSync(join(__dirname, 'schemas', 'schema.graphql'), 'utf-8');
 
   // Apollo Server үүсгэх
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     formatError: (error) => {
       console.error('GraphQL Error:', error);
       return {
@@ -29,30 +35,33 @@ async function startApolloServer() {
     },
   });
 
-  // Server-ийг эхлүүлэх
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: process.env.PORT ? parseInt(process.env.PORT) : 4000 },
-    context: async ({ req }) => {
-      // JWT token-ийг header-оос авах
-      const token = req.headers.authorization?.replace('Bearer ', '');
-      
-          // TODO: JWT verify хийх
-          if (token) {
-            // JWT decode + verify logic
-            console.log('Token received:', token);
-          }
+  // Apollo Server эхлүүлэх
+  await server.start();
 
-      return createContext();
-    },
-    // CORS тохиргоо
-    cors: {
-      origin: ['http://localhost:3000', 'http://localhost:4000', 'https://studio.apollographql.com'],
-      credentials: true,
-    },
-  });
+  // Middleware тохиргоо
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-  console.log(`🚀 Apollo Server ready at: ${url}`);
-  console.log(`📚 GraphQL Playground: ${url}`);
+  // Webhook endpoint
+  app.post('/api/webhooks/clerk', WebhookController.handleClerkWebhook);
+
+  // GraphQL endpoint
+  app.use(
+    '/api/graphql',
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        return createContextWithAuth(req);
+      },
+    })
+  );
+
+  // Server эхлүүлэх
+  const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
+  await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
+
+  console.log(`🚀 Apollo Server ready at: http://localhost:${port}/api/graphql`);
+  console.log(`📚 GraphQL Playground: http://localhost:${port}/api/graphql`);
+  console.log(`🔗 Webhook endpoint: http://localhost:${port}/api/webhooks/clerk`);
 }
 
 // Server эхлүүлэх

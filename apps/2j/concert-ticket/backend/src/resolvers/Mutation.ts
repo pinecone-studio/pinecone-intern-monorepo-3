@@ -5,6 +5,7 @@ import { ArtistController } from '../controllers/artist.controller';
 import { BookingController } from '../controllers/booking.controller';
 import { TicketCategoryController } from '../controllers/ticket-category.controller';
 import { AuthController } from '../controllers/auth.controller';
+import { PasswordResetService } from '../services/password-reset.service';
 
 export const Mutation: Resolvers['Mutation'] = {
   // Хэрэглэгч бүртгэх
@@ -17,18 +18,52 @@ export const Mutation: Resolvers['Mutation'] = {
     return await AuthController.login(args.input);
   },
 
-  // Нууц үг мартсан тохиолдолд
-  forgotPassword: async (_parent, args, _ctx) => {
-    return await AuthController.forgotPassword(args.email);
-  },
-
-  // Нууц үг сэргээх
-  resetPassword: async (_parent, args, _ctx) => {
-    return await AuthController.resetPassword(args.input);
-  },
-
   // Гарах
   logout: async () => true,
+
+  // Password reset functionality - request reset code
+  forgotPassword: async (_parent, args) => {
+    console.log('=== FORGOT PASSWORD CALLED ===');
+    console.log('Email:', args.email);
+    try {
+      // Test if the service is accessible
+      console.log('PasswordResetService:', typeof PasswordResetService);
+      console.log('requestPasswordReset method:', typeof PasswordResetService.requestPasswordReset);
+
+      const success = await PasswordResetService.requestPasswordReset(args.email);
+      console.log('Success:', success);
+      console.log('=== END FORGOT PASSWORD ===');
+      return success;
+    } catch (error) {
+      console.error('Error in forgotPassword resolver:', error);
+      console.error('Error stack:', error.stack);
+      return false;
+    }
+  },
+
+  // Verify reset code
+  verifyResetCode: async (_parent, args) => {
+    try {
+      const isValid = await PasswordResetService.verifyResetCode(args.email, args.code);
+      return isValid;
+    } catch (error) {
+      throw new Error('Буруу код байна');
+    }
+  },
+
+  // Set new password using code
+  resetPassword: async (_parent, args) => {
+    try {
+      const success = await PasswordResetService.setNewPassword(args.email, args.code, args.newPassword);
+      if (success) {
+        return true;
+      } else {
+        throw new Error('Буруу код байна');
+      }
+    } catch (error) {
+      throw new Error('Буруу код байна');
+    }
+  },
 
   // Концерт үүсгэх (админ хэрэглэгчдэд зориулсан)
   createConcert: async (_parent, args, ctx) => {
