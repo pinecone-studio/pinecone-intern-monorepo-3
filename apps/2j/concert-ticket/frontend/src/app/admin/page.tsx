@@ -19,8 +19,8 @@ const formatDate = (dateString: string): string => {
 const calculateTotals = (ticketCategories?: Array<{
   type: string;
   availableQuantity: number;
-}>) => {
-  return ticketCategories?.reduce((acc: Record<string, number>, category: {
+}>): { all: number; vip: number; regular: number; general: number } => {
+  return ticketCategories?.reduce((acc: { all: number; vip: number; regular: number; general: number }, category: {
     type: string;
     availableQuantity: number;
   }) => {
