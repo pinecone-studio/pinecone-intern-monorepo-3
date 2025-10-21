@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { User, IUser } from '../models/model.user';
+import { User } from '../models/model.user';
 
 export interface UpdateUserProfileInput {
   email?: string;

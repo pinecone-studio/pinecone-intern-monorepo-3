@@ -185,7 +185,7 @@ async function createMockArtists() {
 }
 
 // Mock концертуудыг үүсгэх
-async function createMockConcerts(artists: any[]) {
+async function createMockConcerts(artists: unknown[]) {
   const venues = [
     'Улаанбаатар хотын төв талбай',
     'Улаанбаатар хотын спорт ордон',
@@ -225,7 +225,7 @@ async function createMockConcerts(artists: any[]) {
 }
 
 // Mock тасалбарын ангиллуудыг үүсгэх
-async function createMockTicketCategories(concerts: any[]) {
+async function createMockTicketCategories(concerts: unknown[]) {
   const ticketCategories = [];
 
   for (const concert of concerts) {
@@ -275,7 +275,7 @@ async function createMockTicketCategories(concerts: any[]) {
 }
 
 // Mock захиалгуудыг үүсгэх
-async function createMockBookings(users: any[], ticketCategories: any[]) {
+async function createMockBookings(users: unknown[], ticketCategories: unknown[]) {
   const bookings = [];
   const userUsers = users.filter(u => u.role === 'USER');
 

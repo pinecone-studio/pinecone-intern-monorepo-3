@@ -10,7 +10,7 @@ export interface IUser extends Document {
   role: 'USER' | 'ADMIN';
   createdAt: Date;
   updatedAt: Date;
-  comparePassword(candidatePassword: string): Promise<boolean>;
+  comparePassword(_candidatePassword: string): Promise<boolean>;
 }
 
 const UserSchema = new Schema<IUser>({

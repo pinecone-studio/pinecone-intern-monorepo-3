@@ -8,22 +8,22 @@ import { AuthController } from '../controllers/auth.controller';
 
 export const Mutation: Resolvers['Mutation'] = {
   // Хэрэглэгч бүртгэх
-  register: async (_parent, args, _ctx) => {
+  register: async (_parent, args) => {
     return await AuthController.register(args.input);
   },
 
   // Хэрэглэгч нэвтрэх
-  login: async (_parent, args, _ctx) => {
+  login: async (_parent, args) => {
     return await AuthController.login(args.input);
   },
 
   // Нууц үг мартсан тохиолдолд
-  forgotPassword: async (_parent, args, _ctx) => {
+  forgotPassword: async (_parent, args) => {
     return await AuthController.forgotPassword(args.email);
   },
 
   // Нууц үг сэргээх
-  resetPassword: async (_parent, args, _ctx) => {
+  resetPassword: async (_parent, args) => {
     return await AuthController.resetPassword(args.input);
   },
 

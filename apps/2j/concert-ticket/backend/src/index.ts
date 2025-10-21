@@ -1,7 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { resolvers } from './resolvers';
-import { createContext, createContextWithAuth } from './context';
+import { createContextWithAuth } from './context';
 import { connectDatabase } from './database/connection';
 import { typeDefs } from './schemas';
 
