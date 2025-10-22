@@ -1,6 +1,8 @@
 'use client';
+
 import React, { useState } from 'react';
 import { ShoppingCart, Search } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useMyProfileQuery } from '@/generated';
 
@@ -12,13 +14,11 @@ const Navbar: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [query, setQuery] = useState('');
-  
-  // User profile data
+
   const { data: profileData } = useMyProfileQuery({
     errorPolicy: 'all'
   });
-  
-  // Authentication state based on profile data
+
   const isLoggedIn = !!profileData?.myProfile;
 
   const goSearch = (q?: string) => {
@@ -38,14 +38,18 @@ const Navbar: React.FC<Props> = ({ className }) => {
     <header className={`w-full bg-[#0e0e0e] ${className ?? ''}`}>
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-[12px] py-[8px] sm:px-[16px] sm:py-[12px]">
         <div className="flex items-center gap-[8px]">
-          <div data-testid="logo-dot" className="h-[8px] w-[8px] rounded-full bg-cyan-400" />
-          <span data-testid="logo" className="text-[14px] font-semibold tracking-wide">TICKET BOOKING</span>
+          <div className="h-[8px] w-[8px] rounded-full bg-cyan-400" />
+          <Link
+            href="/"
+            className="text-[14px] font-semibold tracking-wide hover:text-cyan-400 transition-colors"
+          >
+            TICKET BOOKING
+          </Link>
         </div>
 
         <div className="flex items-center gap-[12px]">
           <div className="relative h-[32px] w-[180px] overflow-hidden rounded-[8px] bg-[#1a1a1a] sm:h-[36px] sm:w-[240px] md:w-[360px]">
             <input
-              data-testid="search-input"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={onKeyDown}
@@ -60,14 +64,15 @@ const Navbar: React.FC<Props> = ({ className }) => {
         </div>
 
         <div className="flex items-center gap-[12px]">
-          <button aria-label="Сагс" className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px]">
+          <button
+            aria-label="Сагс"
+            className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px] hover:bg-[#2a2a2a] transition-colors"
+          >
             <ShoppingCart size={16} />
           </button>
-          
-          {/* Authentication-based rendering */}
+
           {isLoggedIn ? (
-            // Logged in state - show email
-            <button 
+            <button
               onClick={() => router.push('/profile')}
               className="flex items-center gap-[8px] rounded-[8px] bg-[#1a1a1a] px-[12px] py-[6px] text-[12px] hover:bg-[#2a2a2a] transition-colors"
             >
@@ -77,11 +82,20 @@ const Navbar: React.FC<Props> = ({ className }) => {
               </span>
             </button>
           ) : (
-            // Not logged in state - show register and login buttons
             <>
-              <button data-testid="register-button" className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex">Бүртгүүлэх</button>
-              <button data-testid="login-button" className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px]"
-                style={{ backgroundColor: '#00B7F4' }}>Нэвтрэх</button>
+              <Link
+                href="/sign-up"
+                className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex hover:bg-[#2a2a2a] transition-colors"
+              >
+                Бүртгүүлэх
+              </Link>
+              <Link
+                href="/sign-in"
+                className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px] hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#00B7F4' }}
+              >
+                Нэвтрэх
+              </Link>
             </>
           )}
         </div>

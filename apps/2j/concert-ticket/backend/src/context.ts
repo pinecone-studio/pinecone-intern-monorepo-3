@@ -1,14 +1,15 @@
-import { AuthController } from './controllers/auth.controller';
+import { getUserFromToken } from './services/auth.service';
 
 export interface AuthUser {
   id: string;
   role: 'USER' | 'ADMIN';
   email?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface Context {
   user?: AuthUser | null;
-  // db, services, loaders зэргийг энд холбоно
 }
 
 export function createContext(): Context {
@@ -17,30 +18,24 @@ export function createContext(): Context {
   };
 }
 
-// Authentication middleware
 export async function createContextWithAuth(req: { headers: { authorization?: string } }): Promise<Context> {
   const context: Context = {
     user: null,
   };
-
   try {
-    // Authorization header-ээс token авах
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7); // "Bearer " гэсэн 7 тэмдэгтийг хасах
-      
-      // Token-г шалгах
-      const user = await AuthController.getUserFromToken(token);
+      const token = authHeader.substring(7);
+      const user = await getUserFromToken(token);
       context.user = {
         id: user._id.toString(),
         role: user.role,
-        email: user.email
+        email: user.email,
       };
     }
   } catch (error) {
-    // Token буруу эсвэл хугацаа дууссан тохиолдолд user-г null болгох
+    console.log('Authentication failed:', error);
     context.user = null;
   }
-
   return context;
 }

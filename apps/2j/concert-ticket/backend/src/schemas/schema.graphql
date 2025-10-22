@@ -118,7 +118,8 @@ input LoginInput {
 }
 
 input ResetPasswordInput {
-  token: String!
+  email: String!
+  code: String!
   newPassword: String!
 }
 
@@ -206,7 +207,13 @@ type Mutation {
   forgotPassword(email: String!): String!
   resetPassword(input: ResetPasswordInput!): AuthPayload!
   changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
+
   logout: Boolean!
+
+  # Password reset functionality
+  forgotPassword(email: String!): Boolean!
+  verifyResetCode(email: String!, code: String!): Boolean!
+  resetPassword(email: String!, code: String!, newPassword: String!): Boolean!
 
   createConcert(input: CreateConcertInput!): Concert! @auth(requires: ADMIN)
   updateConcert(id: ID!, input: UpdateConcertInput!): Concert! @auth(requires: ADMIN)

@@ -1,5 +1,48 @@
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    token
+    user {
+      id
+      email
+      username
+      phoneNumber
+      address
+      role
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation Register($input: RegisterInput!) {
+  register(input: $input) {
+    token
+    user {
+      id
+      email
+      username
+      phoneNumber
+      address
+      role
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+
+mutation VerifyResetCode($email: String!, $code: String!) {
+  verifyResetCode(email: $email, code: $code)
+}
+
+mutation ResetPassword($email: String!, $code: String!, $newPassword: String!) {
+  resetPassword(email: $email, code: $code, newPassword: $newPassword)
+}
+
 mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
   changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
 }
-
 
