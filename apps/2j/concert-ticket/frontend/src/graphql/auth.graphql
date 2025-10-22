@@ -6,6 +6,7 @@ mutation Login($input: LoginInput!) {
       email
       username
       phoneNumber
+      address
       role
       createdAt
       updatedAt
@@ -21,9 +22,22 @@ mutation Register($input: RegisterInput!) {
       email
       username
       phoneNumber
+      address
       role
       createdAt
       updatedAt
     }
   }
+}
+
+mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+
+mutation VerifyResetCode($email: String!, $code: String!) {
+  verifyResetCode(email: $email, code: $code)
+}
+
+mutation ResetPassword($email: String!, $code: String!, $newPassword: String!) {
+  resetPassword(email: $email, code: $code, newPassword: $newPassword)
 }

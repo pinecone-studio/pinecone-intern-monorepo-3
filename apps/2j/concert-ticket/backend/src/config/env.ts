@@ -14,8 +14,4 @@ export const config = {
   cors: {
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   },
-  clerk: {
-    secretKey: process.env.CLERK_SECRET_KEY || '',
-    publishableKey: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || '',
-  },
 };

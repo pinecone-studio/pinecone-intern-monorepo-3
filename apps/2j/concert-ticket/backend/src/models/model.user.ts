@@ -2,7 +2,6 @@ import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export interface IUser extends Document {
-  clerkId?: string; // Clerk user ID for webhook tracking
   email: string;
   username?: string;
   phoneNumber?: string;
@@ -18,11 +17,6 @@ export interface IUser extends Document {
 
 const userSchema = new Schema<IUser>(
   {
-    clerkId: {
-      type: String,
-      unique: true,
-      sparse: true, // Allow null values but ensure uniqueness when present
-    },
     email: {
       type: String,
       required: true,

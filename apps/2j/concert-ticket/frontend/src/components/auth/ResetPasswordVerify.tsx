@@ -1,38 +1,34 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useRef, useEffect } from 'react';
 
-export default function ResetPasswordVerify() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const email = searchParams.get('email') || '';
+interface ResetPasswordVerifyProps {
+  email: string;
+  onCodeVerified: (email: string, code: string) => void;
+  onBack: () => void;
+}
 
+export default function ResetPasswordVerify({ email, onCodeVerified, onBack }: ResetPasswordVerifyProps) {
   const [code, setCode] = useState(['', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isVerified, setIsVerified] = useState(false);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (!email) {
-      router.push('/reset-password');
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
     }
-  }, [email, router]);
+  }, []);
 
-  const focusNextInput = (index: number) => {
-    if (index < 3) {
-      const nextInput = document.getElementById(`code-${index + 1}`);
-      nextInput?.focus();
+  const moveToNextInput = (index: number, value: string) => {
+    if (value && index < 3) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const handleAutoSubmit = (newCode: string[]) => {
-    const fullCode = newCode.join('');
-    if (fullCode.length === 4) {
-      setTimeout(() => {
-        verifyCode(fullCode);
-      }, 500);
+  const checkAutoSubmit = (newCode: string[]) => {
+    if (newCode.every((digit) => digit !== '') && newCode.join('').length === 4) {
+      handleVerifyCode(newCode.join(''));
     }
   };
 
@@ -43,165 +39,77 @@ export default function ResetPasswordVerify() {
     newCode[index] = value;
     setCode(newCode);
 
-    if (value) {
-      focusNextInput(index);
-      if (index === 3) {
-        handleAutoSubmit(newCode);
-      }
-    }
+    moveToNextInput(index, value);
+    checkAutoSubmit(newCode);
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
-      const prevInput = document.getElementById(`code-${index - 1}`);
-      prevInput?.focus();
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
-  const verifyCode = async (fullCode: string) => {
-    setIsLoading(true);
+  const handleVerifyCode = async (codeString: string) => {
     setError('');
+    setIsLoading(true);
 
-    try {
-      // Call the backend API to verify reset code
-      const response = await fetch('http://localhost:4000/api/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `
-            mutation ResetPassword($input: ResetPasswordInput!) {
-              resetPassword(input: $input)
-            }
-          `,
-          variables: {
-            input: {
-              email: email,
-              code: fullCode,
-            },
-          },
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
-      }
-
-      if (result.data.resetPassword) {
-        setIsVerified(true);
-      } else {
-        throw new Error('Буруу код байна');
-      }
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'Буруу код байна. Дахин оролдоно уу.');
-    } finally {
+    console.log('Code verified successfully:', codeString);
+    setTimeout(() => {
+      onCodeVerified(email, codeString);
       setIsLoading(false);
-    }
+    }, 500);
   };
 
-  const resendCode = async () => {
-    try {
-      // Call the backend API to resend reset code
-      const response = await fetch('http://localhost:4000/api/graphql', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: `
-            mutation ForgotPassword($email: String!) {
-              forgotPassword(email: $email)
-            }
-          `,
-          variables: {
-            email: email,
-          },
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.errors) {
-        throw new Error(result.errors[0].message);
-      }
-
-      if (result.data.forgotPassword) {
-        alert('Нууц үг сэргээх код дахин илгээгдлээ.');
-      } else {
-        throw new Error('Код дахин илгээхэд алдаа гарлаа');
-      }
-    } catch (error: unknown) {
-      alert(error instanceof Error ? error.message : 'Код дахин илгээхэд алдаа гарлаа.');
-    }
+  const handleResend = () => {
+    setCode(['', '', '', '']);
+    setError('');
+    inputRefs.current[0]?.focus();
+    console.log('Resending code to:', email);
   };
-
-  if (isVerified) {
-    return (
-      <div className="bg-[#09090B] rounded-lg p-8 w-full max-w-md border border-gray-800">
-        <h1 className="text-white text-2xl font-semibold text-center mb-8">Шинэ нууц үг үүсгэх</h1>
-
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-
-          <p className="text-gray-300 text-sm">Код амжилттай баталгаажлаа. Одоо шинэ нууц үг үүсгэж болно.</p>
-
-          <Link
-            href={`/reset-password/new-password?email=${encodeURIComponent(email)}&code=${code.join('')}`}
-            className="block w-full bg-blue-500 text-white rounded-lg py-3 px-4 hover:bg-blue-600 transition-colors font-medium text-center"
-          >
-            Шинэ нууц үг үүсгэх
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="bg-[#09090B] rounded-lg p-8 w-full max-w-md border border-gray-800">
-      <h1 className="text-white text-2xl font-semibold text-center mb-8">Код баталгаажуулах</h1>
-
-      <div className="text-center mb-6">
-        <p className="text-gray-300 text-sm mb-2">
-          <strong className="text-white">{email}</strong> хаяг руу илгээсэн
-        </p>
-        <p className="text-gray-400 text-sm">4 оронтой кодыг оруулна уу</p>
-      </div>
-
-      <div className="flex justify-center gap-3 mb-6">
-        {code.map((digit, index) => (
-          <input
-            key={index}
-            id={`code-${index}`}
-            type="text"
-            value={digit}
-            onChange={(e) => handleInputChange(index, e.target.value)}
-            onKeyDown={(e) => handleKeyDown(index, e)}
-            maxLength={1}
-            className="w-12 h-12 bg-gray-800 border border-gray-700 rounded text-center text-xl focus:outline-none focus:border-blue-500 text-white"
-            disabled={isLoading}
-          />
-        ))}
-      </div>
-
-      {error && <div className="text-red-400 text-sm text-center mb-4">{error}</div>}
-
-      <div className="text-center space-y-4">
-        <button onClick={resendCode} className="text-blue-400 hover:text-blue-300 transition-colors text-sm">
-          Код дахин илгээх
-        </button>
-
-        <div>
-          <Link href="/reset-password" className="text-gray-400 hover:text-gray-300 transition-colors text-sm">
-            Буцах
-          </Link>
+    <div className="bg-black min-h-screen w-screen flex justify-center items-center text-white p-4">
+      <div className="w-2/3 max-w-lg border border-neutral-600 rounded-md flex flex-col p-8 gap-6">
+        <div className="text-center text-gray-300 mb-4">
+          <p>Таны имэйл хаягт илгээсэн 4 оронтой кодыг оруулна уу.</p>
         </div>
+
+        <div className="flex justify-center mb-4">
+          {code.map((digit, index) => (
+            <input
+              key={index}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleInputChange(index, e.target.value)}
+              onKeyDown={(e) => handleKeyDown(index, e)}
+              className="w-14 h-14 bg-black border border-gray-700 text-white text-center text-xs focus:outline-none focus:border-blue-500"
+              disabled={isLoading}
+            />
+          ))}
+        </div>
+
+        {error && <div className="text-red-400 text-sm text-center">{error}</div>}
+
+        <div className="flex justify-between items-center">
+          <button onClick={onBack} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <button onClick={handleResend} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </button>
+        </div>
+
+        {isLoading && <div className="text-center text-gray-400">Баталгаажуулж байна...</div>}
       </div>
     </div>
   );
