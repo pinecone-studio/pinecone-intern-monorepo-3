@@ -1,11 +1,5 @@
 import { model, models, Schema } from 'mongoose';
 
-// const DiscountSchema = new Schema({
-//   value: { type: Number, default: 0 },
-//   startDate: { type: Date },
-//   endDate: { type: Date },
-// });
-
 export type FoodSchemaType = {
   _id: Schema.Types.ObjectId;
   name: string;
@@ -17,8 +11,7 @@ export type FoodSchemaType = {
   //   startDate: Date;
   //   endDate: Date;
   // };
-  // categoryId: Schema.Types.ObjectId;
-  // categoryId: string;
+  categoryId: Schema.Types.ObjectId;
 };
 
 const foodSchema = new Schema<FoodSchemaType>(
@@ -39,18 +32,14 @@ const foodSchema = new Schema<FoodSchemaType>(
       type: Boolean,
       require: true,
     },
-    // discount: { type: DiscountSchema },
 
-    // categoryId: {
-    //   type: String,
-    //   required: true,
-    // },
-
-    // { timestamps: true },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref:"Category",
+      required: false,
+    },
   },
   { timestamps: true }
 );
-
-// export const Food = model<FoodSchemaType>("FoodRes", foodSchema);
 
 export const Food = models.FoodRes || model('FoodRes', foodSchema);

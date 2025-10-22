@@ -33,7 +33,7 @@ describe('GetAllFood', () => {
   });
 
   it('алдаа гарсан тохиолдолд хоосон массив буцаах ёстой', async () => {
-    (Food.find as jest.Mock).mockRejectedValue(new Error('DB алдаа'));
+    (Food.find as jest.Mock).mockRejectedValue(new Error('DB алдаа food test'));
     const result = await GetAllFoods();
 
     expect(result).toEqual([]);

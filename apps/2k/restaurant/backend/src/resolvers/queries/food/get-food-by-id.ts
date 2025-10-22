@@ -8,6 +8,4 @@ export const GetFoodById = async (_: unknown, { foodId }: { foodId: string }) =>
   } else {
     return [];
   }
-
-  // if(allFood.length) return allFood;
 };
