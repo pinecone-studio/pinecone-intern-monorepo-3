@@ -4,7 +4,7 @@ export const tableTypeDefs = gql`
   type Table {
     tableId: ID!
     tableName: String!
-    tableQr: String
+    tableQr: String!
   }
 
   input CreateTableInput {
