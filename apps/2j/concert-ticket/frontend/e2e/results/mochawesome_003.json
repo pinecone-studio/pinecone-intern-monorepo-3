@@ -1,0 +1,187 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 5,
+    "passes": 4,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-10-19T15:32:10.577Z",
+    "end": "2025-10-19T15:33:12.446Z",
+    "duration": 61869,
+    "testsRegistered": 5,
+    "passPercent": 80,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "6b36220c-ecd9-4aa8-829f-425166f5a99f",
+      "title": "",
+      "fullFile": "cypress/e2e/home-page.cy.tsx",
+      "file": "cypress/e2e/home-page.cy.tsx",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "65729d03-3983-4769-ab9e-acecfbd95dab",
+          "title": "Home Page",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should load the home page",
+              "fullTitle": "Home Page should load the home page",
+              "timedOut": null,
+              "duration": 142,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.url().should('eq', Cypress.config().baseUrl + '/');",
+              "err": {},
+              "uuid": "b6d40f8a-c7aa-4d7b-a5f5-efc62280b916",
+              "parentUUID": "65729d03-3983-4769-ab9e-acecfbd95dab",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display the navigation bar",
+              "fullTitle": "Home Page should display the navigation bar",
+              "timedOut": null,
+              "duration": 87,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('TICKET BOOKING').should('be.visible');",
+              "err": {},
+              "uuid": "9669ab1f-3572-411a-bcc9-3036ab549b70",
+              "parentUUID": "65729d03-3983-4769-ab9e-acecfbd95dab",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display search input",
+              "fullTitle": "Home Page should display search input",
+              "timedOut": null,
+              "duration": 72,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('input[placeholder=\"Хайх...\"]').should('be.visible');",
+              "err": {},
+              "uuid": "1e90ec5b-5972-483f-b06c-27d2772c4fe8",
+              "parentUUID": "65729d03-3983-4769-ab9e-acecfbd95dab",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display event grid or loading state",
+              "fullTitle": "Home Page should display event grid or loading state",
+              "timedOut": null,
+              "duration": 77,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('body').should('exist');",
+              "err": {},
+              "uuid": "ae5303fc-6fab-4c7d-a9fa-972e05028a1f",
+              "parentUUID": "65729d03-3983-4769-ab9e-acecfbd95dab",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should navigate to search on search submit",
+              "fullTitle": "Home Page should navigate to search on search submit",
+              "timedOut": null,
+              "duration": 20495,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('input[placeholder=\"Хайх...\"]').type('concert{enter}');\ncy.url().should('include', '/search');",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 20000ms: expected 'http://localhost:3000/' to include '/search'",
+                "estack": "AssertionError: Timed out retrying after 20000ms: expected 'http://localhost:3000/' to include '/search'\n    at Context.eval (webpack:///./cypress/e2e/home-page.cy.tsx:24:13)",
+                "diff": null
+              },
+              "uuid": "3d69dd52-d346-4537-b7df-e7ab071b7f83",
+              "parentUUID": "65729d03-3983-4769-ab9e-acecfbd95dab",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "b6d40f8a-c7aa-4d7b-a5f5-efc62280b916",
+            "9669ab1f-3572-411a-bcc9-3036ab549b70",
+            "1e90ec5b-5972-483f-b06c-27d2772c4fe8",
+            "ae5303fc-6fab-4c7d-a9fa-972e05028a1f"
+          ],
+          "failures": [
+            "3d69dd52-d346-4537-b7df-e7ab071b7f83"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 20873,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "cypress/results",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}

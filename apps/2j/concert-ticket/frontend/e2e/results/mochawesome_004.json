@@ -1,0 +1,201 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 6,
+    "passes": 6,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-10-19T15:33:13.213Z",
+    "end": "2025-10-19T15:33:14.646Z",
+    "duration": 1433,
+    "testsRegistered": 6,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b138969a-73c7-4928-9667-f5e1cf7d8de1",
+      "title": "",
+      "fullFile": "cypress/e2e/payment-page.cy.tsx",
+      "file": "cypress/e2e/payment-page.cy.tsx",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "1ef5bdfe-3447-49a3-a55e-70270c29e7bb",
+          "title": "Payment Page",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should load payment page",
+              "fullTitle": "Payment Page should load payment page",
+              "timedOut": null,
+              "duration": 1004,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.url().should('include', '/payment');",
+              "err": {},
+              "uuid": "74deb3e1-50e1-4b17-b4b0-a6c87b4af1ba",
+              "parentUUID": "1ef5bdfe-3447-49a3-a55e-70270c29e7bb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display back button",
+              "fullTitle": "Payment Page should display back button",
+              "timedOut": null,
+              "duration": 78,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('[data-testid=\"back-button\"]').should('be.visible');",
+              "err": {},
+              "uuid": "84912768-b7f2-41fa-b62c-73bf519b2136",
+              "parentUUID": "1ef5bdfe-3447-49a3-a55e-70270c29e7bb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display payment title",
+              "fullTitle": "Payment Page should display payment title",
+              "timedOut": null,
+              "duration": 85,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Төлбөр төлөх').should('be.visible');",
+              "err": {},
+              "uuid": "306e4bc1-4ffb-4520-a71f-b69b7cb5e2d5",
+              "parentUUID": "1ef5bdfe-3447-49a3-a55e-70270c29e7bb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display total amount",
+              "fullTitle": "Payment Page should display total amount",
+              "timedOut": null,
+              "duration": 75,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('129,000₮').should('be.visible');",
+              "err": {},
+              "uuid": "29ea40cf-5f40-48b8-87ea-d3388a535bda",
+              "parentUUID": "1ef5bdfe-3447-49a3-a55e-70270c29e7bb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display payment methods",
+              "fullTitle": "Payment Page should display payment methods",
+              "timedOut": null,
+              "duration": 76,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Qpay').should('be.visible');\ncy.contains('Social Pay').should('be.visible');",
+              "err": {},
+              "uuid": "0a9c0068-54ad-434e-982f-b99baeef1fde",
+              "parentUUID": "1ef5bdfe-3447-49a3-a55e-70270c29e7bb",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display pay button",
+              "fullTitle": "Payment Page should display pay button",
+              "timedOut": null,
+              "duration": 67,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Төлбөр төлөх').should('be.visible');",
+              "err": {},
+              "uuid": "8965ad1a-1097-4b7c-8e77-be5045af2f8b",
+              "parentUUID": "1ef5bdfe-3447-49a3-a55e-70270c29e7bb",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "74deb3e1-50e1-4b17-b4b0-a6c87b4af1ba",
+            "84912768-b7f2-41fa-b62c-73bf519b2136",
+            "306e4bc1-4ffb-4520-a71f-b69b7cb5e2d5",
+            "29ea40cf-5f40-48b8-87ea-d3388a535bda",
+            "0a9c0068-54ad-434e-982f-b99baeef1fde",
+            "8965ad1a-1097-4b7c-8e77-be5045af2f8b"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 1385,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "cypress/results",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}

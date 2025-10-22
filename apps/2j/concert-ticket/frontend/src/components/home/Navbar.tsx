@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Search } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useMyProfileQuery } from '@/generated';
 
 interface Props {
   className?: string;
@@ -11,6 +12,7 @@ const Navbar: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [query, setQuery] = useState('');
+  const { data: profileData, loading: profileLoading } = useMyProfileQuery();
 
   const goSearch = (q?: string) => {
     const keyword = (q ?? query).trim();
@@ -53,16 +55,23 @@ const Navbar: React.FC<Props> = ({ className }) => {
           <button aria-label="Сагс" className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px]">
             <ShoppingCart size={16} />
           </button>
-          <button 
-            onClick={() => router.push('/profile')}
-            className="flex items-center gap-[8px] rounded-[8px] bg-[#1a1a1a] px-[12px] py-[6px] text-[12px] hover:bg-[#2a2a2a] transition-colors"
-          >
-            <div className="h-[20px] w-[20px] rounded-full bg-gray-600"></div>
-            <span className="hidden sm:inline">name@ticketbooking.com</span>
-          </button>
-          <button className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex">Бүртгүүлэх</button>
-          <button className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px]"
-            style={{ backgroundColor: '#00B7F4' }}>Нэвтрэх</button>
+          {profileLoading ? (
+            <div className="h-[38px] w-[200px] animate-pulse rounded-[8px] bg-[#1a1a1a]"></div>
+          ) : profileData?.myProfile ? (
+            <button
+              onClick={() => router.push('/profile')}
+              className="flex items-center gap-[8px] rounded-[8px] border border-gray-700 bg-[#1a1a1a] px-[12px] py-[8px] text-[12px] text-white transition-colors"
+            >
+              <span className="hidden sm:inline">{profileData.myProfile.email}</span>
+            </button>
+          ) : (
+            <>
+              <button className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex">Бүртгүүлэх</button>
+              <button className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px]" style={{ backgroundColor: '#00B7F4' }}>
+                Нэвтрэх
+              </button>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -70,5 +79,3 @@ const Navbar: React.FC<Props> = ({ className }) => {
 };
 
 export default Navbar;
-
-

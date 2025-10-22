@@ -280,6 +280,32 @@
           "params": "forward"
         }
       ]
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx vercel --prebuilt",
+        "cwd": "apps/2j/concert-ticket/frontend"
+      }
+    },
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/2j/concert-ticket/frontend/cypress.config.ts",
+        "devServerTarget": "ticket-frontend:serve:development",
+        "testingType": "e2e"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "ticket-frontend:serve:production"
+        }
+      }
+    },
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen --config apps/2j/concert-ticket/frontend/codegen.ts"
+      }
     }
   },
   "tags": []

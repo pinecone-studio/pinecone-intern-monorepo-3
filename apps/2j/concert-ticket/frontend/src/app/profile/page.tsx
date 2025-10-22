@@ -65,7 +65,7 @@ const ProfilePage: React.FC = () => {
   if (profileLoading) return <LoadingState />;
   if (profileError) return <ErrorState />;
 
-  return <ProfilePageContent customerData={customerData} handleCustomerChange={handleCustomerChange} handleSaveCustomer={handleSaveCustomer} isLoading={isLoading || updateLoading} />;
+  return <ProfilePageContent customerData={customerData} handleCustomerChange={handleCustomerChange} handleSaveCustomer={handleSaveCustomer} isLoading={isLoading} updateLoading={updateLoading} />;
 };
 
 interface ProfilePageContentProps {
@@ -73,9 +73,10 @@ interface ProfilePageContentProps {
   handleCustomerChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSaveCustomer: () => void;
   isLoading: boolean;
+  updateLoading: boolean;
 }
 
-const ProfilePageContent: React.FC<ProfilePageContentProps> = ({ customerData, handleCustomerChange, handleSaveCustomer, isLoading }) => {
+const ProfilePageContent: React.FC<ProfilePageContentProps> = ({ customerData, handleCustomerChange, handleSaveCustomer, isLoading, updateLoading }) => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
@@ -114,6 +115,7 @@ const ProfilePageContent: React.FC<ProfilePageContentProps> = ({ customerData, h
                     onChange={handleCustomerChange}
                     placeholder="И-мэйл хаяг оруулах"
                     className="w-full rounded-[8px] border border-gray-700 bg-[#1a1a1a] px-[12px] py-[10px] text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+                    disabled
                   />
                 </div>
               </div>

@@ -22,7 +22,7 @@ const makeClient = () => {
     return {
       headers: {
         ...headers,
-        authorization: token ?? '',
+        authorization: token ? `Bearer ${token}` : '',
       },
     };
   });
@@ -30,12 +30,7 @@ const makeClient = () => {
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: authLink.concat(httpLink),
-    devtools: {
-      enabled: process.env.NODE_ENV === 'development',
-    },
   });
 };
 
-export const ApolloWrapper = ({ children }: PropsWithChildren) => {
-  return <ApolloNextAppProvider makeClient={makeClient}>{children}</ApolloNextAppProvider>;
-};
+export const ApolloWrapper = ({ children }: PropsWithChildren) => <ApolloNextAppProvider makeClient={makeClient}>{children}</ApolloNextAppProvider>;

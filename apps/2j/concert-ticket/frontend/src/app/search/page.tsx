@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
@@ -9,50 +9,76 @@ import { useSearchConcertsQuery } from '@/generated';
 import { Search, Calendar } from 'lucide-react';
 import type { EventItem } from '@/types/Event.type';
 
-interface SearchFiltersProps {
+interface DateFilterButtonProps {
   date: string | undefined;
-  setDate: (date: string | undefined) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  items: EventItem[];
+  onClick: () => void;
 }
 
-const SearchFilters = ({ date, setDate, open, setOpen, items }: SearchFiltersProps) => (
-  <div className="mb-[24px] flex flex-wrap gap-[12px]">
-    <button onClick={() => setOpen(!open)} className="flex items-center gap-[8px] rounded-[8px] border border-gray-600 bg-gray-900 px-[16px] py-[8px] text-[14px] text-gray-300 hover:bg-gray-800">
-      <Calendar className="h-[16px] w-[16px]" />
-      {date ? new Date(date).toLocaleDateString('mn-MN') : 'Огноо сонгох'}
-    </button>
-    {open && (
-      <div className="w-full rounded-[8px] border border-gray-600 bg-gray-900 p-[16px]">
-        <div className="grid grid-cols-2 gap-[8px] sm:grid-cols-3 md:grid-cols-4">
-          {getUniqueDates(items).map((d) => (
-            <button
-              key={d}
-              onClick={() => {
-                setDate(d);
-                setOpen(false);
-              }}
-              className={`rounded-[6px] px-[12px] py-[6px] text-[12px] transition-colors ${date === d ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
-            >
-              {new Date(d).toLocaleDateString('mn-MN')}
-            </button>
-          ))}
-        </div>
-      </div>
-    )}
-  </div>
+const DateFilterButton: React.FC<DateFilterButtonProps> = ({ date, onClick }) => (
+  <button onClick={onClick} className="w-full flex items-center justify-between gap-[8px] rounded-[8px] bg-transparent px-[16px] py-[10px] text-[14px] text-gray-300 focus:outline-none">
+    <span>{date ? new Date(date).toLocaleDateString('mn-MN') : 'Огноо'}</span>
+    <Calendar className="h-[16px] w-[16px]" />
+  </button>
 );
+
+interface DateSelectionPanelProps {
+  items: EventItem[];
+  date: string | undefined;
+  setDate: (date: string) => void;
+  onClose: () => void;
+}
+
+const DateSelectionPanel: React.FC<DateSelectionPanelProps> = ({ items, date, setDate, onClose }) => {
+  const uniqueDates = getUniqueDates(items);
+
+  if (uniqueDates.length === 0) {
+    return <div className="absolute left-0 top-full z-10 mt-[8px] w-64 rounded-[8px] border border-gray-800 bg-black p-[8px] text-center text-gray-400">Огноо олдсонгүй</div>;
+  }
+
+  return (
+    <div className="absolute left-0 top-full z-10 mt-[8px] w-64 rounded-[8px] border border-gray-800 bg-black p-[8px]">
+      <div className="grid max-h-40 grid-cols-2 gap-[8px] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {uniqueDates.map((d) => (
+          <button
+            key={d}
+            onClick={() => {
+              setDate(d);
+              onClose();
+            }}
+            className={`w-full rounded-[8px] border border-gray-700 px-[12px] py-[8px] text-center text-[12px] transition-colors ${
+              date === d ? 'bg-[#1a1a1a] text-white' : 'text-gray-300 hover:bg-[#1a1a1a]'
+            }`}
+          >
+            {new Date(d).toLocaleDateString('mn-MN')}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const SearchPageInner: React.FC = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [keyword, setKeyword] = useState('');
+  const dateFilterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const q = searchParams.get('q') || '';
     setKeyword(q);
   }, [searchParams]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dateFilterRef.current && !dateFilterRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const [date, setDate] = useState<string | undefined>(undefined);
   const [open, setOpen] = useState(false);
@@ -94,19 +120,21 @@ const SearchPageInner: React.FC = () => {
       <Navbar />
 
       <main className="mx-auto max-w-[1200px] px-[16px] py-[16px]">
-        <div className="mb-[16px] flex items-center gap-[8px]">
-          <div className="relative w-[240px] sm:w-[280px]">
+        <div className="mb-[24px] flex w-full items-center gap-[12px] md:w-1/2">
+          <div className="relative flex-grow">
             <input
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && onEnter()}
               placeholder="Хайлт..."
-              className="w-full rounded-[8px] border border-gray-700 bg-[#1a1a1a] py-[10px] pl-[14px] pr-[40px] text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+              className="w-full rounded-[8px] bg-[#1a1a1a] py-[10px] pl-[14px] pr-[40px] text-white placeholder-gray-400 focus:outline-none"
             />
             <Search size={18} className="absolute right-[12px] top-1/2 -translate-y-1/2 text-gray-400" />
           </div>
-
-          <SearchFilters date={date} setDate={setDate} open={open} setOpen={setOpen} items={items} />
+          <div className="relative" ref={dateFilterRef}>
+            <DateFilterButton date={date} onClick={() => setOpen(!open)} />
+            {open && <DateSelectionPanel items={items} date={date} setDate={setDate} onClose={() => setOpen(false)} />}
+          </div>
         </div>
 
         {error && <div className="rounded-[8px] bg-red-900/30 p-[12px] text-[12px] text-red-200">Өгөгдөл татахад алдаа гарлаа.</div>}

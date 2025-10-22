@@ -1,0 +1,206 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 6,
+    "passes": 5,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-10-19T15:31:06.144Z",
+    "end": "2025-10-19T15:32:09.613Z",
+    "duration": 63469,
+    "testsRegistered": 6,
+    "passPercent": 83.33333333333334,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "8bb6964c-2616-4517-a17a-9b4214a2ce92",
+      "title": "",
+      "fullFile": "cypress/e2e/detail-page.cy.tsx",
+      "file": "cypress/e2e/detail-page.cy.tsx",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "a302b2d2-b878-4b4c-8082-aa3dd8d485c9",
+          "title": "Detail Page",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should render navigation bar with all elements",
+              "fullTitle": "Detail Page Should render navigation bar with all elements",
+              "timedOut": null,
+              "duration": 732,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Check logo\ncy.get('[data-testid=\"logo\"]').should('contain', 'TICKET BOOKING');\ncy.get('[data-testid=\"logo-dot\"]').should('have.class', 'bg-cyan-400');\n// Check search bar\ncy.get('[data-testid=\"search-input\"]').should('have.attr', 'placeholder', 'Хайлт');\ncy.get('[data-testid=\"search-button\"]').should('be.visible');\n// Check cart icon\ncy.get('[data-testid=\"cart-button\"]').should('be.visible');\n// Check buttons\ncy.get('[data-testid=\"register-button\"]').should('contain', 'Бүртгүүлэх');\ncy.get('[data-testid=\"login-button\"]').should('contain', 'Нэвтрэх');",
+              "err": {},
+              "uuid": "ce22d6d1-7f02-484f-b271-4e2cf6243574",
+              "parentUUID": "a302b2d2-b878-4b4c-8082-aa3dd8d485c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should render footer with contact information",
+              "fullTitle": "Detail Page Should render footer with contact information",
+              "timedOut": null,
+              "duration": 119,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Check footer logo\ncy.get('[data-testid=\"footer-logo\"]').should('contain', 'TICKET BOOKING');\ncy.get('[data-testid=\"footer-copyright\"]').should('contain', '© 2024 Booking Mongolia');\n// Check contact information\ncy.get('[data-testid=\"contact-header\"]').should('contain', 'Contact Information');\ncy.get('[data-testid=\"email\"]').should('contain', 'support@ticketinbooking.mn');\ncy.get('[data-testid=\"phone\"]').should('contain', '+976 (11) 123-4567');\ncy.get('[data-testid=\"support\"]').should('contain', 'Available 24/7');",
+              "err": {},
+              "uuid": "11956d9d-a32b-439c-afed-bcef46084e29",
+              "parentUUID": "a302b2d2-b878-4b4c-8082-aa3dd8d485c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should handle search functionality",
+              "fullTitle": "Detail Page Should handle search functionality",
+              "timedOut": null,
+              "duration": 20565,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "const searchQuery = 'concert';\ncy.get('[data-testid=\"search-input\"]').type(searchQuery);\ncy.get('[data-testid=\"search-form\"]').submit();\n// Check that search input has the value\ncy.get('[data-testid=\"search-input\"]').should('have.value', searchQuery);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 20000ms: expected '<input.w-full.bg-[#1a1a1a].text-white.placeholder-gray-500.rounded-lg.py-2.5.pl-4.pr-12.border.border-gray-800.focus:outline-none.focus:border-gray-700.transition-colors>' to have value 'concert', but the value was ''",
+                "estack": "AssertionError: Timed out retrying after 20000ms: expected '<input.w-full.bg-[#1a1a1a].text-white.placeholder-gray-500.rounded-lg.py-2.5.pl-4.pr-12.border.border-gray-800.focus:outline-none.focus:border-gray-700.transition-colors>' to have value 'concert', but the value was ''\n    at Context.eval (webpack:///./cypress/e2e/detail-page.cy.tsx:41:43)",
+                "diff": "+ 'concert'\n"
+              },
+              "uuid": "94295369-c840-445e-8eaa-3c4efa6ea45b",
+              "parentUUID": "a302b2d2-b878-4b4c-8082-aa3dd8d485c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should handle button clicks",
+              "fullTitle": "Detail Page Should handle button clicks",
+              "timedOut": null,
+              "duration": 601,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Test register button\ncy.get('[data-testid=\"register-button\"]').click();\ncy.get('[data-testid=\"register-button\"]').should('be.visible');\n// Test login button\ncy.get('[data-testid=\"login-button\"]').click();\ncy.get('[data-testid=\"login-button\"]').should('be.visible');\n// Test cart button\ncy.get('[data-testid=\"cart-button\"]').click();\ncy.get('[data-testid=\"cart-button\"]').should('be.visible');",
+              "err": {},
+              "uuid": "0ffd4047-9ad8-4b19-ad62-7343a129d7bf",
+              "parentUUID": "a302b2d2-b878-4b4c-8082-aa3dd8d485c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should be responsive on mobile",
+              "fullTitle": "Detail Page Should be responsive on mobile",
+              "timedOut": null,
+              "duration": 118,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.viewport(375, 667); // iPhone SE size\ncy.get('[data-testid=\"logo\"]').should('be.visible');\ncy.get('[data-testid=\"search-input\"]').should('be.visible');",
+              "err": {},
+              "uuid": "84b192e3-94a8-45c5-ab6f-b601eab18c20",
+              "parentUUID": "a302b2d2-b878-4b4c-8082-aa3dd8d485c9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should be responsive on tablet",
+              "fullTitle": "Detail Page Should be responsive on tablet",
+              "timedOut": null,
+              "duration": 120,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.viewport(768, 1024); // iPad size\ncy.get('[data-testid=\"logo\"]').should('be.visible');\ncy.get('[data-testid=\"search-input\"]').should('be.visible');",
+              "err": {},
+              "uuid": "73fa14c7-cf5d-4420-9452-660681a158d3",
+              "parentUUID": "a302b2d2-b878-4b4c-8082-aa3dd8d485c9",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "ce22d6d1-7f02-484f-b271-4e2cf6243574",
+            "11956d9d-a32b-439c-afed-bcef46084e29",
+            "0ffd4047-9ad8-4b19-ad62-7343a129d7bf",
+            "84b192e3-94a8-45c5-ab6f-b601eab18c20",
+            "73fa14c7-cf5d-4420-9452-660681a158d3"
+          ],
+          "failures": [
+            "94295369-c840-445e-8eaa-3c4efa6ea45b"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 22255,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "cypress/results",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}

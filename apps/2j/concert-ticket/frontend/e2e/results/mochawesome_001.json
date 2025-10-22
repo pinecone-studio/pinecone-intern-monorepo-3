@@ -1,0 +1,201 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 6,
+    "passes": 6,
+    "pending": 0,
+    "failures": 0,
+    "start": "2025-10-19T15:31:03.166Z",
+    "end": "2025-10-19T15:31:05.317Z",
+    "duration": 2151,
+    "testsRegistered": 6,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "b53cb9d1-d565-4ec6-8750-f7b4d2faa018",
+      "title": "",
+      "fullFile": "cypress/e2e/checkout-page.cy.tsx",
+      "file": "cypress/e2e/checkout-page.cy.tsx",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "0813d95d-da53-4730-8568-4cc12b8683b4",
+          "title": "Checkout Page",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "should load checkout page",
+              "fullTitle": "Checkout Page should load checkout page",
+              "timedOut": null,
+              "duration": 1357,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.url().should('include', '/checkout');",
+              "err": {},
+              "uuid": "b918a058-d185-40f5-9837-ee0ba8ed3d92",
+              "parentUUID": "0813d95d-da53-4730-8568-4cc12b8683b4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display back button",
+              "fullTitle": "Checkout Page should display back button",
+              "timedOut": null,
+              "duration": 391,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('[data-testid=\"back-button\"]').should('be.visible');",
+              "err": {},
+              "uuid": "2f58b9b7-fba0-430a-b061-95fb0740b217",
+              "parentUUID": "0813d95d-da53-4730-8568-4cc12b8683b4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display checkout title",
+              "fullTitle": "Checkout Page should display checkout title",
+              "timedOut": null,
+              "duration": 112,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Захиалга баталгаажуулах').should('be.visible');",
+              "err": {},
+              "uuid": "f2e2b846-8fca-44eb-acf0-915924148d99",
+              "parentUUID": "0813d95d-da53-4730-8568-4cc12b8683b4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display phone input",
+              "fullTitle": "Checkout Page should display phone input",
+              "timedOut": null,
+              "duration": 81,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('input[placeholder=\"9900-0000\"]').should('be.visible');",
+              "err": {},
+              "uuid": "32ce273d-92c8-4f00-89a3-b03aa8bc6919",
+              "parentUUID": "0813d95d-da53-4730-8568-4cc12b8683b4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display email input",
+              "fullTitle": "Checkout Page should display email input",
+              "timedOut": null,
+              "duration": 95,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.get('input[placeholder=\"name@example.com\"]').should('be.visible');",
+              "err": {},
+              "uuid": "a960c10e-3494-446e-9bfc-a454d82ee8d5",
+              "parentUUID": "0813d95d-da53-4730-8568-4cc12b8683b4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "should display continue button",
+              "fullTitle": "Checkout Page should display continue button",
+              "timedOut": null,
+              "duration": 70,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.contains('Үргэлжлүүлэх').should('be.visible');",
+              "err": {},
+              "uuid": "281fbd97-e887-4d95-86be-4d882cf8fe65",
+              "parentUUID": "0813d95d-da53-4730-8568-4cc12b8683b4",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "b918a058-d185-40f5-9837-ee0ba8ed3d92",
+            "2f58b9b7-fba0-430a-b061-95fb0740b217",
+            "f2e2b846-8fca-44eb-acf0-915924148d99",
+            "32ce273d-92c8-4f00-89a3-b03aa8bc6919",
+            "a960c10e-3494-446e-9bfc-a454d82ee8d5",
+            "281fbd97-e887-4d95-86be-4d882cf8fe65"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 2106,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.2.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": false,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "id": "default",
+        "reportDir": "cypress/results",
+        "overwrite": false,
+        "html": false,
+        "json": true
+      },
+      "version": "6.3.0"
+    }
+  }
+}
