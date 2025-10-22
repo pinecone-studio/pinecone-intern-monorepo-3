@@ -1,0 +1,77 @@
+query MyProfile {
+  myProfile {
+    id
+    email
+    username
+    phoneNumber
+    address
+    role
+    createdAt
+    updatedAt
+  }
+}
+
+mutation UpdateUserProfile($input: UpdateUserInput!) {
+  updateUserProfile(input: $input) {
+    id
+    email
+    username
+    phoneNumber
+    address
+    role
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateBooking($input: CreateBookingInput!) {
+  createBooking(input: $input) {
+    id
+    bookingDate
+    quantity
+    unitPrice
+    totalPrice
+    status
+    paymentStatus
+    canCancel
+    cancellationDeadline
+    concert {
+      id
+      name
+      date
+      time
+      venue
+    }
+    ticketCategory {
+      id
+      type
+      unitPrice
+    }
+  }
+}
+
+mutation UpdateBookingPaymentStatus($id: ID!, $paymentStatus: PaymentStatus!) {
+  updateBookingPaymentStatus(id: $id, paymentStatus: $paymentStatus) {
+    id
+    bookingDate
+    quantity
+    unitPrice
+    totalPrice
+    status
+    paymentStatus
+    canCancel
+    cancellationDeadline
+    concert {
+      id
+      name
+      date
+      time
+      venue
+    }
+    ticketCategory {
+      id
+      type
+      unitPrice
+    }
+  }
+}

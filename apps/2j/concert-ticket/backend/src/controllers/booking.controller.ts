@@ -200,7 +200,7 @@ export class BookingController {
       }
 
       // Статусыг өөрчлөх
-      booking.status = status as 'PENDING' | 'COMPLETED' | 'CANCELLED' | 'REFUNDED';
+      booking.status = status as 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'CANCELLATION_REQUESTED';
       if (status === 'CANCELLED') {
         booking.canCancel = false;
       }
@@ -212,6 +212,43 @@ export class BookingController {
         .populate('ticketCategory');
     } catch (error) {
       throw new Error(`Захиалгын статус өөрчлөхөд алдаа гарлаа: ${error}`);
+    }
+  }
+
+  // Захиалгын төлбөрийн статус өөрчлөх
+  static async updateBookingPaymentStatus(bookingId: string, paymentStatus: 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED') {
+    try {
+      const booking = await Booking.findById(bookingId);
+      if (!booking) {
+        throw new Error('Захиалга олдсонгүй');
+      }
+
+      // Төлбөрийн статусыг өөрчлөх
+      booking.paymentStatus = paymentStatus;
+      
+      // Төлбөр амжилттай болсны дараа захиалгын статусыг CONFIRMED болгох
+      if (paymentStatus === 'COMPLETED') {
+        booking.status = 'CONFIRMED';
+        
+        // Билетний боломжит тоо хасах
+        const ticketCategory = await TicketCategory.findById(booking.ticketCategory);
+        if (ticketCategory) {
+          ticketCategory.availableQuantity -= booking.quantity;
+          if (ticketCategory.availableQuantity < 0) {
+            ticketCategory.availableQuantity = 0;
+          }
+          await ticketCategory.save();
+        }
+      }
+      
+      await booking.save();
+
+      return await Booking.findById(bookingId)
+        .populate('user', '-password')
+        .populate('concert')
+        .populate('ticketCategory');
+    } catch (error) {
+      throw new Error(`Захиалгын төлбөрийн статус өөрчлөхөд алдаа гарлаа: ${error}`);
     }
   }
 

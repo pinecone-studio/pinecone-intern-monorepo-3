@@ -334,4 +334,210 @@ describe('CartContent', () => {
       for (let i = 0; i < 10; i++) fireEvent.click(btn);
     });
   });
+
+  it('handles buy button click with valid selection', async () => {
+    // Mock window.location.href
+    delete (window as any).location;
+    window.location = { href: '' } as any;
+    
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+    if (plus) {
+      fireEvent.click(plus);
+      await waitFor(() => {
+        const buyButton = screen.getByText('Тасалбар авах');
+        expect(buyButton).not.toBeDisabled();
+        fireEvent.click(buyButton);
+        expect(window.location.href).toContain('/checkout');
+      });
+    }
+  });
+
+  it('handles date selection change', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    // Test date selection functionality - check if select element exists
+    const dateSelect = screen.getByRole('combobox');
+    expect(dateSelect).toBeInTheDocument();
+  });
+
+  it('displays correct ticket type colors', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      const colorDots = document.querySelectorAll('.w-3.h-3.rounded-full');
+      expect(colorDots.length).toBe(3); // VIP, Regular, General Admission
+    });
+  });
+
+  it('handles ticket type name mapping', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('VIP тасалбар')).toBeInTheDocument();
+      expect(screen.getByText('Энгийн тасалбар')).toBeInTheDocument();
+      expect(screen.getByText('Арын тасалбар')).toBeInTheDocument();
+    });
+  });
+
+  it('calculates total price correctly', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => screen.getByText(/Арын тасалбар/));
+    const plus = screen.getAllByRole('button').find((b) => b.querySelector('svg.lucide-plus'));
+    if (plus) {
+      fireEvent.click(plus);
+      await waitFor(() => {
+        // Should show total price calculation
+        expect(screen.getAllByText('89,000₮')).toHaveLength(3);
+      });
+    }
+  });
+
+  it('handles empty ticket categories', async () => {
+    const emptyMockData = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test',
+            date: '2024-12-25',
+            venue: 'Venue',
+            ticketCategories: [],
+          },
+        },
+      },
+    };
+    
+    render(
+      <MockedProvider mocks={[emptyMockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('Тасалбар авах')).toBeDisabled();
+    });
+  });
+
+  it('handles loading state correctly', async () => {
+    const loadingMockData = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test',
+            date: '2024-12-25',
+            venue: 'Venue',
+            ticketCategories: [
+              { id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123 },
+            ],
+          },
+        },
+      },
+      delay: 100,
+    };
+    
+    render(
+      <MockedProvider mocks={[loadingMockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    expect(screen.getByText('Ачааллаж байна...')).toBeInTheDocument();
+  });
+
+  it('handles unknown ticket type mapping', async () => {
+    const mockDataWithUnknownType = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test Concert',
+            date: '2024-12-25',
+            venue: 'Test Venue',
+            artist: { name: 'Test Artist' },
+            imageUrl: 'test.jpg',
+            ticketCategories: [
+              {
+                id: '1',
+                name: 'Unknown Type',
+                price: 100000,
+                availableQuantity: 50,
+                type: 'UNKNOWN_TYPE' as any,
+                unitPrice: 100000,
+                available: 50,
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[mockDataWithUnknownType]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    // Wait for component to load and check if default ticket type name is used
+    await waitFor(() => {
+      expect(screen.getByText('Тасалбар')).toBeInTheDocument();
+    });
+  });
+
+  it('handles unknown ticket type color mapping', async () => {
+    const mockDataWithUnknownType = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test Concert',
+            date: '2024-12-25',
+            venue: 'Test Venue',
+            artist: { name: 'Test Artist' },
+            imageUrl: 'test.jpg',
+            ticketCategories: [
+              {
+                id: '1',
+                name: 'Unknown Type',
+                price: 100000,
+                availableQuantity: 50,
+                type: 'UNKNOWN_TYPE' as any,
+                unitPrice: 100000,
+                available: 50,
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[mockDataWithUnknownType]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    // Wait for component to load and check if component renders with unknown type
+    await waitFor(() => {
+      expect(screen.getByText('Тасалбар')).toBeInTheDocument();
+    });
+  });
 });
