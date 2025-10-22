@@ -12,7 +12,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { id: 'profile', label: 'Хэрэглэгчийн мэдээлэл', path: '/profile' },
   { id: 'orders', label: 'Захиалгын түүх', path: '/orders' },
-  { id: 'forgot-password', label: 'Нууц үг сэргээх', path: '/forgot-password' }
+  { id: 'change-password', label: 'Нууц үг солих', path: '/change-password' }
 ];
 
 const ProfileMenu: React.FC = () => {

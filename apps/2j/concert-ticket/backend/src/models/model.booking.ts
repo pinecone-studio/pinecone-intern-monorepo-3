@@ -87,10 +87,24 @@ bookingSchema.pre('save', function(next) {
   next();
 });
 
-// Cancellation deadline-г автоматаар тооцоолох (24 цагийн дараа)
-bookingSchema.pre('save', function(next) {
-  if (this.isNew) {
-    this.cancellationDeadline = new Date(Date.now() + 24 * 60 * 60 * 1000);
+// Cancellation deadline-г автоматаар тооцоолох (концертын огнооноос 24 цагийн өмнө)
+bookingSchema.pre('save', async function(next) {
+  if (this.isNew && !this.cancellationDeadline) {
+    try {
+      // Concert-ийн огноог авах
+      const { Concert } = await import('./model.concert');
+      const concert = await Concert.findById(this.concert);
+      
+      if (concert) {
+        this.cancellationDeadline = new Date(concert.date.getTime() - 24 * 60 * 60 * 1000);
+      } else {
+        // Fallback: одоогийн цагаас 24 цагийн дараа
+        this.cancellationDeadline = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      }
+    } catch (error) {
+      // Fallback: одоогийн цагаас 24 цагийн дараа
+      this.cancellationDeadline = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    }
   }
   next();
 });

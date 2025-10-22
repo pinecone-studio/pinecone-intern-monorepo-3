@@ -56,28 +56,24 @@ interface ConcertContentProps {
   concertId: string;
 }
 
+const initSelectedDate = (concertDate?: string | null): string => {
+  if (concertDate) {
+    let date: Date | null = null;
+    if (/^\d+$/.test(concertDate)) date = new Date(parseInt(concertDate));
+    else date = new Date(concertDate);
+    if (date && !isNaN(date.getTime())) {
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      return `${mm}.${dd}`;
+    }
+  }
+  return '';
+};
+
+// eslint-disable-next-line complexity
 const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
   const [selectedDate, setSelectedDate] = React.useState<string>(() => {
-    if (concert.date) {
-      // Огноо форматлах функц - MM.DD формат
-      try {
-        let date: Date;
-        if (/^\d+$/.test(concert.date)) {
-          date = new Date(parseInt(concert.date));
-        } else {
-          date = new Date(concert.date);
-        }
-        if (!isNaN(date.getTime())) {
-          const mm = String(date.getMonth() + 1).padStart(2, '0');
-          const dd = String(date.getDate()).padStart(2, '0');
-               const formatted = `${mm}.${dd}`;
-               return formatted;
-        }
-      } catch (error) {
-        console.error('Date formatting error:', error);
-      }
-    }
-    return '';
+    return initSelectedDate(concert.date);
   });
 
   const handleBookTicket = () => {
@@ -151,12 +147,17 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      <HeroSlider title={concert.name} artist={concert.mainArtist.name} dates={[formatDateToMMDD(concert.date)]} backgroundImage={concert.image ?? '/images/hero-bg.jpg'} />
+      <HeroSlider
+        title={concert.name ?? ''}
+        artist={concert.mainArtist?.name ?? ''}
+        dates={[formatDateToMMDD(concert.date ?? '')]}
+        backgroundImage={concert.image ?? '/images/hero-bg.jpg'}
+      />
       <ConcertDetails
-        eventDate={formatDateToMMDD(concert.date)}
+        eventDate={formatDateToMMDD(concert.date ?? '')}
         eventTime={concert.time}
         venue={concert.venue}
-        specialArtists={specialArtists}
+        specialArtists={specialArtists.filter((a): a is string => typeof a === 'string')}
         schedule={{ doorOpen: doorOpenTime, musicStart: musicStartTime }}
         ticketCategories={ticketCategories}
         _onBookTicket={handleBookTicket}

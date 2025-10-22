@@ -52,7 +52,7 @@ export class BookingController {
         status: 'PENDING',
         paymentStatus: 'PENDING',
         canCancel: true,
-        cancellationDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 цагийн дараа
+        cancellationDeadline: new Date(concert.date.getTime() - 24 * 60 * 60 * 1000) // Концертын огнооноос 24 цагийн өмнө
       });
 
       const savedBooking = await booking.save();
@@ -66,7 +66,13 @@ export class BookingController {
       // Populate-тайгаар буцаах
       return await Booking.findById(savedBooking._id)
         .populate('user', '-password')
-        .populate('concert')
+        .populate({
+          path: 'concert',
+          populate: {
+            path: 'mainArtist',
+            model: 'Artist'
+          }
+        })
         .populate('ticketCategory');
     } catch (error) {
       throw new Error(`Захиалга үүсгэхэд алдаа гарлаа: ${error}`);
@@ -77,7 +83,13 @@ export class BookingController {
   static async getUserBookings(userId: string) {
     try {
       const bookings = await Booking.find({ user: userId })
-        .populate('concert')
+        .populate({
+          path: 'concert',
+          populate: {
+            path: 'mainArtist',
+            model: 'Artist'
+          }
+        })
         .populate('ticketCategory')
         .sort({ bookingDate: -1 });
 
@@ -126,7 +138,13 @@ export class BookingController {
 
       return await Booking.findById(bookingId)
         .populate('user', '-password')
-        .populate('concert')
+        .populate({
+          path: 'concert',
+          populate: {
+            path: 'mainArtist',
+            model: 'Artist'
+          }
+        })
         .populate('ticketCategory');
     } catch (error) {
       throw new Error(`Захиалга цуцлахад алдаа гарлаа: ${error}`);
@@ -165,7 +183,13 @@ export class BookingController {
 
       return await Booking.findById(bookingId)
         .populate('user', '-password')
-        .populate('concert')
+        .populate({
+          path: 'concert',
+          populate: {
+            path: 'mainArtist',
+            model: 'Artist'
+          }
+        })
         .populate('ticketCategory');
     } catch (error) {
       throw new Error(`Цуцлах хүсэлт илгээхэд алдаа гарлаа: ${error}`);
@@ -177,7 +201,13 @@ export class BookingController {
     try {
       const bookings = await Booking.find({})
         .populate('user', '-password')
-        .populate('concert')
+        .populate({
+          path: 'concert',
+          populate: {
+            path: 'mainArtist',
+            model: 'Artist'
+          }
+        })
         .populate('ticketCategory')
         .sort({ bookingDate: -1 });
 
@@ -208,7 +238,13 @@ export class BookingController {
 
       return await Booking.findById(bookingId)
         .populate('user', '-password')
-        .populate('concert')
+        .populate({
+          path: 'concert',
+          populate: {
+            path: 'mainArtist',
+            model: 'Artist'
+          }
+        })
         .populate('ticketCategory');
     } catch (error) {
       throw new Error(`Захиалгын статус өөрчлөхөд алдаа гарлаа: ${error}`);
@@ -245,7 +281,13 @@ export class BookingController {
 
       return await Booking.findById(bookingId)
         .populate('user', '-password')
-        .populate('concert')
+        .populate({
+          path: 'concert',
+          populate: {
+            path: 'mainArtist',
+            model: 'Artist'
+          }
+        })
         .populate('ticketCategory');
     } catch (error) {
       throw new Error(`Захиалгын төлбөрийн статус өөрчлөхөд алдаа гарлаа: ${error}`);

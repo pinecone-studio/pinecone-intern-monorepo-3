@@ -286,6 +286,10 @@ async function createMockBookings(users: unknown[], ticketCategories: unknown[])
 
     // Тасалбарын тоо хүрэлцэх эсэхийг шалгах
     if (ticketCategory.availableQuantity >= quantity) {
+      // Concert-ийн огноог авах
+      const concert = await Concert.findById(ticketCategory.concert);
+      const concertDate = concert ? new Date(concert.date) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      
       const booking = {
         user: user._id,
         concert: ticketCategory.concert,
@@ -296,7 +300,7 @@ async function createMockBookings(users: unknown[], ticketCategories: unknown[])
         status: getRandomStatus(),
         paymentStatus: getRandomPaymentStatus(),
         canCancel: Math.random() > 0.3,
-        cancellationDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        cancellationDeadline: new Date(concertDate.getTime() - 24 * 60 * 60 * 1000), // Концертын огнооноос 24 цагийн өмнө
         bookingDate: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000)
       };
 
