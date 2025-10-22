@@ -174,7 +174,7 @@ describe('CheckoutContent', () => {
   });
 
   it('uses default ticket categories when ticketData is undefined', () => {
-    render(<CheckoutContent _concertId="1" _selectedDate="2024-12-25" ticketData={undefined as any} />);
+    render(<CheckoutContent _concertId="1" _selectedDate="2024-12-25" ticketData={undefined as unknown as string} />);
     expect(screen.getByText('Арын тасалбар')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('9900-0000')).toBeInTheDocument();
   });

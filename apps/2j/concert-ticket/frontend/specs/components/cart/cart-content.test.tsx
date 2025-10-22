@@ -336,8 +336,8 @@ describe('CartContent', () => {
   });
 
   it('handles buy button click with valid selection', async () => {
-    delete (window as any).location;
-    window.location = { href: '' } as any;
+    delete (window as unknown as { location: unknown }).location;
+    window.location = { href: '' } as unknown as Location;
 
     render(
       <MockedProvider mocks={[mockData]}>
@@ -478,7 +478,7 @@ describe('CartContent', () => {
                 name: 'Unknown Type',
                 price: 100000,
                 availableQuantity: 50,
-                type: 'UNKNOWN_TYPE' as any,
+                type: 'UNKNOWN_TYPE' as unknown as 'VIP' | 'REGULAR' | 'GENERAL_ADMISSION',
                 unitPrice: 100000,
                 available: 50,
               },
@@ -515,7 +515,7 @@ describe('CartContent', () => {
                 name: 'Unknown Type',
                 price: 100000,
                 availableQuantity: 50,
-                type: 'UNKNOWN_TYPE' as any,
+                type: 'UNKNOWN_TYPE' as unknown as 'VIP' | 'REGULAR' | 'GENERAL_ADMISSION',
                 unitPrice: 100000,
                 available: 50,
               },
@@ -659,7 +659,7 @@ describe('CartContent', () => {
   it('handles selectedDate being null in date selector', async () => {
     render(
       <MockedProvider mocks={[mockData]}>
-        <CartContent concertId="test-id" selectedDate={null as any} />
+        <CartContent concertId="test-id" selectedDate={null as unknown as string} />
       </MockedProvider>
     );
     await waitFor(() => expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument());

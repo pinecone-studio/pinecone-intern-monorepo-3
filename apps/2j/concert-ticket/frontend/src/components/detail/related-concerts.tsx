@@ -17,8 +17,7 @@ import { useHomeEventsQuery } from '@/generated';
 //   }
 // };
 
-const getLowestPrice = (categories: any[]): number | null => {
-  // eslint-disable-line @typescript-eslint/no-explicit-any
+const getLowestPrice = (categories: { unitPrice?: number }[]): number | null => {
   if (!categories || categories.length === 0) return null;
 
   const prices = categories.filter((cat) => cat.unitPrice && !isNaN(cat.unitPrice)).map((cat) => cat.unitPrice);

@@ -20,21 +20,16 @@ const formatValidDate = (date: Date): string => {
   return `${mm}.${dd}`;
 };
 
+const parseTimestamp = (timestamp: string): Date => {
+  const ts = parseInt(timestamp, 10);
+  const ms = String(ts).length === 10 ? ts * 1000 : ts;
+  return new Date(ms);
+};
+
+// eslint-disable-next-line complexity
 const parseDate = (dateStr: string, timeStr?: string): Date => {
-  // Check if timestamp (10-13 digits)
-  if (/^\d{10,13}$/.test(dateStr)) {
-    const timestamp = parseInt(dateStr, 10);
-    // Unix timestamp in seconds, convert to milliseconds
-    const ms = String(timestamp).length === 10 ? timestamp * 1000 : timestamp;
-    return new Date(ms);
-  }
-  
-  // Check if it's already an ISO string (from backend)
-  if (dateStr.includes('T') && dateStr.includes('Z')) {
-    return new Date(dateStr);
-  }
-  
-  // Handle other date formats
+  if (/^\d{10,13}$/.test(dateStr)) return parseTimestamp(dateStr);
+  if (dateStr.includes('T') && dateStr.includes('Z')) return new Date(dateStr);
   const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
   return new Date(iso);
 };

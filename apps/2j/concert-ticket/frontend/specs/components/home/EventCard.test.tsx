@@ -64,7 +64,7 @@ describe('EventCard', () => {
   });
 
   it('handles non-array ticket categories', () => {
-    const event = { ...mockEvent, ticketCategories: null as any };
+    const event = { ...mockEvent, ticketCategories: null as unknown as typeof mockEvent.ticketCategories };
     render(<EventCard item={event} />);
     expect(screen.getByText('Test Concert')).toBeInTheDocument();
     expect(screen.getByText('-')).toBeInTheDocument();

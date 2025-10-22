@@ -80,7 +80,7 @@ describe('EventCard.utils', () => {
           throw new Error('Date conversion error');
         },
       };
-      const result = formatDateTime(problematicDate as any);
+      const result = formatDateTime(problematicDate as unknown as string);
       expect(result).toBe('Date error');
       expect(consoleError).toHaveBeenCalled();
 
