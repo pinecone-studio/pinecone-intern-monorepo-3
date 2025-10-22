@@ -1,0 +1,32 @@
+query MyBookings {
+  myBookings {
+    id
+    quantity
+    unitPrice
+    totalPrice
+    bookingDate
+    status
+    paymentStatus
+    canCancel
+    cancellationDeadline
+    concert {
+      id
+      name
+      venue
+      date
+      time
+      image
+      mainArtist {
+        id
+        name
+        image
+      }
+    }
+    ticketCategory {
+      id
+      type
+      unitPrice
+      availableQuantity
+    }
+  }
+}

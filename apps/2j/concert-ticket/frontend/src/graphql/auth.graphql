@@ -1,3 +1,7 @@
+mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
+  changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+}
+
 mutation Login($input: LoginInput!) {
   login(input: $input) {
     token

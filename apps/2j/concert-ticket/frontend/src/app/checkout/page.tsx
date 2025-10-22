@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
+import { useMyProfileQuery } from '@/generated';
 
 function CheckoutPageContent() {
   const searchParams = useSearchParams();
@@ -12,6 +13,12 @@ function CheckoutPageContent() {
     email: '',
   });
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  // User мэдээлэл авах
+  const { data: profileData, loading: profileLoading } = useMyProfileQuery({
+    errorPolicy: 'all'
+  });
+
 
   const concertId = searchParams.get('concertId');
   const selectedDate = searchParams.get('selectedDate');
@@ -30,12 +37,47 @@ function CheckoutPageContent() {
   const totalItems = selectedTickets.reduce((sum: number, ticket) => sum + ticket.quantity, 0);
   const totalAmount = selectedTickets.reduce((sum: number, ticket) => sum + ticket.price * ticket.quantity, 0);
 
+  // User мэдээлэл ирэхэд form-г default утгаар бөглөх
+  React.useEffect(() => {
+    if (profileData?.myProfile) {
+      setFormData({
+        phone: profileData.myProfile.phoneNumber || '',
+        email: profileData.myProfile.email || ''
+      });
+    }
+  }, [profileData]);
+
+  React.useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key === 'Enter' || event.key === 'Return') {
+        event.preventDefault();
+        handleContinue();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [formData.phone, formData.email]); // Dependencies to ensure fresh data
+
   if (!concertId) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Алдаа</h1>
           <p className="text-gray-300">Концертын мэдээлэл олдсонгүй</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (profileLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Ачааллаж байна...</h1>
+          <p className="text-gray-300">Хэрэглэгчийн мэдээлэл татаж байна</p>
         </div>
       </div>
     );
@@ -67,35 +109,22 @@ function CheckoutPageContent() {
   };
 
   const handleContinue = () => {
-    if (validateForm()) {
-      const urlParams = new URLSearchParams();
-      urlParams.set('concertId', concertId);
-      urlParams.set('selectedDate', selectedDate || '');
-      urlParams.set('ticketData', ticketData || '');
-      urlParams.set('phone', formData.phone);
-      urlParams.set('email', formData.email);
+    if (!validateForm()) return;
 
-      window.location.href = `/payment?${urlParams.toString()}`;
-    }
+    // Payment page руу шилжих (backend update хийхгүй)
+    const urlParams = new URLSearchParams();
+    urlParams.set('concertId', concertId);
+    urlParams.set('selectedDate', selectedDate || '');
+    urlParams.set('ticketData', ticketData || '');
+    urlParams.set('phone', formData.phone);
+    urlParams.set('email', formData.email);
+
+    window.location.href = `/payment?${urlParams.toString()}`;
   };
 
   const clearError = () => {
     setErrorMessage(null);
   };
-
-  React.useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'Enter' || event.key === 'Return') {
-        event.preventDefault();
-        handleContinue();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyPress);
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [formData.phone, formData.email]); // Dependencies to ensure fresh data
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -192,7 +221,11 @@ function CheckoutPageContent() {
                   <span className="text-xl font-bold text-white">{totalAmount.toLocaleString()}₮</span>
                 </div>
 
-                <button onClick={handleContinue} className="w-full px-6 py-4 mt-6 font-bold text-white transition-colors rounded-lg hover:opacity-90" style={{ backgroundColor: '#00b7f4' }}>
+                <button 
+                  onClick={handleContinue} 
+                  className="w-full px-6 py-4 mt-6 font-bold text-white transition-colors rounded-lg hover:opacity-90" 
+                  style={{ backgroundColor: '#00b7f4' }}
+                >
                   Үргэлжлүүлэх
                 </button>
               </div>

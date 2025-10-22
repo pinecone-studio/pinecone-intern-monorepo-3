@@ -2,22 +2,22 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useHomeEventsQuery, TicketType } from '@/generated';
+import { useHomeEventsQuery } from '@/generated';
 
-const getTicketTypeName = (type: TicketType): string => {
-  switch (type) {
-    case TicketType.Vip:
-      return 'VIP тасалбар';
-    case TicketType.Regular:
-      return 'Энгийн тасалбар';
-    case TicketType.GeneralAdmission:
-      return 'Арын тасалбар';
-    default:
-      return 'Тасалбар';
-  }
-};
+// const getTicketTypeName = (type: TicketType): string => {
+//   switch (type) {
+//     case TicketType.Vip:
+//       return 'VIP тасалбар';
+//     case TicketType.Regular:
+//       return 'Энгийн тасалбар';
+//     case TicketType.GeneralAdmission:
+//       return 'Арын тасалбар';
+//     default:
+//       return 'Тасалбар';
+//   }
+// };
 
-const getLowestPrice = (categories: any[]): number | null => {
+const getLowestPrice = (categories: any[]): number | null => { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!categories || categories.length === 0) return null;
 
   const prices = categories.filter((cat) => cat.unitPrice && !isNaN(cat.unitPrice)).map((cat) => cat.unitPrice);
@@ -25,7 +25,7 @@ const getLowestPrice = (categories: any[]): number | null => {
   return prices.length > 0 ? Math.min(...prices) : null;
 };
 
-const formatDateTime = (date: string, time: string): string => {
+const formatDateTime = (date: string, _time: string): string => {
   try {
     const eventDate = new Date(date);
     const month = String(eventDate.getMonth() + 1).padStart(2, '0');

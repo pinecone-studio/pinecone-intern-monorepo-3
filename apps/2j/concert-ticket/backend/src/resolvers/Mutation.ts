@@ -1,4 +1,4 @@
-import { Resolvers } from '../generated/resolvers-types';
+import { Resolvers, MutationResolvers } from '../generated/resolvers-types';
 import { ConcertController } from '../controllers/concert.controller';
 import { UserController } from '../controllers/user.controller';
 import { ArtistController } from '../controllers/artist.controller';
@@ -6,15 +6,17 @@ import { BookingController } from '../controllers/booking.controller';
 import { TicketCategoryController } from '../controllers/ticket-category.controller';
 import { register, login } from '../services/auth.service';
 import { PasswordResetService } from '../services/password-reset.service';
+import { Context } from '../context';
 
-export const Mutation: Resolvers['Mutation'] = {
+export const Mutation: MutationResolvers<Context> = {
   register: async (_parent, args) => {
     return await register(args.input);
   },
   login: async (_parent, args) => {
     return await login(args.input);
   },
-  logout: async () => true,
+
+  // Нууц үг мартсан тохиолдолд
   forgotPassword: async (_parent, args) => {
     console.log('=== FORGOT PASSWORD CALLED ===');
     console.log('Email:', args.email);
@@ -27,18 +29,12 @@ export const Mutation: Resolvers['Mutation'] = {
       return success;
     } catch (error) {
       console.error('Error in forgotPassword resolver:', error);
-      console.error('Error stack:', error.stack);
+      console.error('Error stack:', (error as Error).stack);
       return false;
     }
   },
-  verifyResetCode: async (_parent, args) => {
-    try {
-      const isValid = await PasswordResetService.verifyResetCode(args.email, args.code);
-      return isValid;
-    } catch (error) {
-      throw new Error('Буруу код байна');
-    }
-  },
+
+  // Нууц үг сэргээх
   resetPassword: async (_parent, args) => {
     try {
       const success = await PasswordResetService.setNewPassword(args.email, args.code, args.newPassword);
@@ -51,6 +47,18 @@ export const Mutation: Resolvers['Mutation'] = {
       throw new Error('Буруу код байна');
     }
   },
+
+  verifyResetCode: async (_parent, args) => {
+    try {
+      const isValid = await PasswordResetService.verifyResetCode(args.email, args.code);
+      return isValid;
+    } catch (error) {
+      throw new Error('Буруу код байна');
+    }
+  },
+
+  // Гарах
+  logout: async () => true,
 
   createConcert: async (_parent, args, ctx) => {
     if (!ctx.user || ctx.user.role !== 'ADMIN') {
@@ -89,28 +97,35 @@ export const Mutation: Resolvers['Mutation'] = {
     return await ArtistController.deleteArtist(args.id);
   },
   createBooking: async (_parent, args, ctx) => {
-    if (!ctx.user) {
-      throw new Error('Нэвтрэх шаардлагатай');
+    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
+    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
+
+    if (!userId) {
+      throw new Error('Нэвтрэх шаардлагатай эсвэл хэрэглэгчийн ID байхгүй.');
     }
-    return await BookingController.createBooking(ctx.user.id, args.input);
+
+    return await BookingController.createBooking(userId, args.input);
   },
+
   cancelBooking: async (_parent, args, ctx) => {
-    if (!ctx.user) {
-      throw new Error('Нэвтрэх шаардлагатай');
-    }
-    return await BookingController.cancelBooking(args.id, ctx.user.id);
+    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
+    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
+    return await BookingController.cancelBooking(args.id, userId);
   },
   requestCancellation: async (_parent, args, ctx) => {
-    if (!ctx.user) {
-      throw new Error('Нэвтрэх шаардлагатай');
-    }
-    return await BookingController.requestCancellation(args.id, ctx.user.id);
+    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
+    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
+    return await BookingController.requestCancellation(args.id, userId);
   },
   updateUserProfile: async (_parent, args, ctx) => {
-    if (!ctx.user) {
-      throw new Error('Нэвтрэх шаардлагатай');
+    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
+    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
+
+    if (!userId) {
+      throw new Error('Нэвтрэх шаардлагатай эсвэл хэрэглэгчийн ID байхгүй.');
     }
-    return await UserController.updateUserProfile(ctx.user.id, args.input);
+
+    return await UserController.updateUserProfile(userId, args.input);
   },
   updateTicketQuantity: async (_parent, args, ctx) => {
     if (!ctx.user || ctx.user.role !== 'ADMIN') {

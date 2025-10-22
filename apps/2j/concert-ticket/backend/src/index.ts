@@ -7,7 +7,7 @@ import cors from 'cors';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import { resolvers } from './resolvers';
-import { createContextWithAuth } from './context';
+import { createContextWithAuth, Context } from './context';
 import { connectDatabase } from './database/connection';
 
 async function startApolloServer() {
@@ -15,7 +15,7 @@ async function startApolloServer() {
   const app = express();
   const httpServer = http.createServer(app);
   const typeDefs = readFileSync(join(__dirname, 'schemas', 'schema.graphql'), 'utf-8');
-  const server = new ApolloServer({
+  const server = new ApolloServer<Context>({
     typeDefs,
     resolvers,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],

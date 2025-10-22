@@ -2,6 +2,11 @@ import { Resolvers } from '../generated/resolvers-types';
 import { TicketCategoryController } from '../controllers/ticket-category.controller';
 
 export const Concert: Resolvers['Concert'] = {
+  // Concert-ийн date field-г resolve хийх
+  date: (parent) => {
+    return parent.date?.toISOString() || new Date().toISOString();
+  },
+
   // Concert-ийн ticketCategories field-г resolve хийх
   ticketCategories: async (parent) => {
     try {

@@ -29,7 +29,7 @@ const DiscountSchema = new mongoose.Schema<DiscountType>(
     food: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Food',
+        ref: 'FoodRes',
         required: false,
       },
     ],

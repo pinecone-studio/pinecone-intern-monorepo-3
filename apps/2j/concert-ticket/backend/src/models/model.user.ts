@@ -1,21 +1,19 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import bcrypt from 'bcrypt';
+import mongoose, { Document, Schema } from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 export interface IUser extends Document {
   email: string;
   username?: string;
   phoneNumber?: string;
   address?: string;
-  role: 'USER' | 'ADMIN';
   password: string;
+  role: 'USER' | 'ADMIN';
   createdAt: Date;
   updatedAt: Date;
-
-  // Methods
   comparePassword(_candidatePassword: string): Promise<boolean>;
 }
 
-const userSchema = new Schema<IUser>(
+const UserSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -36,45 +34,43 @@ const userSchema = new Schema<IUser>(
       type: String,
       trim: true,
     },
+    password: {
+      type: String,
+      required: true,
+    },
     role: {
       type: String,
       enum: ['USER', 'ADMIN'],
       default: 'USER',
     },
-    password: {
-      type: String,
-      required: true,
-      minlength: 6,
-    },
   },
   {
-    timestamps: true, // createdAt, updatedAt автоматаар үүсгэнэ
+    timestamps: true,
   }
 );
 
-// Password hash хийх middleware
-userSchema.pre('save', async function (next) {
+// Password hash хийх middleware - зөвхөн password өөрчлөгдсөн үед hash хийх
+UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
   try {
-    const saltRounds = 12;
-    this.password = await bcrypt.hash(this.password, saltRounds);
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
     next(error as Error);
   }
 });
 
-// Password харьцуулах method
-userSchema.methods.comparePassword = async function (_candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(_candidatePassword, this.password);
+// Password шалгах method
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  const stored: string = this.password;
+  // Хэрэв хадгалсан нууц үг bcrypt hash биш бол plaintext fallback-р шалгах
+  const looksHashed = typeof stored === 'string' && stored.startsWith('$2');
+  if (!looksHashed) {
+    return candidatePassword === stored;
+  }
+  return bcrypt.compare(candidatePassword, stored);
 };
 
-// Password field-ийг JSON-оос хасах
-userSchema.methods.toJSON = function () {
-  const user = this.toObject();
-  delete user.password;
-  return user;
-};
-
-export const User = mongoose.model<IUser>('User', userSchema);
+export const User = mongoose.model<IUser>('User', UserSchema);
