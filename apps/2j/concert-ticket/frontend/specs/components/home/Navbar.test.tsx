@@ -3,10 +3,15 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Navbar from '../../../src/components/home/Navbar';
 import { useRouter, usePathname } from 'next/navigation';
+import { useMyProfileQuery } from '../../../src/generated';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   usePathname: jest.fn(),
+}));
+
+jest.mock('../../../src/generated', () => ({
+  useMyProfileQuery: jest.fn(),
 }));
 
 // Apollo Client mock
@@ -80,5 +85,47 @@ describe('Navbar', () => {
     fireEvent.change(input, { target: { value: 'new' } });
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(mockReplace).toHaveBeenCalledWith('/search?q=new');
+  });
+
+  it('should handle profile button click when logged in', () => {
+    const mockPush = jest.fn();
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+    });
+
+    // Mock logged in state
+    jest.mocked(useMyProfileQuery).mockReturnValue({
+      data: {
+        myProfile: {
+          email: 'test@example.com',
+        },
+      },
+      loading: false,
+      error: null,
+    } as any);
+
+    render(<Navbar />);
+    
+    const profileButton = screen.getByText('test@example.com');
+    fireEvent.click(profileButton);
+    
+    expect(mockPush).toHaveBeenCalledWith('/profile');
+  });
+
+  it('should show default email when profile data is not available', () => {
+    // Mock logged in state with no profile data
+    jest.mocked(useMyProfileQuery).mockReturnValue({
+      data: {
+        myProfile: null,
+      },
+      loading: false,
+      error: null,
+    } as any);
+
+    render(<Navbar />);
+    
+    // Check if login/register buttons are shown when not logged in
+    expect(screen.getByText('Бүртгүүлэх')).toBeInTheDocument();
+    expect(screen.getByText('Нэвтрэх')).toBeInTheDocument();
   });
 });

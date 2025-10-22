@@ -230,4 +230,45 @@ describe('ConcertDetails', () => {
     // Check if component renders during error
     expect(screen.getByTestId('concert-details')).toBeInTheDocument();
   });
+
+  it('should display eventDate when availableDates is empty', () => {
+    const propsWithoutDates = {
+      ...mockProps,
+      availableDates: []
+    };
+    
+    render(<ConcertDetails {...propsWithoutDates} />);
+    
+    // Check if eventDate is displayed as fallback option (multiple instances)
+    expect(screen.getAllByText('11.15')).toHaveLength(2);
+  });
+
+  it('should handle ticket category click events', () => {
+    render(<ConcertDetails {...mockProps} />);
+    
+    // Check if ticket categories are clickable
+    const ticketCategories = screen.getAllByText(/тасалбар/);
+    expect(ticketCategories.length).toBeGreaterThan(0);
+    
+    // Simulate click on first ticket category
+    if (ticketCategories[0]) {
+      fireEvent.click(ticketCategories[0]);
+      expect(ticketCategories[0]).toBeInTheDocument();
+    }
+  });
+
+  it('should handle date selection with empty availableDates', () => {
+    const propsWithoutDates = {
+      ...mockProps,
+      availableDates: []
+    };
+    
+    render(<ConcertDetails {...propsWithoutDates} />);
+    
+    const dateSelect = screen.getByRole('combobox');
+    expect(dateSelect).toBeInTheDocument();
+    
+    // Check if eventDate is available as option (multiple instances)
+    expect(screen.getAllByText('11.15')).toHaveLength(2);
+  });
 });

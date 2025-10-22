@@ -230,4 +230,73 @@ describe('HeroCarousel', () => {
     // Check if hero placeholder is shown for single concert
     expect(screen.getByAltText('Hero')).toBeInTheDocument();
   });
+
+  it('handles empty concerts array', () => {
+    const emptyMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[emptyMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    // Check if hero placeholder is shown for empty concerts
+    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+  });
+
+  it('handles invalid date format', () => {
+    const invalidDateMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Test Concert',
+                date: 'invalid-date',
+                venue: 'Test Venue',
+                artist: { name: 'Test Artist' },
+                imageUrl: 'test.jpg',
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[invalidDateMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    // Check if component renders with invalid date
+    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+  });
+
+  it('handles navigation with empty items', () => {
+    const emptyMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[emptyMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    // Check if component handles empty items gracefully
+    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+  });
 });
