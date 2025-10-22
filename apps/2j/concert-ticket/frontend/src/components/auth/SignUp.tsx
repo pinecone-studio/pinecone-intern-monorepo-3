@@ -14,7 +14,20 @@ export default function SignUp() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [register] = useRegisterMutation();
 
-  const handleRegistrationSuccess = (data: { register: { token: string; user: { id: string; email: string; username: string; role: string; createdAt: string } } }) => {
+  interface RegisterResponse {
+    register: {
+      token: string;
+      user: {
+        id: string;
+        email: string;
+        username?: string | null;
+        role: string;
+        createdAt: string;
+      };
+    };
+  }
+
+  const handleRegistrationSuccess = (data: RegisterResponse) => {
     localStorage.setItem('token', data.register.token);
     localStorage.setItem('user', JSON.stringify(data.register.user));
 
