@@ -48,7 +48,7 @@ type User {
 
 type Artist {
   id: ID!
-  name: String!
+  name: String
   bio: String
   image: String
   concerts: [Concert!]
@@ -71,7 +71,7 @@ type Concert {
   venue: String!
   date: String!
   time: String!
-  mainArtist: Artist!
+  mainArtist: Artist
   otherArtists: [Artist!]
   image: String
   isActive: Boolean!

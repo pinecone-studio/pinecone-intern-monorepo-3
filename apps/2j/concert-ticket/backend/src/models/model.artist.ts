@@ -29,4 +29,4 @@ const artistSchema = new Schema<IArtist>({
 // Name field-ийг index болгох (хайлтыг хурдасгах)
 artistSchema.index({ name: 'text' });
 
-export const Artist = mongoose.model<IArtist>('Artist', artistSchema);
+export const Artist = mongoose.model<IArtist>('Artist', artistSchema, 'artists');
