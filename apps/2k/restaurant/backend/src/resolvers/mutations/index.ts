@@ -24,3 +24,5 @@ export * from './auth/send-reset-code';
 export * from './auth/verify-reset-code';
 
 export * from './table/create-table';
+export * from './table/update-table';
+export * from './table/delete-table';

@@ -13,7 +13,7 @@ export const tableTypeDefs = gql`
 
   input UpdateTableInput {
     tableName: String!
-    tableQR: String!
+    tableQr: String
   }
 
   input DeleteTableInput {
