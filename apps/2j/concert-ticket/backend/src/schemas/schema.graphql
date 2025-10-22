@@ -191,6 +191,7 @@ type Query {
   concerts(filter: ConcertFilterInput, pagination: PaginationInput): SearchResult!
   concert(id: ID!): Concert
   myBookings: [Booking!]! @auth(requires: USER)
+  myProfile: User
   user(id: ID!): User @auth(requires: ADMIN)
   users(pagination: PaginationInput): [User!]! @auth(requires: ADMIN)
   artists: [Artist!]!
@@ -215,6 +216,7 @@ type Mutation {
   deleteArtist(id: ID!, input: ArtistInput!): Boolean! @auth(requires: ADMIN)
 
   createBooking(input: CreateBookingInput!): Booking! @auth(requires: USER)
+  updateBookingPaymentStatus(id: ID!, paymentStatus: PaymentStatus!): Booking! @auth(requires: USER)
   cancelBooking(id: ID!): Booking! @auth(requires: USER)
   requestCancellation(id: ID!): Booking! @auth(requires: USER)
 

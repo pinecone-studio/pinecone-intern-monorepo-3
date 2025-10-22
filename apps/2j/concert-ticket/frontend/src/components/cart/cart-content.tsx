@@ -109,12 +109,60 @@ interface ConcertData {
 const useCartLogic = (concertId: string | null, selectedDate: string | null, data: ConcertData | undefined) => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [currentSelectedDate, setCurrentSelectedDate] = useState<string | null>(selectedDate);
   const initialCategories = data?.concert?.ticketCategories ? mapToTicketCategories(data.concert.ticketCategories) : DEFAULT_CATEGORIES;
   const [ticketCategories, setTicketCategories] = useState<TicketCategory[]>(initialCategories);
 
   React.useEffect(() => {
     if (data?.concert?.ticketCategories) setTicketCategories(mapToTicketCategories(data.concert.ticketCategories));
   }, [data]);
+
+  // Огноо форматлах функц - MM.DD формат
+  const formatDateToMMDD = (dateStr: string): string => {
+    try {
+      let date: Date;
+      
+      // Timestamp эсэхийг шалгах
+      if (/^\d+$/.test(dateStr)) {
+        // Timestamp-г миллисекунд болгож форматлах
+        const timestamp = parseInt(dateStr);
+        date = new Date(timestamp);
+      } else {
+        date = new Date(dateStr);
+      }
+      
+      if (isNaN(date.getTime())) {
+        return dateStr;
+      }
+      
+      // Local огноо ашиглах (timezone асуудал арилгах)
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      return `${mm}.${dd}`;
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return dateStr;
+    }
+  };
+
+  // Concert-ийн боломжит огноонуудыг үүсгэх (зөвхөн тухайн тоглолтын огноо)
+  const availableDates = React.useMemo(() => {
+    try {
+      if (!data?.concert?.date) {
+        return [formatDateToMMDD(new Date().toISOString())];
+      }
+      
+      // Зөвхөн тухайн тоглолтын огноо (timestamp эсэхийг шалгахгүй)
+      return [formatDateToMMDD(data.concert.date)];
+    } catch (error) {
+      console.error('Available dates generation error:', error);
+      return [formatDateToMMDD(new Date().toISOString())];
+    }
+  }, [data?.concert?.date, formatDateToMMDD]);
+
+  const onDateChange = (date: string) => {
+    setCurrentSelectedDate(date);
+  };
 
   const updateQuantity = (id: string, delta: number) => {
     setTicketCategories((prev) =>
@@ -154,12 +202,12 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
     const ticketData = encodeURIComponent(JSON.stringify(selectedTickets));
     const urlParams = new URLSearchParams();
     urlParams.set('concertId', concertId || '');
-    urlParams.set('selectedDate', selectedDate || '');
+    urlParams.set('selectedDate', currentSelectedDate || '');
     urlParams.set('ticketData', ticketData);
     window.location.href = `/checkout?${urlParams.toString()}`;
   };
 
-  return { router, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage };
+  return { router, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage, availableDates, onDateChange, currentSelectedDate };
 };
 
 const CartHeader = ({ onBack }: { onBack: () => void }) => (
@@ -188,6 +236,8 @@ interface CartSidebarProps {
   getTotalTickets: () => number;
   getTotalAmount: () => number;
   handleProceedToPayment: () => void;
+  availableDates?: string[];
+  onDateChange?: (date: string) => void;
 }
 
 const ErrorMessage = ({ message, onClose }: { message: string; onClose: () => void }) => (
@@ -205,61 +255,103 @@ const ErrorMessage = ({ message, onClose }: { message: string; onClose: () => vo
   </div>
 );
 
-const CartSidebar = ({ selectedDate, ticketCategories, updateQuantity, getTotalTickets, getTotalAmount, handleProceedToPayment }: CartSidebarProps) => (
+const DateOptions = ({ availableDates, selectedDate }: { availableDates: string[]; selectedDate: string | null }) => {
+  if (availableDates && availableDates.length > 0) {
+    return (
+      <>
+        {availableDates.map((date) => (
+          <option key={date} value={date}>
+            {date}
+          </option>
+        ))}
+      </>
+    );
+  }
+  return <option value={selectedDate || ''}>{selectedDate || 'Өдөр сонгох'}</option>;
+};
+
+const DateSelector = ({ selectedDate, availableDates, onDateChange }: { selectedDate: string | null; availableDates: string[]; onDateChange?: (date: string) => void }) => (
+  <div>
+    <h3 className="mb-4 text-lg font-light text-gray-400">Тоглолт үзэх өдрөө сонгоно уу.</h3>
+    <div className="relative">
+      <select
+        value={selectedDate || ''}
+        onChange={(e) => onDateChange?.(e.target.value)}
+        className="w-full px-4 py-4 pr-12 text-white transition-all duration-200 rounded-lg appearance-none cursor-pointer hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        style={{ backgroundColor: '#2d2d2d', border: '1px solid #404040' }}
+      >
+        <option value="">Өдөр сонгох</option>
+        <DateOptions availableDates={availableDates} selectedDate={selectedDate} />
+      </select>
+    </div>
+  </div>
+);
+
+const TicketSummary = ({ getTotalTickets, getTotalAmount, handleProceedToPayment }: { getTotalTickets: () => number; getTotalAmount: () => number; handleProceedToPayment: () => void }) => (
+  <div className="pt-4 border-t border-gray-700">
+    <div className="flex justify-between items-center mb-4">
+      <span className="text-gray-400">Нийт тасалбар:</span>
+      <span className="text-white font-bold">{getTotalTickets()}</span>
+    </div>
+    <div className="flex justify-between items-center mb-6">
+      <span className="text-gray-400">Нийт дүн:</span>
+      <span className="text-white font-bold text-xl">{getTotalAmount().toLocaleString('en-US').replace(/,/g, "'")}₮</span>
+    </div>
+    <button
+      onClick={handleProceedToPayment}
+      disabled={getTotalTickets() === 0}
+      className="w-full py-4 text-white font-bold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-opacity-90"
+      style={{ backgroundColor: '#00B7F4' }}
+    >
+      Тасалбар авах
+    </button>
+  </div>
+);
+
+const TicketList = ({ ticketCategories, updateQuantity }: { ticketCategories: any[]; updateQuantity: (id: string, delta: number) => void }) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+  <div className="space-y-0">
+    {ticketCategories.map((category, index) => (
+      <div key={category.id}>
+        <div className="flex items-start gap-3 py-3">
+          <div className="w-3 h-3 mt-1 rounded-full" style={{ backgroundColor: category.color }}></div>
+          <div className="flex-1">
+            <div className="mb-1 text-base font-medium" style={{ color: category.color }}>
+              {category.name} <span>({category.available})</span>
+            </div>
+            <div className="text-sm font-light text-white">{category.price.toLocaleString()}₮</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => updateQuantity(category.id, -1)}
+              disabled={category.quantity === 0}
+              style={{ backgroundColor: '#2d2d2d' }}
+              className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+            <span className="w-8 font-medium text-center text-white">{category.quantity}</span>
+            <button
+              onClick={() => updateQuantity(category.id, 1)}
+              disabled={category.quantity >= category.available}
+              style={{ backgroundColor: '#2d2d2d' }}
+              className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        {index < ticketCategories.length - 1 && <div className="border-t border-gray-600 border-dashed"></div>}
+      </div>
+    ))}
+  </div>
+);
+
+const CartSidebar = ({ selectedDate, ticketCategories, updateQuantity, getTotalTickets, getTotalAmount, handleProceedToPayment, availableDates, onDateChange }: CartSidebarProps) => (
   <div className="lg:col-span-2">
     <div className="p-6 space-y-6 rounded-lg" style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}>
-      <div>
-        <h3 className="mb-4 text-lg font-light text-gray-400">Тоглолт үзэх өдрөө сонгоно уу.</h3>
-        <div className="relative">
-          <select
-            value={selectedDate || ''}
-            className="w-full px-4 py-4 pr-12 text-white transition-all duration-200 rounded-lg appearance-none cursor-pointer hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            style={{ backgroundColor: '#2d2d2d', border: '1px solid #404040' }}
-          >
-            <option value="">Өдөр сонгох</option>
-            <option value="2024.11.15">2024.11.15</option>
-            <option value="2024.11.16">2024.11.16</option>
-            <option value="2024.11.17">2024.11.17</option>
-            <option value="2024.11.18">2024.11.18</option>
-          </select>
-        </div>
-      </div>
+      <DateSelector selectedDate={selectedDate} availableDates={availableDates} onDateChange={onDateChange} />
       <div className="border-t border-gray-600 border-dashed"></div>
-      <div className="space-y-0">
-        {ticketCategories.map((category, index) => (
-          <div key={category.id}>
-            <div className="flex items-start gap-3 py-3">
-              <div className="w-3 h-3 mt-1 rounded-full" style={{ backgroundColor: category.color }}></div>
-              <div className="flex-1">
-                <div className="mb-1 text-base font-medium" style={{ color: category.color }}>
-                  {category.name} <span>({category.available})</span>
-                </div>
-                <div className="text-sm font-light text-white">{category.price.toLocaleString()}₮</div>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => updateQuantity(category.id, -1)}
-                  disabled={category.quantity === 0}
-                  style={{ backgroundColor: '#2d2d2d' }}
-                  className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="w-8 font-medium text-center text-white">{category.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(category.id, 1)}
-                  disabled={category.quantity >= category.available}
-                  style={{ backgroundColor: '#2d2d2d' }}
-                  className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            {index < ticketCategories.length - 1 && <div className="border-t border-gray-600 border-dashed"></div>}
-          </div>
-        ))}
-      </div>
+      <TicketList ticketCategories={ticketCategories} updateQuantity={updateQuantity} />
       {getTotalTickets() > 0 && (
         <div className="pt-4 space-y-3 border-t border-gray-600">
           <h3 className="text-lg font-medium text-white">Захиалгын дэлгэрэнгүй</h3>
@@ -281,14 +373,7 @@ const CartSidebar = ({ selectedDate, ticketCategories, updateQuantity, getTotalT
           </div>
         </div>
       )}
-      <button
-        onClick={handleProceedToPayment}
-        disabled={getTotalTickets() === 0}
-        style={{ backgroundColor: '#00b7f4' }}
-        className="w-full px-6 py-4 font-bold text-white transition-colors rounded-lg disabled:opacity-50"
-      >
-        Тасалбар авах
-      </button>
+      <TicketSummary getTotalTickets={getTotalTickets} getTotalAmount={getTotalAmount} handleProceedToPayment={handleProceedToPayment} />
     </div>
   </div>
 );
@@ -307,9 +392,11 @@ interface CartLayoutProps {
   handleProceedToPayment: () => void;
   errorMessage: string | null;
   setErrorMessage: (msg: string | null) => void;
+  availableDates?: string[];
+  onDateChange?: (date: string) => void;
 }
 
-const CartLayout = ({ router, selectedDate, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage }: CartLayoutProps) => (
+const CartLayout = ({ router, selectedDate, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage, availableDates, onDateChange }: CartLayoutProps) => (
   <div className="flex-1 text-white bg-black">
     <CartHeader onBack={() => router.back()} />
     <div className="max-w-6xl px-6 py-8 mx-auto">
@@ -322,6 +409,8 @@ const CartLayout = ({ router, selectedDate, ticketCategories, updateQuantity, ge
           getTotalTickets={getTotalTickets}
           getTotalAmount={getTotalAmount}
           handleProceedToPayment={handleProceedToPayment}
+          availableDates={availableDates}
+          onDateChange={onDateChange}
         />
       </div>
     </div>
@@ -336,7 +425,7 @@ export const CartContent: React.FC<CartContentProps> = ({ concertId, selectedDat
   if (loading) return <LoadingState />;
   if (error || !data?.concert) return <ErrorState onBack={() => logic.router.back()} />;
 
-  return <CartLayout {...logic} selectedDate={selectedDate} />;
+  return <CartLayout {...logic} selectedDate={logic.currentSelectedDate} />;
 };
 
 export default CartContent;

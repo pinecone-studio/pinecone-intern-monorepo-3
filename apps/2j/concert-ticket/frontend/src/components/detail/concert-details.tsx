@@ -25,9 +25,10 @@ interface ConcertDetailsProps {
   _onBookTicket: () => void;
   selectedDate: string;
   onDateChange: (date: string) => void;
+  availableDates?: string[];
 }
 
-export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, _onBookTicket, selectedDate, onDateChange }) => {
+export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, eventTime, venue, specialArtists, schedule, ticketCategories, _onBookTicket, selectedDate, onDateChange, availableDates }) => {
   return (
     <section className="py-8 text-white bg-black" data-testid="concert-details">
       <div className="max-w-6xl px-6 mx-auto">
@@ -91,10 +92,15 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
                   style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}
                 >
                   <option value="">Өдөр сонгох</option>
-                  <option value="2024.11.15">2024.11.15</option>
-                  <option value="2024.11.16">2024.11.16</option>
-                  <option value="2024.11.17">2024.11.17</option>
-                  <option value="2024.11.18">2024.11.18</option>
+                  {availableDates && availableDates.length > 0 ? (
+                    availableDates.map((date) => (
+                      <option key={date} value={date}>
+                        {date}
+                      </option>
+                    ))
+                  ) : (
+                    <option value={eventDate}>{eventDate}</option>
+                  )}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
