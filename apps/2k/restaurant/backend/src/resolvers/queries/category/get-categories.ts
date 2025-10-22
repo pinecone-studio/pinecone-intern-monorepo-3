@@ -3,14 +3,15 @@ import { CategoryModel } from '../../../models/category.model';
 
 export const getCategories: QueryResolvers['getCategories'] = async () => {
   try {
-    // const categories = (await CategoryModel.find().populate({
-    //   path: 'food',
-    //   populate: [{ path: 'category' }, { path: 'discount' }],
-    // })) as any;
-    // return categories;
-    const categories = await CategoryModel.find();
-    return categories
+    const categoriesDocs = await CategoryModel.find().populate('food');
+
+    if (!categoriesDocs || categoriesDocs.length === 0) {
+      return [];
+    }
+
+    return categoriesDocs as any ;
   } catch (error) {
-     throw new Error('Failed to fetch categories');
+    // console.error(error);
+    // throw new Error('Failed to fetch categories');
   }
 };

@@ -3,7 +3,8 @@ import { CategoryModel } from '../../../../src/models/category.model';
 
 jest.mock('../../../../src/models/category.model', () => ({
   CategoryModel: {
-    findById: jest.fn(),
+    findById: jest.fn().mockReturnThis(),
+    populate: jest.fn(),
   },
 }));
 
@@ -14,7 +15,11 @@ describe('getByIdCategory resolver', () => {
 
   it('should return a category when found', async () => {
     const mockCategory = { _id: '2', categoryName: 'Test Category' };
-    (CategoryModel.findById as jest.Mock).mockResolvedValue(mockCategory);
+
+    // mock findById().populate()
+    (CategoryModel.findById as jest.Mock).mockReturnValueOnce({
+      populate: jest.fn().mockResolvedValueOnce(mockCategory),
+    });
 
     const result = await getByIdCategory({}, { categoryId: '2' });
 
@@ -23,7 +28,9 @@ describe('getByIdCategory resolver', () => {
   });
 
   it("should throw an error if category doesn't exist", async () => {
-    (CategoryModel.findById as jest.Mock).mockResolvedValue(null);
+    (CategoryModel.findById as jest.Mock).mockReturnValueOnce({
+      populate: jest.fn().mockResolvedValueOnce(null),
+    });
 
     await expect(getByIdCategory({}, { categoryId: '3' }))
       .rejects
@@ -31,11 +38,12 @@ describe('getByIdCategory resolver', () => {
   });
 
   it('should throw an error if database fails', async () => {
-    (CategoryModel.findById as jest.Mock).mockRejectedValue(new Error('DB error'));
+    (CategoryModel.findById as jest.Mock).mockReturnValueOnce({
+      populate: jest.fn().mockRejectedValueOnce(new Error('DB error')),
+    });
 
     await expect(getByIdCategory({}, { categoryId: '2' }))
       .rejects
       .toThrow('DB error');
   });
 });
-
