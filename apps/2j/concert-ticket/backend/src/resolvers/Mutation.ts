@@ -1,4 +1,4 @@
-import { Resolvers, MutationResolvers } from '../generated/resolvers-types';
+import { MutationResolvers } from '../generated/resolvers-types';
 import { ConcertController } from '../controllers/concert.controller';
 import { UserController } from '../controllers/user.controller';
 import { ArtistController } from '../controllers/artist.controller';
