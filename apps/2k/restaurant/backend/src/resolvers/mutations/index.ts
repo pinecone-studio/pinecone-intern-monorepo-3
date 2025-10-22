@@ -1,4 +1,3 @@
-
 export * from './sample-mutation';
 export * from './category/create-category';
 export * from './category/update-category';
@@ -20,3 +19,5 @@ export * from './auth/login';
 export * from './auth/reset-password';
 export * from './auth/send-reset-code';
 export * from './auth/verify-reset-code';
+
+export * from './table/create-table';
