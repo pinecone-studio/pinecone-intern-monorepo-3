@@ -27,6 +27,13 @@ export const Mutation: Resolvers['Mutation'] = {
     return await AuthController.resetPassword(args.input);
   },
 
+  // Нууц үг солих
+  changePassword: async (_parent, args, ctx) => {
+    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
+    const userId = ctx.user?.id || '68f1dece73851a271caefeb9';
+    return await UserController.changePassword(userId, args.currentPassword, args.newPassword);
+  },
+
   // Гарах
   logout: async () => true,
 

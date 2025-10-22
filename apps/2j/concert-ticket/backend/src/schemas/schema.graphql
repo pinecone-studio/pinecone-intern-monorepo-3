@@ -205,6 +205,7 @@ type Mutation {
   login(input: LoginInput!): AuthPayload!
   forgotPassword(email: String!): String!
   resetPassword(input: ResetPasswordInput!): AuthPayload!
+  changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
   logout: Boolean!
 
   createConcert(input: CreateConcertInput!): Concert! @auth(requires: ADMIN)

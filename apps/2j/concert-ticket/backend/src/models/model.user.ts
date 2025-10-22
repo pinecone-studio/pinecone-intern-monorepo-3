@@ -46,11 +46,10 @@ const UserSchema = new Schema<IUser>({
   timestamps: true
 });
 
-// Password hash хийх middleware - зөвхөн шинэ password-д л hash хийх
+// Password hash хийх middleware - зөвхөн password өөрчлөгдсөн үед hash хийх
 UserSchema.pre('save', async function(next) {
-  // Зөвхөн password өөрчлөгдсөн эсвэл шинэ document бол hash хийх
-  if (!this.isModified('password') || this.isNew) return next();
-  
+  if (!this.isModified('password')) return next();
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -62,7 +61,13 @@ UserSchema.pre('save', async function(next) {
 
 // Password шалгах method
 UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+  const stored: string = this.password;
+  // Хэрэв хадгалсан нууц үг bcrypt hash биш бол plaintext fallback-р шалгах
+  const looksHashed = typeof stored === 'string' && stored.startsWith('$2');
+  if (!looksHashed) {
+    return candidatePassword === stored;
+  }
+  return bcrypt.compare(candidatePassword, stored);
 };
 
 export const User = mongoose.model<IUser>('User', UserSchema);

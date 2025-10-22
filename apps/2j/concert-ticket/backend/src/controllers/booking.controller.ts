@@ -52,7 +52,7 @@ export class BookingController {
         status: 'PENDING',
         paymentStatus: 'PENDING',
         canCancel: true,
-        cancellationDeadline: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 цагийн дараа
+        cancellationDeadline: new Date(concert.date.getTime() - 24 * 60 * 60 * 1000) // Концертын огнооноос 24 цагийн өмнө
       });
 
       const savedBooking = await booking.save();

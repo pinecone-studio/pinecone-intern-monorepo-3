@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable complexity */
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
@@ -10,7 +11,8 @@ import { useMyBookingsQuery } from '@/generated';
 interface Order {
   id: string;
   orderNumber: string;
-  date: string;
+  date: string; // Захиалсан огноо
+  concertDate: string; // Тоглолтын огноо
   artist: string;
   concert: string;
   ticketType: string;
@@ -40,6 +42,7 @@ const OrdersPage: React.FC = () => {
     accountNumber: '',
     accountHolderName: ''
   });
+    const [formErrors, setFormErrors] = useState<{ accountNumber?: string; accountHolderName?: string }>({});
 
   // GraphQL query
   const { data: bookingsData, loading: bookingsLoading, error: bookingsError } = useMyBookingsQuery({
@@ -52,7 +55,8 @@ const OrdersPage: React.FC = () => {
   const orders: Order[] = bookingsData?.myBookings?.map((booking) => ({
     id: booking.id,
     orderNumber: `#${booking.id.slice(-4).toUpperCase()}`,
-    date: new Date(booking.bookingDate).toLocaleDateString('mn-MN').replace(/\//g, '.'),
+    date: new Date(booking.bookingDate).toLocaleDateString('mn-MN').replace(/\//g, '.'), // Захиалсан огноо
+    concertDate: booking.concert?.date ? new Date(booking.concert.date).toLocaleDateString('mn-MN').replace(/\//g, '.') : 'Unknown', // Тоглолтын огноо
     artist: booking.concert?.mainArtist?.name || 'Unknown Artist',
     concert: booking.concert?.name || 'Unknown Concert',
     ticketType: booking.ticketCategory?.type || 'Unknown',
@@ -87,7 +91,18 @@ const OrdersPage: React.FC = () => {
     });
   };
 
+  const validateCancelForm = () => {
+    const nextErrors: { accountNumber?: string; accountHolderName?: string } = {};
+    if (!/^\d+$/.test(cancelModalData.accountNumber)) nextErrors.accountNumber = 'Зөвхөн тоо оруулна уу';
+    if (!/^[A-Za-zА-Яа-яӨөҮүЁё\s'-]+$/.test(cancelModalData.accountHolderName)) nextErrors.accountHolderName = 'Зөвхөн үсэг оруулна уу';
+    setFormErrors(nextErrors);
+    const hasEmpty = !cancelModalData.bank || !cancelModalData.accountNumber.trim() || !cancelModalData.accountHolderName.trim();
+    return { isValid: !hasEmpty && Object.keys(nextErrors).length === 0 };
+  };
+
   const handleCancelRequest = async () => {
+    const { isValid } = validateCancelForm();
+    if (!isValid) { alert('Банк, дансны дугаар, нэр талбаруудыг зөв бөглөнө үү.'); return; }
     try {
       // Backend-д цуцлах хүсэлт илгээх
       const response = await fetch('http://localhost:4000/graphql', {
@@ -144,6 +159,22 @@ const OrdersPage: React.FC = () => {
       return 'Төлөв: Төлбөр хүлээгдэж байна';
     }
     return 'Төлөв: Тодорхойгүй';
+  };
+
+  const getStatusColor = (status: string, paymentStatus: string) => {
+    if (status === 'CANCELLATION_REQUESTED') {
+      return 'text-yellow-400'; // Шар өнгө - анхааруулга
+    }
+    if (status === 'CANCELLED') {
+      return 'text-red-400'; // Улаан өнгө - цуцлагдсан
+    }
+    if (paymentStatus === 'COMPLETED' && status === 'CONFIRMED') {
+      return 'text-green-400'; // Ногоон өнгө - баталгаажсан
+    }
+    if (paymentStatus === 'PENDING') {
+      return 'text-blue-400'; // Цэнхэр өнгө - төлбөр хүлээгдэж байна
+    }
+    return 'text-gray-400'; // Саарал өнгө - тодорхойгүй
   };
 
   const getTicketTypeColor = (type: string) => {
@@ -254,16 +285,15 @@ const OrdersPage: React.FC = () => {
                     <div className="flex items-center gap-[8px]">
                       <span className="text-[14px] text-gray-400">Захиалгын дугаар:</span>
                       <span className="text-[14px] font-medium">{order.orderNumber}</span>
-                      <span className="text-[14px] text-gray-400">,</span>
-                      <span className="text-[14px] text-gray-400">{order.date}</span>
                     </div>
                     <div className="flex items-center gap-[12px]">
-                      {order.status === 'CANCELLATION_REQUESTED' && (
-                        <span className="text-[12px] text-yellow-400">
-                          {getStatusText(order.status, order.paymentStatus)}
-                        </span>
-                      )}
-                      {order.canCancel && order.status !== 'CANCELLED' && order.status !== 'CANCELLATION_REQUESTED' && (
+                      {/* Захиалгын төлөв байнга харуулах */}
+                      <span className={`text-[12px] ${getStatusColor(order.status, order.paymentStatus)}`}>
+                        {getStatusText(order.status, order.paymentStatus)}
+                      </span>
+                      
+                      {/* Цуцлах товч */}
+                      {order.canCancel && order.status !== 'CANCELLED' && order.status !== 'CANCELLATION_REQUESTED' && order.cancellationDeadline && new Date() <= new Date(order.cancellationDeadline) && (
                         <button
                           onClick={() => handleCancelOrder(order.id, order.orderNumber)}
                           className="rounded-md bg-[#1a1a1a] px-[12px] py-[4px] text-[12px] font-medium text-white bg-[#2a2a2a] transition-colors shadow-sm border border-[#333333]"
@@ -279,8 +309,29 @@ const OrdersPage: React.FC = () => {
                     <div className="text-[16px] font-semibold text-white mb-[4px]">
                       {order.concert}
                     </div>
-                    <div className="text-[14px] text-gray-300">
+                    <div className="text-[14px] text-gray-300 mb-[8px]">
                       {order.artist}
+                    </div>
+                    
+                    {/* Огнооны мэдээлэл */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-[8px] text-[12px]">
+                      <div className="flex flex-col">
+                        <span className="text-gray-400">Захиалсан огноо:</span>
+                        <span className="text-white">{order.date}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-gray-400">Тоглолтын огноо:</span>
+                        <span className="text-white">{order.concertDate}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-gray-400">Цуцлах боломжит огноо:</span>
+                        <span className="text-white">
+                          {order.cancellationDeadline 
+                            ? new Date(order.cancellationDeadline).toLocaleDateString('mn-MN').replace(/\//g, '.')
+                            : 'Тодорхойгүй'
+                          }
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -355,7 +406,7 @@ const OrdersPage: React.FC = () => {
                   <option value="">Сонгох</option>
                   <option value="khan-bank">Хаан банк</option>
                   <option value="golomt-bank">Голомт банк</option>
-                  <option value="tenger-bank">Тэнгэр банк</option>
+                  <option value="tdb-bank">Худалдаа хөгжлийн банк</option>
                   <option value="state-bank">Төрийн банк</option>
                 </select>
               </div>
@@ -366,10 +417,23 @@ const OrdersPage: React.FC = () => {
                 <input
                   type="text"
                   value={cancelModalData.accountNumber}
-                  onChange={(e) => setCancelModalData({...cancelModalData, accountNumber: e.target.value})}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setCancelModalData({...cancelModalData, accountNumber: value});
+                    if (value && !/^\d+$/.test(value)) {
+                      setFormErrors((prev) => ({ ...prev, accountNumber: 'Зөвхөн тоо оруулна уу' }));
+                    } else {
+                      setFormErrors((prev) => ({ ...prev, accountNumber: undefined }));
+                    }
+                  }}
                   placeholder="Дансны дугаар"
                   className="w-full rounded-[8px] border border-gray-700 bg-[#0e0e0e] px-[12px] py-[10px] text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
+                  inputMode="numeric"
+                  pattern="\\d*"
                 />
+                {formErrors.accountNumber && (
+                  <div className="mt-[6px] text-[12px] text-red-500">{formErrors.accountNumber}</div>
+                )}
               </div>
 
               {/* Account Holder Name */}
@@ -378,17 +442,29 @@ const OrdersPage: React.FC = () => {
                 <input
                   type="text"
                   value={cancelModalData.accountHolderName}
-                  onChange={(e) => setCancelModalData({...cancelModalData, accountHolderName: e.target.value})}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setCancelModalData({...cancelModalData, accountHolderName: value});
+                    if (value && !/^[A-Za-zА-Яа-яӨөҮүЁё\s'-]+$/.test(value)) {
+                      setFormErrors((prev) => ({ ...prev, accountHolderName: 'Зөвхөн үсэг оруулна уу' }));
+                    } else {
+                      setFormErrors((prev) => ({ ...prev, accountHolderName: undefined }));
+                    }
+                  }}
                   placeholder="Эзэмшигчийн нэр"
                   className="w-full rounded-[8px] border border-gray-700 bg-[#0e0e0e] px-[12px] py-[10px] text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
                 />
+                {formErrors.accountHolderName && (
+                  <div className="mt<[6px] text-[12px] text-red-500">{formErrors.accountHolderName}</div>
+                )}
               </div>
             </div>
 
             {/* Action Button */}
             <button
               onClick={handleCancelRequest}
-              className="w-full rounded-[8px] bg-red-600 px-[16px] py-[12px] text-[14px] font-medium text-white hover:bg-red-700 transition-colors"
+              className="w-full rounded-[8px] bg-red-600 px-[16px] py-[12px] text-[14px] font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!cancelModalData.bank || !cancelModalData.accountNumber.trim() || !cancelModalData.accountHolderName.trim() || !!formErrors.accountNumber || !!formErrors.accountHolderName}
             >
               Цуцлах хүсэлт илгээх
             </button>
