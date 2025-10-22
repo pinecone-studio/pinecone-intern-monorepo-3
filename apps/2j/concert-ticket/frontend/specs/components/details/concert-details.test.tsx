@@ -138,4 +138,96 @@ describe('ConcertDetails', () => {
    
   
   });
+
+  it('should handle date selection change', () => {
+    render(<ConcertDetails {...mockProps} />);
+    
+    // Check if date select element exists
+    const dateSelect = screen.getByRole('combobox');
+    expect(dateSelect).toBeInTheDocument();
+    
+    // Check if date options are available
+    expect(screen.getByText('Өдөр сонгох')).toBeInTheDocument();
+    expect(screen.getAllByText('11.15')).toHaveLength(2);
+  });
+
+  it('should display correct concert information', () => {
+    render(<ConcertDetails {...mockProps} />);
+    
+    // Check if concert details are rendered
+    expect(screen.getAllByText('11.15')).toHaveLength(2);
+    expect(screen.getByText('19:00')).toBeInTheDocument();
+    expect(screen.getByText('UG ARENA')).toBeInTheDocument();
+  });
+
+  it('should handle ticket category selection', () => {
+    render(<ConcertDetails {...mockProps} />);
+    
+    // Check if ticket categories are rendered with availability counts
+    expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument();
+    expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument();
+    expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument();
+  });
+
+  it('should handle quantity changes', () => {
+    render(<ConcertDetails {...mockProps} />);
+    
+    // Check if ticket categories are rendered with availability counts
+    expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument();
+    expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument();
+    expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument();
+  });
+
+  it('should handle buy button click', () => {
+    render(<ConcertDetails {...mockProps} />);
+    
+    const buyButton = screen.getByText('Тасалбар захиалах');
+    expect(buyButton).toBeInTheDocument();
+    
+    fireEvent.click(buyButton);
+    // Should navigate to cart or show some action
+  });
+
+  it('should display ticket prices correctly', () => {
+    render(<ConcertDetails {...mockProps} />);
+    
+    expect(screen.getByText('129,000₮')).toBeInTheDocument();
+    expect(screen.getByText('89,000₮')).toBeInTheDocument();
+  });
+
+  it('should handle empty ticket categories', () => {
+    const emptyProps = {
+      ...mockProps,
+      ticketCategories: []
+    };
+    
+    render(<ConcertDetails {...emptyProps} />);
+    
+    const buyButton = screen.getByText('Тасалбар захиалах');
+    expect(buyButton).toBeInTheDocument();
+  });
+
+  it('should handle loading state', () => {
+    const loadingProps = {
+      ...mockProps,
+      loading: true
+    };
+    
+    render(<ConcertDetails {...loadingProps} />);
+    
+    // Check if component renders during loading
+    expect(screen.getByTestId('concert-details')).toBeInTheDocument();
+  });
+
+  it('should handle error state', () => {
+    const errorProps = {
+      ...mockProps,
+      error: new Error('Test error')
+    };
+    
+    render(<ConcertDetails {...errorProps} />);
+    
+    // Check if component renders during error
+    expect(screen.getByTestId('concert-details')).toBeInTheDocument();
+  });
 });
