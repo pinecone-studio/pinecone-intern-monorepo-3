@@ -55,7 +55,10 @@ const ChangePasswordPage: React.FC = () => {
     e.preventDefault();
     setError(null);
     const validationError = validate();
-    if (validationError) { setError(validationError); return; }
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
     try {
       setLoading(true);
       const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URI || 'http://localhost:4000/graphql', {
@@ -63,8 +66,8 @@ const ChangePasswordPage: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: `mutation ChangePassword($currentPassword: String!, $newPassword: String!) { changePassword(currentPassword: $currentPassword, newPassword: $newPassword) }`,
-          variables: { currentPassword, newPassword }
-        })
+          variables: { currentPassword, newPassword },
+        }),
       });
       const json = await res.json();
       if (json.errors) {
@@ -85,9 +88,7 @@ const ChangePasswordPage: React.FC = () => {
       <div className="min-h-screen bg-black text-white">
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">Нууц үг солих</h1>
-          </div>
+          <div className="mb-[24px]"></div>
           <div className="flex gap-[24px]">
             <ProfileMenu />
             <div className="flex-1">
@@ -125,20 +126,38 @@ const ChangePasswordPage: React.FC = () => {
     <div className="min-h-screen bg-black text-white">
       <Navbar />
       <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-        <div className="mb-[24px]">
-          <h1 className="text-[32px] font-bold">Нууц үг солих</h1>
-        </div>
+        <div className="mb-[24px]"></div>
         <div className="flex gap-[24px]">
           <ProfileMenu />
           <div className="flex-1">
             <div className="max-w-[600px]">
               <div className="rounded-[12px] bg-[#111111] p-[24px]">
                 <form onSubmit={handleSubmit}>
-                  <PasswordField label="Хуучин нууц үг:" value={currentPassword} onChange={setCurrentPassword} shown={showCurrent} onToggle={() => setShowCurrent((s) => !s)} ariaLabel="toggle current password" />
+                  <PasswordField
+                    label="Хуучин нууц үг:"
+                    value={currentPassword}
+                    onChange={setCurrentPassword}
+                    shown={showCurrent}
+                    onToggle={() => setShowCurrent((s) => !s)}
+                    ariaLabel="toggle current password"
+                  />
                   <PasswordField label="Шинэ нууц үг:" value={newPassword} onChange={setNewPassword} shown={showNew} onToggle={() => setShowNew((s) => !s)} ariaLabel="toggle new password" />
-                  <PasswordField label="Шинэ нууц үг давтах:" value={confirmPassword} onChange={setConfirmPassword} shown={showConfirm} onToggle={() => setShowConfirm((s) => !s)} ariaLabel="toggle confirm password" />
+                  <PasswordField
+                    label="Шинэ нууц үг давтах:"
+                    value={confirmPassword}
+                    onChange={setConfirmPassword}
+                    shown={showConfirm}
+                    onToggle={() => setShowConfirm((s) => !s)}
+                    ariaLabel="toggle confirm password"
+                  />
                   {error && <div className="mb-[12px] text-[13px] text-red-500">{error}</div>}
-                  <button type="submit" disabled={loading} className="w-full rounded-[8px] bg-[#00B7F4] px-[24px] py-[12px] text-[14px] font-medium text-black hover:bg-[#0099CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{loading ? 'Хадгалж байна...' : 'Хадгалах'}</button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full rounded-[8px] bg-[#00B7F4] px-[24px] py-[12px] text-[14px] font-medium text-black hover:bg-[#0099CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? 'Хадгалж байна...' : 'Хадгалах'}
+                  </button>
                 </form>
               </div>
             </div>
@@ -151,5 +170,3 @@ const ChangePasswordPage: React.FC = () => {
 };
 
 export default ChangePasswordPage;
-
-

@@ -60,10 +60,43 @@ describe('EventCard.utils', () => {
       expect(result).toMatch(/\d{2}\.\d{2}/);
     });
 
-    it('returns original date for invalid format', () => {
+    it('returns "Invalid date" for invalid format', () => {
       const invalid = 'invalid-date';
       const result = formatDateTime(invalid);
-      expect(result).toBe(invalid);
+      expect(result).toBe('Invalid date');
+    });
+
+    it('handles ISO string format with Z', () => {
+      const isoDate = '2024-12-25T19:00:00Z';
+      const result = formatDateTime(isoDate);
+      expect(result).toMatch(/\d{2}\.\d{2}/);
+    });
+
+    it('handles date format error and returns "Date error"', () => {
+      const consoleError = jest.spyOn(console, 'error').mockImplementation();
+
+      const problematicDate = {
+        toString: () => {
+          throw new Error('Date conversion error');
+        },
+      };
+      const result = formatDateTime(problematicDate as any);
+      expect(result).toBe('Date error');
+      expect(consoleError).toHaveBeenCalled();
+
+      consoleError.mockRestore();
+    });
+
+    it('handles 10-digit unix timestamp', () => {
+      const unixTimestamp = '1703520000'; // 10 digits (seconds)
+      const result = formatDateTime(unixTimestamp);
+      expect(result).toMatch(/\d{2}\.\d{2}/);
+    });
+
+    it('handles 13-digit unix timestamp', () => {
+      const unixTimestamp = '1703520000000'; // 13 digits (milliseconds)
+      const result = formatDateTime(unixTimestamp);
+      expect(result).toMatch(/\d{2}\.\d{2}/);
     });
   });
 });

@@ -41,7 +41,7 @@ describe('EventCard', () => {
 
   it('displays lowest price', () => {
     render(<EventCard item={mockEvent} />);
-    expect(screen.getByText("50'000$")).toBeInTheDocument();
+    expect(screen.getByText("50'000₮")).toBeInTheDocument();
   });
 
   it('renders with empty ticket categories', () => {
@@ -61,5 +61,12 @@ describe('EventCard', () => {
     render(<EventCard item={event} />);
     const img = screen.getByAltText('Test Concert');
     expect(img).toHaveAttribute('src', expect.stringContaining('placeholder'));
+  });
+
+  it('handles non-array ticket categories', () => {
+    const event = { ...mockEvent, ticketCategories: null as any };
+    render(<EventCard item={event} />);
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('-')).toBeInTheDocument();
   });
 });

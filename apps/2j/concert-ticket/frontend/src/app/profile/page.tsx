@@ -9,27 +9,31 @@ import { useMyProfileQuery, useUpdateUserProfileMutation } from '@/generated';
 const useCustomerData = () => {
   const [customerData, setCustomerData] = useState({
     phone: '',
-    email: ''
+    email: '',
   });
 
-  const { data: profileData, loading: profileLoading, error: profileError } = useMyProfileQuery({
-    errorPolicy: 'all'
+  const {
+    data: profileData,
+    loading: profileLoading,
+    error: profileError,
+  } = useMyProfileQuery({
+    errorPolicy: 'all',
   });
 
   useEffect(() => {
     if (profileData?.myProfile) {
       setCustomerData({
         phone: profileData.myProfile.phoneNumber || '',
-        email: profileData.myProfile.email || ''
+        email: profileData.myProfile.email || '',
       });
     }
   }, [profileData]);
 
   const handleCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCustomerData(prev => ({
+    setCustomerData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -47,9 +51,9 @@ const useProfileSave = () => {
         variables: {
           input: {
             phoneNumber: customerData.phone,
-            username: customerData.email.split('@')[0]
-          }
-        }
+            username: customerData.email.split('@')[0],
+          },
+        },
       });
       alert('Мэдээлэл амжилттай хадгалагдлаа!');
     } catch (error) {
@@ -63,7 +67,13 @@ const useProfileSave = () => {
   return { handleSaveCustomer, isLoading, updateLoading };
 };
 
-const ProfileForm = ({ customerData, handleCustomerChange, handleSaveCustomer, isLoading, updateLoading }: {
+const ProfileForm = ({
+  customerData,
+  handleCustomerChange,
+  handleSaveCustomer,
+  isLoading,
+  updateLoading,
+}: {
   customerData: { phone: string; email: string };
   handleCustomerChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSaveCustomer: (customerData: { phone: string; email: string }) => Promise<void>;
@@ -120,9 +130,7 @@ const ProfilePage: React.FC = () => {
       <div className="min-h-screen bg-black text-white">
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">User Profile</h1>
-          </div>
+          <div className="mb-[24px]"></div>
           <div className="flex gap-[24px]">
             <ProfileMenu />
             <div className="flex-1">
@@ -149,9 +157,7 @@ const ProfilePage: React.FC = () => {
       <div className="min-h-screen bg-black text-white">
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">User Profile</h1>
-          </div>
+          <div className="mb-[24px]"></div>
           <div className="flex gap-[24px]">
             <ProfileMenu />
             <div className="flex-1">
@@ -170,22 +176,14 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      
+
       <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-        <div className="mb-[24px]">
-          <h1 className="text-[32px] font-bold">User Profile</h1>
-        </div>
+        <div className="mb-[24px]"></div>
 
         <div className="flex gap-[24px]">
           <ProfileMenu />
-          
-          <ProfileForm 
-            customerData={customerData}
-            handleCustomerChange={handleCustomerChange}
-            handleSaveCustomer={handleSaveCustomer}
-            isLoading={isLoading}
-            updateLoading={updateLoading}
-          />
+
+          <ProfileForm customerData={customerData} handleCustomerChange={handleCustomerChange} handleSaveCustomer={handleSaveCustomer} isLoading={isLoading} updateLoading={updateLoading} />
         </div>
       </main>
 

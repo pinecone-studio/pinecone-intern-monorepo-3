@@ -9,5 +9,5 @@ export default {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/apps/2j/concert-ticket/frontend',
-  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/generated/**/*.ts', '!src/app/**/*.tsx', '!src/components/providers/*.tsx'],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/generated/**/*.{ts,tsx}', '!src/app/**/*.tsx', '!src/components/providers/**/*.{ts,tsx}', '!src/types/**/*.ts'],
 };

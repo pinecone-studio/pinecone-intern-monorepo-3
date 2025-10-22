@@ -21,19 +21,35 @@ const formatValidDate = (date: Date): string => {
 };
 
 const parseDate = (dateStr: string, timeStr?: string): Date => {
-  if (/^\d+$/.test(dateStr)) {
-    return new Date(parseInt(dateStr));
+  // Check if timestamp (10-13 digits)
+  if (/^\d{10,13}$/.test(dateStr)) {
+    const timestamp = parseInt(dateStr, 10);
+    // Unix timestamp in seconds, convert to milliseconds
+    const ms = String(timestamp).length === 10 ? timestamp * 1000 : timestamp;
+    return new Date(ms);
   }
+  
+  // Check if it's already an ISO string (from backend)
+  if (dateStr.includes('T') && dateStr.includes('Z')) {
+    return new Date(dateStr);
+  }
+  
+  // Handle other date formats
   const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
   return new Date(iso);
 };
 
 export const formatDateTime = (dateStr?: string, timeStr?: string): string => {
   if (!dateStr) return '';
-  const dt = parseDate(dateStr, timeStr);
-  if (!isValidDate(dt)) {
-    console.warn('Invalid date format:', { dateStr, timeStr });
-    return dateStr;
+  try {
+    const dt = parseDate(dateStr, timeStr);
+    if (!isValidDate(dt)) {
+      console.warn('Invalid date format:', { dateStr, timeStr, parsedDate: dt });
+      return 'Invalid date';
+    }
+    return formatValidDate(dt);
+  } catch (error) {
+    console.error('Date formatting error:', error, { dateStr, timeStr });
+    return 'Date error';
   }
-  return formatValidDate(dt);
 };

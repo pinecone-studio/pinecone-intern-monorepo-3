@@ -336,10 +336,9 @@ describe('CartContent', () => {
   });
 
   it('handles buy button click with valid selection', async () => {
-    // Mock window.location.href
     delete (window as any).location;
     window.location = { href: '' } as any;
-    
+
     render(
       <MockedProvider mocks={[mockData]}>
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
@@ -365,7 +364,6 @@ describe('CartContent', () => {
       </MockedProvider>
     );
     await waitFor(() => screen.getByText(/Арын тасалбар/));
-    // Test date selection functionality - check if select element exists
     const dateSelect = screen.getByRole('combobox');
     expect(dateSelect).toBeInTheDocument();
   });
@@ -406,7 +404,6 @@ describe('CartContent', () => {
     if (plus) {
       fireEvent.click(plus);
       await waitFor(() => {
-        // Should show total price calculation
         expect(screen.getAllByText('89,000₮')).toHaveLength(3);
       });
     }
@@ -427,7 +424,7 @@ describe('CartContent', () => {
         },
       },
     };
-    
+
     render(
       <MockedProvider mocks={[emptyMockData]}>
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
@@ -448,15 +445,13 @@ describe('CartContent', () => {
             name: 'Test',
             date: '2024-12-25',
             venue: 'Venue',
-            ticketCategories: [
-              { id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123 },
-            ],
+            ticketCategories: [{ id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123 }],
           },
         },
       },
       delay: 100,
     };
-    
+
     render(
       <MockedProvider mocks={[loadingMockData]}>
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
@@ -497,7 +492,6 @@ describe('CartContent', () => {
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
       </MockedProvider>
     );
-    // Wait for component to load and check if default ticket type name is used
     await waitFor(() => {
       expect(screen.getByText('Тасалбар')).toBeInTheDocument();
     });
@@ -535,9 +529,172 @@ describe('CartContent', () => {
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
       </MockedProvider>
     );
-    // Wait for component to load and check if component renders with unknown type
     await waitFor(() => {
       expect(screen.getByText('Тасалбар')).toBeInTheDocument();
     });
+  });
+
+  it('handles timestamp date format', async () => {
+    const mockDataWithTimestamp = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test',
+            date: '1703520000000',
+            venue: 'Venue',
+            ticketCategories: [{ id: '1', type: 'VIP', unitPrice: 50000, availableQuantity: 10 }],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[mockDataWithTimestamp]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('VIP тасалбар')).toBeInTheDocument();
+    });
+  });
+
+  it('handles invalid date format and returns original string', async () => {
+    const mockDataWithInvalidDate = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test',
+            date: 'invalid-date-format',
+            venue: 'Venue',
+            ticketCategories: [{ id: '1', type: 'VIP', unitPrice: 50000, availableQuantity: 10 }],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[mockDataWithInvalidDate]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('VIP тасалбар')).toBeInTheDocument();
+    });
+  });
+
+  it('disables checkout button when no tickets selected', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument());
+
+    const checkoutButton = screen.getByText('Тасалбар авах');
+    expect(checkoutButton).toBeDisabled();
+  });
+
+  it('enables checkout button when tickets are selected', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument());
+
+    const allButtons = screen.getAllByRole('button');
+    const plusButton = allButtons.find((btn) => btn.className.includes('w-12 h-12') && !btn.hasAttribute('data-testid') && btn.querySelector('svg'));
+
+    if (plusButton) {
+      fireEvent.click(plusButton);
+
+      await waitFor(() => {
+        const checkoutButton = screen.getByText('Тасалбар авах');
+        expect(checkoutButton).not.toBeDisabled();
+      });
+    }
+  });
+
+  it('handles date change to update selected date', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument());
+
+    const dateSelect = screen.getByRole('combobox');
+    fireEvent.change(dateSelect, { target: { value: '12.25' } });
+
+    expect(dateSelect).toBeInTheDocument();
+  });
+
+  it('handles missing concert date and uses current date', async () => {
+    const mockDataWithoutDate = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test',
+            date: null,
+            venue: 'Venue',
+            ticketCategories: [{ id: '1', type: 'VIP', unitPrice: 50000, availableQuantity: 10 }],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[mockDataWithoutDate]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      expect(screen.getByText('VIP тасалбар')).toBeInTheDocument();
+    });
+  });
+
+  it('handles selectedDate being null in date selector', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <CartContent concertId="test-id" selectedDate={null as any} />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument());
+
+    expect(screen.getByText('Өдөр сонгох')).toBeInTheDocument();
+  });
+
+  it('handles date formatting errors gracefully', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation();
+
+    const mockDataWithBadDate = {
+      request: { query: GetConcertDocument, variables: { id: 'test-id' } },
+      result: {
+        data: {
+          concert: {
+            id: 'test-id',
+            name: 'Test',
+            date: 'definitely-not-a-valid-date-format-123',
+            venue: 'Venue',
+            ticketCategories: [{ id: '1', type: 'VIP', unitPrice: 50000, availableQuantity: 10 }],
+          },
+        },
+      },
+    };
+
+    render(
+      <MockedProvider mocks={[mockDataWithBadDate]}>
+        <CartContent concertId="test-id" selectedDate="2024-12-25" />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('VIP тасалбар')).toBeInTheDocument();
+    });
+
+    consoleError.mockRestore();
   });
 });

@@ -17,7 +17,8 @@ import { useHomeEventsQuery } from '@/generated';
 //   }
 // };
 
-const getLowestPrice = (categories: any[]): number | null => { // eslint-disable-line @typescript-eslint/no-explicit-any
+const getLowestPrice = (categories: any[]): number | null => {
+  // eslint-disable-line @typescript-eslint/no-explicit-any
   if (!categories || categories.length === 0) return null;
 
   const prices = categories.filter((cat) => cat.unitPrice && !isNaN(cat.unitPrice)).map((cat) => cat.unitPrice);
@@ -42,7 +43,7 @@ interface RelatedConcertsProps {
 
 export const RelatedConcerts: React.FC<RelatedConcertsProps> = ({ excludeConcertId }) => {
   const { data, loading, error } = useHomeEventsQuery({
-    variables: { limit: 6, offset: 0 },
+    variables: { limit: 12, offset: 0 },
   });
 
   if (loading) {
@@ -53,7 +54,7 @@ export const RelatedConcerts: React.FC<RelatedConcertsProps> = ({ excludeConcert
     return null;
   }
 
-  const relatedConcerts = data.concerts.concerts.filter((concert) => concert.id !== excludeConcertId).slice(0, 3);
+  const relatedConcerts = data.concerts.concerts.filter((concert) => concert.id !== excludeConcertId).slice(0, 6);
 
   if (relatedConcerts.length === 0) {
     return null;
@@ -82,7 +83,7 @@ export const RelatedConcerts: React.FC<RelatedConcertsProps> = ({ excludeConcert
                   </div>
                   <div className="p-4" style={{ backgroundColor: '#1f1f1f' }}>
                     <div className="mb-2 text-sm text-gray-400">{concert.mainArtist?.name || 'Unknown Artist'}</div>
-                    <div className="mb-3 line-clamp-2 text-lg font-semibold text-white">{concert.name}</div>
+                    <div className="mb-3 text-lg font-semibold text-white truncate">{concert.name}</div>
                     <div className="flex items-center justify-between mb-2 text-sm text-gray-300">
                       <span className="font-medium text-white">{lowestPrice ? `${lowestPrice.toLocaleString()}₮` : 'Price TBA'}</span>
                       <span>{concert.venue}</span>
