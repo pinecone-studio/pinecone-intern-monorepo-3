@@ -43,6 +43,8 @@ query GetConcert($id: ID!) {
       totalQuantity
       availableQuantity
       unitPrice
+      discountPercentage
+      discountedPrice
       description
       features
     }

@@ -60,6 +60,8 @@ type TicketCategory {
   totalQuantity: Int!
   availableQuantity: Int!
   unitPrice: Float!
+  discountedPrice: Float!
+  discountPercentage: Float
   description: String
   features: [String!]
 }

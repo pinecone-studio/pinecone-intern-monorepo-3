@@ -10,6 +10,8 @@ interface TicketCategory {
   price: number;
   available: number;
   color: string;
+  discountPercentage?: number;
+  discountedPrice?: number;
 }
 
 interface ConcertDetailsProps {
@@ -112,15 +114,32 @@ export const ConcertDetails: React.FC<ConcertDetailsProps> = ({ eventDate, event
 
             <div>
               <div className="space-y-3">
+                {/* eslint-disable-next-line complexity */}
                 {ticketCategories.map((category) => (
                   <div key={category.id} className="flex items-center justify-between p-4 bg-black border border-gray-600 rounded-lg" style={{ borderStyle: 'dashed', borderWidth: '1px' }}>
                     <div className="flex items-center gap-3">
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: category.color }}></div>
-                      <span className="font-medium" style={{ color: category.color }}>
-                        {category.name} ({category.available})
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="font-medium" style={{ color: category.color }}>
+                          {category.name} ({category.available})
+                        </span>
+                        {category.discountPercentage && category.discountPercentage > 0 && (
+                          <span className="text-[12px] text-red-400 font-bold">
+                            {Math.round(category.discountPercentage)}% хөнгөлөлт
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <span className="font-light text-white">{category.price.toLocaleString()}₮</span>
+                    <div className="flex flex-col items-end">
+                      {category.discountPercentage && category.discountPercentage > 0 && category.discountedPrice ? (
+                        <>
+                          <span className="font-bold text-white">{category.discountedPrice.toLocaleString()}₮</span>
+                          <span className="text-[12px] text-gray-400 line-through">{category.price.toLocaleString()}₮</span>
+                        </>
+                      ) : (
+                        <span className="font-light text-white">{category.price.toLocaleString()}₮</span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

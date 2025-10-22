@@ -94,6 +94,8 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
     price: category.unitPrice,
     available: category.availableQuantity,
     color: getTicketTypeColor(category.type),
+    discountPercentage: category.discountPercentage ?? undefined,
+    discountedPrice: category.discountedPrice,
   }));
 
   const specialArtists = concert.otherArtists?.map((artist) => artist.name) ?? [];

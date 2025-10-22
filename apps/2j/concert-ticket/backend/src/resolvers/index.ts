@@ -5,6 +5,7 @@ import { Concert } from './Concert';
 import { User } from './User';
 import { Booking } from './Booking';
 import { Artist } from './Artist';
+import { TicketCategory } from './TicketCategory';
 
 export const resolvers: Resolvers = {
   Query,
@@ -13,4 +14,5 @@ export const resolvers: Resolvers = {
   User,
   Booking,
   Artist,
+  TicketCategory,
 };
