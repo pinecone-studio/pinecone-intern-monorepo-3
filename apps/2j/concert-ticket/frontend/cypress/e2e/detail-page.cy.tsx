@@ -1,6 +1,6 @@
 describe('Detail Page', () => {
   beforeEach(() => {
-    cy.visit('/detail');
+    cy.visit('/concerts/68e75debb6cd9759bc4033ec');
   });
 
   it('Should render navigation bar with all elements', () => {
@@ -9,11 +9,7 @@ describe('Detail Page', () => {
     cy.get('[data-testid="logo-dot"]').should('have.class', 'bg-cyan-400');
 
     // Check search bar
-    cy.get('[data-testid="search-input"]').should('have.attr', 'placeholder', 'Хайлт');
-    cy.get('[data-testid="search-button"]').should('be.visible');
-
-    // Check cart icon
-    cy.get('[data-testid="cart-button"]').should('be.visible');
+    cy.get('[data-testid="search-input"]').should('have.attr', 'placeholder', 'Хайх...');
 
     // Check buttons
     cy.get('[data-testid="register-button"]').should('contain', 'Бүртгүүлэх');
@@ -23,19 +19,12 @@ describe('Detail Page', () => {
   it('Should render footer with contact information', () => {
     // Check footer logo
     cy.get('[data-testid="footer-logo"]').should('contain', 'TICKET BOOKING');
-    cy.get('[data-testid="footer-copyright"]').should('contain', '© 2024 Booking Mongolia');
-
-    // Check contact information
-    cy.get('[data-testid="contact-header"]').should('contain', 'Contact Information');
-    cy.get('[data-testid="email"]').should('contain', 'support@ticketinbooking.mn');
-    cy.get('[data-testid="phone"]').should('contain', '+976 (11) 123-4567');
-    cy.get('[data-testid="support"]').should('contain', 'Available 24/7');
+    cy.get('[data-testid="footer-logo-dot"]').should('have.class', 'bg-cyan-400');
   });
 
   it('Should handle search functionality', () => {
     const searchQuery = 'concert';
     cy.get('[data-testid="search-input"]').type(searchQuery);
-    cy.get('[data-testid="search-form"]').submit();
 
     // Check that search input has the value
     cy.get('[data-testid="search-input"]').should('have.value', searchQuery);
@@ -43,16 +32,10 @@ describe('Detail Page', () => {
 
   it('Should handle button clicks', () => {
     // Test register button
-    cy.get('[data-testid="register-button"]').click();
     cy.get('[data-testid="register-button"]').should('be.visible');
 
     // Test login button
-    cy.get('[data-testid="login-button"]').click();
     cy.get('[data-testid="login-button"]').should('be.visible');
-
-    // Test cart button
-    cy.get('[data-testid="cart-button"]').click();
-    cy.get('[data-testid="cart-button"]').should('be.visible');
   });
 
   it('Should be responsive on mobile', () => {

@@ -48,7 +48,7 @@ type User {
 
 type Artist {
   id: ID!
-  name: String!
+  name: String
   bio: String
   image: String
   concerts: [Concert!]
@@ -71,7 +71,7 @@ type Concert {
   venue: String!
   date: String!
   time: String!
-  mainArtist: Artist!
+  mainArtist: Artist
   otherArtists: [Artist!]
   image: String
   isActive: Boolean!
@@ -192,6 +192,7 @@ type Query {
   concerts(filter: ConcertFilterInput, pagination: PaginationInput): SearchResult!
   concert(id: ID!): Concert
   myBookings: [Booking!]! @auth(requires: USER)
+  myProfile: User
   user(id: ID!): User @auth(requires: ADMIN)
   users(pagination: PaginationInput): [User!]! @auth(requires: ADMIN)
   artists: [Artist!]!
@@ -203,6 +204,10 @@ type Query {
 type Mutation {
   register(input: RegisterInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
+  forgotPassword(email: String!): String!
+  resetPassword(input: ResetPasswordInput!): AuthPayload!
+  changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
+
   logout: Boolean!
 
   # Password reset functionality
@@ -219,6 +224,7 @@ type Mutation {
   deleteArtist(id: ID!, input: ArtistInput!): Boolean! @auth(requires: ADMIN)
 
   createBooking(input: CreateBookingInput!): Booking! @auth(requires: USER)
+  updateBookingPaymentStatus(id: ID!, paymentStatus: PaymentStatus!): Booking! @auth(requires: USER)
   cancelBooking(id: ID!): Booking! @auth(requires: USER)
   requestCancellation(id: ID!): Booking! @auth(requires: USER)
 

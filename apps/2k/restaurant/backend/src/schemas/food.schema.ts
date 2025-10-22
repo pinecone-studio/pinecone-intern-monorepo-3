@@ -7,19 +7,20 @@ export const typeDefs = gql`
   #   endDate: Date
   # }
 
-  type foodTypeDef {
+  type FoodType {
     id: ID!
     name: String
     image: String
     price: Int
     available: Boolean
     # discount:discount
-    # categoryId:ID!
+    categoryId: ID
   }
 
+
   type Query {
-    allFood: [foodTypeDef!]!
-    GetFoodById(foodId: ID!): foodTypeDef!
+    allFood: [FoodType!]!
+    GetFoodById(foodId: ID!): FoodType!
   }
 
   type Mutation {
@@ -28,7 +29,7 @@ export const typeDefs = gql`
       image: String
       price: Int!
       available: Boolean # categoryId:ID!
-    ): foodTypeDef!
+    ): FoodType!
 
     updateFood(
       name: String
@@ -36,8 +37,11 @@ export const typeDefs = gql`
       price: Int
       available: Boolean
       id: ID! # categoryId:ID!
-    ): foodTypeDef!
+    ): FoodType!
 
-    DeleteFood(foodId: ID!): foodTypeDef!
+    AddFoodToCategory(foodId: ID!, categoryId: ID!): FoodType
+    DeleteFoodFromCategory(foodId:ID!, categoryId:ID!):FoodType
+
+    DeleteFood(foodId: ID!): FoodType!
   }
 `;

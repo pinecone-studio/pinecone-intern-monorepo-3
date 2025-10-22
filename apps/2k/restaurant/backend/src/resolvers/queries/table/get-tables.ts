@@ -1,33 +1,16 @@
-import { gql } from 'apollo-server-cloud-functions';
+import { TableModel } from '../../../models/table.model';
 
-export const tableTypeDefs = gql`
-  type Table {
-    tableId: ID!
-    tableName: String!
-    tableQr: String!
-  }
+export const getTables = async () => {
+  try {
+    const tables = await TableModel.find();
 
-  input CreateTableInput {
-    tableName: String!
+    return tables.map((table) => ({
+      tableId: table._id.toString(),
+      tableName: table.tableName,
+      tableQr: table.tableQr,
+      tableQrImage: table.tableQrImage,
+    }));
+  } catch (error) {
+    throw new Error('Ширээний мэдээлэл авахад алдаа гарлаа');
   }
-
-  input UpdateTableInput {
-    tableName: String!
-    tableQR: String!
-  }
-
-  input DeleteTableInput {
-    tableId: ID!
-  }
-
-  type Query {
-    getTables: [Table!]!
-    getTableByName(tableName: String!): Table!
-  }
-
-  type Mutation {
-    createTable(input: CreateTableInput!): Table!
-    updateTable(tableId: ID!, input: UpdateTableInput!): Table!
-    deleteTable(tableId: ID!): Table!
-  }
-`;
+};

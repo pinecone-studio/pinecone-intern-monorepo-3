@@ -15,7 +15,7 @@ const CategorySchema = new mongoose.Schema<CategoryType>(
     food: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Food',
+        ref: 'FoodRes',
         required: false,
       },
     ],

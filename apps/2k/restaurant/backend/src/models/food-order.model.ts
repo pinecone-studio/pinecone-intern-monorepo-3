@@ -12,7 +12,7 @@ const foodOrderItem = new Schema<FoodOrderItemType>({
 
 const foodOrderSchema = new Schema(
   {
-    userId: { type: String, required: true },
+    userId: { type: Schema.Types.ObjectId, ref:"User", required: true },
     tableId: { type: String, required: true },
     orderNumber: { type: Number, required: true },
     totalPrice: { type: Number, require: true },

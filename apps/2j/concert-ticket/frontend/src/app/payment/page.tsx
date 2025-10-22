@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Check } from 'lucide-react';
+import { useUpdateUserProfileMutation, useCreateBookingMutation } from '@/generated';
 
 interface PaymentPageProps {
   _concertId: string;
@@ -77,9 +78,98 @@ const usePaymentLogic = () => {
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [ticketNumber, setTicketNumber] = React.useState<string>('');
 
+  // Mutations
+  const [updateUserProfile] = useUpdateUserProfileMutation();
+  const [createBooking] = useCreateBookingMutation();
+
   const handlePaymentSelect = (method: string) => {
     setSelectedPayment(method);
     setErrorMessage(null);
+  };
+
+  const simulatePayment = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  };
+
+  const updateUserInfo = async (phone: string, email: string) => {
+    await updateUserProfile({
+      variables: {
+        input: {
+          phoneNumber: phone,
+          username: email.split('@')[0]
+        }
+      }
+    });
+  };
+
+  const createBookings = async (concertId: string, ticketData: string) => {
+    const selectedTickets = JSON.parse(decodeURIComponent(ticketData));
+    const bookings = [];
+    for (const ticket of selectedTickets) {
+      if (ticket.quantity > 0) {
+        const booking = await createBooking({
+          variables: {
+            input: {
+              concertId: concertId,
+              ticketCategoryId: ticket.id,
+              quantity: ticket.quantity
+            }
+          }
+        });
+        bookings.push(booking.data?.createBooking);
+      }
+    }
+    return bookings;
+  };
+
+  const updateSingleBooking = async (booking: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (!booking?.id) return;
+    
+    try {
+      await fetch('http://localhost:4000/api/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: `
+            mutation UpdateBookingPaymentStatus($id: ID!, $paymentStatus: PaymentStatus!) {
+              updateBookingPaymentStatus(id: $id, paymentStatus: $paymentStatus) {
+                id
+                status
+                paymentStatus
+              }
+            }
+          `,
+          variables: {
+            id: booking.id,
+            paymentStatus: 'COMPLETED'
+          }
+        })
+      });
+    } catch (error) {
+      console.error('Failed to update payment status:', error);
+    }
+  };
+
+  const updateBookingPaymentStatus = async (bookings: any[]) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+    for (const booking of bookings) {
+      await updateSingleBooking(booking);
+    }
+  };
+
+  const processBackendUpdates = async () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const concertId = searchParams.get('concertId');
+    const ticketData = searchParams.get('ticketData');
+    const phone = searchParams.get('phone');
+    const email = searchParams.get('email');
+
+    if (concertId && ticketData && phone && email) {
+      await updateUserInfo(phone, email);
+      const bookings = await createBookings(concertId, ticketData);
+      await updateBookingPaymentStatus(bookings);
+    }
   };
 
   const handlePay = async () => {
@@ -90,12 +180,15 @@ const usePaymentLogic = () => {
     setIsProcessing(true);
     setErrorMessage(null);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await simulatePayment();
+      await processBackendUpdates();
+
       setTicketNumber((Math.floor(Math.random() * 90000) + 10000).toString());
       setShowSuccess(true);
       setIsProcessing(false);
       setTimeout(() => router.push('/'), 5000);
-    } catch {
+    } catch (error) {
+      console.error('Payment or backend update error:', error);
       setIsProcessing(false);
       setErrorMessage('Төлбөр төлөх үед алдаа гарлаа. Дахин оролдоно уу.');
     }
@@ -134,7 +227,7 @@ const PaymentForm = ({
         className={`w-full px-6 py-4 mt-8 font-bold text-white transition-colors rounded-lg ${isReady ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed'}`}
         style={{ backgroundColor: isReady ? '#00b7f4' : '#6b7280' }}
       >
-        {isProcessing ? 'Боловсруулаж байна...' : 'Төлбөр төлөх'}
+        {isProcessing ? 'Боловсруулж байна...' : 'Төлбөр төлөх'}
       </button>
     </div>
   );
@@ -185,7 +278,7 @@ function PaymentPageContent() {
     );
   }
 
-  return <PaymentContent concertId={concertId} ticketData={ticketData} totalAmount={totalAmount} />;
+  return <PaymentContent _concertId={concertId} _ticketData={ticketData} totalAmount={totalAmount} />;
 }
 
 export default function PaymentPage() {

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ShoppingCart, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
+import { useMyProfileQuery } from '@/generated';
 
 interface Props {
   className?: string;
@@ -13,6 +14,12 @@ const Navbar: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [query, setQuery] = useState('');
+
+  const { data: profileData } = useMyProfileQuery({
+    errorPolicy: 'all'
+  });
+
+  const isLoggedIn = !!profileData?.myProfile;
 
   const goSearch = (q?: string) => {
     const keyword = (q ?? query).trim();
@@ -30,7 +37,6 @@ const Navbar: React.FC<Props> = ({ className }) => {
   return (
     <header className={`w-full bg-[#0e0e0e] ${className ?? ''}`}>
       <div className="mx-auto flex max-w-[1200px] items-center justify-between px-[12px] py-[8px] sm:px-[16px] sm:py-[12px]">
-        {/* Logo */}
         <div className="flex items-center gap-[8px]">
           <div className="h-[8px] w-[8px] rounded-full bg-cyan-400" />
           <Link
@@ -41,7 +47,6 @@ const Navbar: React.FC<Props> = ({ className }) => {
           </Link>
         </div>
 
-        {/* Search box */}
         <div className="flex items-center gap-[12px]">
           <div className="relative h-[32px] w-[180px] overflow-hidden rounded-[8px] bg-[#1a1a1a] sm:h-[36px] sm:w-[240px] md:w-[360px]">
             <input
@@ -58,9 +63,7 @@ const Navbar: React.FC<Props> = ({ className }) => {
           </div>
         </div>
 
-        {/* Right actions */}
         <div className="flex items-center gap-[12px]">
-          {/* Cart button */}
           <button
             aria-label="Сагс"
             className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px] hover:bg-[#2a2a2a] transition-colors"
@@ -68,20 +71,33 @@ const Navbar: React.FC<Props> = ({ className }) => {
             <ShoppingCart size={16} />
           </button>
 
-          {/* Auth buttons */}
-          <Link
-            href="/sign-up"
-            className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex hover:bg-[#2a2a2a] transition-colors"
-          >
-            Бүртгүүлэх
-          </Link>
-          <Link
-            href="/sign-in"
-            className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px] hover:opacity-90 transition-opacity"
-            style={{ backgroundColor: '#00B7F4' }}
-          >
-            Нэвтрэх
-          </Link>
+          {isLoggedIn ? (
+            <button
+              onClick={() => router.push('/profile')}
+              className="flex items-center gap-[8px] rounded-[8px] bg-[#1a1a1a] px-[12px] py-[6px] text-[12px] hover:bg-[#2a2a2a] transition-colors"
+            >
+              <div className="h-[20px] w-[20px] rounded-full bg-gray-600"></div>
+              <span className="hidden sm:inline">
+                {profileData?.myProfile?.email || 'name@ticketbooking.com'}
+              </span>
+            </button>
+          ) : (
+            <>
+              <Link
+                href="/sign-up"
+                className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex hover:bg-[#2a2a2a] transition-colors"
+              >
+                Бүртгүүлэх
+              </Link>
+              <Link
+                href="/sign-in"
+                className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px] hover:opacity-90 transition-opacity"
+                style={{ backgroundColor: '#00B7F4' }}
+              >
+                Нэвтрэх
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -89,4 +105,5 @@ const Navbar: React.FC<Props> = ({ className }) => {
 };
 
 export default Navbar;
+
 

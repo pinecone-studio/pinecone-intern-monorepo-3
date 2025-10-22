@@ -41,3 +41,8 @@ mutation VerifyResetCode($email: String!, $code: String!) {
 mutation ResetPassword($email: String!, $code: String!, $newPassword: String!) {
   resetPassword(email: $email, code: $code, newPassword: $newPassword)
 }
+
+mutation ChangePassword($currentPassword: String!, $newPassword: String!) {
+  changePassword(currentPassword: $currentPassword, newPassword: $newPassword)
+}
+

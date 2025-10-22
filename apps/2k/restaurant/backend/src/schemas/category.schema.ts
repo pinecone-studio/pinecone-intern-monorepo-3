@@ -1,10 +1,11 @@
 import gql from 'graphql-tag';
 
 export const categoryTypeDefs = gql`
+
   type Category {
     categoryId: ID!
     categoryName: String!
-    # food: [Food]
+    food: [FoodType]
     createdAt: String
     updatedAt: String
   }
