@@ -5,6 +5,7 @@ import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
 import { Eye, EyeOff } from 'lucide-react';
+import { useChangePasswordMutation } from '@/generated';
 
 type PasswordFieldProps = {
   label: string;
@@ -40,43 +41,41 @@ const ChangePasswordPage: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
+  const [changePasswordMutation, { loading }] = useChangePasswordMutation();
+
   const validate = (): string | null => {
     if (newPassword !== confirmPassword) return 'Шинэ нууц үг хоёр таарахгүй байна';
+    if (newPassword.length < 6) return 'Шинэ нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой';
     return null;
   };
 
-  // eslint-disable-next-line complexity
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     const validationError = validate();
-    if (validationError) { setError(validationError); return; }
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     try {
-      setLoading(true);
-      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URI || 'http://localhost:4000/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: `mutation ChangePassword($currentPassword: String!, $newPassword: String!) { changePassword(currentPassword: $currentPassword, newPassword: $newPassword) }`,
-          variables: { currentPassword, newPassword }
-        })
+      const result = await changePasswordMutation({
+        variables: {
+          currentPassword,
+          newPassword,
+        },
       });
-      const json = await res.json();
-      if (json.errors) {
-        setError(json.errors[0]?.message || 'Нууц үг солиход алдаа гарлаа');
-        setLoading(false);
-        return;
+
+      if (result.data?.changePassword) {
+        setIsSubmitted(true);
       }
-      setIsSubmitted(true);
-    } catch {
-      setError('Нууц үг солиход алдаа гарлаа');
-    } finally {
-      setLoading(false);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Нууц үг солиход алдаа гарлаа';
+      setError(errorMessage);
     }
   };
 
@@ -134,11 +133,31 @@ const ChangePasswordPage: React.FC = () => {
             <div className="max-w-[600px]">
               <div className="rounded-[12px] bg-[#111111] p-[24px]">
                 <form onSubmit={handleSubmit}>
-                  <PasswordField label="Хуучин нууц үг:" value={currentPassword} onChange={setCurrentPassword} shown={showCurrent} onToggle={() => setShowCurrent((s) => !s)} ariaLabel="toggle current password" />
+                  <PasswordField
+                    label="Хуучин нууц үг:"
+                    value={currentPassword}
+                    onChange={setCurrentPassword}
+                    shown={showCurrent}
+                    onToggle={() => setShowCurrent((s) => !s)}
+                    ariaLabel="toggle current password"
+                  />
                   <PasswordField label="Шинэ нууц үг:" value={newPassword} onChange={setNewPassword} shown={showNew} onToggle={() => setShowNew((s) => !s)} ariaLabel="toggle new password" />
-                  <PasswordField label="Шинэ нууц үг давтах:" value={confirmPassword} onChange={setConfirmPassword} shown={showConfirm} onToggle={() => setShowConfirm((s) => !s)} ariaLabel="toggle confirm password" />
+                  <PasswordField
+                    label="Шинэ нууц үг давтах:"
+                    value={confirmPassword}
+                    onChange={setConfirmPassword}
+                    shown={showConfirm}
+                    onToggle={() => setShowConfirm((s) => !s)}
+                    ariaLabel="toggle confirm password"
+                  />
                   {error && <div className="mb-[12px] text-[13px] text-red-500">{error}</div>}
-                  <button type="submit" disabled={loading} className="w-full rounded-[8px] bg-[#00B7F4] px-[24px] py-[12px] text-[14px] font-medium text-black hover:bg-[#0099CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">{loading ? 'Хадгалж байна...' : 'Хадгалах'}</button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full rounded-[8px] bg-[#00B7F4] px-[24px] py-[12px] text-[14px] font-medium text-black hover:bg-[#0099CC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? 'Хадгалж байна...' : 'Хадгалах'}
+                  </button>
                 </form>
               </div>
             </div>
@@ -151,5 +170,3 @@ const ChangePasswordPage: React.FC = () => {
 };
 
 export default ChangePasswordPage;
-
-

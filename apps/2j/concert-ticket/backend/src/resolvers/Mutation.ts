@@ -60,6 +60,14 @@ export const Mutation: MutationResolvers<Context> = {
   // Гарах
   logout: async () => true,
 
+  // Нууц үг солих (нэвтрэсэн хэрэглэгчдэд)
+  changePassword: async (_parent, args, ctx) => {
+    if (!ctx.user) {
+      throw new Error('Нэвтрэх шаардлагатай');
+    }
+    return await UserController.changePassword(ctx.user.id, args.currentPassword, args.newPassword);
+  },
+
   createConcert: async (_parent, args, ctx) => {
     if (!ctx.user || ctx.user.role !== 'ADMIN') {
       throw new Error('Админ эрх шаардлагатай');

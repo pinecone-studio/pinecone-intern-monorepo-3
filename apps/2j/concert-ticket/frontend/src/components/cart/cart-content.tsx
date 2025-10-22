@@ -121,7 +121,7 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
   const formatDateToMMDD = (dateStr: string): string => {
     try {
       let date: Date;
-      
+
       // Timestamp эсэхийг шалгах
       if (/^\d+$/.test(dateStr)) {
         // Timestamp-г миллисекунд болгож форматлах
@@ -130,11 +130,11 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
       } else {
         date = new Date(dateStr);
       }
-      
+
       if (isNaN(date.getTime())) {
         return dateStr;
       }
-      
+
       // Local огноо ашиглах (timezone асуудал арилгах)
       const mm = String(date.getMonth() + 1).padStart(2, '0');
       const dd = String(date.getDate()).padStart(2, '0');
@@ -151,7 +151,7 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
       if (!data?.concert?.date) {
         return [formatDateToMMDD(new Date().toISOString())];
       }
-      
+
       // Зөвхөн тухайн тоглолтын огноо (timestamp эсэхийг шалгахгүй)
       return [formatDateToMMDD(data.concert.date)];
     } catch (error) {
@@ -308,7 +308,9 @@ const TicketSummary = ({ getTotalTickets, getTotalAmount, handleProceedToPayment
   </div>
 );
 
-const TicketList = ({ ticketCategories, updateQuantity }: { ticketCategories: any[]; updateQuantity: (id: string, delta: number) => void }) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+const TicketList = (
+  { ticketCategories, updateQuantity }: { ticketCategories: any[]; updateQuantity: (id: string, delta: number) => void } // eslint-disable-line @typescript-eslint/no-explicit-any
+) => (
   <div className="space-y-0">
     {ticketCategories.map((category, index) => (
       <div key={category.id}>
@@ -396,7 +398,19 @@ interface CartLayoutProps {
   onDateChange?: (date: string) => void;
 }
 
-const CartLayout = ({ router, selectedDate, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage, availableDates, onDateChange }: CartLayoutProps) => (
+const CartLayout = ({
+  router,
+  selectedDate,
+  ticketCategories,
+  updateQuantity,
+  getTotalAmount,
+  getTotalTickets,
+  handleProceedToPayment,
+  errorMessage,
+  setErrorMessage,
+  availableDates,
+  onDateChange,
+}: CartLayoutProps) => (
   <div className="flex-1 text-white bg-black">
     <CartHeader onBack={() => router.back()} />
     <div className="max-w-6xl px-6 py-8 mx-auto">
@@ -419,11 +433,15 @@ const CartLayout = ({ router, selectedDate, ticketCategories, updateQuantity, ge
 );
 
 export const CartContent: React.FC<CartContentProps> = ({ concertId, selectedDate }) => {
-  const { data, loading, error } = useGetConcertQuery({ variables: { id: concertId || '' }, skip: !concertId });
+  const { data, loading, error } = useGetConcertQuery({
+    variables: { id: concertId || '' },
+    skip: !concertId,
+    errorPolicy: 'all',
+  });
   const logic = useCartLogic(concertId, selectedDate, data);
 
   if (loading) return <LoadingState />;
-  if (error || !data?.concert) return <ErrorState onBack={() => logic.router.back()} />;
+  if (error || !data?.concert) return <ErrorState onBack={() => window.history.back()} />;
 
   return <CartLayout {...logic} selectedDate={logic.currentSelectedDate} />;
 };

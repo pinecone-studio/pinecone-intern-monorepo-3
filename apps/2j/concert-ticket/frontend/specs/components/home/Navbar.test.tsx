@@ -3,7 +3,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Navbar from '../../../src/components/home/Navbar';
 import { useRouter, usePathname } from 'next/navigation';
-import { useMyProfileQuery } from '../../../src/generated';
+import { useMyProfileQuery, MyProfileQuery } from '../../../src/generated';
+import { ApolloQueryResult } from '@apollo/client';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -19,8 +20,8 @@ jest.mock('@/generated', () => ({
   useMyProfileQuery: jest.fn(() => ({
     data: { myProfile: null },
     loading: false,
-    error: null
-  }))
+    error: null,
+  })),
 }));
 
 const mockPush = jest.fn();
@@ -102,13 +103,13 @@ describe('Navbar', () => {
       },
       loading: false,
       error: null,
-    } as any);
+    } as ApolloQueryResult<MyProfileQuery>);
 
     render(<Navbar />);
-    
+
     const profileButton = screen.getByText('test@example.com');
     fireEvent.click(profileButton);
-    
+
     expect(mockPush).toHaveBeenCalledWith('/profile');
   });
 
@@ -120,10 +121,10 @@ describe('Navbar', () => {
       },
       loading: false,
       error: null,
-    } as any);
+    } as ApolloQueryResult<MyProfileQuery>);
 
     render(<Navbar />);
-    
+
     // Check if login/register buttons are shown when not logged in
     expect(screen.getByText('Бүртгүүлэх')).toBeInTheDocument();
     expect(screen.getByText('Нэвтрэх')).toBeInTheDocument();

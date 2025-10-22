@@ -211,6 +211,9 @@ type Mutation {
   verifyResetCode(email: String!, code: String!): Boolean!
   resetPassword(email: String!, code: String!, newPassword: String!): Boolean!
 
+  # Change password for authenticated users
+  changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
+
   createConcert(input: CreateConcertInput!): Concert! @auth(requires: ADMIN)
   updateConcert(id: ID!, input: UpdateConcertInput!): Concert! @auth(requires: ADMIN)
   deleteConcert(id: ID!): Boolean! @auth(requires: ADMIN)

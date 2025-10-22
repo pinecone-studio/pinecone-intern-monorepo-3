@@ -337,9 +337,9 @@ describe('CartContent', () => {
 
   it('handles buy button click with valid selection', async () => {
     // Mock window.location.href
-    delete (window as any).location;
-    window.location = { href: '' } as any;
-    
+    delete (window as unknown as { location: unknown }).location;
+    window.location = { href: '' } as Location;
+
     render(
       <MockedProvider mocks={[mockData]}>
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
@@ -427,7 +427,7 @@ describe('CartContent', () => {
         },
       },
     };
-    
+
     render(
       <MockedProvider mocks={[emptyMockData]}>
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
@@ -448,15 +448,13 @@ describe('CartContent', () => {
             name: 'Test',
             date: '2024-12-25',
             venue: 'Venue',
-            ticketCategories: [
-              { id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123 },
-            ],
+            ticketCategories: [{ id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123 }],
           },
         },
       },
       delay: 100,
     };
-    
+
     render(
       <MockedProvider mocks={[loadingMockData]}>
         <CartContent concertId="test-id" selectedDate="2024-12-25" />
@@ -483,7 +481,7 @@ describe('CartContent', () => {
                 name: 'Unknown Type',
                 price: 100000,
                 availableQuantity: 50,
-                type: 'UNKNOWN_TYPE' as any,
+                type: 'UNKNOWN_TYPE' as 'VIP' | 'REGULAR' | 'GENERAL_ADMISSION',
                 unitPrice: 100000,
                 available: 50,
               },
@@ -521,7 +519,7 @@ describe('CartContent', () => {
                 name: 'Unknown Type',
                 price: 100000,
                 availableQuantity: 50,
-                type: 'UNKNOWN_TYPE' as any,
+                type: 'UNKNOWN_TYPE' as 'VIP' | 'REGULAR' | 'GENERAL_ADMISSION',
                 unitPrice: 100000,
                 available: 50,
               },

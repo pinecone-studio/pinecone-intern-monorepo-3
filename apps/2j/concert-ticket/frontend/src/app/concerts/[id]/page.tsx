@@ -127,7 +127,6 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
     }
   }, []);
 
-
   // Concert-ийн боломжит огноонуудыг үүсгэх (зөвхөн тухайн тоглолтын огноо)
   const availableDates = React.useMemo(() => {
     try {
@@ -147,12 +146,7 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      <HeroSlider
-        title={concert.name ?? ''}
-        artist={concert.mainArtist?.name ?? ''}
-        dates={[formatDateToMMDD(concert.date ?? '')]}
-        backgroundImage={concert.image ?? '/images/hero-bg.jpg'}
-      />
+      <HeroSlider title={concert.name ?? ''} artist={concert.mainArtist?.name ?? ''} dates={[formatDateToMMDD(concert.date ?? '')]} backgroundImage={concert.image ?? '/images/hero-bg.jpg'} />
       <ConcertDetails
         eventDate={formatDateToMMDD(concert.date ?? '')}
         eventTime={concert.time}
@@ -202,6 +196,7 @@ const ConcertDetailPage = () => {
   const { data, loading, error } = useGetConcertQuery({
     variables: { id: concertId },
     skip: !concertId,
+    errorPolicy: 'all',
   });
 
   if (loading) {
