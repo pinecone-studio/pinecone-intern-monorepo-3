@@ -15,7 +15,7 @@ const EventCard: React.FC<Props> = ({ item }) => {
 
   const formatPrice = (price: number | undefined): string => {
     if (price == null || !isFinite(price)) return '-';
-    return `${Math.floor(price).toLocaleString('en-US').replace(/,/g, "'")}$`;
+    return `${Math.floor(price).toLocaleString('en-US').replace(/,/g, "'")}₮`;
   };
 
   return (
@@ -27,18 +27,18 @@ const EventCard: React.FC<Props> = ({ item }) => {
             alt={item.name}
             width={600}
             height={180}
-            className="h-full w-full object-cover"
+            className="object-cover w-full h-full"
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={false}
           />
         </div>
         <div className="p-[12px]">
-          <div className="line-clamp-2 text-[16px] font-bold leading-[20px]">{item.name}</div>
-          <div className="mt-[4px] text-[12px] text-gray-400">{item.mainArtist?.name}</div>
-          <div className="mt-[8px] text-[14px] font-semibold text-white">
+          <div className="text-lg font-light leading-tight truncate">{item.name}</div>
+          <div className="mt-1 text-sm font-light text-gray-400 truncate">{item.mainArtist?.name}</div>
+          <div className="mt-4 font-light text-white" style={{ fontFamily: "'Roboto', sans-serif", fontSize: '24px', lineHeight: '20px' }}>
             <span>{formatPrice(lowestPrice)}</span>
           </div>
-          <div className="mt-[8px] flex items-center justify-between text-[12px] text-gray-400">
+          <div className="flex items-center justify-between mt-4 text-sm font-light text-gray-300">
             <div className="flex items-center gap-[4px]">
               <Calendar size={14} />
               <span>{formatDateTime(item.date, item.time)}</span>

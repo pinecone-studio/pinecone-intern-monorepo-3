@@ -14,40 +14,20 @@ interface SearchFiltersProps {
   setDate: (date: string | undefined) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
-  items: EventItem[];
 }
 
-const SearchFilters = ({ date, setDate, open, setOpen, items }: SearchFiltersProps) => (
-  <div className="mb-[24px] flex flex-wrap gap-[12px]">
-    <button onClick={() => setOpen(!open)} className="flex items-center gap-[8px] rounded-[8px] border border-gray-600 bg-gray-900 px-[16px] py-[8px] text-[14px] text-gray-300 hover:bg-gray-800">
-      <Calendar className="h-[16px] w-[16px]" />
-      {date ? new Date(date).toLocaleDateString('mn-MN') : 'Огноо сонгох'}
-    </button>
-    {open && (
-      <div className="w-full rounded-[8px] border border-gray-600 bg-gray-900 p-[16px]">
-        <div className="grid grid-cols-2 gap-[8px] sm:grid-cols-3 md:grid-cols-4">
-          {getUniqueDates(items).map((d) => (
-            <button
-              key={d}
-              onClick={() => {
-                setDate(d);
-                setOpen(false);
-              }}
-              className={`rounded-[6px] px-[12px] py-[6px] text-[12px] transition-colors ${date === d ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
-            >
-              {new Date(d).toLocaleDateString('mn-MN')}
-            </button>
-          ))}
-        </div>
-      </div>
-    )}
-  </div>
+const SearchFilters = ({ date, open, setOpen }: Omit<SearchFiltersProps, 'setDate' | 'items'>) => (
+  <button onClick={() => setOpen(!open)} className="flex items-center gap-[8px] rounded-[8px] bg-[#1a1a1a] px-[16px] py-[9px] text-[14px] text-gray-300 transition-colors hover:bg-white/10">
+    <Calendar className="h-[16px] w-[16px]" />
+    {date ? new Date(date).toLocaleDateString('mn-MN') : 'Огноо сонгох'}
+  </button>
 );
 
 const SearchPageInner: React.FC = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [keyword, setKeyword] = useState('');
+  const modalRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const q = searchParams.get('q') || '';
@@ -56,6 +36,20 @@ const SearchPageInner: React.FC = () => {
 
   const [date, setDate] = useState<string | undefined>(undefined);
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const variables = useMemo(() => ({ name: keyword || undefined, date, limit: 12, offset: 0 }), [keyword, date]);
   const { data, loading, error } = useSearchConcertsQuery({ variables });
 
@@ -94,19 +88,41 @@ const SearchPageInner: React.FC = () => {
       <Navbar />
 
       <main className="mx-auto max-w-[1200px] px-[16px] py-[16px]">
-        <div className="mb-[16px] flex items-center gap-[8px]">
-          <div className="relative w-[240px] sm:w-[280px]">
+        <div className="mb-[16px] flex items-center gap-[5px]">
+          <div className="relative">
             <input
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && onEnter()}
               placeholder="Хайлт..."
-              className="w-full rounded-[8px] border border-gray-700 bg-[#1a1a1a] py-[10px] pl-[14px] pr-[40px] text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
+              className="w-[240px] rounded-[8px] border-none bg-[#1a1a1a] py-[8px] pl-[14px] pr-[40px] text-white placeholder-gray-400 focus:outline-none sm:w-[280px]"
             />
             <Search size={18} className="absolute right-[12px] top-1/2 -translate-y-1/2 text-gray-400" />
           </div>
-
-          <SearchFilters date={date} setDate={setDate} open={open} setOpen={setOpen} items={items} />
+          <div className="relative" ref={modalRef}>
+            <SearchFilters date={date} open={open} setOpen={setOpen} />
+            {open && (
+              <div className="absolute left-0 top-full z-10 mt-[16px] w-64 h-[180px] overflow-y-auto rounded-[8px] bg-[#1a1a1a] bg-opacity-80 p-4 shadow-lg">
+                <div className="grid grid-cols-2 gap-2">
+                  {getUniqueDates(items).map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => {
+                        setDate(date === d ? undefined : d);
+                        setOpen(false);
+                      }}
+                      className={`rounded-[6px] border bg-[#1a1a1a]/95 px-[12px] py-[6px] text-[12px] transition-colors ${
+                        date === d ? 'border-white text-white' : 'border-white text-gray-300 hover:bg-white/10'
+                      }`}
+                      style={{ borderWidth: '0.1px' }}
+                    >
+                      {new Date(d).toLocaleDateString('mn-MN')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {error && <div className="rounded-[8px] bg-red-900/30 p-[12px] text-[12px] text-red-200">Өгөгдөл татахад алдаа гарлаа.</div>}

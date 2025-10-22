@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { useHomeEventsQuery } from '@/generated';
@@ -55,12 +55,10 @@ const HeroCarousel: React.FC<Props> = ({ className }) => {
         className="pointer-events-none absolute left-0 top-0 h-full w-full object-cover object-top opacity-60"
       />
       <div className="relative z-[1] flex h-full flex-col items-center justify-center p-[24px] text-center">
-        <div className="mb-[8px] rounded-[9999px] bg-black/40 px-[10px] py-[4px] text-[12px] text-gray-200 backdrop-blur-[2px]">
+        <div className="mb-[8px] rounded-full border border-white px-[10px] py-[4px] text-[12px] font-extralight text-gray-200" style={{ borderWidth: '0.1px' }}>
           {current?.mainArtist?.name ?? ''}
         </div>
-        <h2 className="text-[44px] font-extrabold leading-[52px] sm:text-[36px] sm:leading-[42px]">
-          {current?.name ?? 'MUSIC of the SPHERES'}
-        </h2>
+        <h2 className="text-[48px] font-extrabold leading-[56px] sm:text-[40px] sm:leading-[48px]">{current?.name ?? 'MUSIC of the SPHERES'}</h2>
         <div className="mt-[10px] flex items-center gap-[8px] text-[12px] text-gray-200">
           <Calendar size={14} />
           <span>{fmt.date}</span>
@@ -74,11 +72,7 @@ const HeroCarousel: React.FC<Props> = ({ className }) => {
       >
         <ChevronLeft size={20} />
       </button>
-      <button
-        aria-label="Next"
-        onClick={next}
-        className="absolute right-[12px] top-1/2 z-[2] flex h-[40px] w-[40px] -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
-      >
+      <button aria-label="Next" onClick={next} className="absolute right-[12px] top-1/2 z-[2] flex h-[40px] w-[40px] -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white">
         <ChevronRight size={20} />
       </button>
     </section>

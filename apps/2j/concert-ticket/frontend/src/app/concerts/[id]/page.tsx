@@ -9,6 +9,34 @@ import { ConcertDetails } from '@/components/detail/concert-details';
 import { RelatedConcerts } from '@/components/detail/related-concerts';
 import { useGetConcertQuery, TicketType, GetConcertQuery } from '@/generated';
 
+const formatDateToMMDD = (dateStr: string): string => {
+  try {
+    let date: Date;
+
+    // Timestamp эсэхийг шалгах (10-13 оронтой тоо)
+    if (/^\d{10,13}$/.test(dateStr)) {
+      const timestamp = parseInt(dateStr, 10);
+      // Unix timestamp (секунд) бол миллисекунд болгох
+      date = new Date(timestamp * (String(timestamp).length === 10 ? 1000 : 1));
+    } else {
+      date = new Date(dateStr);
+    }
+
+    if (isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
+
+    // Local огноо ашиглах (timezone асуудал арилгах)
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const formatted = `${mm}.${dd}`;
+    return formatted;
+  } catch (error) {
+    console.error('Date formatting error:', error);
+    return 'Date error';
+  }
+};
+
 const calculateDoorOpenTime = (time: string): string => {
   const [hours, minutes] = time.split(':').map(Number);
   const totalMinutes = hours * 60 + minutes - 120;
@@ -57,28 +85,7 @@ interface ConcertContentProps {
 }
 
 const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
-  const [selectedDate, setSelectedDate] = React.useState<string>(() => {
-    if (concert.date) {
-      // Огноо форматлах функц - MM.DD формат
-      try {
-        let date: Date;
-        if (/^\d+$/.test(concert.date)) {
-          date = new Date(parseInt(concert.date));
-        } else {
-          date = new Date(concert.date);
-        }
-        if (!isNaN(date.getTime())) {
-          const mm = String(date.getMonth() + 1).padStart(2, '0');
-          const dd = String(date.getDate()).padStart(2, '0');
-               const formatted = `${mm}.${dd}`;
-               return formatted;
-        }
-      } catch (error) {
-        console.error('Date formatting error:', error);
-      }
-    }
-    return '';
-  });
+  const [selectedDate, setSelectedDate] = React.useState<string>(concert.date ? formatDateToMMDD(concert.date) : '');
 
   const handleBookTicket = () => {
     const urlParams = new URLSearchParams();
@@ -102,36 +109,6 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
 
   const specialArtists = concert.otherArtists?.map((artist) => artist.name) ?? [];
 
-  // Огноо форматлах функц - MM.DD формат
-  const formatDateToMMDD = React.useCallback((dateStr: string): string => {
-    try {
-      let date: Date;
-
-      // Timestamp эсэхийг шалгах
-      if (/^\d+$/.test(dateStr)) {
-        // Timestamp-г миллисекунд болгож форматлах
-        const timestamp = parseInt(dateStr);
-        date = new Date(timestamp);
-      } else {
-        date = new Date(dateStr);
-      }
-
-      if (isNaN(date.getTime())) {
-        return dateStr;
-      }
-
-      // Local огноо ашиглах (timezone асуудал арилгах)
-      const mm = String(date.getMonth() + 1).padStart(2, '0');
-      const dd = String(date.getDate()).padStart(2, '0');
-      const formatted = `${mm}.${dd}`;
-      return formatted;
-    } catch (error) {
-      console.error('Date formatting error:', error);
-      return dateStr;
-    }
-  }, []);
-
-
   // Concert-ийн боломжит огноонуудыг үүсгэх (зөвхөн тухайн тоглолтын огноо)
   const availableDates = React.useMemo(() => {
     try {
@@ -146,25 +123,27 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
       console.error('Available dates generation error:', error);
       return [formatDateToMMDD(new Date().toISOString())];
     }
-  }, [concert.date, formatDateToMMDD]);
+  }, [concert.date]);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex min-h-screen flex-col bg-black text-white">
       <Navbar />
-      <HeroSlider title={concert.name} artist={concert.mainArtist.name} dates={[formatDateToMMDD(concert.date)]} backgroundImage={concert.image ?? '/images/hero-bg.jpg'} />
-      <ConcertDetails
-        eventDate={formatDateToMMDD(concert.date)}
-        eventTime={concert.time}
-        venue={concert.venue}
-        specialArtists={specialArtists}
-        schedule={{ doorOpen: doorOpenTime, musicStart: musicStartTime }}
-        ticketCategories={ticketCategories}
-        _onBookTicket={handleBookTicket}
-        selectedDate={selectedDate}
-        onDateChange={setSelectedDate}
-        availableDates={availableDates}
-      />
-      <RelatedConcerts excludeConcertId={concertId} />
+      <main className="mx-auto w-full max-w-[1200px] flex-grow px-[16px]">
+        <HeroSlider title={concert.name} artist={concert.mainArtist.name} dates={[formatDateToMMDD(concert.date)]} backgroundImage={concert.image ?? '/images/hero-bg.jpg'} />
+        <ConcertDetails
+          eventDate={formatDateToMMDD(concert.date)}
+          eventTime={concert.time}
+          venue={concert.venue}
+          specialArtists={specialArtists}
+          schedule={{ doorOpen: doorOpenTime, musicStart: musicStartTime }}
+          ticketCategories={ticketCategories}
+          _onBookTicket={handleBookTicket}
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+          availableDates={availableDates}
+        />
+        <RelatedConcerts excludeConcertId={concertId} />
+      </main>
       <Footer />
     </div>
   );
@@ -172,11 +151,23 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
 
 const LoadingState = ({ _concertId }: { _concertId: string }) => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex min-h-screen flex-col bg-black text-white">
       <Navbar />
-      <div className="flex items-center justify-center flex-1 py-20">
-        <div className="text-white">Ачааллаж байна...</div>
-      </div>
+      <main className="mx-auto w-full max-w-[1200px] flex-grow px-[16px]">
+        <div className="h-[400px] w-full animate-pulse rounded-lg bg-[#393E46]" />
+        <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <div className="h-8 w-3/4 animate-pulse rounded bg-[#393E46]" />
+            <div className="mt-4 h-4 w-1/2 animate-pulse rounded bg-[#393E46]" />
+            <div className="mt-8 h-4 w-full animate-pulse rounded bg-[#393E46]" />
+            <div className="mt-2 h-4 w-full animate-pulse rounded bg-[#393E46]" />
+          </div>
+          <div>
+            <div className="h-12 w-full animate-pulse rounded-lg bg-[#393E46]" />
+            <div className="mt-4 h-8 w-full animate-pulse rounded-lg bg-[#393E46]" />
+          </div>
+        </div>
+      </main>
       <Footer />
     </div>
   );
@@ -184,9 +175,9 @@ const LoadingState = ({ _concertId }: { _concertId: string }) => {
 
 const ErrorState = ({ _concertId }: { _concertId: string }) => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex min-h-screen flex-col bg-black text-white">
       <Navbar />
-      <div className="flex items-center justify-center flex-1 py-20">
+      <div className="flex flex-grow items-center justify-center py-20">
         <div className="text-red-400">Тоглолтын мэдээлэл олдсонгүй</div>
       </div>
       <Footer />

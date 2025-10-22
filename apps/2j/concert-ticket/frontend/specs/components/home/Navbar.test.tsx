@@ -19,8 +19,8 @@ jest.mock('@/generated', () => ({
   useMyProfileQuery: jest.fn(() => ({
     data: { myProfile: null },
     loading: false,
-    error: null
-  }))
+    error: null,
+  })),
 }));
 
 const mockPush = jest.fn();
@@ -105,10 +105,10 @@ describe('Navbar', () => {
     } as any);
 
     render(<Navbar />);
-    
+
     const profileButton = screen.getByText('test@example.com');
     fireEvent.click(profileButton);
-    
+
     expect(mockPush).toHaveBeenCalledWith('/profile');
   });
 
@@ -123,7 +123,7 @@ describe('Navbar', () => {
     } as any);
 
     render(<Navbar />);
-    
+
     // Check if login/register buttons are shown when not logged in
     expect(screen.getByText('Бүртгүүлэх')).toBeInTheDocument();
     expect(screen.getByText('Нэвтрэх')).toBeInTheDocument();

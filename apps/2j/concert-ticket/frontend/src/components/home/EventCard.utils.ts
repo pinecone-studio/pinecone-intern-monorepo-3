@@ -21,8 +21,11 @@ const formatValidDate = (date: Date): string => {
 };
 
 const parseDate = (dateStr: string, timeStr?: string): Date => {
-  if (/^\d+$/.test(dateStr)) {
-    return new Date(parseInt(dateStr));
+  // Timestamp эсэхийг шалгах (10-13 оронтой тоо)
+  if (/^\d{10,13}$/.test(dateStr)) {
+    const timestamp = parseInt(dateStr, 10);
+    // Unix timestamp (секунд) бол миллисекунд болгох
+    return new Date(timestamp * (String(timestamp).length === 10 ? 1000 : 1));
   }
   const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
   return new Date(iso);
