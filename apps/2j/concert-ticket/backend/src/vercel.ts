@@ -5,7 +5,6 @@ import { join } from 'path';
 import { resolvers } from './resolvers';
 import { createContextWithAuth, Context } from './context';
 import { connectDatabase } from './database/connection';
-import { NextApiRequest, NextApiResponse } from 'next';
 
 // Vercel-д зориулсан Apollo Server
 async function createApolloServer() {
@@ -32,7 +31,7 @@ async function createApolloServer() {
 }
 
 // Vercel handler үүсгэх
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: any, res: any) {
   const server = await createApolloServer();
   return startServerAndCreateNextHandler(server, {
     context: async ({ req }) => createContextWithAuth({ headers: { authorization: req.headers.authorization } }),

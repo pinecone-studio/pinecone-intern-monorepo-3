@@ -10,8 +10,8 @@ if (!fs.existsSync(distDir)) {
   fs.mkdirSync(distDir, { recursive: true });
 }
 
-// Copy essential files
-const filesToCopy = ['src/vercel.ts', 'src/resolvers', 'src/controllers', 'src/services', 'src/models', 'src/database', 'src/context.ts', 'src/schemas', 'src/generated'];
+// Copy essential files (excluding problematic ones)
+const filesToCopy = ['src/vercel.ts', 'src/resolvers', 'src/controllers', 'src/services', 'src/models', 'src/database', 'src/context.ts', 'src/schemas'];
 
 filesToCopy.forEach((file) => {
   const srcPath = path.join(__dirname, file);
