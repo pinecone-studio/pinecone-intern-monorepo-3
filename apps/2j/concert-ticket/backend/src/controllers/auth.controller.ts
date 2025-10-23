@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import { User, IUser } from '../models/model.user';
 import { RegisterInput, LoginInput, ResetPasswordInput } from '../generated/types';
+import { PasswordResetService } from '../services/password-reset.service';
 
 export class AuthController {
   // JWT token үүсгэх
@@ -96,23 +98,25 @@ export class AuthController {
   // Нууц үг сэргээх
   static async resetPassword(input: ResetPasswordInput) {
     try {
-      // Token-г шалгах (энэ жишээнд JWT ашиглаж байна)
-      let decoded: any;
-      try {
-        decoded = jwt.verify(input.token, process.env.JWT_SECRET || 'fallback-secret');
-      } catch (error) {
-        throw new Error('Буруу эсвэл хугацаа дууссан token');
+      // Reset code-г шалгах
+      const isValidCode = await PasswordResetService.verifyResetCode(input.email, input.code);
+      if (!isValidCode) {
+        throw new Error('Буруу эсвэл хугацаа дууссан код');
       }
 
       // Хэрэглэгчийг олох
-      const user = await User.findById(decoded.id);
+      const user = await User.findOne({ email: input.email });
       if (!user) {
         throw new Error('Хэрэглэгч олдсонгүй');
       }
 
-      // Шинэ нууц үг тохируулах
-      user.password = input.newPassword;
+      // Шинэ нууц үг hash хийж тохируулах
+      const saltRounds = 10;
+      user.password = await bcrypt.hash(input.newPassword, saltRounds);
       await user.save();
+
+      // Reset code-г арилгах
+      await PasswordResetService.setNewPassword(input.email, input.code, input.newPassword);
 
       const token = this.generateToken(user);
 
