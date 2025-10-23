@@ -77,18 +77,18 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ mode, food }) => {
           <div className="flex flex-col items-center">
             <label
               htmlFor="image-upload"
-              className="w-28 h-28 bg-gray-100 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 transition"
+              className="flex flex-col items-center justify-center transition bg-gray-100 cursor-pointer w-28 h-28 rounded-xl hover:bg-gray-200"
             >
               {preview ? (
                 <img
                   src={preview}
                   alt="preview"
-                  className="w-full h-full object-cover rounded-xl"
+                  className="object-cover w-full h-full rounded-xl"
                 />
               ) : (
                 <>
                   <ImagePlus size={28} className="text-gray-500" />
-                  <span className="text-xs text-gray-500 mt-1">Зураг нэмэх</span>
+                  <span className="mt-1 text-xs text-gray-500">Зураг нэмэх</span>
                 </>
               )}
             </label>
@@ -99,20 +99,20 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ mode, food }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Хоолны нэр"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
 
           <input
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="Үнэ (ж: 15.6k)"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
 
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as 'идэвхитэй' | 'идэвхгүй')}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
           >
             <option value="идэвхитэй">идэвхитэй</option>
             <option value="идэвхгүй">идэвхгүй</option>
@@ -122,14 +122,14 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ mode, food }) => {
         {/* Footer */}
         <DialogFooter className="flex justify-between mt-4">
           <DialogClose asChild>
-            <button className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition">
+            <button className="px-4 py-2 text-gray-600 transition rounded-lg hover:bg-gray-100">
               Хаах
             </button>
           </DialogClose>
           <DialogClose asChild>
             <button
               onClick={handleSubmit}
-              className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
+              className="px-4 py-2 text-white transition bg-gray-900 rounded-lg hover:bg-gray-800"
             >
               {mode === 'add' ? 'Нэмэх' : 'Хадгалах'}
             </button>
