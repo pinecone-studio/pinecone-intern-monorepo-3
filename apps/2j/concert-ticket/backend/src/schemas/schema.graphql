@@ -60,6 +60,8 @@ type TicketCategory {
   totalQuantity: Int!
   availableQuantity: Int!
   unitPrice: Float!
+  discountedPrice: Float!
+  discountPercentage: Float
   description: String
   features: [String!]
 }
@@ -83,15 +85,27 @@ type Booking {
   id: ID!
   user: User!
   concert: Concert!
-  ticketCategory: TicketCategory!
-  quantity: Int!
-  unitPrice: Float!
-  totalPrice: Float!
+  ticketCategory: TicketCategory
+  quantity: Int
+  unitPrice: Float
+  totalPrice: Float
   bookingDate: String!
   status: BookingStatus!
   paymentStatus: PaymentStatus!
   canCancel: Boolean!
   cancellationDeadline: String!
+  orderNumber: String
+  date: String
+  tickets: [TicketItem]
+  totalAmount: Float
+}
+
+type TicketItem {
+  id: String
+  type: String
+  quantity: Int
+  unitPrice: Float
+  totalPrice: Float
 }
 
 type AuthPayload {

@@ -235,6 +235,7 @@ async function createMockTicketCategories(concerts: unknown[]) {
       totalQuantity: Math.floor(Math.random() * 50) + 30,
       availableQuantity: 0, // Дараа тооцоолно
       unitPrice: Math.floor(Math.random() * 100000) + 100000,
+      discountPercentage: Math.random() > 0.7 ? Math.floor(Math.random() * 30) + 10 : 0, // 30% магадлалтай 10-40% хөнгөлөлт
       description: 'VIP тасалбар - хамгийн сайн байрлал, тусгай үйлчилгээ',
       features: ['Хамгийн сайн байрлал', 'Тусгай үйлчилгээ', 'Арын талбай', 'Тусгай орц'],
       concert: concert._id
@@ -246,6 +247,7 @@ async function createMockTicketCategories(concerts: unknown[]) {
       totalQuantity: Math.floor(Math.random() * 200) + 100,
       availableQuantity: 0, // Дараа тооцоолно
       unitPrice: Math.floor(Math.random() * 50000) + 50000,
+      discountPercentage: Math.random() > 0.8 ? Math.floor(Math.random() * 25) + 5 : 0, // 20% магадлалтай 5-30% хөнгөлөлт
       description: 'Энгийн тасалбар - сайн байрлал, хямд үнэ',
       features: ['Сайн байрлал', 'Хямд үнэ', 'Арын талбай'],
       concert: concert._id
@@ -257,6 +259,7 @@ async function createMockTicketCategories(concerts: unknown[]) {
       totalQuantity: Math.floor(Math.random() * 300) + 200,
       availableQuantity: 0, // Дараа тооцоолно
       unitPrice: Math.floor(Math.random() * 30000) + 20000,
+      discountPercentage: Math.random() > 0.9 ? Math.floor(Math.random() * 20) + 5 : 0, // 10% магадлалтай 5-25% хөнгөлөлт
       description: 'Ерөнхий тасалбар - хамгийн хямд үнэ',
       features: ['Хамгийн хямд үнэ', 'Ерөнхий байрлал'],
       concert: concert._id

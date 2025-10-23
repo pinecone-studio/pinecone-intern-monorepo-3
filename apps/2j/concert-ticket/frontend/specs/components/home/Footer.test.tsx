@@ -11,7 +11,7 @@ describe('Footer', () => {
 
   it('renders copyright', () => {
     render(<Footer />);
-    expect(screen.getByText(/© 2025 Booking Mongolia/)).toBeInTheDocument();
+    expect(screen.getByText(/© 2024 Booking Mongolia/)).toBeInTheDocument();
   });
 
   it('renders email', () => {
@@ -21,7 +21,7 @@ describe('Footer', () => {
 
   it('renders phone', () => {
     render(<Footer />);
-    expect(screen.getByText('+976 1234-567')).toBeInTheDocument();
+    expect(screen.getByText('+976 1234-5678')).toBeInTheDocument();
   });
 
   it('renders with custom className', () => {

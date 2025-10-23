@@ -33,6 +33,20 @@ const getTicketTypeColor = (type: TicketType): string => {
   }
 };
 
+// Concert огнооноос хөнгөлөлтийн хувийг тооцоолох
+const calculateDiscountFromDate = (concertDate: string): number => {
+  const concert = new Date(concertDate);
+  const now = new Date();
+  const daysUntilConcert = Math.ceil((concert.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  
+  if (daysUntilConcert >= 60) {
+    return 20; // 60+ хоног = 20% хөнгөлөлт
+  } else if (daysUntilConcert >= 30) {
+    return 10; // 30-59 хоног = 10% хөнгөлөлт
+  }
+  return 0; // 30 хоногоос бага = хөнгөлөлтгүй
+};
+
 interface TicketCategory {
   id: string;
   name: string;
@@ -40,6 +54,8 @@ interface TicketCategory {
   available: number;
   color: string;
   quantity: number;
+  discountPercentage?: number;
+  discountedPrice?: number;
 }
 
 interface CartContentProps {
@@ -58,6 +74,8 @@ interface ConcertCategory {
   type: TicketType;
   unitPrice: number;
   availableQuantity: number;
+  discountPercentage?: number;
+  discountedPrice?: number;
 }
 
 const mapToTicketCategories = (categories: ConcertCategory[]): TicketCategory[] => {
@@ -68,6 +86,8 @@ const mapToTicketCategories = (categories: ConcertCategory[]): TicketCategory[] 
     available: category.availableQuantity,
     color: getTicketTypeColor(category.type),
     quantity: 0,
+    discountPercentage: category.discountPercentage,
+    discountedPrice: category.discountedPrice,
   }));
 };
 
@@ -102,7 +122,15 @@ const ErrorState = ({ onBack }: { onBack: () => void }) => (
 
 interface ConcertData {
   concert?: {
-    ticketCategories?: Array<{ id: string; type: TicketType; unitPrice: number; availableQuantity: number }>;
+    date?: string;
+    ticketCategories?: Array<{ 
+      id: string; 
+      type: TicketType; 
+      unitPrice: number; 
+      availableQuantity: number;
+      discountPercentage?: number;
+      discountedPrice?: number;
+    }>;
   };
 }
 
@@ -110,6 +138,11 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [currentSelectedDate, setCurrentSelectedDate] = useState<string | null>(selectedDate);
+  
+  // Concert огнооноос хөнгөлөлтийн хувийг тооцоолох
+  const concertDate = data?.concert?.date;
+  const dateDiscountPercentage = concertDate ? calculateDiscountFromDate(concertDate) : 0;
+  
   const initialCategories = data?.concert?.ticketCategories ? mapToTicketCategories(data.concert.ticketCategories) : DEFAULT_CATEGORIES;
   const [ticketCategories, setTicketCategories] = useState<TicketCategory[]>(initialCategories);
 
@@ -180,7 +213,20 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
     );
   };
 
-  const getTotalAmount = () => ticketCategories.reduce((total, ticket) => total + ticket.price * ticket.quantity, 0);
+  const getTotalAmount = () => ticketCategories.reduce((total, ticket) => {
+    // Эхлээд backend-ээс ирсэн хөнгөлөлттэй үнийг шалгах
+    if (ticket.discountPercentage && ticket.discountPercentage > 0 && ticket.discountedPrice) {
+      return total + ticket.discountedPrice * ticket.quantity;
+    }
+    
+    // Backend-ээс хөнгөлөлт ирээгүй бол concert огнооноос тооцоолох
+    if (dateDiscountPercentage > 0) {
+      const discountedPrice = Math.round(ticket.price * (1 - dateDiscountPercentage / 100));
+      return total + discountedPrice * ticket.quantity;
+    }
+    
+    return total + ticket.price * ticket.quantity;
+  }, 0);
   const getTotalTickets = () => ticketCategories.reduce((total, ticket) => total + ticket.quantity, 0);
 
   const validateTickets = () => {
@@ -198,7 +244,16 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
 
   const handleProceedToPayment = () => {
     if (!validateTickets()) return;
-    const selectedTickets = ticketCategories.filter((t) => t.quantity > 0);
+    const selectedTickets = ticketCategories
+      .filter((t) => t.quantity > 0)
+      .map((t) => ({
+        ...t,
+        price: t.discountPercentage && t.discountPercentage > 0 && t.discountedPrice 
+          ? t.discountedPrice 
+          : dateDiscountPercentage > 0
+          ? Math.round(t.price * (1 - dateDiscountPercentage / 100))
+          : t.price
+      }));
     const ticketData = encodeURIComponent(JSON.stringify(selectedTickets));
     const urlParams = new URLSearchParams();
     urlParams.set('concertId', concertId || '');
@@ -207,7 +262,7 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
     window.location.href = `/checkout?${urlParams.toString()}`;
   };
 
-  return { router, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage, availableDates, onDateChange, currentSelectedDate };
+  return { router, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage, availableDates, onDateChange, currentSelectedDate, dateDiscountPercentage };
 };
 
 const CartHeader = ({ onBack }: { onBack: () => void }) => (
@@ -308,52 +363,87 @@ const TicketSummary = ({ getTotalTickets, getTotalAmount, handleProceedToPayment
   </div>
 );
 
-const TicketList = (
-  { ticketCategories, updateQuantity }: { ticketCategories: any[]; updateQuantity: (id: string, delta: number) => void } // eslint-disable-line @typescript-eslint/no-explicit-any
-) => (
+// Хөнгөлөлттэй үнийг харуулах компонент
+// eslint-disable-next-line complexity
+const TicketPriceDisplay = ({ category, dateDiscountPercentage }: { category: any; dateDiscountPercentage: number }) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const hasDiscount = (category.discountPercentage && category.discountPercentage > 0 && category.discountedPrice) || dateDiscountPercentage > 0;
+  
+  if (!hasDiscount) {
+    return <div className="text-sm font-light text-white">{category.price.toLocaleString()}₮</div>;
+  }
+  
+  const displayPrice = category.discountPercentage && category.discountPercentage > 0 && category.discountedPrice
+    ? category.discountedPrice.toLocaleString()
+    : Math.round(category.price * (1 - dateDiscountPercentage / 100)).toLocaleString();
+    
+  const discountPercent = category.discountPercentage && category.discountPercentage > 0 
+    ? Math.round(category.discountPercentage)
+    : dateDiscountPercentage;
+  
+  return (
+    <div className="flex flex-col">
+      <div className="text-sm font-bold text-white">{displayPrice}₮</div>
+      <div className="text-xs text-gray-400 line-through">{category.price.toLocaleString()}₮</div>
+      <div className="text-xs text-red-400 font-bold">{discountPercent}% хөнгөлөлт</div>
+    </div>
+  );
+};
+
+// Нэг тасалбарын мөр
+const TicketItem = ({ category, updateQuantity, dateDiscountPercentage, isLast }: { category: any; updateQuantity: (id: string, delta: number) => void; dateDiscountPercentage: number; isLast: boolean }) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+  <div key={category.id}>
+    <div className="flex items-start gap-3 py-3">
+      <div className="w-3 h-3 mt-1 rounded-full" style={{ backgroundColor: category.color }}></div>
+      <div className="flex-1">
+        <div className="mb-1 text-base font-medium" style={{ color: category.color }}>
+          {category.name} <span>({category.available})</span>
+        </div>
+        <TicketPriceDisplay category={category} dateDiscountPercentage={dateDiscountPercentage} />
+      </div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => updateQuantity(category.id, -1)}
+          disabled={category.quantity === 0}
+          style={{ backgroundColor: '#2d2d2d' }}
+          className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+        >
+          <Minus className="w-4 h-4" />
+        </button>
+        <span className="w-8 font-medium text-center text-white">{category.quantity}</span>
+        <button
+          onClick={() => updateQuantity(category.id, 1)}
+          disabled={category.quantity >= category.available}
+          style={{ backgroundColor: '#2d2d2d' }}
+          className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+    {!isLast && <div className="border-t border-gray-600 border-dashed"></div>}
+  </div>
+);
+
+const TicketList = ({ ticketCategories, updateQuantity, dateDiscountPercentage }: { ticketCategories: any[]; updateQuantity: (id: string, delta: number) => void; dateDiscountPercentage: number }) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
   <div className="space-y-0">
     {ticketCategories.map((category, index) => (
-      <div key={category.id}>
-        <div className="flex items-start gap-3 py-3">
-          <div className="w-3 h-3 mt-1 rounded-full" style={{ backgroundColor: category.color }}></div>
-          <div className="flex-1">
-            <div className="mb-1 text-base font-medium" style={{ color: category.color }}>
-              {category.name} <span>({category.available})</span>
-            </div>
-            <div className="text-sm font-light text-white">{category.price.toLocaleString()}₮</div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => updateQuantity(category.id, -1)}
-              disabled={category.quantity === 0}
-              style={{ backgroundColor: '#2d2d2d' }}
-              className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
-            >
-              <Minus className="w-4 h-4" />
-            </button>
-            <span className="w-8 font-medium text-center text-white">{category.quantity}</span>
-            <button
-              onClick={() => updateQuantity(category.id, 1)}
-              disabled={category.quantity >= category.available}
-              style={{ backgroundColor: '#2d2d2d' }}
-              className="flex items-center justify-center w-8 h-8 text-white rounded-lg hover:bg-gray-600 disabled:opacity-50"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-        {index < ticketCategories.length - 1 && <div className="border-t border-gray-600 border-dashed"></div>}
-      </div>
+      <TicketItem 
+        key={category.id}
+        category={category} 
+        updateQuantity={updateQuantity} 
+        dateDiscountPercentage={dateDiscountPercentage}
+        isLast={index === ticketCategories.length - 1}
+      />
     ))}
   </div>
 );
 
-const CartSidebar = ({ selectedDate, ticketCategories, updateQuantity, getTotalTickets, getTotalAmount, handleProceedToPayment, availableDates, onDateChange }: CartSidebarProps) => (
+const CartSidebar = ({ selectedDate, ticketCategories, updateQuantity, getTotalTickets, getTotalAmount, handleProceedToPayment, availableDates, onDateChange, dateDiscountPercentage }: CartSidebarProps & { dateDiscountPercentage: number }) => (
   <div className="lg:col-span-2">
     <div className="p-6 space-y-6 rounded-lg" style={{ backgroundColor: '#1f1f1f', border: '1px solid #27272a' }}>
       <DateSelector selectedDate={selectedDate} availableDates={availableDates} onDateChange={onDateChange} />
       <div className="border-t border-gray-600 border-dashed"></div>
-      <TicketList ticketCategories={ticketCategories} updateQuantity={updateQuantity} />
+      <TicketList ticketCategories={ticketCategories} updateQuantity={updateQuantity} dateDiscountPercentage={dateDiscountPercentage} />
       {getTotalTickets() > 0 && (
         <div className="pt-4 space-y-3 border-t border-gray-600">
           <h3 className="text-lg font-medium text-white">Захиалгын дэлгэрэнгүй</h3>
@@ -364,7 +454,13 @@ const CartSidebar = ({ selectedDate, ticketCategories, updateQuantity, getTotalT
                 <span className="font-light text-gray-300">
                   {t.name} x {t.quantity}
                 </span>
-                <span className="font-medium text-white">{(t.price * t.quantity).toLocaleString()}₮</span>
+                <span className="font-medium text-white">
+                  {t.discountPercentage && t.discountPercentage > 0 && t.discountedPrice 
+                    ? (t.discountedPrice * t.quantity).toLocaleString()
+                    : dateDiscountPercentage > 0
+                    ? (Math.round(t.price * (1 - dateDiscountPercentage / 100)) * t.quantity).toLocaleString()
+                    : (t.price * t.quantity).toLocaleString()}₮
+                </span>
               </div>
             ))}
           <div className="pt-3 border-t border-gray-600">
@@ -398,19 +494,7 @@ interface CartLayoutProps {
   onDateChange?: (date: string) => void;
 }
 
-const CartLayout = ({
-  router,
-  selectedDate,
-  ticketCategories,
-  updateQuantity,
-  getTotalAmount,
-  getTotalTickets,
-  handleProceedToPayment,
-  errorMessage,
-  setErrorMessage,
-  availableDates,
-  onDateChange,
-}: CartLayoutProps) => (
+const CartLayout = ({ router, selectedDate, ticketCategories, updateQuantity, getTotalAmount, getTotalTickets, handleProceedToPayment, errorMessage, setErrorMessage, availableDates, onDateChange, dateDiscountPercentage }: CartLayoutProps & { dateDiscountPercentage: number }) => (
   <div className="flex-1 text-white bg-black">
     <CartHeader onBack={() => router.back()} />
     <div className="max-w-6xl px-6 py-8 mx-auto">
@@ -425,6 +509,7 @@ const CartLayout = ({
           handleProceedToPayment={handleProceedToPayment}
           availableDates={availableDates}
           onDateChange={onDateChange}
+          dateDiscountPercentage={dateDiscountPercentage}
         />
       </div>
     </div>
@@ -443,7 +528,7 @@ export const CartContent: React.FC<CartContentProps> = ({ concertId, selectedDat
   if (loading) return <LoadingState />;
   if (error || !data?.concert) return <ErrorState onBack={() => window.history.back()} />;
 
-  return <CartLayout {...logic} selectedDate={logic.currentSelectedDate} />;
+  return <CartLayout {...logic} selectedDate={logic.currentSelectedDate} dateDiscountPercentage={logic.dateDiscountPercentage} />;
 };
 
 export default CartContent;

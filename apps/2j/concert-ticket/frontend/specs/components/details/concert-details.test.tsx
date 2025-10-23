@@ -132,29 +132,22 @@ describe('ConcertDetails', () => {
   it('should render all available date options', () => {
     render(<ConcertDetails {...mockProps} />);
 
-    // const _options = screen.getAllByRole('option');
-
     expect(screen.getAllByText('11.15')).toHaveLength(2);
-   
-  
   });
 
   it('should handle date selection change', () => {
     render(<ConcertDetails {...mockProps} />);
-    
-    // Check if date select element exists
+
     const dateSelect = screen.getByRole('combobox');
     expect(dateSelect).toBeInTheDocument();
-    
-    // Check if date options are available
+
     expect(screen.getByText('Өдөр сонгох')).toBeInTheDocument();
     expect(screen.getAllByText('11.15')).toHaveLength(2);
   });
 
   it('should display correct concert information', () => {
     render(<ConcertDetails {...mockProps} />);
-    
-    // Check if concert details are rendered
+
     expect(screen.getAllByText('11.15')).toHaveLength(2);
     expect(screen.getByText('19:00')).toBeInTheDocument();
     expect(screen.getByText('UG ARENA')).toBeInTheDocument();
@@ -162,8 +155,7 @@ describe('ConcertDetails', () => {
 
   it('should handle ticket category selection', () => {
     render(<ConcertDetails {...mockProps} />);
-    
-    // Check if ticket categories are rendered with availability counts
+
     expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument();
     expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument();
     expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument();
@@ -171,8 +163,7 @@ describe('ConcertDetails', () => {
 
   it('should handle quantity changes', () => {
     render(<ConcertDetails {...mockProps} />);
-    
-    // Check if ticket categories are rendered with availability counts
+
     expect(screen.getByText(/Арын тасалбар/)).toBeInTheDocument();
     expect(screen.getByText(/VIP тасалбар/)).toBeInTheDocument();
     expect(screen.getByText(/Энгийн тасалбар/)).toBeInTheDocument();
@@ -180,17 +171,16 @@ describe('ConcertDetails', () => {
 
   it('should handle buy button click', () => {
     render(<ConcertDetails {...mockProps} />);
-    
+
     const buyButton = screen.getByText('Тасалбар захиалах');
     expect(buyButton).toBeInTheDocument();
-    
+
     fireEvent.click(buyButton);
-    // Should navigate to cart or show some action
   });
 
   it('should display ticket prices correctly', () => {
     render(<ConcertDetails {...mockProps} />);
-    
+
     expect(screen.getByText('129,000₮')).toBeInTheDocument();
     expect(screen.getByText('89,000₮')).toBeInTheDocument();
   });
@@ -198,11 +188,11 @@ describe('ConcertDetails', () => {
   it('should handle empty ticket categories', () => {
     const emptyProps = {
       ...mockProps,
-      ticketCategories: []
+      ticketCategories: [],
     };
-    
+
     render(<ConcertDetails {...emptyProps} />);
-    
+
     const buyButton = screen.getByText('Тасалбар захиалах');
     expect(buyButton).toBeInTheDocument();
   });
@@ -210,47 +200,42 @@ describe('ConcertDetails', () => {
   it('should handle loading state', () => {
     const loadingProps = {
       ...mockProps,
-      loading: true
+      loading: true,
     };
-    
+
     render(<ConcertDetails {...loadingProps} />);
-    
-    // Check if component renders during loading
+
     expect(screen.getByTestId('concert-details')).toBeInTheDocument();
   });
 
   it('should handle error state', () => {
     const errorProps = {
       ...mockProps,
-      error: new Error('Test error')
+      error: new Error('Test error'),
     };
-    
+
     render(<ConcertDetails {...errorProps} />);
-    
-    // Check if component renders during error
+
     expect(screen.getByTestId('concert-details')).toBeInTheDocument();
   });
 
   it('should display eventDate when availableDates is empty', () => {
     const propsWithoutDates = {
       ...mockProps,
-      availableDates: []
+      availableDates: [],
     };
-    
+
     render(<ConcertDetails {...propsWithoutDates} />);
-    
-    // Check if eventDate is displayed as fallback option (multiple instances)
+
     expect(screen.getAllByText('11.15')).toHaveLength(2);
   });
 
   it('should handle ticket category click events', () => {
     render(<ConcertDetails {...mockProps} />);
-    
-    // Check if ticket categories are clickable
+
     const ticketCategories = screen.getAllByText(/тасалбар/);
     expect(ticketCategories.length).toBeGreaterThan(0);
-    
-    // Simulate click on first ticket category
+
     if (ticketCategories[0]) {
       fireEvent.click(ticketCategories[0]);
       expect(ticketCategories[0]).toBeInTheDocument();
@@ -260,15 +245,26 @@ describe('ConcertDetails', () => {
   it('should handle date selection with empty availableDates', () => {
     const propsWithoutDates = {
       ...mockProps,
-      availableDates: []
+      availableDates: [],
     };
-    
+
     render(<ConcertDetails {...propsWithoutDates} />);
-    
+
     const dateSelect = screen.getByRole('combobox');
     expect(dateSelect).toBeInTheDocument();
-    
-    // Check if eventDate is available as option (multiple instances)
+
     expect(screen.getAllByText('11.15')).toHaveLength(2);
+  });
+
+  it('should render availableDates when provided', () => {
+    const propsWithDates = {
+      ...mockProps,
+      availableDates: ['11.15', '11.16', '11.17'],
+    };
+
+    render(<ConcertDetails {...propsWithDates} />);
+
+    expect(screen.getByText('11.16')).toBeInTheDocument();
+    expect(screen.getByText('11.17')).toBeInTheDocument();
   });
 });

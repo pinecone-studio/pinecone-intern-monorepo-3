@@ -8,11 +8,20 @@ export const Concert: Resolvers['Concert'] = {
   },
 
   // Concert-ийн ticketCategories field-г resolve хийх
-  ticketCategories: async (parent) => {
+  ticketCategories: async (parent, args, context) => {
     try {
       // MongoDB-с ирсэн parent нь _id field-тэй байдаг
       const concertId = parent._id?.toString() || parent.id;
       const categories = await TicketCategoryController.getConcertTicketCategories(concertId);
+      
+      // Concert мэдээлэлийг context-д дамжуулах (хөнгөлөлтийн тооцоололд ашиглах)
+      if (categories && categories.length > 0) {
+        context.concert = {
+          id: concertId,
+          date: parent.date?.toISOString() || new Date().toISOString()
+        };
+      }
+      
       // Хэрэв categories байхгүй бол хоосон array буцаах
       return categories || [];
     } catch (error) {

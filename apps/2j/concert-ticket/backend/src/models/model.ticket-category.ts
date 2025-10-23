@@ -58,6 +58,12 @@ ticketCategorySchema.virtual('isSoldOut').get(function() {
   return this.availableQuantity === 0;
 });
 
+// Хөнгөлөлттэй үнийг тооцоолох virtual field - concert огнооноос хамаарна
+ticketCategorySchema.virtual('discountedPrice').get(function() {
+  // Энэ virtual field нь concert мэдээлэл шаарддаг тул resolver дээр тооцоолно
+  return this.unitPrice;
+});
+
 // JSON-д virtual field-ийг оруулах
 ticketCategorySchema.set('toJSON', { virtuals: true });
 

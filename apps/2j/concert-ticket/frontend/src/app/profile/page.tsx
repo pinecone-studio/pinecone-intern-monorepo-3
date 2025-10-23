@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Check, X } from 'lucide-react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
@@ -9,35 +10,42 @@ import { useMyProfileQuery, useUpdateUserProfileMutation } from '@/generated';
 const useCustomerData = () => {
   const [customerData, setCustomerData] = useState({
     phone: '',
-    email: ''
+    email: '',
   });
 
-  const { data: profileData, loading: profileLoading, error: profileError } = useMyProfileQuery({
-    errorPolicy: 'all'
+  const {
+    data: profileData,
+    loading: profileLoading,
+    error: profileError,
+    refetch: refetchProfile,
+  } = useMyProfileQuery({
+    errorPolicy: 'all',
   });
 
   useEffect(() => {
     if (profileData?.myProfile) {
       setCustomerData({
         phone: profileData.myProfile.phoneNumber || '',
-        email: profileData.myProfile.email || ''
+        email: profileData.myProfile.email || '',
       });
     }
   }, [profileData]);
 
   const handleCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setCustomerData(prev => ({
+    setCustomerData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  return { customerData, handleCustomerChange, profileLoading, profileError };
+  return { customerData, handleCustomerChange, profileLoading, profileError, refetchProfile };
 };
 
-const useProfileSave = () => {
+const useProfileSave = (refetchProfile: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
   const [updateUserProfile, { loading: updateLoading }] = useUpdateUserProfileMutation();
 
   const handleSaveCustomer = async (customerData: { phone: string; email: string }) => {
@@ -47,23 +55,46 @@ const useProfileSave = () => {
         variables: {
           input: {
             phoneNumber: customerData.phone,
-            username: customerData.email.split('@')[0]
-          }
-        }
+            username: customerData.email.split('@')[0],
+          },
+        },
       });
-      alert('Мэдээлэл амжилттай хадгалагдлаа!');
+      
+      // Success toast харуулах
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+      
+      // Profile data дахин ачаалах
+      refetchProfile();
     } catch (error) {
       console.error('Profile update error:', error);
-      alert('Мэдээлэл хадгалахад алдаа гарлаа.');
+      
+      // Error toast харуулах
+      setShowErrorToast(true);
+      setTimeout(() => setShowErrorToast(false), 3000);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { handleSaveCustomer, isLoading, updateLoading };
+  return { 
+    handleSaveCustomer, 
+    isLoading, 
+    updateLoading, 
+    showSuccessToast, 
+    showErrorToast,
+    setShowSuccessToast,
+    setShowErrorToast
+  };
 };
 
-const ProfileForm = ({ customerData, handleCustomerChange, handleSaveCustomer, isLoading, updateLoading }: {
+const ProfileForm = ({
+  customerData,
+  handleCustomerChange,
+  handleSaveCustomer,
+  isLoading,
+  updateLoading,
+}: {
   customerData: { phone: string; email: string };
   handleCustomerChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleSaveCustomer: (customerData: { phone: string; email: string }) => Promise<void>;
@@ -111,8 +142,16 @@ const ProfileForm = ({ customerData, handleCustomerChange, handleSaveCustomer, i
 );
 
 const ProfilePage: React.FC = () => {
-  const { customerData, handleCustomerChange, profileLoading, profileError } = useCustomerData();
-  const { handleSaveCustomer, isLoading, updateLoading } = useProfileSave();
+  const { customerData, handleCustomerChange, profileLoading, profileError, refetchProfile } = useCustomerData();
+  const { 
+    handleSaveCustomer, 
+    isLoading, 
+    updateLoading, 
+    showSuccessToast, 
+    showErrorToast,
+    setShowSuccessToast,
+    setShowErrorToast
+  } = useProfileSave(refetchProfile);
 
   // Loading state
   if (profileLoading) {
@@ -120,9 +159,7 @@ const ProfilePage: React.FC = () => {
       <div className="min-h-screen bg-black text-white">
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">User Profile</h1>
-          </div>
+          <div className="mb-[24px]"></div>
           <div className="flex gap-[24px]">
             <ProfileMenu />
             <div className="flex-1">
@@ -149,9 +186,7 @@ const ProfilePage: React.FC = () => {
       <div className="min-h-screen bg-black text-white">
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">User Profile</h1>
-          </div>
+          <div className="mb-[24px]"></div>
           <div className="flex gap-[24px]">
             <ProfileMenu />
             <div className="flex-1">
@@ -170,26 +205,46 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      
+
       <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-        <div className="mb-[24px]">
-          <h1 className="text-[32px] font-bold">User Profile</h1>
-        </div>
+        <div className="mb-[24px]"></div>
 
         <div className="flex gap-[24px]">
           <ProfileMenu />
-          
-          <ProfileForm 
-            customerData={customerData}
-            handleCustomerChange={handleCustomerChange}
-            handleSaveCustomer={handleSaveCustomer}
-            isLoading={isLoading}
-            updateLoading={updateLoading}
-          />
+
+          <ProfileForm customerData={customerData} handleCustomerChange={handleCustomerChange} handleSaveCustomer={handleSaveCustomer} isLoading={isLoading} updateLoading={updateLoading} />
         </div>
       </main>
 
       <Footer />
+
+      {/* Success Toast */}
+      {showSuccessToast && (
+        <div className="fixed top-[20px] right-[20px] z-50 bg-green-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
+          <Check size={16} />
+          <span className="text-[14px] font-medium">Мэдээлэл амжилттай хадгалагдлаа!</span>
+          <button 
+            onClick={() => setShowSuccessToast(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Error Toast */}
+      {showErrorToast && (
+        <div className="fixed top-[20px] right-[20px] z-50 bg-red-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
+          <X size={16} />
+          <span className="text-[14px] font-medium">Мэдээлэл хадгалахад алдаа гарлаа</span>
+          <button 
+            onClick={() => setShowErrorToast(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

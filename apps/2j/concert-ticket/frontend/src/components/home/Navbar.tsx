@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingCart, Search } from 'lucide-react';
+import { ShoppingCart, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useMyProfileQuery } from '@/generated';
@@ -14,11 +14,11 @@ const Navbar: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
   const [query, setQuery] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   // User profile data
   const { data: profileData } = useMyProfileQuery({
     errorPolicy: 'all',
-    skip: true, // Skip the query in test environment to avoid authentication issues
   });
 
   // Authentication state based on profile data
@@ -37,6 +37,17 @@ const Navbar: React.FC<Props> = ({ className }) => {
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === 'Enter') {
       goSearch();
+    }
+  };
+
+  const handleCartClick = () => {
+    if (isLoggedIn) {
+      // Нэвтэрсэн хэрэглэгч - orders page руу үсэрэх
+      router.push('/orders');
+    } else {
+      // Нэвтэрээгүй хэрэглэгч - toast харуулах
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
     }
   };
 
@@ -72,7 +83,11 @@ const Navbar: React.FC<Props> = ({ className }) => {
         {/* Right actions */}
         <div className="flex items-center gap-[12px]">
           {/* Cart button */}
-          <button aria-label="Сагс" className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px] hover:bg-[#2a2a2a] transition-colors">
+          <button 
+            aria-label="Сагс" 
+            onClick={handleCartClick}
+            className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px] hover:bg-[#2a2a2a] transition-colors"
+          >
             <ShoppingCart size={16} />
           </button>
 
@@ -105,6 +120,19 @@ const Navbar: React.FC<Props> = ({ className }) => {
           )}
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed top-[20px] right-[20px] z-50 bg-red-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
+          <span className="text-[14px] font-medium">Нэвтрэх шаардлагатай</span>
+          <button 
+            onClick={() => setShowToast(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
     </header>
   );
 };

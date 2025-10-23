@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Check, X } from 'lucide-react';
 import { useChangePasswordMutation } from '@/generated';
 
 type PasswordFieldProps = {
@@ -39,11 +39,22 @@ const ChangePasswordPage: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
+
+  const resetForm = () => {
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setError(null);
+    setShowCurrent(false);
+    setShowNew(false);
+    setShowConfirm(false);
+  };
 
   const [changePasswordMutation, { loading }] = useChangePasswordMutation();
 
@@ -71,62 +82,27 @@ const ChangePasswordPage: React.FC = () => {
       });
 
       if (result.data?.changePassword) {
-        setIsSubmitted(true);
+        // Success toast харуулах
+        setShowSuccessToast(true);
+        setTimeout(() => setShowSuccessToast(false), 3000);
+        
+        // Form reset хийх
+        resetForm();
       }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Нууц үг солиход алдаа гарлаа';
       setError(errorMessage);
+      setShowErrorToast(true);
+      setTimeout(() => setShowErrorToast(false), 3000);
     }
   };
 
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-black text-white">
-        <Navbar />
-        <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-          <div className="mb-[24px]">
-            <h1 className="text-[32px] font-bold">Нууц үг солих</h1>
-          </div>
-          <div className="flex gap-[24px]">
-            <ProfileMenu />
-            <div className="flex-1">
-              <div className="max-w-[600px]">
-                <div className="rounded-[12px] bg-[#111111] p-[24px] text-center">
-                  <div className="text-[48px] mb-[16px]">✓</div>
-                  <h2 className="text-[20px] font-semibold mb-[12px]">Амжилттай хадгалагдлаа</h2>
-                  <p className="text-[14px] text-gray-300 mb-[24px]">Таны нууц үг амжилттай шинэчлэгдлээ.</p>
-                  <button
-                    onClick={() => {
-                      setCurrentPassword('');
-                      setNewPassword('');
-                      setConfirmPassword('');
-                      setError(null);
-                      setShowCurrent(false);
-                      setShowNew(false);
-                      setShowConfirm(false);
-                      setIsSubmitted(false);
-                    }}
-                    className="rounded-[8px] bg-[#00B7F4] px-[24px] py-[12px] text-[14px] font-medium text-black hover:bg-[#0099CC] transition-colors"
-                  >
-                    Буцах
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
       <main className="mx-auto max-w-[1200px] px-[16px] py-[24px]">
-        <div className="mb-[24px]">
-          <h1 className="text-[32px] font-bold">Нууц үг солих</h1>
-        </div>
+        <div className="mb-[24px]"></div>
         <div className="flex gap-[24px]">
           <ProfileMenu />
           <div className="flex-1">
@@ -165,6 +141,34 @@ const ChangePasswordPage: React.FC = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Success Toast */}
+      {showSuccessToast && (
+        <div className="fixed top-[20px] right-[20px] z-50 bg-green-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
+          <Check size={16} />
+          <span className="text-[14px] font-medium">Нууц үг амжилттай шинэчлэгдлээ</span>
+          <button 
+            onClick={() => setShowSuccessToast(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Error Toast */}
+      {showErrorToast && (
+        <div className="fixed top-[20px] right-[20px] z-50 bg-red-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
+          <X size={16} />
+          <span className="text-[14px] font-medium">Нууц үг солиход алдаа гарлаа</span>
+          <button 
+            onClick={() => setShowErrorToast(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

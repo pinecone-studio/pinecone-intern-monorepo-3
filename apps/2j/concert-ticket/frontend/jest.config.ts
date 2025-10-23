@@ -11,10 +11,11 @@ export default {
   coverageDirectory: '../../../../coverage/apps/2j/concert-ticket/frontend',
   collectCoverageFrom: [
     'src/**/*.{ts,tsx,js,jsx}',
-    '!src/**/generated/**/*.ts',
+    '!src/**/generated/**/*.{ts,tsx}',
     '!src/app/**/*.tsx',
-    '!src/components/providers/*.tsx',
+    '!src/components/providers/**/*.{ts,tsx}',
     '!src/components/home/**/*',
+    '!src/types/**/*.ts',
   ],
   coverageThreshold: {
     global: {
