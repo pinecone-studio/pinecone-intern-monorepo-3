@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Footer from '../../../src/components/home/Footer';
+import Footer from '../../../src/components/detail/footer';
 
 describe('Footer', () => {
   it('footer-ийн агуулгыг зөв харуулна', () => {
@@ -14,22 +14,19 @@ describe('Footer', () => {
   it('холбоо барих мэдээллийг зөв харуулна', () => {
     render(<Footer />);
 
-    expect(screen.getByText('support@ticketbooking.mn')).toBeInTheDocument();
-    expect(screen.getByText('+976 1234-5678')).toBeInTheDocument();
-    expect(screen.getByText('24/7 Support')).toBeInTheDocument();
+    expect(screen.getByText('support@ticketinbooking.mn')).toBeInTheDocument();
+    expect(screen.getByText('+976 (11) 123-4567')).toBeInTheDocument();
+    expect(screen.getByText('Available 24/7')).toBeInTheDocument();
   });
 
   it('testid-ууд зөв байна', () => {
     render(<Footer />);
 
-    expect(screen.getByTestId('footer-logo-dot')).toBeInTheDocument();
     expect(screen.getByTestId('footer-logo')).toBeInTheDocument();
-  });
-
-  it('className prop-г зөв ашиглана', () => {
-    render(<Footer className="custom-class" />);
-
-    const footer = screen.getByRole('contentinfo');
-    expect(footer).toHaveClass('custom-class');
+    expect(screen.getByTestId('footer-copyright')).toBeInTheDocument();
+    expect(screen.getByTestId('contact-header')).toBeInTheDocument();
+    expect(screen.getByTestId('email')).toBeInTheDocument();
+    expect(screen.getByTestId('phone')).toBeInTheDocument();
+    expect(screen.getByTestId('support')).toBeInTheDocument();
   });
 });

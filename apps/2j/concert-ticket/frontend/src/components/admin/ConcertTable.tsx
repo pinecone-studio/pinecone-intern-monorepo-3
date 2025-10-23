@@ -2,6 +2,23 @@
 
 import { Star, Pencil, Trash2 } from 'lucide-react';
 
+// Format date to YYYY/MM/DD
+const formatDate = (dateString: string) => {
+  try {
+    const date = new Date(dateString);
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return dateString; // Return original if date is invalid
+    }
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}/${month}/${day}`;
+  } catch (error) {
+    return dateString; // Return original if parsing fails
+  }
+};
+
 interface Concert {
   id: string;
   name: string;
@@ -34,6 +51,142 @@ interface ConcertTableProps {
   onPageChange: (page: number) => void;
 }
 
+interface ConcertRowProps {
+  concert: Concert;
+  isFeatured: boolean;
+  onStarClick: (id: string) => void;
+  onEditClick: (id: string) => void;
+  onDeleteClick: (id: string) => void;
+}
+
+const calculateTicketStats = (ticketCategories: Concert['ticketCategories']) => {
+  const totalTickets = ticketCategories.reduce((sum, cat) => sum + cat.totalQuantity, 0);
+  const vipTickets = ticketCategories.find(cat => cat.type === 'VIP')?.totalQuantity || 0;
+  const regularTickets = ticketCategories.find(cat => cat.type === 'REGULAR')?.totalQuantity || 0;
+  const generalTickets = ticketCategories.find(cat => cat.type === 'GENERAL')?.totalQuantity || 0;
+  const totalRevenue = ticketCategories.reduce((sum, cat) => sum + (cat.totalQuantity * cat.unitPrice), 0);
+  
+  return { totalTickets, vipTickets, regularTickets, generalTickets, totalRevenue };
+};
+
+const TicketStatsCell = ({ totalTickets, vipTickets, regularTickets, generalTickets }: {
+  totalTickets: number;
+  vipTickets: number;
+  regularTickets: number;
+  generalTickets: number;
+}) => (
+  <td className="px-4 py-4 text-sm text-gray-500">
+    <div className="flex gap-4">
+      <div className="flex flex-col min-w-0">
+        <span className="text-xs text-gray-400">Нийт:</span>
+        <span className="text-sm font-semibold text-gray-900">{totalTickets}</span>
+      </div>
+      <div className="flex flex-col min-w-0">
+        <span className="text-xs text-gray-400">VIP:</span>
+        <span className="text-sm font-semibold text-gray-900">{vipTickets}</span>
+      </div>
+      <div className="flex flex-col min-w-0">
+        <span className="text-xs text-gray-400">Reg:</span>
+        <span className="text-sm font-semibold text-gray-900">{regularTickets}</span>
+      </div>
+      <div className="flex flex-col min-w-0">
+        <span className="text-xs text-gray-400">Gen:</span>
+        <span className="text-sm font-semibold text-gray-900">{generalTickets}</span>
+      </div>
+    </div>
+  </td>
+);
+
+const ActionButtons = ({ concert, isFeatured, onStarClick, onEditClick, onDeleteClick }: {
+  concert: Concert;
+  isFeatured: boolean;
+  onStarClick: (id: string) => void;
+  onEditClick: (id: string) => void;
+  onDeleteClick: (id: string) => void;
+}) => (
+  <td className="px-4 py-4 text-sm text-gray-500">
+    <div className="flex space-x-2">
+      <button
+        onClick={() => onStarClick(concert.id)}
+        className={`p-1 rounded hover:bg-gray-100 transition-colors ${
+          isFeatured ? 'text-black' : 'text-gray-400'
+        }`}
+      >
+        <Star className={`w-4 h-4 ${isFeatured ? 'fill-current' : ''}`} />
+      </button>
+      <button
+        onClick={() => onEditClick(concert.id)}
+        className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
+      >
+        <Pencil className="w-4 h-4" />
+      </button>
+      <button
+        onClick={() => onDeleteClick(concert.id)}
+        className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-400 hover:text-red-600"
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </div>
+  </td>
+);
+
+const ConcertRow = ({ concert, isFeatured, onStarClick, onEditClick, onDeleteClick }: ConcertRowProps) => {
+  const { totalTickets, vipTickets, regularTickets, generalTickets, totalRevenue } = calculateTicketStats(concert.ticketCategories);
+
+  return (
+    <tr className="hover:bg-gray-50">
+      <td className="px-4 py-4 text-sm text-gray-500">
+        {isFeatured && (
+          <Star className="w-5 h-5 text-black fill-current" />
+        )}
+      </td>
+      <td className="px-4 py-4 text-sm text-gray-500">
+        <div className="max-w-[250px] truncate">
+          {concert.name}
+        </div>
+      </td>
+      <td className="px-4 py-4 text-sm text-gray-500">
+        <div className="max-w-[200px]">
+          <div className="font-medium text-gray-900 truncate">
+            {concert.mainArtist?.name}
+          </div>
+          {concert.otherArtists && concert.otherArtists.length > 0 && (
+            <div className="text-xs text-gray-400 truncate">
+              +{concert.otherArtists.length} бусад
+            </div>
+          )}
+        </div>
+      </td>
+      <TicketStatsCell
+        totalTickets={totalTickets}
+        vipTickets={vipTickets}
+        regularTickets={regularTickets}
+        generalTickets={generalTickets}
+      />
+      <td className="px-4 py-4 text-sm text-gray-500">
+        <div>
+          <div className="font-medium text-gray-900">
+            {formatDate(concert.date)}
+          </div>
+          <div className="text-xs text-gray-400">{concert.time}</div>
+        </div>
+      </td>
+      <td className="px-4 py-4 text-sm text-gray-500">
+        <div className="max-w-[120px] truncate">
+          ₮{totalRevenue.toLocaleString()}
+        </div>
+      </td>
+      <ActionButtons
+        concert={concert}
+        isFeatured={isFeatured}
+        onStarClick={onStarClick}
+        onEditClick={onEditClick}
+        onDeleteClick={onDeleteClick}
+      />
+    </tr>
+  );
+};
+
 const ConcertTable = ({
   concerts,
   featuredConcerts,
@@ -47,19 +200,6 @@ const ConcertTable = ({
   onPageChange
 }: ConcertTableProps) => {
   const totalPages = Math.ceil(totalCount / pageSize);
-
-  // Format date to YYYY/MM/DD
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}/${month}/${day}`;
-    } catch (error) {
-      return dateString; // Return original if parsing fails
-    }
-  };
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
@@ -112,98 +252,16 @@ const ConcertTable = ({
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {concerts.map((concert) => {
-                const isFeatured = featuredConcerts.has(concert.id);
-                const totalTickets = concert.ticketCategories.reduce((sum, cat) => sum + cat.totalQuantity, 0);
-                const vipTickets = concert.ticketCategories.find(cat => cat.type === 'VIP')?.totalQuantity || 0;
-                const regularTickets = concert.ticketCategories.find(cat => cat.type === 'REGULAR')?.totalQuantity || 0;
-                const generalTickets = concert.ticketCategories.find(cat => cat.type === 'GENERAL')?.totalQuantity || 0;
-                const totalRevenue = concert.ticketCategories.reduce((sum, cat) => sum + (cat.totalQuantity * cat.unitPrice), 0);
-
-                return (
-                  <tr key={concert.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-4 text-sm text-gray-500">
-                      {isFeatured && (
-                        <Star className="w-5 h-5 text-black fill-current" />
-                      )}
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-500">
-                      <div className="max-w-[250px] truncate">
-                        {concert.name}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-500">
-                      <div className="max-w-[200px]">
-                        <div className="font-medium text-gray-900 truncate">
-                          {concert.mainArtist?.name}
-                        </div>
-                        {concert.otherArtists && concert.otherArtists.length > 0 && (
-                          <div className="text-xs text-gray-400 truncate">
-                            +{concert.otherArtists.length} бусад
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-500">
-                      <div className="flex gap-4">
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs text-gray-400">Нийт:</span>
-                          <span className="text-sm font-semibold text-gray-900">{totalTickets}</span>
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs text-gray-400">VIP:</span>
-                          <span className="text-sm font-semibold text-gray-900">{vipTickets}</span>
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs text-gray-400">Reg:</span>
-                          <span className="text-sm font-semibold text-gray-900">{regularTickets}</span>
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs text-gray-400">Gen:</span>
-                          <span className="text-sm font-semibold text-gray-900">{generalTickets}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-500">
-                      <div>
-                        <div className="font-medium text-gray-900">
-                          {formatDate(concert.date)}
-                        </div>
-                        <div className="text-xs text-gray-400">{concert.time}</div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-500">
-                      <div className="max-w-[120px] truncate">
-                        ₮{totalRevenue.toLocaleString()}
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-gray-500">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => onStarClick(concert.id)}
-                          className={`p-1 rounded hover:bg-gray-100 transition-colors ${
-                            isFeatured ? 'text-black' : 'text-gray-400'
-                          }`}
-                        >
-                          <Star className={`w-4 h-4 ${isFeatured ? 'fill-current' : ''}`} />
-                        </button>
-                        <button
-                          onClick={() => onEditClick(concert.id)}
-                          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => onDeleteClick(concert.id)}
-                          className="p-1 rounded hover:bg-gray-100 transition-colors text-gray-400 hover:text-red-600"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
+              {concerts.map((concert) => (
+                <ConcertRow
+                  key={concert.id}
+                  concert={concert}
+                  isFeatured={featuredConcerts.has(concert.id)}
+                  onStarClick={onStarClick}
+                  onEditClick={onEditClick}
+                  onDeleteClick={onDeleteClick}
+                />
+              ))}
             </tbody>
           </table>
         </div>

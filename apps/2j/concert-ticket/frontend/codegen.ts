@@ -2,7 +2,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 // CI / тест орчинд backend сервер асахгүй байж болох тул
 // HTTP биш, локал файлын схем ашиглая. Харин dev орчинд HTTP ашиглана.
-const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test';
+const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test' || process.env.NX_TASK_TARGET_PROJECT;
 
 const schema: CodegenConfig['schema'] = isCI
   ? [
@@ -16,9 +16,9 @@ const config: CodegenConfig = {
   overwrite: true,
   schema,
   // Nx "codegen:*" нь workspace root-оос ажиллах тул absolute‑like проектын зам
-  documents: ['src/**/*.graphql'],
+  documents: ['apps/2j/concert-ticket/frontend/src/**/*.graphql'],
   generates: {
-    'src/generated/index.ts': {
+    'apps/2j/concert-ticket/frontend/src/generated/index.ts': {
       config: {
         reactApolloVersion: 3,
         withHOC: true,

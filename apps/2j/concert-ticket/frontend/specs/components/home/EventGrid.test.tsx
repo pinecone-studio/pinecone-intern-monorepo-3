@@ -1,82 +1,84 @@
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import { MockedProvider } from '@apollo/client/testing';
 import EventGrid from '../../../src/components/home/EventGrid';
-import { HomeEventsDocument } from '../../../src/generated';
+import { useHomeEventsQuery } from '../../../src/generated';
 
-const mockData = {
-  request: { query: HomeEventsDocument, variables: { limit: 12, offset: 0 } },
-  result: {
-    data: {
-      concerts: {
-        concerts: [
-          {
-            id: '1',
-            name: 'Concert 1',
-            date: '2024-12-25',
-            time: '19:00',
-            venue: 'Venue 1',
-            image: '/img1.jpg',
-            mainArtist: { name: 'Artist 1', id: 'a1' },
-            ticketCategories: [{ id: 't1', type: 'VIP', unitPrice: 100000, availableQuantity: 50 }],
-          },
-          {
-            id: '2',
-            name: 'Concert 2',
-            date: '2024-12-26',
-            time: '20:00',
-            venue: 'Venue 2',
-            image: '/img2.jpg',
-            mainArtist: { name: 'Artist 2', id: 'a2' },
-            ticketCategories: [{ id: 't2', type: 'REGULAR', unitPrice: 50000, availableQuantity: 100 }],
-          },
-        ],
-      },
-    },
-  },
-};
+jest.mock('../../../src/generated', () => ({
+  useHomeEventsQuery: jest.fn(),
+}));
+
+jest.mock('../../../src/components/home/EventCard', () => {
+  return function MockEventCard({ item }: { item: { name: string; id: string } }) {
+    return <div data-testid="event-card">{item.name}</div>;
+  };
+});
+
+const mockUseHomeEventsQuery = useHomeEventsQuery as jest.MockedFunction<typeof useHomeEventsQuery>;
 
 describe('EventGrid', () => {
-  it('shows loading skeleton', () => {
-    render(
-      <MockedProvider mocks={[mockData]}>
-        <EventGrid />
-      </MockedProvider>
-    );
-    const skeletons = document.querySelectorAll('.animate-pulse');
-    expect(skeletons.length).toBeGreaterThan(0);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('renders concert cards after loading', async () => {
-    render(
-      <MockedProvider mocks={[mockData]}>
-        <EventGrid />
-      </MockedProvider>
+  it('loading үед skeleton картуудыг харуулна', () => {
+    mockUseHomeEventsQuery.mockReturnValue({
+      data: undefined,
+      loading: true,
+      error: undefined,
+    } as ReturnType<typeof useHomeEventsQuery>);
+
+    render(<EventGrid />);
+
+    const skeletonCards = screen.getAllByRole('generic').filter(el => 
+      el.className.includes('animate-pulse') && el.className.includes('bg-[#111111]')
     );
-    await waitFor(() => expect(screen.getByText('Concert 1')).toBeInTheDocument());
-    expect(screen.getByText('Concert 2')).toBeInTheDocument();
+    expect(skeletonCards).toHaveLength(8);
   });
 
-  it('shows error message on failure', async () => {
-    const errorMock = {
-      request: { query: HomeEventsDocument, variables: { limit: 12, offset: 0 } },
-      error: new Error('Network error'),
+  it('error үед алдааны мессежийг харуулна', () => {
+    mockUseHomeEventsQuery.mockReturnValue({
+      data: undefined,
+      loading: false,
+      error: new Error('Test error'),
+    } as ReturnType<typeof useHomeEventsQuery>);
+
+    render(<EventGrid />);
+
+    expect(screen.getByText('Өгөгдөл татахад алдаа гарлаа.')).toBeInTheDocument();
+  });
+
+  it('өгөгдөл байгаа үед event картуудыг харуулна', () => {
+    const mockData = {
+      concerts: {
+        concerts: [
+          { id: '1', name: 'Test Concert 1' },
+          { id: '2', name: 'Test Concert 2' },
+        ],
+      },
     };
-    render(
-      <MockedProvider mocks={[errorMock]}>
-        <EventGrid />
-      </MockedProvider>
-    );
-    await waitFor(() => expect(screen.getByText('Өгөгдөл татахад алдаа гарлаа.')).toBeInTheDocument());
+
+    mockUseHomeEventsQuery.mockReturnValue({
+      data: mockData,
+      loading: false,
+      error: undefined,
+    } as ReturnType<typeof useHomeEventsQuery>);
+
+    render(<EventGrid />);
+
+    expect(screen.getByText('Test Concert 1')).toBeInTheDocument();
+    expect(screen.getByText('Test Concert 2')).toBeInTheDocument();
   });
 
-  it('renders with custom className', () => {
-    const { container } = render(
-      <MockedProvider mocks={[mockData]}>
-        <EventGrid className="custom-class" />
-      </MockedProvider>
-    );
-    expect(container.querySelector('.custom-class')).toBeInTheDocument();
+  it('className prop-г зөв ашиглана', () => {
+    mockUseHomeEventsQuery.mockReturnValue({
+      data: { concerts: { concerts: [] } },
+      loading: false,
+      error: undefined,
+    } as ReturnType<typeof useHomeEventsQuery>);
+
+    render(<EventGrid className="custom-class" />);
+
+    const section = document.querySelector('section');
+    expect(section).toHaveClass('custom-class');
   });
 });
