@@ -15,14 +15,16 @@
       }
     },
     "build": {
-      "executor": "@nx/js:tsc",
+      "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/2j/concert-ticket/backend",
-        "main": "apps/2j/concert-ticket/backend/src/index.ts",
-        "tsConfig": "apps/2j/concert-ticket/backend/tsconfig.json",
-        "assets": ["apps/2j/concert-ticket/backend/src/schemas"]
+        "outputPath": "dist/apps/2j/concert-ticket/backend"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "dist/apps/2j/concert-ticket/backend"
+        }
       },
       "dependsOn": [
         {
@@ -32,18 +34,20 @@
       ]
     },
     "serve": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/next:server",
       "defaultConfiguration": "development",
       "options": {
-        "command": "npx env-cmd -f ./.env tsx src/index.ts",
-        "cwd": "apps/2j/concert-ticket/backend"
+        "buildTarget": "concert-ticket-backend:build",
+        "dev": true
       },
       "configurations": {
         "development": {
-          "command": "npx env-cmd -f ./.env tsx src/index.ts"
+          "buildTarget": "concert-ticket-backend:build:development",
+          "dev": true
         },
         "production": {
-          "command": "node dist/apps/2j/concert-ticket/backend/main.js"
+          "buildTarget": "concert-ticket-backend:build:production",
+          "dev": false
         }
       },
       "dependsOn": [
@@ -51,7 +55,6 @@
           "target": "codegen",
           "params": "forward"
         }
-        
       ]
     },
     "test": {
@@ -98,7 +101,7 @@
     "export": {
       "executor": "@nx/next:export",
       "options": {
-        "buildTarget": "ticket-backend:build:production"
+        "buildTarget": "concert-ticket-backend:build:production"
       }
     },
     "export-env": {
@@ -121,32 +124,28 @@
         "commands": ["rm -rf dist/apps/2j/concert-ticket/backend", "rm -rf .vercel"]
       }
     },
-  "preview": {
-  "executor": "nx:run-commands",
-  "options": {
-    "cwd": "apps/2j/concert-ticket/backend",
-    "commands": [
-      "rm -rf .vercel",
-      "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
-      "npx env-cmd -f ./.env vercel build --token=$VERCEL_TOKEN",
-      "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
-    ],
-    "parallel": false
-  },
-  "dependsOn": [
-    { "target": "clean" },
-    { "target": "get-secrets:testing" },
-    { "target": "export-env" },
-    { "target": "codegen", "params": "forward" }
-  ]
-},
+    "preview": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "apps/2j/concert-ticket/backend",
+        "commands": [
+          "rm -rf .vercel",
+          "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel pull --yes --environment=preview --token=$VERCEL_TOKEN",
+          "npx env-cmd -f ./.env vercel build --token=$VERCEL_TOKEN",
+          "VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --archive=tgz --prebuilt --token=$VERCEL_TOKEN"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [{ "target": "clean" }, { "target": "get-secrets:testing" }, { "target": "export-env" }, { "target": "codegen", "params": "forward" }]
+    },
     "deploy-testing": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel pull --yes --environment=production --token=N$VERCEL_TOKEN",
-          "vercel build --prod --token=$VERCEL_TOKEN",
-          "npx dotenv -v VERCEL_ORG_ID= -v VERCEL_PROJECT_ID= -- vercel --prebuilt --prod --token=$VERCEL_TOKEN"
+          "nx codegen concert-ticket-backend",
+          "mkdir -p .vercel && cp -r ./apps/2j/concert-ticket/backend/vercel.config.json .vercel/project.json",
+          "npx env-cmd -f apps/2j/concert-ticket/backend/.env sh -c 'vercel build --prod --token=\"$VERCEL_TOKEN\"'",
+          "npx env-cmd -f apps/2j/concert-ticket/backend/.env sh -c 'vercel --prebuilt --prod --yes --token=\"$VERCEL_TOKEN\"'"
         ],
         "parallel": false
       },
@@ -155,14 +154,7 @@
           "target": "clean"
         },
         {
-          "target": "get-secrets:testing"
-        },
-        {
-          "target": "export-env"
-        },
-        {
-          "target": "codegen",
-          "params": "forward"
+          "target": "get-secrets:dev"
         }
       ]
     },
@@ -191,7 +183,6 @@
           "params": "forward"
         }
       ]
-    
     }
   },
   "tags": []
