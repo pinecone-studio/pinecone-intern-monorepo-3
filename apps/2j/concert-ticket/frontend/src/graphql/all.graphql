@@ -1,5 +1,5 @@
-query GetConcerts {
-  concerts {
+query GetConcerts($filter: ConcertFilterInput, $pagination: PaginationInput) {
+  concerts(filter: $filter, pagination: $pagination) {
     concerts {
       id
       name
@@ -9,10 +9,98 @@ query GetConcerts {
       time
       image
       isActive
+      mainArtist {
+        id
+        name
+        bio
+        image
+      }
+      otherArtists {
+        id
+        name
+        bio
+        image
+      }
+      ticketCategories {
+        id
+        type
+        totalQuantity
+        availableQuantity
+        unitPrice
+        discountPercentage
+        discountedPrice
+        description
+        features
+      }
     }
     totalCount
     hasMore
   }
+}
+
+mutation CreateConcert($input: CreateConcertInput!) {
+  createConcert(input: $input) {
+    id
+    name
+    description
+    venue
+    date
+    time
+    image
+    mainArtist {
+      id
+      name
+    }
+    otherArtists {
+      id
+      name
+    }
+    ticketCategories {
+      id
+      type
+      totalQuantity
+      unitPrice
+    }
+  }
+}
+
+mutation CreateArtist($input: ArtistInput!) {
+  createArtist(input: $input) {
+    id
+    name
+    bio
+    image
+  }
+}
+
+mutation UpdateConcert($id: ID!, $input: UpdateConcertInput!) {
+  updateConcert(id: $id, input: $input) {
+    id
+    name
+    description
+    venue
+    date
+    time
+    image
+    mainArtist {
+      id
+      name
+    }
+    otherArtists {
+      id
+      name
+    }
+    ticketCategories {
+      id
+      type
+      totalQuantity
+      unitPrice
+    }
+  }
+}
+
+mutation DeleteConcert($id: ID!) {
+  deleteConcert(id: $id)
 }
 
 query GetConcert($id: ID!) {

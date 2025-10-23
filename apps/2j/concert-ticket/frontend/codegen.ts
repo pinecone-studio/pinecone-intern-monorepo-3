@@ -16,9 +16,9 @@ const config: CodegenConfig = {
   overwrite: true,
   schema,
   // Nx "codegen:*" нь workspace root-оос ажиллах тул absolute‑like проектын зам
-  documents: ['apps/2j/concert-ticket/frontend/src/**/*.graphql'],
+  documents: ['src/**/*.graphql'],
   generates: {
-    'apps/2j/concert-ticket/frontend/src/generated/index.ts': {
+    'src/generated/index.ts': {
       config: {
         reactApolloVersion: 3,
         withHOC: true,
