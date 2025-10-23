@@ -2,12 +2,13 @@
   "name": "concert-ticket-backend",
   "version": "1.0.0",
   "description": "Concert Ticket Backend API",
-  "main": "dist/index.js",
+  "main": "src/vercel.ts",
   "scripts": {
-    "start": "node dist/index.js",
-    "build": "echo 'Build completed'",
+    "start": "node src/vercel.ts",
+    "build": "echo 'Backend build completed successfully'",
     "dev": "ts-node src/index.ts",
-    "vercel-build": "echo 'Vercel build completed'"
+    "vercel-build": "echo 'Vercel build completed'",
+    "vercel-dev": "vercel dev"
   },
   "dependencies": {
     "@apollo/server": "4.3.0",
@@ -22,7 +23,9 @@
     "mongoose": "8.2.2",
     "next": "14.2.14",
     "nodemailer": "^6.9.16",
-    "otp-generator": "4.0.1"
+    "otp-generator": "4.0.1",
+    "typescript": "5.3.2",
+    "ts-node": "10.9.1"
   },
   "devDependencies": {
     "@types/bcrypt": "5.0.2",
