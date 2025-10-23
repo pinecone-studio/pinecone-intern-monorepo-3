@@ -85,7 +85,7 @@ const ChangePasswordPage: React.FC = () => {
         // Success toast харуулах
         setShowSuccessToast(true);
         setTimeout(() => setShowSuccessToast(false), 3000);
-        
+
         // Form reset хийх
         resetForm();
       }
@@ -96,7 +96,6 @@ const ChangePasswordPage: React.FC = () => {
       setTimeout(() => setShowErrorToast(false), 3000);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -147,10 +146,7 @@ const ChangePasswordPage: React.FC = () => {
         <div className="fixed top-[20px] right-[20px] z-50 bg-green-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
           <Check size={16} />
           <span className="text-[14px] font-medium">Нууц үг амжилттай шинэчлэгдлээ</span>
-          <button 
-            onClick={() => setShowSuccessToast(false)}
-            className="text-white hover:text-gray-200 transition-colors"
-          >
+          <button onClick={() => setShowSuccessToast(false)} className="text-white hover:text-gray-200 transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -161,10 +157,7 @@ const ChangePasswordPage: React.FC = () => {
         <div className="fixed top-[20px] right-[20px] z-50 bg-red-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
           <X size={16} />
           <span className="text-[14px] font-medium">Нууц үг солиход алдаа гарлаа</span>
-          <button 
-            onClick={() => setShowErrorToast(false)}
-            className="text-white hover:text-gray-200 transition-colors"
-          >
+          <button onClick={() => setShowErrorToast(false)} className="text-white hover:text-gray-200 transition-colors">
             <X size={16} />
           </button>
         </div>

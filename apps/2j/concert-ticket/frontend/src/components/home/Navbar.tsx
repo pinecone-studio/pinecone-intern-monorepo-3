@@ -83,8 +83,8 @@ const Navbar: React.FC<Props> = ({ className }) => {
         {/* Right actions */}
         <div className="flex items-center gap-[12px]">
           {/* Cart button */}
-          <button 
-            aria-label="Сагс" 
+          <button
+            aria-label="Сагс"
             onClick={handleCartClick}
             className="flex h-[32px] w-[36px] items-center justify-center rounded-[8px] bg-[#1a1a1a] text-[12px] sm:w-[40px] hover:bg-[#2a2a2a] transition-colors"
           >
@@ -125,10 +125,7 @@ const Navbar: React.FC<Props> = ({ className }) => {
       {showToast && (
         <div className="fixed top-[20px] right-[20px] z-50 bg-red-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
           <span className="text-[14px] font-medium">Нэвтрэх шаардлагатай</span>
-          <button 
-            onClick={() => setShowToast(false)}
-            className="text-white hover:text-gray-200 transition-colors"
-          >
+          <button onClick={() => setShowToast(false)} className="text-white hover:text-gray-200 transition-colors">
             <X size={16} />
           </button>
         </div>
