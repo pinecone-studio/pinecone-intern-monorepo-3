@@ -11,7 +11,7 @@ export * from './food/create-food';
 export * from './food/update-food';
 export * from './food/delete-food';
 export * from './food/Add-Food-Category';
-export * from './food/Delete-Food-from-Category';
+export * from './food/delete-food-from-category';
 
 export * from './foodOrder/create-food-order';
 export * from './foodOrder/update-food-order';

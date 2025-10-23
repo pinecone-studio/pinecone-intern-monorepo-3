@@ -3,11 +3,9 @@
 import { useState } from 'react';
 
 import { SelectStatus } from './SelectStatus';
-import { OrderItemType, typeOrderItemType } from '@/types/OrderType';
-
+import { OrderItemType, typeOrderItemType } from '@/types/orderType';
 
 export const OrderItemCard = ({ order }: { order: OrderItemType }) => {
-  console.log('order', order);
   
   const [isOrderDetail, setIsOrderDetail] = useState(false);
   const [status, setStatus] = useState(order?.status || 'Хүлээгдэж буй'); // default status
