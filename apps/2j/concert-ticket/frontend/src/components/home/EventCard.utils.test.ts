@@ -193,9 +193,9 @@ describe('EventCard.utils', () => {
       expect(result).toBe('');
     });
 
-    it('should return original string for invalid date', () => {
+    it('should return "Invalid date" for invalid date', () => {
       const result = formatDateTime('invalid-date');
-      expect(result).toBe('invalid-date');
+      expect(result).toBe('Invalid date');
     });
 
     it('should handle undefined date', () => {
