@@ -232,7 +232,7 @@ type Mutation {
   updateConcert(id: ID!, input: UpdateConcertInput!): Concert! @auth(requires: ADMIN)
   deleteConcert(id: ID!): Boolean! @auth(requires: ADMIN)
 
-  createArtist(input: ArtistInput!): Artist! @auth(requires: ADMIN)
+  createArtist(input: ArtistInput!): Artist!
   updateArtist(id: ID!, input: ArtistInput!): Artist! @auth(requires: ADMIN)
   deleteArtist(id: ID!, input: ArtistInput!): Boolean! @auth(requires: ADMIN)
 

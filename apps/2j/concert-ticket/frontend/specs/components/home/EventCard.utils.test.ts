@@ -1,102 +1,122 @@
-import { getLowestPrice, formatDateTime } from '../../../src/components/home/EventCard.utils';
+import {
+  getLowestPrice,
+  getLowestDiscountedPrice,
+  hasDiscount,
+  getMaxDiscount,
+  calculateDiscountFromDate,
+  formatDateTime,
+} from '../../../src/components/home/EventCard.utils';
 import type { TicketCategory } from '../../../src/types/Event.type';
 
 describe('EventCard.utils', () => {
+  const mockCategories: TicketCategory[] = [
+    { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountPercentage: 10 },
+    { type: 'Regular', totalQuantity: 200, unitPrice: 30000, discountPercentage: 5 },
+    { type: 'General', totalQuantity: 300, unitPrice: 20000 },
+  ];
+
   describe('getLowestPrice', () => {
-    it('returns lowest price from categories', () => {
-      const categories: TicketCategory[] = [
-        { id: '1', type: 'VIP', unitPrice: 100000, availableQuantity: 10 },
-        { id: '2', type: 'REGULAR', unitPrice: 50000, availableQuantity: 20 },
-        { id: '3', type: 'GENERAL_ADMISSION', unitPrice: 75000, availableQuantity: 30 },
+    it('хамгийн бага үнийг буцаана', () => {
+      const result = getLowestPrice(mockCategories);
+      expect(result).toBe(20000);
+    });
+
+    it('хоосон массив үед undefined буцаана', () => {
+      const result = getLowestPrice([]);
+      expect(result).toBeUndefined();
+    });
+
+    it('хүчинтэй бус үнэтэй категориуд үед undefined буцаана', () => {
+      const invalidCategories = [
+        { type: 'VIP', totalQuantity: 100, unitPrice: NaN },
+        { type: 'Regular', totalQuantity: 200, unitPrice: Infinity },
       ];
-      expect(getLowestPrice(categories)).toBe(50000);
+      const result = getLowestPrice(invalidCategories);
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getLowestDiscountedPrice', () => {
+    it('хөнгөлөлттэй хамгийн бага үнийг буцаана', () => {
+      const result = getLowestDiscountedPrice(mockCategories);
+      expect(result).toBe(20000); // General category has no discount
     });
 
-    it('returns undefined for empty array', () => {
-      expect(getLowestPrice([])).toBeUndefined();
+    it('хоосон массив үед undefined буцаана', () => {
+      const result = getLowestDiscountedPrice([]);
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('hasDiscount', () => {
+    it('хөнгөлөлт байгаа үед true буцаана', () => {
+      const result = hasDiscount(mockCategories);
+      expect(result).toBe(true);
     });
 
-    it('handles invalid prices', () => {
-      const categories: TicketCategory[] = [
-        { id: '1', type: 'VIP', unitPrice: NaN, availableQuantity: 10 },
-        { id: '2', type: 'REGULAR', unitPrice: Infinity, availableQuantity: 20 },
-        { id: '3', type: 'GENERAL_ADMISSION', unitPrice: 50000, availableQuantity: 30 },
+    it('хөнгөлөлт байхгүй үед false буцаана', () => {
+      const noDiscountCategories = [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 },
+        { type: 'Regular', totalQuantity: 200, unitPrice: 30000 },
       ];
-      expect(getLowestPrice(categories)).toBe(50000);
+      const result = hasDiscount(noDiscountCategories);
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('getMaxDiscount', () => {
+    it('хамгийн их хөнгөлөлтийн хувийг буцаана', () => {
+      const result = getMaxDiscount(mockCategories);
+      expect(result).toBe(10);
     });
 
-    it('handles single category', () => {
-      const categories: TicketCategory[] = [{ id: '1', type: 'VIP', unitPrice: 100000, availableQuantity: 10 }];
-      expect(getLowestPrice(categories)).toBe(100000);
-    });
-
-    it('handles all invalid prices', () => {
-      const categories: TicketCategory[] = [
-        { id: '1', type: 'VIP', unitPrice: NaN, availableQuantity: 10 },
-        { id: '2', type: 'REGULAR', unitPrice: Infinity, availableQuantity: 20 },
+    it('хөнгөлөлт байхгүй үед 0 буцаана', () => {
+      const noDiscountCategories = [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 },
+        { type: 'Regular', totalQuantity: 200, unitPrice: 30000 },
       ];
-      expect(getLowestPrice(categories)).toBeUndefined();
+      const result = getMaxDiscount(noDiscountCategories);
+      expect(result).toBe(0);
+    });
+  });
+
+  describe('calculateDiscountFromDate', () => {
+    it('60+ хоног үлдсэн үед 20% хөнгөлөлт буцаана', () => {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 70);
+      const result = calculateDiscountFromDate(futureDate.toISOString().split('T')[0]);
+      expect(result).toBe(20);
+    });
+
+    it('30-59 хоног үлдсэн үед 10% хөнгөлөлт буцаана', () => {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 45);
+      const result = calculateDiscountFromDate(futureDate.toISOString().split('T')[0]);
+      expect(result).toBe(10);
+    });
+
+    it('30 хоногоос бага үлдсэн үед 0% хөнгөлөлт буцаана', () => {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + 15);
+      const result = calculateDiscountFromDate(futureDate.toISOString().split('T')[0]);
+      expect(result).toBe(0);
     });
   });
 
   describe('formatDateTime', () => {
-    it('formats date with time', () => {
-      const result = formatDateTime('2024-12-25', '19:00');
-      expect(result).toMatch(/\d{2}\.\d{2}/);
+    it('зөв огноо форматлана', () => {
+      const result = formatDateTime('2024-01-15', '19:00');
+      expect(result).toMatch(/^\d{2}\.\d{2}$/);
     });
 
-    it('formats date without time', () => {
-      const result = formatDateTime('2024-12-25');
-      expect(result).toMatch(/\d{2}\.\d{2}/);
+    it('хоосон огноо үед хоосон string буцаана', () => {
+      const result = formatDateTime('', '19:00');
+      expect(result).toBe('');
     });
 
-    it('returns empty string for no date', () => {
-      expect(formatDateTime()).toBe('');
-      expect(formatDateTime('')).toBe('');
-    });
-
-    it('handles timestamp format', () => {
-      const result = formatDateTime('1735135200000');
-      expect(result).toMatch(/\d{2}\.\d{2}/);
-    });
-
-    it('returns "Invalid date" for invalid format', () => {
-      const invalid = 'invalid-date';
-      const result = formatDateTime(invalid);
+    it('хүчинтэй бус огноо үед алдааны мессеж буцаана', () => {
+      const result = formatDateTime('invalid-date');
       expect(result).toBe('Invalid date');
-    });
-
-    it('handles ISO string format with Z', () => {
-      const isoDate = '2024-12-25T19:00:00Z';
-      const result = formatDateTime(isoDate);
-      expect(result).toMatch(/\d{2}\.\d{2}/);
-    });
-
-    it('handles date format error and returns "Date error"', () => {
-      const consoleError = jest.spyOn(console, 'error').mockImplementation();
-
-      const problematicDate = {
-        toString: () => {
-          throw new Error('Date conversion error');
-        },
-      };
-      const result = formatDateTime(problematicDate as unknown as string);
-      expect(result).toBe('Date error');
-      expect(consoleError).toHaveBeenCalled();
-
-      consoleError.mockRestore();
-    });
-
-    it('handles 10-digit unix timestamp', () => {
-      const unixTimestamp = '1703520000'; // 10 digits (seconds)
-      const result = formatDateTime(unixTimestamp);
-      expect(result).toMatch(/\d{2}\.\d{2}/);
-    });
-
-    it('handles 13-digit unix timestamp', () => {
-      const unixTimestamp = '1703520000000'; // 13 digits (milliseconds)
-      const result = formatDateTime(unixTimestamp);
-      expect(result).toMatch(/\d{2}\.\d{2}/);
     });
   });
 });

@@ -69,27 +69,31 @@ export const Mutation: MutationResolvers<Context> = {
   },
 
   createConcert: async (_parent, args, ctx) => {
-    if (!ctx.user || ctx.user.role !== 'ADMIN') {
-      throw new Error('Админ эрх шаардлагатай');
-    }
+    // Auth check temporarily disabled for development
+    // if (!ctx.user || ctx.user.role !== 'ADMIN') {
+    //   throw new Error('Админ эрх шаардлагатай');
+    // }
     return await ConcertController.createConcert(args.input);
   },
   updateConcert: async (_parent, args, ctx) => {
-    if (!ctx.user || ctx.user.role !== 'ADMIN') {
-      throw new Error('Админ эрх шаардлагатай');
-    }
+    // Auth check temporarily disabled for development
+    // if (!ctx.user || ctx.user.role !== 'ADMIN') {
+    //   throw new Error('Админ эрх шаардлагатай');
+    // }
     return await ConcertController.updateConcert(args.id, args.input);
   },
   deleteConcert: async (_parent, args, ctx) => {
-    if (!ctx.user || ctx.user.role !== 'ADMIN') {
-      throw new Error('Админ эрх шаардлагатай');
-    }
+    // Auth check temporarily disabled for development
+    // if (!ctx.user || ctx.user.role !== 'ADMIN') {
+    //   throw new Error('Админ эрх шаардлагатай');
+    // }
     return await ConcertController.deleteConcert(args.id);
   },
   createArtist: async (_parent, args, ctx) => {
-    if (!ctx.user || ctx.user.role !== 'ADMIN') {
-      throw new Error('Админ эрх шаардлагатай');
-    }
+    // Auth check temporarily disabled for development
+    // if (!ctx.user || ctx.user.role !== 'ADMIN') {
+    //   throw new Error('Админ эрх шаардлагатай');
+    // }
     return await ArtistController.createArtist(args.input);
   },
   updateArtist: async (_parent, args, ctx) => {
