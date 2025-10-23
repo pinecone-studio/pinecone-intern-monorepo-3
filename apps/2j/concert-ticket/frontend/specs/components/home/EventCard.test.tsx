@@ -41,7 +41,7 @@ describe('EventCard', () => {
 
   it('displays lowest price', () => {
     render(<EventCard item={mockEvent} />);
-    expect(screen.getAllByText("50'000$")).toHaveLength(2); // Original price and discounted price
+    expect(screen.getAllByText("50'000₮")).toHaveLength(2); // Original price and discounted price
   });
 
   it('renders with empty ticket categories', () => {
@@ -81,8 +81,8 @@ describe('EventCard', () => {
 
     it('shows discounted price and original price', () => {
       render(<EventCard item={mockEvent} />);
-      expect(screen.getByText("40'000$")).toBeInTheDocument(); // Discounted price (20% off 50,000)
-      expect(screen.getByText("50'000$")).toBeInTheDocument(); // Original price with strikethrough
+      expect(screen.getByText("40'000₮")).toBeInTheDocument(); // Discounted price (20% off 50,000)
+      expect(screen.getByText("50'000₮")).toBeInTheDocument(); // Original price with strikethrough
     });
 
     it('calculates discount from date for future concerts', () => {
@@ -121,5 +121,12 @@ describe('EventCard', () => {
       render(<EventCard item={midEvent} />);
       expect(screen.getByText('10%')).toBeInTheDocument();
     });
+  });
+
+  it('handles non-array ticket categories', () => {
+    const event = { ...mockEvent, ticketCategories: null as unknown as typeof mockEvent.ticketCategories };
+    render(<EventCard item={event} />);
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('-')).toBeInTheDocument();
   });
 });

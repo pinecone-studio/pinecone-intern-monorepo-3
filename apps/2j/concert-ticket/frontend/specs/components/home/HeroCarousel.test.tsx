@@ -44,7 +44,8 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next')).toBeInTheDocument();
   });
 
   it('renders concert data after loading', async () => {
@@ -53,7 +54,10 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    await waitFor(() => expect(screen.getByText('Music of the Spheres')).toBeInTheDocument());
+    await waitFor(() => {
+      expect(screen.getByText('Music of the Spheres')).toBeInTheDocument();
+      expect(screen.getByText('Rock Concert')).toBeInTheDocument();
+    });
   });
 
   it('renders navigation buttons', () => {
@@ -94,7 +98,10 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    await waitFor(() => expect(screen.getByText('Coldplay')).toBeInTheDocument());
+    await waitFor(() => {
+      expect(screen.getByText('Coldplay')).toBeInTheDocument();
+      expect(screen.getByText('Rock Band')).toBeInTheDocument();
+    });
   });
 
   it('renders with custom className', () => {
@@ -116,7 +123,8 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next')).toBeInTheDocument();
   });
 
   it('handles loading state', () => {
@@ -130,8 +138,8 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    // Check if hero placeholder is shown during loading
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next')).toBeInTheDocument();
   });
 
   it('handles error state', () => {
@@ -144,8 +152,8 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    // Check if hero placeholder is shown during error
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next')).toBeInTheDocument();
   });
 
   it('handles auto-play functionality', async () => {
@@ -156,13 +164,11 @@ describe('HeroCarousel', () => {
       </MockedProvider>
     );
     await waitFor(() => screen.getByText('Music of the Spheres'));
-    
-    // Fast-forward time to trigger auto-play
-    jest.advanceTimersByTime(5000);
-    
-    // Auto-play might not work in test environment, just check component renders
+
+    jest.advanceTimersByTime(60000);
+
     expect(screen.getByText('Music of the Spheres')).toBeInTheDocument();
-    
+
     jest.useRealTimers();
   });
 
@@ -173,14 +179,13 @@ describe('HeroCarousel', () => {
       </MockedProvider>
     );
     await waitFor(() => screen.getByText('Music of the Spheres'));
-    
-    // Find carousel container
+
     const carousel = screen.getByText('Music of the Spheres').closest('div');
     if (carousel) {
       fireEvent.mouseEnter(carousel);
       fireEvent.mouseLeave(carousel);
     }
-    
+
     expect(screen.getByText('Music of the Spheres')).toBeInTheDocument();
   });
 
@@ -190,7 +195,10 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    await waitFor(() => expect(screen.getByText('12.26')).toBeInTheDocument());
+    await waitFor(() => {
+      expect(screen.getByText('12.26')).toBeInTheDocument();
+      expect(screen.getByText('12.25')).toBeInTheDocument();
+    });
   });
 
   it('displays venue information', async () => {
@@ -214,8 +222,9 @@ describe('HeroCarousel', () => {
                 name: 'Single Concert',
                 date: '2024-12-25',
                 venue: 'Single Venue',
-                artist: { name: 'Single Artist' },
-                imageUrl: 'test.jpg',
+                mainArtist: { name: 'Single Artist', id: 'sa1' },
+                image: 'test.jpg',
+                ticketCategories: [],
               },
             ],
           },
@@ -227,8 +236,8 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    // Check if hero placeholder is shown for single concert
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next')).toBeInTheDocument();
   });
 
   it('handles empty concerts array', () => {
@@ -247,8 +256,8 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    // Check if hero placeholder is shown for empty concerts
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next')).toBeInTheDocument();
   });
 
   it('handles invalid date format', () => {
@@ -263,8 +272,9 @@ describe('HeroCarousel', () => {
                 name: 'Test Concert',
                 date: 'invalid-date',
                 venue: 'Test Venue',
-                artist: { name: 'Test Artist' },
-                imageUrl: 'test.jpg',
+                mainArtist: { name: 'Test Artist', id: 'ta1' },
+                image: 'test.jpg',
+                ticketCategories: [],
               },
             ],
           },
@@ -276,8 +286,8 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    // Check if component renders with invalid date
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    expect(screen.getByLabelText('Previous')).toBeInTheDocument();
+    expect(screen.getByLabelText('Next')).toBeInTheDocument();
   });
 
   it('handles navigation with empty items', () => {
@@ -296,7 +306,265 @@ describe('HeroCarousel', () => {
         <HeroCarousel />
       </MockedProvider>
     );
-    // Check if component handles empty items gracefully
-    expect(screen.getByAltText('Hero')).toBeInTheDocument();
+    const prevButton = screen.getByLabelText('Previous');
+    const nextButton = screen.getByLabelText('Next');
+    expect(prevButton).toBeInTheDocument();
+    expect(nextButton).toBeInTheDocument();
+
+    fireEvent.click(prevButton);
+    fireEvent.click(nextButton);
+    expect(prevButton).toBeInTheDocument();
+  });
+
+  it('finds concert with "music of the spheres" in name', async () => {
+    render(
+      <MockedProvider mocks={[mockData]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Music of the Spheres')).toBeInTheDocument());
+  });
+
+  it('handles concert without matching keyword', async () => {
+    const noMatchMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Different Concert',
+                date: '2024-12-25',
+                time: '19:00',
+                venue: 'Stadium',
+                image: '/concert.jpg',
+                mainArtist: { name: 'Artist', id: 'a1' },
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[noMatchMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Different Concert')).toBeInTheDocument());
+  });
+
+  it('handles concert with missing image', async () => {
+    const noImageMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Concert Name',
+                date: '2024-12-25',
+                time: '19:00',
+                venue: 'Venue',
+                image: null,
+                mainArtist: { name: 'Artist', id: 'a1' },
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[noImageMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => {
+      const img = screen.getByAltText('Concert Name');
+      expect(img).toHaveAttribute('src', '/images/hero-placeholder.png');
+    });
+  });
+
+  it('handles concert with missing artist name', async () => {
+    const noArtistMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Concert Name',
+                date: '2024-12-25',
+                time: '19:00',
+                venue: 'Venue',
+                image: '/img.jpg',
+                mainArtist: null,
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[noArtistMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Concert Name')).toBeInTheDocument());
+  });
+
+  it('handles concert with missing name', async () => {
+    const noNameMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: null,
+                date: '2024-12-25',
+                time: '19:00',
+                venue: 'Venue',
+                image: '/img.jpg',
+                mainArtist: { name: 'Artist', id: 'a1' },
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[noNameMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('MUSIC of the SPHERES')).toBeInTheDocument());
+  });
+
+  it('handles concert with missing date', async () => {
+    const noDateMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Test Concert',
+                date: null,
+                time: '19:00',
+                venue: 'Venue',
+                image: '/img.jpg',
+                mainArtist: { name: 'Artist', id: 'a1' },
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[noDateMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Test Concert')).toBeInTheDocument());
+  });
+
+  it('handles concert with invalid date string', async () => {
+    const invalidDateMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Test Concert',
+                date: 'not-a-date',
+                time: '19:00',
+                venue: 'Venue',
+                image: '/img.jpg',
+                mainArtist: { name: 'Artist', id: 'a1' },
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[invalidDateMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Test Concert')).toBeInTheDocument());
+  });
+
+  it('handles concert with numeric date string', async () => {
+    const numericDateMock = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Test Concert',
+                date: '1703520000000',
+                time: '19:00',
+                venue: 'Venue',
+                image: '/img.jpg',
+                mainArtist: { name: 'Artist', id: 'a1' },
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[numericDateMock]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Test Concert')).toBeInTheDocument());
+  });
+
+  it('formats date with time parameter', async () => {
+    const mockWithTime = {
+      request: { query: HomeEventsDocument, variables: { limit: 20, offset: 0 } },
+      result: {
+        data: {
+          concerts: {
+            concerts: [
+              {
+                id: '1',
+                name: 'Test Concert',
+                date: '2024-12-25',
+                time: '19:30',
+                venue: 'Venue',
+                image: '/img.jpg',
+                mainArtist: { name: 'Artist', id: 'a1' },
+                ticketCategories: [],
+              },
+            ],
+          },
+        },
+      },
+    };
+    render(
+      <MockedProvider mocks={[mockWithTime]}>
+        <HeroCarousel />
+      </MockedProvider>
+    );
+    await waitFor(() => expect(screen.getByText('Test Concert')).toBeInTheDocument());
   });
 });

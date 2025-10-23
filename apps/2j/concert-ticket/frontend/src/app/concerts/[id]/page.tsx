@@ -129,7 +129,6 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
     }
   }, []);
 
-
   // Concert-ийн боломжит огноонуудыг үүсгэх (зөвхөн тухайн тоглолтын огноо)
   const availableDates = React.useMemo(() => {
     try {
@@ -149,12 +148,15 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
   return (
     <div className="min-h-screen bg-black text-white">
       <Navbar />
-      <HeroSlider
-        title={concert.name ?? ''}
-        artist={concert.mainArtist?.name ?? ''}
-        dates={[formatDateToMMDD(concert.date ?? '')]}
-        backgroundImage={concert.image ?? '/images/hero-bg.jpg'}
-      />
+      <div className="mx-auto max-w-[1200px] px-[16px]">
+        <HeroSlider
+          className="mt-[16px]"
+          title={concert.name ?? ''}
+          artist={concert.mainArtist?.name ?? ''}
+          dates={[formatDateToMMDD(concert.date ?? '')]}
+          backgroundImage={concert.image ?? '/images/hero-bg.jpg'}
+        />
+      </div>
       <ConcertDetails
         eventDate={formatDateToMMDD(concert.date ?? '')}
         eventTime={concert.time}
@@ -175,24 +177,48 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
 
 const LoadingState = ({ _concertId }: { _concertId: string }) => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-black text-white">
       <Navbar />
-      <div className="flex items-center justify-center flex-1 py-20">
-        <div className="text-white">Ачааллаж байна...</div>
+
+      {/* Hero Skeleton */}
+      <div className="mx-auto max-w-[1200px] px-[16px]">
+        <div className="h-[300px] animate-pulse rounded-[12px] bg-[#111111] mt-[16px]" />
       </div>
-      <Footer />
+
+      {/* Concert Details Skeleton */}
+      <div className="mx-auto max-w-[1200px] px-[16px] py-[32px]">
+        <div className="space-y-[24px]">
+          <div className="h-[120px] animate-pulse rounded-[12px] bg-[#111111]" />
+          <div className="h-[200px] animate-pulse rounded-[12px] bg-[#111111]" />
+          <div className="h-[160px] animate-pulse rounded-[12px] bg-[#111111]" />
+        </div>
+      </div>
+
+      {/* Related Concerts Skeleton */}
+      <div className="py-16 bg-black">
+        <div className="max-w-6xl px-6 mx-auto">
+          <div className="h-[32px] w-[300px] mb-8 animate-pulse rounded-[8px] bg-[#111111]" />
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-[320px] animate-pulse rounded-[12px] bg-[#111111]" />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Footer className="mt-auto" />
     </div>
   );
 };
 
 const ErrorState = ({ _concertId }: { _concertId: string }) => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen bg-black text-white">
       <Navbar />
       <div className="flex items-center justify-center flex-1 py-20">
         <div className="text-red-400">Тоглолтын мэдээлэл олдсонгүй</div>
       </div>
-      <Footer />
+      <Footer className="mt-auto" />
     </div>
   );
 };

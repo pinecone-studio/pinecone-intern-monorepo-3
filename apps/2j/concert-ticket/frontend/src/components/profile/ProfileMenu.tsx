@@ -12,7 +12,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { id: 'profile', label: 'Хэрэглэгчийн мэдээлэл', path: '/profile' },
   { id: 'orders', label: 'Захиалгын түүх', path: '/orders' },
-  { id: 'change-password', label: 'Нууц үг солих', path: '/change-password' }
+  { id: 'change-password', label: 'Нууц үг солих', path: '/change-password' },
 ];
 
 const ProfileMenu: React.FC = () => {
@@ -28,16 +28,12 @@ const ProfileMenu: React.FC = () => {
       <nav className="space-y-[8px]">
         {menuItems.map((item) => {
           const isActive = pathname === item.path;
-          
+
           return (
             <button
               key={item.id}
               onClick={() => handleMenuClick(item.path)}
-              className={`w-full rounded-[8px] px-[16px] py-[12px] text-left text-[14px] transition-colors ${
-                isActive
-                  ? 'bg-gray-700 text-white'
-                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-              }`}
+              className={`w-full rounded-[8px] px-[16px] py-[12px] text-left text-[14px] font-medium text-white transition-colors ${isActive ? 'bg-[#2a2a2a]' : 'bg-[#1a1a1a] hover:bg-[#2a2a2a]'}`}
             >
               {item.label}
             </button>

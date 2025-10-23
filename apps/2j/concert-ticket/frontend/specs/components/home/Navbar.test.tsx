@@ -14,13 +14,12 @@ jest.mock('../../../src/generated', () => ({
   useMyProfileQuery: jest.fn(),
 }));
 
-// Apollo Client mock
 jest.mock('@/generated', () => ({
   useMyProfileQuery: jest.fn(() => ({
     data: { myProfile: null },
     loading: false,
-    error: null
-  }))
+    error: null,
+  })),
 }));
 
 const mockPush = jest.fn();
@@ -39,6 +38,13 @@ describe('Navbar', () => {
   it('renders logo', () => {
     render(<Navbar />);
     expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+  });
+
+  it('navigates to home when clicking logo', () => {
+    render(<Navbar />);
+    const logoButton = screen.getByText('TICKET BOOKING');
+    fireEvent.click(logoButton);
+    expect(mockPush).toHaveBeenCalledWith('/');
   });
 
   it('renders search input', () => {
@@ -93,7 +99,6 @@ describe('Navbar', () => {
       push: mockPush,
     });
 
-    // Mock logged in state
     jest.mocked(useMyProfileQuery).mockReturnValue({
       data: {
         myProfile: {
@@ -105,15 +110,14 @@ describe('Navbar', () => {
     } as ReturnType<typeof useMyProfileQuery>);
 
     render(<Navbar />);
-    
+
     const profileButton = screen.getByText('test@example.com');
     fireEvent.click(profileButton);
-    
+
     expect(mockPush).toHaveBeenCalledWith('/profile');
   });
 
   it('should show default email when profile data is not available', () => {
-    // Mock logged in state with no profile data
     jest.mocked(useMyProfileQuery).mockReturnValue({
       data: {
         myProfile: null,
@@ -123,9 +127,32 @@ describe('Navbar', () => {
     } as ReturnType<typeof useMyProfileQuery>);
 
     render(<Navbar />);
-    
-    // Check if login/register buttons are shown when not logged in
+
     expect(screen.getByText('Бүртгүүлэх')).toBeInTheDocument();
     expect(screen.getByText('Нэвтрэх')).toBeInTheDocument();
+  });
+
+  it('should show fallback email when logged in but email is missing', () => {
+    jest.mocked(useMyProfileQuery).mockReturnValue({
+      data: {
+        myProfile: {
+          email: null,
+        },
+      },
+      loading: false,
+      error: null,
+    } as ReturnType<typeof useMyProfileQuery>);
+
+    render(<Navbar />);
+
+    expect(screen.getByText('name@ticketbooking.com')).toBeInTheDocument();
+  });
+
+  it('handles non-Enter key press in search input', () => {
+    render(<Navbar />);
+    const input = screen.getByPlaceholderText('Хайх...');
+    fireEvent.change(input, { target: { value: 'test' } });
+    fireEvent.keyDown(input, { key: 'a' }); // Press 'a' key instead of Enter
+    expect(mockPush).not.toHaveBeenCalledWith('/search?q=test');
   });
 });

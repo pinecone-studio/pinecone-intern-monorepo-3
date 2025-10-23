@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@200;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -95,10 +96,12 @@
     @apply border-border;
     font-family: 'Gabarito', 'Inter', sans-serif;
   }
+  html,
   body {
     @apply bg-background text-foreground;
     font-feature-settings: 'rlig' 1, 'calt' 1;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
 
     .error {
       color: red;

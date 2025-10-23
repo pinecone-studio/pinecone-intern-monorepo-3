@@ -23,7 +23,7 @@ const EventCard: React.FC<Props> = ({ item }) => {
 
   const formatPrice = (price: number | undefined): string => {
     if (price == null || !isFinite(price)) return '-';
-    return `${Math.floor(price).toLocaleString('en-US').replace(/,/g, "'")}$`;
+    return `${Math.floor(price).toLocaleString('en-US').replace(/,/g, "'")}₮`;
   };
 
   return (
@@ -64,7 +64,7 @@ const EventCard: React.FC<Props> = ({ item }) => {
               <span>{formatPrice(lowestPrice)}</span>
             )}
           </div>
-          <div className="mt-[8px] flex items-center justify-between text-[12px] text-gray-400">
+          <div className="mt-4 flex items-center justify-between text-sm font-light text-gray-300">
             <div className="flex items-center gap-[4px]">
               <Calendar size={14} />
               <span>{formatDateTime(item.date, item.time)}</span>
