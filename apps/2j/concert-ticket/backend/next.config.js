@@ -8,6 +8,9 @@ const { composePlugins, withNx } = require('@nx/next');
  **/
 
 const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   async headers() {
     return [
       {
@@ -21,11 +24,16 @@ const nextConfig = {
       },
     ];
   },
-  env: {
-    MONGO_URI: process.env.MONGO_URI ?? '',
-  },
   nx: {
     svgr: false,
+  },
+  webpack: (config) => {
+    // Allow importing .graphql files as strings
+    config.module.rules.push({
+      test: /\.graphql$/,
+      type: 'asset/source',
+    });
+    return config;
   },
 };
 

@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import { User, IUser } from '../models/model.user';
 import { RegisterInput, LoginInput, ResetPasswordInput } from '../generated/types';
+import { PasswordResetService } from '../services/password-reset.service';
 
 export class AuthController {
   // JWT token үүсгэх
@@ -8,11 +10,11 @@ export class AuthController {
     const payload = {
       id: user._id,
       email: user.email,
-      role: user.role
+      role: user.role,
     };
 
     return jwt.sign(payload, process.env.JWT_SECRET || 'fallback-secret', {
-      expiresIn: '7d'
+      expiresIn: '7d',
     });
   }
 
@@ -30,7 +32,7 @@ export class AuthController {
         email: input.email.toLowerCase(),
         username: input.username,
         phoneNumber: input.phoneNumber,
-        role: 'USER'
+        role: 'USER',
       });
 
       // Password-г тохируулах (model-д hash хийгдэнэ)
@@ -41,7 +43,7 @@ export class AuthController {
 
       return {
         token,
-        user: savedUser
+        user: savedUser,
       };
     } catch (error) {
       throw new Error(`Бүртгэл үүсгэхэд алдаа гарлаа: ${error}`);
@@ -67,7 +69,7 @@ export class AuthController {
 
       return {
         token,
-        user
+        user,
       };
     } catch (error) {
       throw new Error(`Нэвтрэхэд алдаа гарлаа: ${error}`);
@@ -85,7 +87,7 @@ export class AuthController {
 
       // Энд нууц үг сэргээх email илгээх логик байх ёстой
       // Жишээ: email service ашиглан reset token илгээх
-      
+
       // Одоогоор зөвхөн success message буцаах
       return 'Хэрэв энэ email-ээр бүртгэлтэй бол нууц үг сэргээх холбоос илгээгдлээ';
     } catch (error) {
@@ -96,29 +98,31 @@ export class AuthController {
   // Нууц үг сэргээх
   static async resetPassword(input: ResetPasswordInput) {
     try {
-      // Token-г шалгах (энэ жишээнд JWT ашиглаж байна)
-      let decoded: Record<string, unknown>;
-      try {
-        decoded = jwt.verify(input.token, process.env.JWT_SECRET || 'fallback-secret');
-      } catch (error) {
-        throw new Error('Буруу эсвэл хугацаа дууссан token');
+      // Reset code-г шалгах
+      const isValidCode = await PasswordResetService.verifyResetCode(input.email, input.code);
+      if (!isValidCode) {
+        throw new Error('Буруу эсвэл хугацаа дууссан код');
       }
 
       // Хэрэглэгчийг олох
-      const user = await User.findById(decoded.id);
+      const user = await User.findOne({ email: input.email });
       if (!user) {
         throw new Error('Хэрэглэгч олдсонгүй');
       }
 
-      // Шинэ нууц үг тохируулах
-      user.password = input.newPassword;
+      // Шинэ нууц үг hash хийж тохируулах
+      const saltRounds = 10;
+      user.password = await bcrypt.hash(input.newPassword, saltRounds);
       await user.save();
+
+      // Reset code-г арилгах
+      await PasswordResetService.setNewPassword(input.email, input.code, input.newPassword);
 
       const token = this.generateToken(user);
 
       return {
         token,
-        user
+        user,
       };
     } catch (error) {
       throw new Error(`Нууц үг сэргээхэд алдаа гарлаа: ${error}`);
@@ -129,7 +133,7 @@ export class AuthController {
   static async verifyToken(token: string) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as Record<string, unknown>;
-      
+
       const user = await User.findById(decoded.id).select('-password');
       if (!user) {
         throw new Error('Хэрэглэгч олдсонгүй');
@@ -163,7 +167,7 @@ export class AuthController {
   static async getUserFromToken(token: string) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as Record<string, unknown>;
-      
+
       const user = await User.findById(decoded.id).select('-password');
       if (!user) {
         throw new Error('Хэрэглэгч олдсонгүй');

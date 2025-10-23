@@ -85,15 +85,27 @@ type Booking {
   id: ID!
   user: User!
   concert: Concert!
-  ticketCategory: TicketCategory!
-  quantity: Int!
-  unitPrice: Float!
-  totalPrice: Float!
+  ticketCategory: TicketCategory
+  quantity: Int
+  unitPrice: Float
+  totalPrice: Float
   bookingDate: String!
   status: BookingStatus!
   paymentStatus: PaymentStatus!
   canCancel: Boolean!
   cancellationDeadline: String!
+  orderNumber: String
+  date: String
+  tickets: [TicketItem]
+  totalAmount: Float
+}
+
+type TicketItem {
+  id: String
+  type: String
+  quantity: Int
+  unitPrice: Float
+  totalPrice: Float
 }
 
 type AuthPayload {
@@ -120,7 +132,8 @@ input LoginInput {
 }
 
 input ResetPasswordInput {
-  token: String!
+  email: String!
+  code: String!
   newPassword: String!
 }
 
@@ -205,14 +218,19 @@ type Query {
 type Mutation {
   register(input: RegisterInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
-  forgotPassword(email: String!): String!
-  resetPassword(input: ResetPasswordInput!): AuthPayload!
-  changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
   logout: Boolean!
 
-  createConcert(input: CreateConcertInput!): Concert!
-  updateConcert(id: ID!, input: UpdateConcertInput!): Concert!
-  deleteConcert(id: ID!): Boolean!
+  # Password reset functionality
+  forgotPassword(email: String!): Boolean!
+  verifyResetCode(email: String!, code: String!): Boolean!
+  resetPassword(email: String!, code: String!, newPassword: String!): Boolean!
+
+  # Change password for authenticated users
+  changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
+
+  createConcert(input: CreateConcertInput!): Concert! @auth(requires: ADMIN)
+  updateConcert(id: ID!, input: UpdateConcertInput!): Concert! @auth(requires: ADMIN)
+  deleteConcert(id: ID!): Boolean! @auth(requires: ADMIN)
 
   createArtist(input: ArtistInput!): Artist!
   updateArtist(id: ID!, input: ArtistInput!): Artist! @auth(requires: ADMIN)

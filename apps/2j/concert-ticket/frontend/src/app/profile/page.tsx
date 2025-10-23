@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Check, X } from 'lucide-react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
@@ -16,6 +17,7 @@ const useCustomerData = () => {
     data: profileData,
     loading: profileLoading,
     error: profileError,
+    refetch: refetchProfile,
   } = useMyProfileQuery({
     errorPolicy: 'all',
   });
@@ -37,11 +39,13 @@ const useCustomerData = () => {
     }));
   };
 
-  return { customerData, handleCustomerChange, profileLoading, profileError };
+  return { customerData, handleCustomerChange, profileLoading, profileError, refetchProfile };
 };
 
-const useProfileSave = () => {
+const useProfileSave = (refetchProfile: () => void) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  const [showErrorToast, setShowErrorToast] = useState(false);
   const [updateUserProfile, { loading: updateLoading }] = useUpdateUserProfileMutation();
 
   const handleSaveCustomer = async (customerData: { phone: string; email: string }) => {
@@ -55,16 +59,33 @@ const useProfileSave = () => {
           },
         },
       });
-      alert('Мэдээлэл амжилттай хадгалагдлаа!');
+      
+      // Success toast харуулах
+      setShowSuccessToast(true);
+      setTimeout(() => setShowSuccessToast(false), 3000);
+      
+      // Profile data дахин ачаалах
+      refetchProfile();
     } catch (error) {
       console.error('Profile update error:', error);
-      alert('Мэдээлэл хадгалахад алдаа гарлаа.');
+      
+      // Error toast харуулах
+      setShowErrorToast(true);
+      setTimeout(() => setShowErrorToast(false), 3000);
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { handleSaveCustomer, isLoading, updateLoading };
+  return { 
+    handleSaveCustomer, 
+    isLoading, 
+    updateLoading, 
+    showSuccessToast, 
+    showErrorToast,
+    setShowSuccessToast,
+    setShowErrorToast
+  };
 };
 
 const ProfileForm = ({
@@ -121,8 +142,16 @@ const ProfileForm = ({
 );
 
 const ProfilePage: React.FC = () => {
-  const { customerData, handleCustomerChange, profileLoading, profileError } = useCustomerData();
-  const { handleSaveCustomer, isLoading, updateLoading } = useProfileSave();
+  const { customerData, handleCustomerChange, profileLoading, profileError, refetchProfile } = useCustomerData();
+  const { 
+    handleSaveCustomer, 
+    isLoading, 
+    updateLoading, 
+    showSuccessToast, 
+    showErrorToast,
+    setShowSuccessToast,
+    setShowErrorToast
+  } = useProfileSave(refetchProfile);
 
   // Loading state
   if (profileLoading) {
@@ -188,6 +217,34 @@ const ProfilePage: React.FC = () => {
       </main>
 
       <Footer />
+
+      {/* Success Toast */}
+      {showSuccessToast && (
+        <div className="fixed top-[20px] right-[20px] z-50 bg-green-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
+          <Check size={16} />
+          <span className="text-[14px] font-medium">Мэдээлэл амжилттай хадгалагдлаа!</span>
+          <button 
+            onClick={() => setShowSuccessToast(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* Error Toast */}
+      {showErrorToast && (
+        <div className="fixed top-[20px] right-[20px] z-50 bg-red-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
+          <X size={16} />
+          <span className="text-[14px] font-medium">Мэдээлэл хадгалахад алдаа гарлаа</span>
+          <button 
+            onClick={() => setShowErrorToast(false)}
+            className="text-white hover:text-gray-200 transition-colors"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

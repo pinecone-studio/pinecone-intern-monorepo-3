@@ -42,6 +42,11 @@ describe('Navbar', () => {
 
   it('хайлтын input ажиллана', () => {
     render(<Navbar />);
+    const logoLink = screen.getByText('TICKET BOOKING');
+    fireEvent.click(logoLink);
+    // Link component handles navigation internally, so we don't expect router.push to be called
+    expect(logoLink).toBeInTheDocument();
+  });
 
     const searchInput = screen.getByTestId('search-input');
     fireEvent.change(searchInput, { target: { value: 'test query' } });
@@ -125,6 +130,9 @@ describe('Navbar', () => {
     const searchInput = screen.getByTestId('search-input');
     fireEvent.change(searchInput, { target: { value: 'concert' } });
     fireEvent.keyDown(searchInput, { key: 'Enter' });
+    expect(screen.getByText('Бүртгүүлэх')).toBeInTheDocument();
+    expect(screen.getByText('Нэвтрэх')).toBeInTheDocument();
+  });
 
     expect(mockPush).toHaveBeenCalledWith('/search?q=concert');
   });

@@ -13,41 +13,44 @@ export interface IUser extends Document {
   comparePassword(_candidatePassword: string): Promise<boolean>;
 }
 
-const UserSchema = new Schema<IUser>({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true
+const UserSchema = new Schema<IUser>(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    username: {
+      type: String,
+      trim: true,
+    },
+    phoneNumber: {
+      type: String,
+      trim: true,
+    },
+    address: {
+      type: String,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ['USER', 'ADMIN'],
+      default: 'USER',
+    },
   },
-  username: {
-    type: String,
-    trim: true
-  },
-  phoneNumber: {
-    type: String,
-    trim: true
-  },
-  address: {
-    type: String,
-    trim: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    enum: ['USER', 'ADMIN'],
-    default: 'USER'
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-});
+);
 
 // Password hash хийх middleware - зөвхөн password өөрчлөгдсөн үед hash хийх
-UserSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
   try {
@@ -60,7 +63,7 @@ UserSchema.pre('save', async function(next) {
 });
 
 // Password шалгах method
-UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   const stored: string = this.password;
   // Хэрэв хадгалсан нууц үг bcrypt hash биш бол plaintext fallback-р шалгах
   const looksHashed = typeof stored === 'string' && stored.startsWith('$2');

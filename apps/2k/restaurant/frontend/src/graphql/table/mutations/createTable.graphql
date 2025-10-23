@@ -1,0 +1,7 @@
+mutation CreateTable($input: CreateTableInput!) {
+  createTable(input: $input) {
+    tableId
+    tableName
+    tableQr
+  }
+}

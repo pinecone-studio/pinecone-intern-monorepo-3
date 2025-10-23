@@ -1,0 +1,10 @@
+{
+  "projectId": "prj_9eUhL8sdemAQFpbJxGtpLqcUNwrc",
+  "orgId": "team_nVo1cbYh5y7GJROXJ8mntFd5",
+  "settings": {
+    "framework": "nextjs",
+    "installCommand": "bun install",
+    "buildCommand": "nx build --skip-nx-cache concert-ticket-backend",
+    "outputDirectory": "/dist/apps/2j/concert-ticket/backend/.next"
+  }
+}

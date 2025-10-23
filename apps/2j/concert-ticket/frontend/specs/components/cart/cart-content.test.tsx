@@ -337,6 +337,7 @@ describe('CartContent', () => {
   });
 
   it('handles buy button click with valid selection', async () => {
+    // Mock window.location.href
     delete (window as unknown as { location: unknown }).location;
     window.location = { href: '' } as unknown as Location;
 

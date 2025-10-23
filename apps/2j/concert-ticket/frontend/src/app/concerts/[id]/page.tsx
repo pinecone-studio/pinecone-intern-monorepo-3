@@ -230,6 +230,7 @@ const ConcertDetailPage = () => {
   const { data, loading, error } = useGetConcertQuery({
     variables: { id: concertId },
     skip: !concertId,
+    errorPolicy: 'all',
   });
 
   if (loading) {

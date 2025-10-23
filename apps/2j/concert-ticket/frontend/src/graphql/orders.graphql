@@ -1,6 +1,8 @@
 query MyBookings {
   myBookings {
     id
+    orderNumber
+    date
     quantity
     unitPrice
     totalPrice
@@ -9,6 +11,14 @@ query MyBookings {
     paymentStatus
     canCancel
     cancellationDeadline
+    tickets {
+      id
+      type
+      quantity
+      unitPrice
+      totalPrice
+    }
+    totalAmount
     concert {
       id
       name

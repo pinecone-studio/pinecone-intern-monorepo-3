@@ -4,7 +4,6 @@ import { Food } from '../../../models/food.model';
 import mongoose from 'mongoose';
 
 export const AddFoodToCategory = async (_: unknown, { categoryId, foodId }: { categoryId: string; foodId: string }) => {
-
   const session = await mongoose.startSession();
   session.startTransaction();
 

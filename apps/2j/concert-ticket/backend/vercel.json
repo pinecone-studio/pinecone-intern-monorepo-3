@@ -1,6 +1,0 @@
-{
-  "buildCommand": "bun run vercel-build",
-  "outputDirectory": "dist/apps/2j/concert-ticket/backend",
-  "installCommand": "npm install --legacy-peer-deps",
-  "framework": null
-}
