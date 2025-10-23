@@ -93,7 +93,55 @@ export class BookingController {
         .populate('ticketCategory')
         .sort({ bookingDate: -1 });
 
-      return bookings;
+      // Нэг захиалгаар олон төрлийн билет захиалсан тохиолдолд нэгтгэх
+      const groupedBookings = bookings.reduce((acc: any, booking: any) => {
+        // bookingDate null check
+        const bookingDate = booking.bookingDate || new Date();
+        const key = `${booking.concert._id}_${bookingDate.toISOString().split('T')[0]}`;
+        
+        if (!acc[key]) {
+          acc[key] = {
+            id: booking._id.toString(),
+            orderNumber: `#${booking._id.toString().slice(-4).toUpperCase()}`,
+            date: bookingDate.toISOString(),
+            concert: booking.concert,
+            tickets: [],
+            totalAmount: 0,
+            status: booking.status,
+            paymentStatus: booking.paymentStatus,
+            canCancel: booking.canCancel,
+            cancellationDeadline: booking.cancellationDeadline
+          };
+        }
+        
+        // Ижил төрлийн билет байвал тоог нэмэх, үгүй бол шинэ нэмэх
+        const existingTicketIndex = acc[key].tickets.findIndex((ticket: any) => 
+          ticket.type === (booking.ticketCategory?.type || 'UNKNOWN') && 
+          ticket.unitPrice === (booking.unitPrice || 0)
+        );
+        
+        if (existingTicketIndex >= 0) {
+          // Ижил төрлийн билет байвал тоог нэмэх
+          acc[key].tickets[existingTicketIndex].quantity += (booking.quantity || 0);
+          acc[key].tickets[existingTicketIndex].totalPrice += (booking.totalPrice || 0);
+        } else {
+          // Шинэ төрлийн билет нэмэх
+          acc[key].tickets.push({
+            id: booking._id.toString(),
+            type: booking.ticketCategory?.type || 'UNKNOWN',
+            quantity: booking.quantity || 0,
+            unitPrice: booking.unitPrice || 0,
+            totalPrice: booking.totalPrice || 0
+          });
+        }
+        
+        acc[key].totalAmount += (booking.totalPrice || 0);
+        
+        return acc;
+      }, {});
+
+      // Object-г array болгох
+      return Object.values(groupedBookings);
     } catch (error) {
       throw new Error(`Хэрэглэгчийн захиалгуудыг олоход алдаа гарлаа: ${error}`);
     }
