@@ -38,12 +38,14 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "concert-ticket-backend:build",
-        "dev": true
+        "dev": true,
+        "port": 4000
       },
       "configurations": {
         "development": {
           "buildTarget": "concert-ticket-backend:build:development",
-          "dev": true
+          "dev": true,
+          "port": 4000
         },
         "production": {
           "buildTarget": "concert-ticket-backend:build:production",

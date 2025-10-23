@@ -5,7 +5,7 @@ import { ApolloNextAppProvider, ApolloClient, InMemoryCache } from '@apollo/expe
 import { PropsWithChildren } from 'react';
 import { setContext } from '@apollo/client/link/context';
 
-const uri = process.env.NEXT_PUBLIC_BACKEND_URI ?? 'http://localhost:4000/graphql';
+const uri = process.env.NEXT_PUBLIC_BACKEND_URI ?? 'http://localhost:4000/api/graphql';
 
 // Add logging for GraphQL endpoint
 if (process.env.NODE_ENV === 'development') {

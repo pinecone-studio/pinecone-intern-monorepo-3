@@ -2,7 +2,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 // CI / тест орчинд backend сервер асахгүй байж болох тул
 // HTTP биш, локал файлын схем ашиглая. Харин dev орчинд HTTP ашиглана.
-const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test';
+const isCI = process.env.CI === 'true' || process.env.NODE_ENV === 'test' || process.env.NX_TASK_TARGET_PROJECT;
 
 const schema: CodegenConfig['schema'] = isCI
   ? [
