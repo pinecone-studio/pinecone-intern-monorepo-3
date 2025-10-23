@@ -1,0 +1,7 @@
+query GetTables {
+  getTables {
+    tableId
+    tableName
+    tableQr
+  }
+}

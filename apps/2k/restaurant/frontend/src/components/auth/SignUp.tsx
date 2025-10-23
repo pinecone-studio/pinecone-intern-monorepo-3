@@ -44,18 +44,14 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen w-screen gap-[24px] bg-gray-50">
-      {/* Logo */}
       <Image src="/mainLogo.png" alt="Logo" width={108} height={104} />
 
-      {/* SignUp container */}
       <div className="flex flex-col w-[327px] items-center gap-[24px]">
         <h1 className="text-[24px] font-semibold text-[#441500]">Бүртгүүлэх</h1>
 
-        {/* Form */}
         <div className="flex flex-col gap-2 w-full">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-[8px]">
-              {/* Username */}
               <FormField
                 control={form.control}
                 name="username"
@@ -73,7 +69,6 @@ const SignUp: React.FC = () => {
                 )}
               />
 
-              {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
@@ -92,7 +87,6 @@ const SignUp: React.FC = () => {
                 )}
               />
 
-              {/* Password */}
               <FormField
                 control={form.control}
                 name="password"
@@ -111,7 +105,6 @@ const SignUp: React.FC = () => {
                 )}
               />
 
-              {/* Confirm Password */}
               <FormField
                 control={form.control}
                 name="confirmPassword"
@@ -130,14 +123,12 @@ const SignUp: React.FC = () => {
                 )}
               />
 
-              {/* Sign Up Button */}
               <Button type="submit" disabled={loading} className="w-full bg-[#441500] text-white text-[14px] hover:bg-[#441500]/90">
                 {loading ? 'Түр хүлээнэ үү...' : 'Бүртгүүлэх'}
               </Button>
             </form>
           </Form>
 
-          {/* Already have account */}
           <Button type="button" onClick={() => router.push('/sign-in')} className="text-black text-[14px] bg-transparent hover:bg-gray-100 hover:text-black">
             Аль хэдийн бүртгэлтэй юу? Нэвтрэх
           </Button>

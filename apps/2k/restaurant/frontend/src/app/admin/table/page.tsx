@@ -1,5 +1,7 @@
- const AdminTableStyle: React.FC = () => {
-    return "hi table";
-}
+import { TableGrid } from '@/components/admin/table/TableGrid';
+
+const AdminTableStyle: React.FC = () => {
+  return <TableGrid />;
+};
 
 export default AdminTableStyle;
