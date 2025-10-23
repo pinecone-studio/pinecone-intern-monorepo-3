@@ -3,8 +3,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Navbar from '../../../src/components/home/Navbar';
 import { useRouter, usePathname } from 'next/navigation';
-import { useMyProfileQuery, MyProfileQuery } from '../../../src/generated';
-import { ApolloQueryResult } from '@apollo/client';
+import { useMyProfileQuery } from '../../../src/generated';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
