@@ -39,6 +39,16 @@ const CREATE_BOOKING = gql`
   }
 `;
 
+const UPDATE_BOOKING_PAYMENT_STATUS = gql`
+  mutation UpdateBookingPaymentStatus($id: ID!, $paymentStatus: PaymentStatus!) {
+    updateBookingPaymentStatus(id: $id, paymentStatus: $paymentStatus) {
+      id
+      status
+      paymentStatus
+    }
+  }
+`;
+
 interface PaymentPageProps {
   _concertId: string;
   _ticketData: string;
@@ -301,10 +311,46 @@ function PaymentContent({ _concertId, _ticketData, totalAmount }: PaymentPagePro
 
 function PaymentPageContent() {
   const searchParams = useSearchParams();
-  const concertId = searchParams.get('concertId');
-  const ticketData = searchParams.get('ticketData');
+  const [paymentData, setPaymentData] = React.useState<{
+    orderId: string;
+    orderNumber: string;
+    concert: string;
+    artist: string;
+    concertDate: string;
+    tickets: Array<{
+      id: string;
+      type: string;
+      quantity: number;
+      unitPrice: number;
+      totalPrice: number;
+    }>;
+    totalAmount: number;
+    status: string;
+    paymentStatus: string;
+  } | null>(null);
+
+  React.useEffect(() => {
+    // localStorage-аас payment data унших
+    const storedPaymentData = localStorage.getItem('paymentData');
+    if (storedPaymentData) {
+      try {
+        const parsedData = JSON.parse(storedPaymentData);
+        setPaymentData(parsedData);
+        // localStorage-аас устгах
+        localStorage.removeItem('paymentData');
+      } catch (error) {
+        console.error('Error parsing payment data:', error);
+      }
+    }
+  }, []);
 
   const totalAmount = React.useMemo(() => {
+    if (paymentData) {
+      return paymentData.totalAmount || 0;
+    }
+    
+    // Хуучин логик (searchParams-аас)
+    const ticketData = searchParams.get('ticketData');
     if (!ticketData) return 0;
     try {
       const tickets = JSON.parse(decodeURIComponent(ticketData));
@@ -313,7 +359,16 @@ function PaymentPageContent() {
       console.error('Error parsing ticket data:', error);
       return 0;
     }
-  }, [ticketData]);
+  }, [paymentData, searchParams]);
+
+  // localStorage-аас мэдээлэл байвал тэр мэдээллийг ашиглах
+  if (paymentData) {
+    return <PaymentContentFromOrder paymentData={paymentData} totalAmount={totalAmount} />;
+  }
+
+  // Хуучин логик (searchParams-аас)
+  const concertId = searchParams.get('concertId');
+  const ticketData = searchParams.get('ticketData');
 
   if (!concertId || !ticketData) {
     return (
@@ -327,6 +382,178 @@ function PaymentPageContent() {
   }
 
   return <PaymentContent _concertId={concertId} _ticketData={ticketData} totalAmount={totalAmount} />;
+}
+
+// Order-аас ирсэн төлбөрийн хуудас
+function PaymentContentFromOrder({ paymentData, totalAmount }: { 
+  paymentData: {
+    orderId: string;
+    orderNumber: string;
+    concert: string;
+    artist: string;
+    concertDate: string;
+    tickets: Array<{
+      id: string;
+      type: string;
+      quantity: number;
+      unitPrice: number;
+      totalPrice: number;
+    }>;
+    totalAmount: number;
+    status: string;
+    paymentStatus: string;
+  }; 
+  totalAmount: number;
+}) {
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState<string>('');
+  const [isProcessing, setIsProcessing] = React.useState(false);
+  const [showSuccess, setShowSuccess] = React.useState(false);
+  const [ticketNumber, setTicketNumber] = React.useState<string>('');
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const router = useRouter();
+  
+  const [updatePaymentStatus] = useMutation(UPDATE_BOOKING_PAYMENT_STATUS);
+
+  const handlePayment = async () => {
+    if (!selectedPaymentMethod) {
+      setErrorMessage('Төлбөрийн арга сонгоно уу');
+      return;
+    }
+
+    setIsProcessing(true);
+    setErrorMessage(null);
+
+    try {
+      // Төлбөрийн симуляци
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Backend дээр төлбөрийн төлвийг өөрчлөх
+      await updatePaymentStatus({
+        variables: {
+          id: paymentData.orderId,
+          paymentStatus: 'COMPLETED'
+        }
+      });
+      
+      // Амжилттай төлбөрийн дугаар үүсгэх
+      const newTicketNumber = `TKT-${Date.now().toString().slice(-6)}`;
+      setTicketNumber(newTicketNumber);
+      setShowSuccess(true);
+
+      // 3 секундын дараа нүүр хуудас руу шилжүүлэх
+      setTimeout(() => {
+        router.push('/');
+      }, 3000);
+
+    } catch (error) {
+      console.error('Payment error:', error);
+      setErrorMessage('Төлбөр төлөхөд алдаа гарлаа. Дахин оролдоно уу.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBack = () => {
+    router.push('/orders');
+  };
+
+  if (showSuccess) {
+    return <SuccessScreen ticketNumber={ticketNumber} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <PaymentHeader onBack={handleBack} />
+      
+      <div className="max-w-6xl px-6 py-8 mx-auto">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* Захиалгын мэдээлэл */}
+          <div className="p-6 bg-gray-900 rounded-2xl">
+            <h2 className="mb-6 text-xl font-bold">Захиалгын мэдээлэл</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <span className="text-gray-400">Захиалгын дугаар:</span>
+                <span className="ml-2 font-medium">{paymentData.orderNumber}</span>
+              </div>
+              
+              <div>
+                <span className="text-gray-400">Тоглолт:</span>
+                <span className="ml-2 font-medium">{paymentData.concert}</span>
+              </div>
+              
+              <div>
+                <span className="text-gray-400">Артист:</span>
+                <span className="ml-2 font-medium">{paymentData.artist}</span>
+              </div>
+              
+              <div>
+                <span className="text-gray-400">Тоглолтын огноо:</span>
+                <span className="ml-2 font-medium">{paymentData.concertDate}</span>
+              </div>
+              
+              <div className="pt-4 border-t border-gray-700">
+                <span className="text-gray-400">Билетийн дэлгэрэнгүй:</span>
+                <div className="mt-2 space-y-2">
+                  {paymentData.tickets.map((ticket, index: number) => (
+                    <div key={index} className="flex justify-between text-sm">
+                      <span>{ticket.type} ({ticket.quantity})</span>
+                      <span>{ticket.totalPrice.toLocaleString('en-US').replace(/,/g, "'")}₮</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t border-gray-700">
+                <div className="flex justify-between text-lg font-bold">
+                  <span>Нийт дүн:</span>
+                  <span>{totalAmount.toLocaleString('en-US').replace(/,/g, "'")}₮</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Төлбөрийн арга */}
+          <div className="p-6 bg-gray-900 rounded-2xl">
+            <h2 className="mb-6 text-xl font-bold">Төлбөрийн арга сонгох</h2>
+            
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <PaymentButton
+                method="QPay"
+                selected={selectedPaymentMethod === 'QPay'}
+                onClick={() => setSelectedPaymentMethod('QPay')}
+              />
+              <PaymentButton
+                method="SocialPay"
+                selected={selectedPaymentMethod === 'SocialPay'}
+                onClick={() => setSelectedPaymentMethod('SocialPay')}
+              />
+              <PaymentButton
+                method="Bank Transfer"
+                selected={selectedPaymentMethod === 'Bank Transfer'}
+                onClick={() => setSelectedPaymentMethod('Bank Transfer')}
+              />
+              <PaymentButton
+                method="Credit Card"
+                selected={selectedPaymentMethod === 'Credit Card'}
+                onClick={() => setSelectedPaymentMethod('Credit Card')}
+              />
+            </div>
+
+            <button
+              onClick={handlePayment}
+              disabled={isProcessing || !selectedPaymentMethod}
+              className="w-full py-4 text-lg font-bold text-white transition-colors bg-blue-600 rounded-xl hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed"
+            >
+              {isProcessing ? 'Төлбөр төлж байна...' : `${totalAmount.toLocaleString('en-US').replace(/,/g, "'")}₮ төлөх`}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {errorMessage && <ErrorNotification message={errorMessage} onClose={() => setErrorMessage(null)} />}
+    </div>
+  );
 }
 
 export default function PaymentPage() {
