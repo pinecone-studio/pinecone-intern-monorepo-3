@@ -1,0 +1,17 @@
+mutation SignIn($input: LoginInput!) {
+  userLogin(input: $input) {
+    token
+    user {
+      userId
+      username
+      email
+      profile
+      password
+      bonusPoints
+      role
+      phoneNumber
+      createdAt
+      updatedAt
+    }
+  }
+}

@@ -1,0 +1,7 @@
+query GetTableByName($tableName: String!) {
+  getTableByName(tableName: $tableName) {
+    tableId
+    tableName
+    tableQr
+  }
+}

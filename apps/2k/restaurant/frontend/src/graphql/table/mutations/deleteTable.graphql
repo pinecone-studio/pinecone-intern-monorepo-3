@@ -1,0 +1,7 @@
+mutation DeleteTable($tableId: ID!) {
+  deleteTable(tableId: $tableId) {
+    tableId
+    tableName
+    tableQr
+  }
+}
