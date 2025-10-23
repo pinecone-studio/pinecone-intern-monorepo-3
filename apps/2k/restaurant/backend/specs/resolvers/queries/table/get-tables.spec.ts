@@ -1,8 +1,7 @@
 // __tests__/getTables.test.ts
 
-import { getTables } from 'apps/2k/restaurant/backend/src/resolvers/queries';
+import { getTables } from '../../../../src/resolvers/queries/table/get-tables';
 import { TableModel } from '../../../../src/models/table.model';
-import mongoose from 'mongoose';
 
 // TableModel-г mock хийх
 jest.mock('../../../../src/models/table.model');

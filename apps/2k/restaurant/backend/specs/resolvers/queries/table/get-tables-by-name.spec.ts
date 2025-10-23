@@ -1,6 +1,6 @@
 // __tests__/getTablesByName.test.ts
 
-import { getTablesByName } from 'apps/2k/restaurant/backend/src/resolvers/queries/table/get-table-by-name';
+import { getTablesByName } from '../../../../src/resolvers/queries/table/get-table-by-name';
 import { TableModel } from '../../../../src/models/table.model';
 
 jest.mock('../../../../src/models/table.model');
