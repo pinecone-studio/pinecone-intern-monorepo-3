@@ -1,0 +1,14 @@
+query GetUsers {
+  getUsers {
+    userId
+    username
+    email
+    profile
+    password
+    bonusPoints
+    role
+    phoneNumber
+    createdAt
+    updatedAt
+  }
+}

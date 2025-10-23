@@ -1,0 +1,6 @@
+mutation SendResetCode($input: SendResetCodeInput!) {
+  sendResetCode(input: $input) {
+    message
+    success
+  }
+}
