@@ -15,10 +15,16 @@ function CheckoutPageContent() {
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   // User мэдээлэл авах
-  const { data: profileData, loading: profileLoading } = useMyProfileQuery({
+  const { data: profileData, loading: profileLoading, error: profileError } = useMyProfileQuery({
     errorPolicy: 'all',
-    skip: true, // Skip the query in test environment to avoid authentication issues
   });
+
+  // Хэрэв UNAUTHENTICATED алдаа бол sign-in руу redirect хийх
+  React.useEffect(() => {
+    if (profileError?.message?.includes('UNAUTHENTICATED')) {
+      router.push('/sign-in');
+    }
+  }, [profileError, router]);
 
   const concertId = searchParams.get('concertId');
   const selectedDate = searchParams.get('selectedDate');

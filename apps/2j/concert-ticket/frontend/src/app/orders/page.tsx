@@ -1,13 +1,14 @@
 'use client';
 /* eslint-disable complexity */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Calendar, Check } from 'lucide-react';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
 import { useMyBookingsQuery } from '@/generated';
 import { useMutation, gql } from '@apollo/client';
+import { useRouter } from 'next/navigation';
 
 interface TicketItem {
   id: string;
@@ -62,6 +63,7 @@ const UPDATE_BOOKING_PAYMENT_STATUS = gql`
 `;
 
 const OrdersPage: React.FC = () => {
+  const router = useRouter();
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelModalData, setCancelModalData] = useState<CancelModalData>({
     orderId: '',
@@ -100,6 +102,13 @@ const OrdersPage: React.FC = () => {
     errorPolicy: 'all',
     fetchPolicy: 'cache-and-network',
   });
+
+  // Хэрэв UNAUTHENTICATED алдаа бол sign-in руу redirect хийх
+  useEffect(() => {
+    if (bookingsError?.message?.includes('UNAUTHENTICATED')) {
+      router.push('/sign-in');
+    }
+  }, [bookingsError, router]);
 
   // Backend дата-г Order interface-д хөрвүүлэх
   const orders: Order[] = bookingsData?.myBookings?.map((booking: {
@@ -208,12 +217,14 @@ const OrdersPage: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Backend дээр төлбөрийн төлвийг өөрчлөх
-      await updatePaymentStatus({
+      console.log('🔵 Updating payment status for order:', paymentModalData.orderId);
+      const result = await updatePaymentStatus({
         variables: {
           id: paymentModalData.orderId,
           paymentStatus: 'COMPLETED'
         }
       });
+      console.log('🔵 Payment status update result:', result);
       
       // Амжилттай төлбөрийн дугаар үүсгэх
       const newTicketNumber = `TKT-${Date.now().toString().slice(-6)}`;
@@ -221,10 +232,12 @@ const OrdersPage: React.FC = () => {
       setPaymentSuccess(true);
 
       // 3 секундын дараа modal хаах
-      setTimeout(() => {
+      setTimeout(async () => {
         handlePaymentModalClose();
         // GraphQL cache-г дахин ачаалах
-        refetchBookings();
+        console.log('🔵 Refetching bookings...');
+        const refetchResult = await refetchBookings();
+        console.log('🔵 Refetch result:', refetchResult);
       }, 3000);
 
     } catch (error) {

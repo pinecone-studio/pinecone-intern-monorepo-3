@@ -22,6 +22,10 @@ const server = new ApolloServer<Context>({
 export const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
   context: async (req) => {
     // Authentication context үүсгэх
-    return await createContextWithAuth(req);
+    const authorization = req.headers.get('authorization') || '';
+    console.log('🔵 Request headers authorization:', authorization);
+    const context = await createContextWithAuth({ headers: { authorization } });
+    console.log('🔵 Context user:', context.user);
+    return context;
   },
 });

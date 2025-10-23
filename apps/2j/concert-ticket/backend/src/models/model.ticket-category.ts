@@ -67,4 +67,5 @@ ticketCategorySchema.virtual('discountedPrice').get(function() {
 // JSON-д virtual field-ийг оруулах
 ticketCategorySchema.set('toJSON', { virtuals: true });
 
-export const TicketCategory = mongoose.model<ITicketCategory>('TicketCategory', ticketCategorySchema);
+// Hot reload үед model дахин үүсэхээс сэргийлэх
+export const TicketCategory = mongoose.models.TicketCategory || mongoose.model<ITicketCategory>('TicketCategory', ticketCategorySchema);

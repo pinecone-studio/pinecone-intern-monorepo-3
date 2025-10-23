@@ -316,10 +316,13 @@ export class BookingController {
   // Захиалгын төлбөрийн статус өөрчлөх
   static async updateBookingPaymentStatus(bookingId: string, paymentStatus: 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED') {
     try {
+      console.log('🔵 updateBookingPaymentStatus called:', { bookingId, paymentStatus });
       const booking = await Booking.findById(bookingId);
       if (!booking) {
         throw new Error('Захиалга олдсонгүй');
       }
+
+      console.log('🔵 Current booking status:', { status: booking.status, paymentStatus: booking.paymentStatus });
 
       // Төлбөрийн статусыг өөрчлөх
       booking.paymentStatus = paymentStatus;
@@ -327,6 +330,7 @@ export class BookingController {
       // Төлбөр амжилттай болсны дараа захиалгын статусыг CONFIRMED болгох
       if (paymentStatus === 'COMPLETED') {
         booking.status = 'CONFIRMED';
+        console.log('🔵 Updated booking status to CONFIRMED');
 
         // Билетний боломжит тоо хасах
         const ticketCategory = await TicketCategory.findById(booking.ticketCategory);
@@ -340,8 +344,9 @@ export class BookingController {
       }
 
       await booking.save();
+      console.log('🔵 Booking saved successfully');
 
-      return await Booking.findById(bookingId)
+      const updatedBooking = await Booking.findById(bookingId)
         .populate('user', '-password')
         .populate({
           path: 'concert',
@@ -351,7 +356,16 @@ export class BookingController {
           },
         })
         .populate('ticketCategory');
+      
+      console.log('🔵 Returning updated booking:', { 
+        id: updatedBooking?.id, 
+        status: updatedBooking?.status, 
+        paymentStatus: updatedBooking?.paymentStatus 
+      });
+      
+      return updatedBooking;
     } catch (error) {
+      console.error('🔴 Error in updateBookingPaymentStatus:', error);
       throw new Error(`Захиалгын төлбөрийн статус өөрчлөхөд алдаа гарлаа: ${error}`);
     }
   }

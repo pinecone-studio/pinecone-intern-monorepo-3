@@ -109,4 +109,5 @@ bookingSchema.pre('save', async function(next) {
   next();
 });
 
-export const Booking = mongoose.model<IBooking>('Booking', bookingSchema);
+// Hot reload үед model дахин үүсэхээс сэргийлэх
+export const Booking = mongoose.models.Booking || mongoose.model<IBooking>('Booking', bookingSchema);

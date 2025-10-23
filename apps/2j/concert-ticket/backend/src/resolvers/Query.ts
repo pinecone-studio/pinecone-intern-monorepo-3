@@ -17,8 +17,7 @@ export const Query: Resolvers['Query'] = {
   },
   myBookings: async (_parent, _args, ctx) => {
     if (!ctx.user) {
-      // Authentication байхгүй бол тодорхой user ID ашиглах
-      return await BookingController.getUserBookings('68e75deab6cd9759bc4033d7');
+      throw new Error('UNAUTHENTICATED');
     }
     return await BookingController.getUserBookings(ctx.user.id);
   },
@@ -50,8 +49,7 @@ export const Query: Resolvers['Query'] = {
   // Хэрэглэгчийн профайл авах
   myProfile: async (_parent, _args, ctx) => {
     if (!ctx.user) {
-      // Authentication байхгүй бол тодорхой user ID ашиглах
-      return await UserController.getUserProfile('68e75deab6cd9759bc4033d7');
+      throw new Error('UNAUTHENTICATED');
     }
     return await UserController.getUserProfile(ctx.user.id);
   },
