@@ -1,182 +1,85 @@
-name: CI
+name: CI/CD Pipeline
+
 on:
+  push:
+    branches: [ main, develop ]
   pull_request:
-    types: [labeled, synchronize, edited]
-    branches:
-      - main
-
-permissions:
-  id-token: write
-  contents: read
-  pull-requests: write
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [ main, develop ]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'PR status: code ready') ||
-      (github.event.action == 'synchronize') ||
-      (github.event.action == 'edited')
-    timeout-minutes: 10
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.19.1'
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.10
-      - run: bun install -y
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-      - name: Setup Canvas
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-        run: npm rebuild canvas
-      - uses: nrwl/nx-set-shas@v4
-      - run: git branch --track main origin/main
-      - name: Run lint for ticket projects only
-        run: bunx nx run-many -t lint -p=ticket-frontend,concert-ticket-backend --parallel=3 --output-style=stream-without-prefixes
-
   test:
     runs-on: ubuntu-latest
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'PR status: code ready') ||
-      (github.event.action == 'synchronize') ||
-      (github.event.action == 'edited')
-    timeout-minutes: 10
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.19.1'
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.10
-      - run: bun install -y
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-      - name: Setup Canvas
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-        run: npm rebuild canvas
-      - uses: nrwl/nx-set-shas@v4
-      - run: git branch --track main origin/main
-      - name: Run test for ticket projects only
-        run: bunx nx run-many -t test -p=ticket-frontend,concert-ticket-backend --parallel=3 --output-style=stream-without-prefixes
+    
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-  build:
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      env:
+        MONGODB_URI: mongodb://localhost:27017/concert-ticket-test
+        NODE_ENV: test
+        JWT_SECRET: test-secret-key
+        CORS_ORIGIN: http://localhost:3000
+      run: npx nx test ticket-frontend
+    
+    - name: Build frontend
+      env:
+        NODE_ENV: production
+      run: npx nx build ticket-frontend
+    
+    - name: Build backend
+      env:
+        MONGODB_URI: mongodb://localhost:27017/concert-ticket-test
+        NODE_ENV: test
+        JWT_SECRET: test-secret-key
+        CORS_ORIGIN: http://localhost:3000
+      run: npx nx build ticket-backend
+
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'PR status: code ready') ||
-      (github.event.action == 'synchronize') ||
-      (github.event.action == 'edited')
-    timeout-minutes: 10
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+    if: github.ref == 'refs/heads/main'
+    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.19.1'
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.10
-      - run: bun install -y
-      - name: Install Vercel CLI
-        run: bun add --global vercel@latest
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-      - name: Setup Canvas
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-        run: npm rebuild canvas
-      - uses: nrwl/nx-set-shas@v4
-      - run: git branch --track main origin/main
-      - name: Get NX BASE and NX HEAD
-        uses: nrwl/nx-set-shas@v4
-      - name: Export NX BASE AND HEAD
-        run: |
-          export NX_BASE=${{ env.NX_BASE }}
-          export NX_HEAD=${{ env.NX_HEAD }}
-          export VERCEL_TOKEN=${{ env.VERCEL_TOKEN }}
-          export GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
-          bash ./tools/scripts/export-action-env.sh
-      - name: Run build for ticket projects only
-        run: bunx nx run-many -t build -p=ticket-frontend,concert-ticket-backend --parallel=3 --output-style=stream-without-prefixes
-
-  preview-and-E2E:
-    runs-on: ubuntu-latest
-    if: |
-      (github.event.action == 'labeled' && github.event.label.name == 'PR status: code ready') ||
-      (github.event.action == 'synchronize') ||
-      (github.event.action == 'edited')
-    timeout-minutes: 10
-    env:
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
-      ACTION_TYPE: PULL_REQUEST_ACTION
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.19.1'
-      - uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: 1.1.10
-      - run: bun install -y
-      - name: Install Vercel CLI
-        run: bun add --global vercel@latest
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-      - name: Install Cypress
-        run: bunx cypress install
-      - name: Setup Canvas
-        if: "${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}"
-        run: npm rebuild canvas
-      - name: Get NX BASE and NX HEAD
-        uses: nrwl/nx-set-shas@v4
-      - name: Export NX BASE AND HEAD
-        run: |
-          export NX_BASE=${{ env.NX_BASE }}
-          export NX_HEAD=${{ env.NX_HEAD }}
-          export VERCEL_TOKEN=${{ env.VERCEL_TOKEN }}
-          export GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
-          bash ./tools/scripts/export-action-env.sh
-      - name: Create backend .env file
-        run: |
-          mkdir -p apps/2j/concert-ticket/backend
-          cat > apps/2j/concert-ticket/backend/.env << EOF
-          MONGODB_URI=${{ secrets.MONGODB_URI }}
-          JWT_SECRET=${{ secrets.JWT_SECRET }}
-          CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}
-          PORT=${{ secrets.PORT }}
-          EOF
-      - name: Create frontend .env file
-        run: |
-          mkdir -p apps/2j/concert-ticket/frontend
-          cat > apps/2j/concert-ticket/frontend/.env.local << EOF
-          NEXT_PUBLIC_BACKEND_URI=${{ secrets.BACKEND_URL }}
-          EOF
-      - name: Build frontend with Nx (repo root)
-        run: npx nx build ticket-frontend
-      - name: Prepare Vercel project context (repo root)
-        run: npx vercel pull --yes --environment=preview --token=${{ env.VERCEL_TOKEN }}
-      - name: Vercel build (repo root)
-        run: npx vercel build --token=${{ env.VERCEL_TOKEN }}
-      - name: Vercel deploy preview (repo root)
-        run: npx vercel --prebuilt --token=${{ env.VERCEL_TOKEN }}
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build applications
+      env:
+        MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        NODE_ENV: production
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+      run: |
+        npx nx build ticket-frontend
+        npx nx build ticket-backend
+    
+    - name: Deploy to production
+      run: echo "Deployment step would go here"

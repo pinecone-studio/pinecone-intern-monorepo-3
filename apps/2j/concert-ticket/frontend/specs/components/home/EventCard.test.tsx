@@ -719,7 +719,7 @@ describe('EventCard', () => {
   it('хөнгөлөлтгүй билет байх үед зөв харуулна', () => {
     const itemWithoutDiscount = {
       ...mockEventItem,
-      ticketCategories: [
+        ticketCategories: [
         { type: 'VIP', totalQuantity: 100, unitPrice: 50000 },
         { type: 'Regular', totalQuantity: 200, unitPrice: 30000 },
       ],
@@ -786,7 +786,7 @@ describe('EventCard', () => {
   it('хөнгөлөлттэй билет байх үед зөв харуулна', () => {
     const itemWithDiscount = {
       ...mockEventItem,
-      ticketCategories: [
+        ticketCategories: [
         { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discount: 20 },
         { type: 'Regular', totalQuantity: 200, unitPrice: 30000, discount: 10 },
       ],
@@ -800,7 +800,7 @@ describe('EventCard', () => {
   it('хөнгөлөлтгүй билет байх үед зөв харуулна', () => {
     const itemWithoutDiscount = {
       ...mockEventItem,
-      ticketCategories: [
+        ticketCategories: [
         { type: 'VIP', totalQuantity: 100, unitPrice: 50000 },
         { type: 'Regular', totalQuantity: 200, unitPrice: 30000 },
       ],
@@ -862,5 +862,876 @@ describe('EventCard', () => {
     render(<EventCard item={itemWithNullArtist} />);
 
     expect(screen.getByText('Test Concert')).toBeInTheDocument();
+  });
+
+  it('event card with other artists ажиллана', () => {
+    const eventWithOtherArtists = {
+      ...mockEventItem,
+      otherArtists: [{ name: 'Other Artist 1' }, { name: 'Other Artist 2' }]
+    };
+    render(<EventCard item={eventWithOtherArtists} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+  });
+
+  it('event card with single ticket category ажиллана', () => {
+    const eventWithSingleCategory = {
+      ...mockEventItem,
+      ticketCategories: [{ type: 'VIP', totalQuantity: 100, unitPrice: 50000 }]
+    };
+    render(<EventCard item={eventWithSingleCategory} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+  });
+
+  it('event card with no ticket categories ажиллана', () => {
+    const eventWithNoCategories = {
+      ...mockEventItem,
+      ticketCategories: []
+    };
+    render(<EventCard item={eventWithNoCategories} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+  });
+
+  it('event card with different date format ажиллана', () => {
+    const eventWithDifferentDate = {
+      ...mockEventItem,
+      date: '2024-12-31'
+    };
+    render(<EventCard item={eventWithDifferentDate} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+  });
+
+  it('event card with different time format ажиллана', () => {
+    const eventWithDifferentTime = {
+      ...mockEventItem,
+      time: '20:30'
+    };
+    render(<EventCard item={eventWithDifferentTime} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+  });
+
+  it('event card with long name ажиллана', () => {
+    const eventWithLongName = {
+      ...mockEventItem,
+      name: 'Very Long Concert Name That Should Be Truncated'
+    };
+    render(<EventCard item={eventWithLongName} />);
+
+    expect(screen.getByText('Very Long Concert Name That Should Be Truncated')).toBeInTheDocument();
+  });
+
+  it('event card with long venue ажиллана', () => {
+    const eventWithLongVenue = {
+      ...mockEventItem,
+      venue: 'Very Long Venue Name That Should Be Truncated'
+    };
+    render(<EventCard item={eventWithLongVenue} />);
+
+    expect(screen.getByText('Very Long Venue Name That Should Be Truncated')).toBeInTheDocument();
+  });
+
+  it('биетийн ангилал зөвхөн VIP байх үед зөв харуулна', () => {
+    const itemWithOnlyVIP = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithOnlyVIP} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('биетийн ангилал зөвхөн REGULAR байх үед зөв харуулна', () => {
+    const itemWithOnlyRegular = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'REGULAR', totalQuantity: 200, unitPrice: 30000 }
+      ],
+    };
+    render(<EventCard item={itemWithOnlyRegular} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('биетийн ангилал зөвхөн GENERAL байх үед зөв харуулна', () => {
+    const itemWithOnlyGeneral = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'GENERAL', totalQuantity: 300, unitPrice: 20000 }
+      ],
+    };
+    render(<EventCard item={itemWithOnlyGeneral} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('биетийн ангилал VIP болон REGULAR байх үед зөв харуулна', () => {
+    const itemWithVIPAndRegular = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 },
+        { type: 'REGULAR', totalQuantity: 200, unitPrice: 30000 }
+      ],
+    };
+    render(<EventCard item={itemWithVIPAndRegular} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('биетийн ангилал REGULAR болон GENERAL байх үед зөв харуулна', () => {
+    const itemWithRegularAndGeneral = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'REGULAR', totalQuantity: 200, unitPrice: 30000 },
+        { type: 'GENERAL', totalQuantity: 300, unitPrice: 20000 }
+      ],
+    };
+    render(<EventCard item={itemWithRegularAndGeneral} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('биетийн ангилал VIP болон GENERAL байх үед зөв харуулна', () => {
+    const itemWithVIPAndGeneral = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 },
+        { type: 'GENERAL', totalQuantity: 300, unitPrice: 20000 }
+      ],
+    };
+    render(<EventCard item={itemWithVIPAndGeneral} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна', () => {
+    const itemWithDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountedPrice: 40000 }
+      ],
+    };
+    render(<EventCard item={itemWithDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна', () => {
+    const itemWithoutDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasAnyDiscount && maxDiscount > 0', () => {
+    const itemWithDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountedPrice: 40000 }
+      ],
+    };
+    render(<EventCard item={itemWithDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountedPrice: 40000 }
+      ],
+    };
+    render(<EventCard item={itemWithDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithoutDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountedPrice: 40000 }
+      ],
+    };
+    render(<EventCard item={itemWithDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithoutDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountedPrice: 40000 }
+      ],
+    };
+    render(<EventCard item={itemWithDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithoutDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountedPrice: 40000 }
+      ],
+    };
+    render(<EventCard item={itemWithDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithoutDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000, discountedPrice: 40000 }
+      ],
+    };
+    render(<EventCard item={itemWithDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasAnyDiscount && lowestDiscountedPrice && lowestPrice', () => {
+    const itemWithoutDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байх үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
+  });
+
+  it('хөнгөлөлт байхгүй үед зөв харуулна - hasDateDiscount && lowestPrice', () => {
+    const itemWithoutDateDiscount = {
+      id: '1',
+      name: 'Test Concert',
+      date: '2024-01-01',
+      time: '19:00',
+      venue: 'Test Venue',
+      image: 'test.jpg',
+      mainArtist: { name: 'Test Artist' },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, unitPrice: 50000 }
+      ],
+    };
+    render(<EventCard item={itemWithoutDateDiscount} />);
+
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+    expect(screen.getByText('Test Artist')).toBeInTheDocument();
   });
 });

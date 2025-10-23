@@ -365,4 +365,70 @@ describe('ConcertTable', () => {
 
     expect(mockOnDeleteClick).toHaveBeenCalledWith('1');
   });
+
+  it('formatDate function handles invalid date', () => {
+    // formatDate is not exported, so we test it indirectly through the component
+    const mockConcerts = [
+      { 
+        id: '1', 
+        name: 'Test Concert', 
+        date: 'invalid-date', 
+        venue: 'Test Venue', 
+        image: 'test.jpg',
+        ticketCategories: [
+          { type: 'VIP', totalQuantity: 100, unitPrice: 50000 },
+          { type: 'REGULAR', totalQuantity: 200, unitPrice: 30000 },
+          { type: 'GENERAL', totalQuantity: 300, unitPrice: 20000 }
+        ]
+      }
+    ];
+    
+    render(
+      <ConcertTable
+        concerts={mockConcerts}
+        featuredConcerts={new Set()}
+        onStarClick={jest.fn()}
+        onEditClick={jest.fn()}
+        onDeleteClick={jest.fn()}
+        currentPage={1}
+        pageSize={10}
+        totalCount={1}
+        hasMore={false}
+        onPageChange={jest.fn()}
+      />
+    );
+    
+    // The component should render without crashing even with invalid date
+    expect(screen.getByText('Test Concert')).toBeInTheDocument();
+  });
+
+  it('pagination renders correctly with many pages', () => {
+    const manyConcerts = Array.from({ length: 25 }, (_, i) => ({
+      id: `${i + 1}`,
+      name: `Concert ${i + 1}`,
+      mainArtist: { name: `Artist ${i + 1}` },
+      ticketCategories: [
+        { type: 'VIP', totalQuantity: 100, availableQuantity: 100, unitPrice: 50000 },
+        { type: 'REGULAR', totalQuantity: 200, availableQuantity: 200, unitPrice: 30000 },
+        { type: 'GENERAL', totalQuantity: 300, availableQuantity: 300, unitPrice: 20000 },
+      ],
+      date: '2024-01-01',
+      time: '19:00',
+    }));
+
+    render(
+      <ConcertTable
+        {...defaultProps}
+        concerts={manyConcerts}
+        totalCount={25}
+        hasMore={true}
+        currentPage={3}
+      />
+    );
+
+    // Check if pagination buttons are rendered
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+  });
 });

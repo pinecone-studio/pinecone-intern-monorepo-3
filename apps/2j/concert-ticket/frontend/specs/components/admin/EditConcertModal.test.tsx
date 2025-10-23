@@ -1658,7 +1658,7 @@ describe('EditConcertModal', () => {
       />
     );
 
-    const fileInput = screen.getByLabelText('Зураг');
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     expect(fileInput).toBeInTheDocument();
   });
 
@@ -1916,5 +1916,118 @@ describe('EditConcertModal', () => {
     const cancelButton = screen.getByText('Цуцлах');
     fireEvent.click(cancelButton);
     expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it('image upload file size validation ажиллана', () => {
+    // Mock window.alert
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <EditConcertModal
+        isOpen={true}
+        onClose={mockOnClose}
+        concert={mockConcert}
+      />
+    );
+
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const largeFile = new File(['test'], 'large.jpg', { type: 'image/jpeg' });
+    Object.defineProperty(largeFile, 'size', { value: 6 * 1024 * 1024 }); // 6MB
+
+    fireEvent.change(fileInput, { target: { files: [largeFile] } });
+
+    expect(window.alert).toHaveBeenCalledWith('Файлын хэмжээ 5MB-аас их байна');
+  });
+
+  it('image upload no file selected ажиллана', () => {
+    render(
+      <EditConcertModal
+        isOpen={true}
+        onClose={mockOnClose}
+        concert={mockConcert}
+      />
+    );
+
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    fireEvent.change(fileInput, { target: { files: null } });
+
+    expect(screen.getByText('Тасалбар засах')).toBeInTheDocument();
+  });
+
+  it('image upload success ажиллана', () => {
+    // Mock fetch to return success
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ secure_url: 'https://example.com/image.jpg' })
+    });
+
+    render(
+      <EditConcertModal
+        isOpen={true}
+        onClose={mockOnClose}
+        concert={mockConcert}
+      />
+    );
+
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    expect(screen.getByText('Тасалбар засах')).toBeInTheDocument();
+  });
+
+  it('image upload response not ok ажиллана', async () => {
+    // Mock fetch to return not ok response
+    global.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+      text: () => Promise.resolve('Upload failed')
+    });
+
+    // Mock window.alert
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <EditConcertModal
+        isOpen={true}
+        onClose={mockOnClose}
+        concert={mockConcert}
+      />
+    );
+
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    // Wait for async operations to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // After error, the component should still be rendered
+    expect(screen.getByText('Тасалбар засах')).toBeInTheDocument();
+  });
+
+  it('image upload catch error ажиллана', async () => {
+    // Mock fetch to throw error
+    global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
+    // Mock window.alert
+    jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+    render(
+      <EditConcertModal
+        isOpen={true}
+        onClose={mockOnClose}
+        concert={mockConcert}
+      />
+    );
+
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    // Wait for async operations to complete
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // After error, the component should still be rendered
+    expect(screen.getByText('Тасалбар засах')).toBeInTheDocument();
   });
 });

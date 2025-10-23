@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useGetConcertsQuery, useDeleteConcertMutation } from '../../generated';
 import ConcertTable from '../../components/admin/ConcertTable';
+import AddTicketModal from '../../components/admin/AddTicketModal';
+import FeaturedModal from '../../components/admin/FeaturedModal';
+import EditConcertModal from '../../components/admin/EditConcertModal';
 
 type TabType = 'tickets' | 'refunds';
 
@@ -375,6 +378,20 @@ const AdminPage = () => {
     setCurrentPage(1);
   };
 
+  const handleFeaturedSave = (isFeatured: boolean) => {
+    if (selectedConcertForFeatured) {
+      const newFeaturedConcerts = new Set(featuredConcerts);
+      if (isFeatured) {
+        newFeaturedConcerts.add(selectedConcertForFeatured);
+      } else {
+        newFeaturedConcerts.delete(selectedConcertForFeatured);
+      }
+      setFeaturedConcerts(newFeaturedConcerts);
+      setShowFeaturedModal(false);
+      setSelectedConcertForFeatured(null);
+    }
+  };
+
   const renderTabContent = () => {
     if (activeTab === 'tickets') {
       return (
@@ -429,11 +446,31 @@ const AdminPage = () => {
   };
 
   return (
-    <AdminLayout
-      activeTab={activeTab}
-      setActiveTab={setActiveTab}
-      renderTabContent={renderTabContent}
-    />
+    <>
+      <AdminLayout
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        renderTabContent={renderTabContent}
+      />
+      
+      <AddTicketModal
+        isOpen={showAddTicketModal}
+        onClose={() => setShowAddTicketModal(false)}
+      />
+      
+      <FeaturedModal
+        isOpen={showFeaturedModal}
+        onClose={() => setShowFeaturedModal(false)}
+        concertId={selectedConcertForFeatured}
+        onSave={handleFeaturedSave}
+      />
+      
+      <EditConcertModal
+        isOpen={showEditConcertModal}
+        onClose={() => setShowEditConcertModal(false)}
+        concert={selectedConcert}
+      />
+    </>
   );
 };
 

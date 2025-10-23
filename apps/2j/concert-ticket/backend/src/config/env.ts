@@ -1,7 +1,7 @@
 // Environment variables тохиргоо
 export const config = {
   mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/concert-ticket',
+    uri: process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/concert-ticket',
   },
   server: {
     port: process.env.PORT ? parseInt(process.env.PORT) : 4000,

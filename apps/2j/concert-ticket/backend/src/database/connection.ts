@@ -3,6 +3,11 @@ import { config } from '../config/env';
 
 export async function connectDatabase() {
   try {
+    // Check if MongoDB URI is available
+    if (!config.mongodb.uri) {
+      throw new Error('MONGODB_URI or MONGO_URI environment variable is not set');
+    }
+
     // MongoDB connection options
     const options = {
       maxPoolSize: 10, // Connection pool size

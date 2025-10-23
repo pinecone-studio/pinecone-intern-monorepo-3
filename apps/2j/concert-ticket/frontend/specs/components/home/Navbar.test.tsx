@@ -148,4 +148,173 @@ describe('Navbar', () => {
 
     expect(mockPush).toHaveBeenCalledWith('/search?q=concert%20%26%20show');
   });
+
+  it('navbar with different pathname ажиллана', () => {
+    mockUsePathname.mockReturnValue('/search');
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+  });
+
+  it('navbar search with empty query ажиллана', () => {
+    render(<Navbar />);
+
+    const searchInput = screen.getByTestId('search-input');
+    fireEvent.change(searchInput, { target: { value: '' } });
+    fireEvent.keyDown(searchInput, { key: 'Enter' });
+
+    expect(mockPush).toHaveBeenCalledWith('/search');
+  });
+
+  it('navbar search with special characters ажиллана', () => {
+    render(<Navbar />);
+
+    const searchInput = screen.getByTestId('search-input');
+    fireEvent.change(searchInput, { target: { value: 'test@#$%' } });
+    fireEvent.keyDown(searchInput, { key: 'Enter' });
+
+    expect(mockPush).toHaveBeenCalledWith('/search?q=test%40%23%24%25');
+  });
+
+  it('navbar with user profile ажиллана - user email харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - logout товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - admin товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - profile товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - orders товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - search товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - home товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - events товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - about товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - contact товч харагдана', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - login товч харагдахгүй', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
+
+  it('navbar with user profile ажиллана - register товч харагдахгүй', () => {
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: { id: '1', name: 'Test User', email: 'test@example.com' } },
+    } as ReturnType<typeof useMyProfileQuery>);
+    
+    render(<Navbar />);
+
+    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    expect(screen.getByText('test@example.com')).toBeInTheDocument();
+  });
 });

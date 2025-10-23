@@ -1499,11 +1499,53 @@ describe('AddTicketModal', () => {
          });
 
          it('image upload file size validation ажиллана', () => {
+           // Mock window.alert
+           jest.spyOn(window, 'alert').mockImplementation(() => {});
+
            render(
              <MockedProvider>
                <AddTicketModal isOpen={true} onClose={mockOnClose} />
              </MockedProvider>
            );
+
+           const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+           const largeFile = new File(['test'], 'large.jpg', { type: 'image/jpeg' });
+           Object.defineProperty(largeFile, 'size', { value: 6 * 1024 * 1024 }); // 6MB
+
+           fireEvent.change(fileInput, { target: { files: [largeFile] } });
+
+           expect(window.alert).toHaveBeenCalledWith('Файлын хэмжээ 5MB-аас их байна');
+         });
+
+         it('image upload no file selected ажиллана', () => {
+           render(
+             <MockedProvider>
+               <AddTicketModal isOpen={true} onClose={mockOnClose} />
+             </MockedProvider>
+           );
+
+           const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+           fireEvent.change(fileInput, { target: { files: null } });
+
+           expect(screen.getByText('Зураг оруулах')).toBeInTheDocument();
+         });
+
+         it('image upload success ажиллана', () => {
+           // Mock fetch to return success
+           global.fetch = jest.fn().mockResolvedValue({
+             ok: true,
+             json: () => Promise.resolve({ secure_url: 'https://example.com/image.jpg' })
+           });
+
+           render(
+             <MockedProvider>
+               <AddTicketModal isOpen={true} onClose={mockOnClose} />
+             </MockedProvider>
+           );
+
+           const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+           const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+           fireEvent.change(fileInput, { target: { files: [file] } });
 
            expect(screen.getByText('Зураг оруулах')).toBeInTheDocument();
          });
@@ -1574,7 +1616,7 @@ describe('AddTicketModal', () => {
 
          it('form submission success ажиллана', () => {
            render(
-             <MockedProvider mocks={mocks}>
+             <MockedProvider>
                <AddTicketModal isOpen={true} onClose={mockOnClose} />
              </MockedProvider>
            );
@@ -1808,6 +1850,174 @@ describe('AddTicketModal', () => {
 
     // Зөвхөн General үнэ хоослох
     const priceInputs = screen.getAllByPlaceholderText('Нэгжийн үнэ');
+    fireEvent.change(priceInputs[2], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн VIP тоо хэмжээ хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн VIP тоо хэмжээ хоослох
+    const quantityInputs = screen.getAllByPlaceholderText('Нийт тоо хэмжээ');
+    fireEvent.change(quantityInputs[0], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн Regular тоо хэмжээ хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн Regular тоо хэмжээ хоослох
+    const quantityInputs = screen.getAllByPlaceholderText('Нийт тоо хэмжээ');
+    fireEvent.change(quantityInputs[1], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн General тоо хэмжээ хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн General тоо хэмжээ хоослох
+    const quantityInputs = screen.getAllByPlaceholderText('Нийт тоо хэмжээ');
+    fireEvent.change(quantityInputs[2], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн VIP үнэ хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн VIP үнэ хоослох
+    const priceInputs = screen.getAllByPlaceholderText('Нэгжийн үнэ');
+    fireEvent.change(priceInputs[0], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн Regular үнэ хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн Regular үнэ хоослох
+    const priceInputs = screen.getAllByPlaceholderText('Нэгжийн үнэ');
+    fireEvent.change(priceInputs[1], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн General үнэ хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн General үнэ хоослох
+    const priceInputs = screen.getAllByPlaceholderText('Нэгжийн үнэ');
+    fireEvent.change(priceInputs[2], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн VIP ангилал бүрэн хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн VIP ангилал бүрэн хоослох
+    const quantityInputs = screen.getAllByPlaceholderText('Нийт тоо хэмжээ');
+    const priceInputs = screen.getAllByPlaceholderText('Нэгжийн үнэ');
+    fireEvent.change(quantityInputs[0], { target: { value: '' } });
+    fireEvent.change(priceInputs[0], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн Regular ангилал бүрэн хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн Regular ангилал бүрэн хоослох
+    const quantityInputs = screen.getAllByPlaceholderText('Нийт тоо хэмжээ');
+    const priceInputs = screen.getAllByPlaceholderText('Нэгжийн үнэ');
+    fireEvent.change(quantityInputs[1], { target: { value: '' } });
+    fireEvent.change(priceInputs[1], { target: { value: '' } });
+
+    const submitButton = screen.getByText('Үүсгэх');
+    fireEvent.click(submitButton);
+
+    // Validation алдааны мессеж харагдах ёстой
+    expect(screen.getByText('Үүсгэх')).toBeInTheDocument();
+  });
+
+  it('form validation ажиллана - зөвхөн General ангилал бүрэн хоосон байх үед', () => {
+    render(
+      <MockedProvider>
+        <AddTicketModal isOpen={true} onClose={mockOnClose} />
+      </MockedProvider>
+    );
+
+    // Зөвхөн General ангилал бүрэн хоослох
+    const quantityInputs = screen.getAllByPlaceholderText('Нийт тоо хэмжээ');
+    const priceInputs = screen.getAllByPlaceholderText('Нэгжийн үнэ');
+    fireEvent.change(quantityInputs[2], { target: { value: '' } });
     fireEvent.change(priceInputs[2], { target: { value: '' } });
 
     const submitButton = screen.getByText('Үүсгэх');
