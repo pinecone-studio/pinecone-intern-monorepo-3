@@ -18,6 +18,8 @@ query HomeEvents($limit: Int = 12, $offset: Int = 0) {
         id
         type
         unitPrice
+        discountPercentage
+        discountedPrice
         availableQuantity
       }
     }

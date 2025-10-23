@@ -17,6 +17,8 @@ query SearchConcerts($name: String, $date: String, $limit: Int = 12, $offset: In
         id
         type
         unitPrice
+        discountPercentage
+        discountedPrice
         availableQuantity
       }
     }

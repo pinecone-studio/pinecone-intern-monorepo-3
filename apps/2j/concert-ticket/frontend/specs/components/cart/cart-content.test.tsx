@@ -5,6 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { useRouter } from 'next/navigation';
 import { CartContent } from '../../../src/components/cart/cart-content';
 import { GetConcertDocument } from '../../../src/generated';
+import type { TicketCategoryType } from '../../../src/types/Event.type';
 
 jest.mock('next/navigation', () => ({ useRouter: jest.fn() }));
 
@@ -22,9 +23,9 @@ const mockData = {
         date: '2024-12-25',
         venue: 'Venue',
         ticketCategories: [
-          { id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123 },
-          { id: '2', type: 'VIP', unitPrice: 129000, availableQuantity: 38 },
-          { id: '3', type: 'REGULAR', unitPrice: 159000, availableQuantity: 38 },
+          { id: '1', type: 'GENERAL_ADMISSION', unitPrice: 89000, availableQuantity: 123, discountPercentage: 0, discountedPrice: 89000 },
+          { id: '2', type: 'VIP', unitPrice: 129000, availableQuantity: 38, discountPercentage: 20, discountedPrice: 103200 },
+          { id: '3', type: 'REGULAR', unitPrice: 159000, availableQuantity: 38, discountPercentage: 10, discountedPrice: 143100 },
         ],
       },
     },
@@ -478,7 +479,7 @@ describe('CartContent', () => {
                 name: 'Unknown Type',
                 price: 100000,
                 availableQuantity: 50,
-                type: 'UNKNOWN_TYPE' as unknown as 'VIP' | 'REGULAR' | 'GENERAL_ADMISSION',
+                type: 'UNKNOWN_TYPE' as unknown as TicketCategoryType,
                 unitPrice: 100000,
                 available: 50,
               },
@@ -515,7 +516,7 @@ describe('CartContent', () => {
                 name: 'Unknown Type',
                 price: 100000,
                 availableQuantity: 50,
-                type: 'UNKNOWN_TYPE' as unknown as 'VIP' | 'REGULAR' | 'GENERAL_ADMISSION',
+                type: 'UNKNOWN_TYPE' as unknown as TicketCategoryType,
                 unitPrice: 100000,
                 available: 50,
               },
