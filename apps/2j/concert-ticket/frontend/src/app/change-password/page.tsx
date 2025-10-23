@@ -5,6 +5,7 @@ import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
 import { Eye, EyeOff, Check, X } from 'lucide-react';
+import { useChangePasswordMutation } from '@/generated';
 
 type PasswordFieldProps = {
   label: string;
@@ -39,7 +40,6 @@ const ChangePasswordPage: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -56,12 +56,14 @@ const ChangePasswordPage: React.FC = () => {
     setShowConfirm(false);
   };
 
+  const [changePasswordMutation, { loading }] = useChangePasswordMutation();
+
   const validate = (): string | null => {
     if (newPassword !== confirmPassword) return 'Шинэ нууц үг хоёр таарахгүй байна';
+    if (newPassword.length < 6) return 'Шинэ нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой';
     return null;
   };
 
-  // eslint-disable-next-line complexity
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -70,40 +72,30 @@ const ChangePasswordPage: React.FC = () => {
       setError(validationError);
       return;
     }
+
     try {
-      setLoading(true);
-      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URI || 'http://localhost:4000/graphql', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          query: `mutation ChangePassword($currentPassword: String!, $newPassword: String!) { changePassword(currentPassword: $currentPassword, newPassword: $newPassword) }`,
-          variables: { currentPassword, newPassword },
-        }),
+      const result = await changePasswordMutation({
+        variables: {
+          currentPassword,
+          newPassword,
+        },
       });
-      const json = await res.json();
-      if (json.errors) {
-        setError(json.errors[0]?.message || 'Нууц үг солиход алдаа гарлаа');
-        setShowErrorToast(true);
-        setTimeout(() => setShowErrorToast(false), 3000);
-        setLoading(false);
-        return;
+
+      if (result.data?.changePassword) {
+        // Success toast харуулах
+        setShowSuccessToast(true);
+        setTimeout(() => setShowSuccessToast(false), 3000);
+
+        // Form reset хийх
+        resetForm();
       }
-      
-      // Success toast харуулах
-      setShowSuccessToast(true);
-      setTimeout(() => setShowSuccessToast(false), 3000);
-      
-      // Form reset хийх
-      resetForm();
-    } catch {
-      setError('Нууц үг солиход алдаа гарлаа');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Нууц үг солиход алдаа гарлаа';
+      setError(errorMessage);
       setShowErrorToast(true);
       setTimeout(() => setShowErrorToast(false), 3000);
-    } finally {
-      setLoading(false);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -154,10 +146,7 @@ const ChangePasswordPage: React.FC = () => {
         <div className="fixed top-[20px] right-[20px] z-50 bg-green-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
           <Check size={16} />
           <span className="text-[14px] font-medium">Нууц үг амжилттай шинэчлэгдлээ</span>
-          <button 
-            onClick={() => setShowSuccessToast(false)}
-            className="text-white hover:text-gray-200 transition-colors"
-          >
+          <button onClick={() => setShowSuccessToast(false)} className="text-white hover:text-gray-200 transition-colors">
             <X size={16} />
           </button>
         </div>
@@ -168,10 +157,7 @@ const ChangePasswordPage: React.FC = () => {
         <div className="fixed top-[20px] right-[20px] z-50 bg-red-600 text-white px-[16px] py-[12px] rounded-[8px] shadow-lg flex items-center gap-[8px] animate-in slide-in-from-right duration-300">
           <X size={16} />
           <span className="text-[14px] font-medium">Нууц үг солиход алдаа гарлаа</span>
-          <button 
-            onClick={() => setShowErrorToast(false)}
-            className="text-white hover:text-gray-200 transition-colors"
-          >
+          <button onClick={() => setShowErrorToast(false)} className="text-white hover:text-gray-200 transition-colors">
             <X size={16} />
           </button>
         </div>

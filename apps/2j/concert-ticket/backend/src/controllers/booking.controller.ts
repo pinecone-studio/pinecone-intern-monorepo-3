@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
-import { Booking } from '../models/model.booking';
-import { Concert } from '../models/model.concert';
-import { TicketCategory } from '../models/model.ticket-category';
+import { Booking, IBooking } from '../models/model.booking';
+import { Concert, IConcert } from '../models/model.concert';
+import { TicketCategory, ITicketCategory } from '../models/model.ticket-category';
 import { User } from '../models/model.user';
 import { CreateBookingInput } from '../generated/types';
 
@@ -29,7 +29,7 @@ export class BookingController {
       // Ticket category-г шалгах
       const ticketCategory = await TicketCategory.findOne({
         _id: input.ticketCategoryId,
-        concert: input.concertId
+        concert: input.concertId,
       });
 
       if (!ticketCategory) {
@@ -52,16 +52,13 @@ export class BookingController {
         status: 'PENDING',
         paymentStatus: 'PENDING',
         canCancel: true,
-        cancellationDeadline: new Date(concert.date.getTime() - 24 * 60 * 60 * 1000) // Концертын огнооноос 24 цагийн өмнө
+        cancellationDeadline: new Date(concert.date.getTime() - 24 * 60 * 60 * 1000), // Концертын огнооноос 24 цагийн өмнө
       });
 
       const savedBooking = await booking.save();
 
       // Available quantity-г бууруулах
-      await TicketCategory.findByIdAndUpdate(
-        input.ticketCategoryId,
-        { $inc: { availableQuantity: -input.quantity } }
-      );
+      await TicketCategory.findByIdAndUpdate(input.ticketCategoryId, { $inc: { availableQuantity: -input.quantity } });
 
       // Populate-тайгаар буцаах
       return await Booking.findById(savedBooking._id)
@@ -70,8 +67,8 @@ export class BookingController {
           path: 'concert',
           populate: {
             path: 'mainArtist',
-            model: 'Artist'
-          }
+            model: 'Artist',
+          },
         })
         .populate('ticketCategory');
     } catch (error) {
@@ -87,56 +84,76 @@ export class BookingController {
           path: 'concert',
           populate: {
             path: 'mainArtist',
-            model: 'Artist'
-          }
+            model: 'Artist',
+          },
         })
         .populate('ticketCategory')
         .sort({ bookingDate: -1 });
 
       // Нэг захиалгаар олон төрлийн билет захиалсан тохиолдолд нэгтгэх
-      const groupedBookings = bookings.reduce((acc: any, booking: any) => {
+      interface GroupedBooking {
+        id: string;
+        orderNumber: string;
+        date: string;
+        concert: IConcert;
+        tickets: Array<{
+          id: string;
+          type: string;
+          quantity: number;
+          unitPrice: number;
+          totalPrice: number;
+        }>;
+        totalAmount: number;
+        status: string;
+        paymentStatus: string;
+        canCancel: boolean;
+        cancellationDeadline: Date;
+      }
+
+      const groupedBookings = bookings.reduce((acc: Record<string, GroupedBooking>, booking: IBooking) => {
         // bookingDate null check
         const bookingDate = booking.bookingDate || new Date();
         const key = `${booking.concert._id}_${bookingDate.toISOString().split('T')[0]}`;
-        
+
         if (!acc[key]) {
+          const concert = booking.concert as unknown as IConcert;
           acc[key] = {
             id: booking._id.toString(),
             orderNumber: `#${booking._id.toString().slice(-4).toUpperCase()}`,
             date: bookingDate.toISOString(),
-            concert: booking.concert,
+            concert: concert,
             tickets: [],
             totalAmount: 0,
             status: booking.status,
             paymentStatus: booking.paymentStatus,
             canCancel: booking.canCancel,
-            cancellationDeadline: booking.cancellationDeadline
+            cancellationDeadline: booking.cancellationDeadline,
           };
         }
-        
+
         // Ижил төрлийн билет байвал тоог нэмэх, үгүй бол шинэ нэмэх
-        const existingTicketIndex = acc[key].tickets.findIndex((ticket: any) => 
-          ticket.type === (booking.ticketCategory?.type || 'UNKNOWN') && 
-          ticket.unitPrice === (booking.unitPrice || 0)
+        const ticketCategory = booking.ticketCategory as unknown as ITicketCategory;
+        const existingTicketIndex = acc[key].tickets.findIndex(
+          (ticket: { type: string; unitPrice: number }) => ticket.type === (ticketCategory?.type || 'UNKNOWN') && ticket.unitPrice === (booking.unitPrice || 0)
         );
-        
+
         if (existingTicketIndex >= 0) {
           // Ижил төрлийн билет байвал тоог нэмэх
-          acc[key].tickets[existingTicketIndex].quantity += (booking.quantity || 0);
-          acc[key].tickets[existingTicketIndex].totalPrice += (booking.totalPrice || 0);
+          acc[key].tickets[existingTicketIndex].quantity += booking.quantity || 0;
+          acc[key].tickets[existingTicketIndex].totalPrice += booking.totalPrice || 0;
         } else {
           // Шинэ төрлийн билет нэмэх
           acc[key].tickets.push({
             id: booking._id.toString(),
-            type: booking.ticketCategory?.type || 'UNKNOWN',
+            type: ticketCategory?.type || 'UNKNOWN',
             quantity: booking.quantity || 0,
             unitPrice: booking.unitPrice || 0,
-            totalPrice: booking.totalPrice || 0
+            totalPrice: booking.totalPrice || 0,
           });
         }
-        
-        acc[key].totalAmount += (booking.totalPrice || 0);
-        
+
+        acc[key].totalAmount += booking.totalPrice || 0;
+
         return acc;
       }, {});
 
@@ -156,7 +173,7 @@ export class BookingController {
 
       const booking = await Booking.findOne({
         _id: bookingId,
-        user: userId
+        user: userId,
       }).populate('ticketCategory');
 
       if (!booking) {
@@ -179,10 +196,7 @@ export class BookingController {
       await booking.save();
 
       // Available quantity-г нэмэгдүүлэх
-      await TicketCategory.findByIdAndUpdate(
-        booking.ticketCategory._id,
-        { $inc: { availableQuantity: booking.quantity } }
-      );
+      await TicketCategory.findByIdAndUpdate(booking.ticketCategory._id, { $inc: { availableQuantity: booking.quantity } });
 
       return await Booking.findById(bookingId)
         .populate('user', '-password')
@@ -190,8 +204,8 @@ export class BookingController {
           path: 'concert',
           populate: {
             path: 'mainArtist',
-            model: 'Artist'
-          }
+            model: 'Artist',
+          },
         })
         .populate('ticketCategory');
     } catch (error) {
@@ -208,7 +222,7 @@ export class BookingController {
 
       const booking = await Booking.findOne({
         _id: bookingId,
-        user: userId
+        user: userId,
       });
 
       if (!booking) {
@@ -235,8 +249,8 @@ export class BookingController {
           path: 'concert',
           populate: {
             path: 'mainArtist',
-            model: 'Artist'
-          }
+            model: 'Artist',
+          },
         })
         .populate('ticketCategory');
     } catch (error) {
@@ -253,8 +267,8 @@ export class BookingController {
           path: 'concert',
           populate: {
             path: 'mainArtist',
-            model: 'Artist'
-          }
+            model: 'Artist',
+          },
         })
         .populate('ticketCategory')
         .sort({ bookingDate: -1 });
@@ -290,8 +304,8 @@ export class BookingController {
           path: 'concert',
           populate: {
             path: 'mainArtist',
-            model: 'Artist'
-          }
+            model: 'Artist',
+          },
         })
         .populate('ticketCategory');
     } catch (error) {
@@ -309,11 +323,11 @@ export class BookingController {
 
       // Төлбөрийн статусыг өөрчлөх
       booking.paymentStatus = paymentStatus;
-      
+
       // Төлбөр амжилттай болсны дараа захиалгын статусыг CONFIRMED болгох
       if (paymentStatus === 'COMPLETED') {
         booking.status = 'CONFIRMED';
-        
+
         // Билетний боломжит тоо хасах
         const ticketCategory = await TicketCategory.findById(booking.ticketCategory);
         if (ticketCategory) {
@@ -324,7 +338,7 @@ export class BookingController {
           await ticketCategory.save();
         }
       }
-      
+
       await booking.save();
 
       return await Booking.findById(bookingId)
@@ -333,8 +347,8 @@ export class BookingController {
           path: 'concert',
           populate: {
             path: 'mainArtist',
-            model: 'Artist'
-          }
+            model: 'Artist',
+          },
         })
         .populate('ticketCategory');
     } catch (error) {
@@ -352,25 +366,27 @@ export class BookingController {
             totalBookings: { $sum: 1 },
             totalRevenue: { $sum: '$totalPrice' },
             pendingBookings: {
-              $sum: { $cond: [{ $eq: ['$status', 'PENDING'] }, 1, 0] }
+              $sum: { $cond: [{ $eq: ['$status', 'PENDING'] }, 1, 0] },
             },
             confirmedBookings: {
-              $sum: { $cond: [{ $eq: ['$status', 'CONFIRMED'] }, 1, 0] }
+              $sum: { $cond: [{ $eq: ['$status', 'CONFIRMED'] }, 1, 0] },
             },
             cancelledBookings: {
-              $sum: { $cond: [{ $eq: ['$status', 'CANCELLED'] }, 1, 0] }
-            }
-          }
-        }
+              $sum: { $cond: [{ $eq: ['$status', 'CANCELLED'] }, 1, 0] },
+            },
+          },
+        },
       ]);
 
-      return stats[0] || {
-        totalBookings: 0,
-        totalRevenue: 0,
-        pendingBookings: 0,
-        confirmedBookings: 0,
-        cancelledBookings: 0
-      };
+      return (
+        stats[0] || {
+          totalBookings: 0,
+          totalRevenue: 0,
+          pendingBookings: 0,
+          confirmedBookings: 0,
+          cancelledBookings: 0,
+        }
+      );
     } catch (error) {
       throw new Error(`Захиалгын статистик олоход алдаа гарлаа: ${error}`);
     }
