@@ -1,4 +1,4 @@
-import { deleteTable } from 'apps/2k/restaurant/backend/src/resolvers/mutations';
+import { deleteTable } from '../../../../src/resolvers/mutations/table/delete-table';
 import { TableModel } from '../../../../src/models/table.model';
 
 jest.mock('../../../../src/models/table.model');

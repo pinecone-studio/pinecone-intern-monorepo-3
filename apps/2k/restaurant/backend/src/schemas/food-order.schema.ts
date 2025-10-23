@@ -15,33 +15,38 @@ export const typeDefs = gql`
   }
 
   type FoodOrderItemType {
-    food: String
-    quantity: Int
+    food: FoodType!
+    quantity: Int!
   }
 
   type FoodOrder {
     id: ID!
-    userId: String!
+    user: ID!
     status: FoodOrderStatus!
     foodOrderItems: [FoodOrderItemType!]!
-    tableId: String
-    totalPrice: Int
-    orderNumber: Int
-    serveType: FoodServeType
+    tableId: String!
+    totalPrice: Int!
+    orderNumber: Int!
+    serveType: FoodServeType!
     createdAt: Date
     updatedAt: Date
   }
 
   input FoodOrderItemInput {
     food: ID!
-    quantity: Int
+    quantity: Int!
   }
 
   input FoodOrderInput {
-    totalPrice: Int
-    status: FoodOrderStatus
-    serveType: FoodServeType
+    totalPrice: Int!
+    status: FoodOrderStatus!
+    serveType: FoodServeType!
     foodOrderItems: [FoodOrderItemInput!]!
+  }
+
+  input UpdateOrderStatusInput {
+    order:ID!
+    status:FoodOrderStatus!
   }
 
   type Query {
@@ -51,5 +56,6 @@ export const typeDefs = gql`
 
   type Mutation {
     createOrder(userId: String!, tableId: String!, input: FoodOrderInput!): FoodOrder!
+    UpdateOrder(input:UpdateOrderStatusInput!): FoodOrder!
   }
 `;

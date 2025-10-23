@@ -12,10 +12,10 @@ const foodOrderItem = new Schema<FoodOrderItemType>({
 
 const foodOrderSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref:"User", required: true },
+    user: { type: Schema.Types.ObjectId, ref:"User", required: true },
     tableId: { type: String, required: true },
     orderNumber: { type: Number, required: true },
-    totalPrice: { type: Number, require: true },
+    totalPrice: { type: Number, required: true },
     status: {
       type: String,
       enum: ['PENDING', 'INPROGRESS', 'COMPLETED', 'SERVED'],
@@ -26,7 +26,7 @@ const foodOrderSchema = new Schema(
       enum: ['IN', 'GO'],
       default: 'IN',
     },
-    foodOrderItems: [{ type: foodOrderItem, require: true }],
+    foodOrderItems: [{ type: foodOrderItem, required: true }],
   },
   { timestamps: true }
 );

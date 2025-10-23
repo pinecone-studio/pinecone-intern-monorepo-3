@@ -17,16 +17,17 @@ describe('createOrder', () => {
     const mockInput: FoodOrderInput = {
       totalPrice: 5000,
       status: FoodOrderStatus.Pending,
-      serveType: FoodServeType.In, // <-- enum ашигласан
+      serveType: FoodServeType.In,
       foodOrderItems: [{ food: 'food1', quantity: 2 }],
     };
 
     const mockCreatedOrder = {
       _id: 'order1',
       ...mockInput,
-      userId: 'user1',
+      user: 'user1', // <- userId биш user
       tableId: 'table1',
       orderNumber: 12345,
+      populate: jest.fn().mockResolvedValue(true), // populate mock
     };
 
     (FoodOrder.create as jest.Mock).mockResolvedValue(mockCreatedOrder);
@@ -41,11 +42,14 @@ describe('createOrder', () => {
     expect(FoodOrder.create).toHaveBeenCalledWith(
       expect.objectContaining({
         ...mockInput,
-        userId: 'user1',
+        user: 'user1', // <- user гэж тохируулсан
         tableId: 'table1',
         orderNumber: expect.any(Number),
       })
     );
+
+    // populate дуудсан эсэхийг шалгах
+    expect(mockCreatedOrder.populate).toHaveBeenCalledWith([{ path: 'foodOrderItems.food' }]);
   });
 
   it('should return null if userId, tableId or input is missing', async () => {

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { DeleteFoodFromCategory } from '../../../../src/resolvers/mutations/food/Delete-Food-from-Category';
+import { DeleteFoodFromCategory } from '../../../../src/resolvers/mutations/food/delete-food-from-category';
 import { CategoryModel } from '../../../../src/models/category.model';
 import { Food } from '../../../../src/models/food.model';
 
@@ -55,16 +55,8 @@ describe('DeleteFoodFromCategory', () => {
 
     expect(CategoryModel.findById).toHaveBeenCalledWith('cat1');
     expect(Food.findById).toHaveBeenCalledWith('food1');
-    expect(CategoryModel.findByIdAndUpdate).toHaveBeenCalledWith(
-      'cat1',
-      { $pull: { food: 'food1' } },
-      { new: true, session: mockSession }
-    );
-    expect(Food.findByIdAndUpdate).toHaveBeenCalledWith(
-      'food1',
-      { $unset: { categoryId: '' } },
-      { new: true, session: mockSession }
-    );
+    expect(CategoryModel.findByIdAndUpdate).toHaveBeenCalledWith('cat1', { $pull: { food: 'food1' } }, { new: true, session: mockSession });
+    expect(Food.findByIdAndUpdate).toHaveBeenCalledWith('food1', { $unset: { categoryId: '' } }, { new: true, session: mockSession });
     expect(mockSession.commitTransaction).toHaveBeenCalled();
     expect(mockSession.endSession).toHaveBeenCalled();
     expect(result).toEqual(mockUpdatedFood);
@@ -79,9 +71,7 @@ describe('DeleteFoodFromCategory', () => {
       session: jest.fn().mockResolvedValue({}),
     });
 
-    await expect(DeleteFoodFromCategory({}, { categoryId: 'invalid', foodId: 'food1' }))
-      .rejects
-      .toThrow('Food-г category-с устгах үед алдаа гарлаа.');
+    await expect(DeleteFoodFromCategory({}, { categoryId: 'invalid', foodId: 'food1' })).rejects.toThrow('Food-г category-с устгах үед алдаа гарлаа.');
 
     expect(mockSession.abortTransaction).toHaveBeenCalled();
     expect(mockSession.endSession).toHaveBeenCalled();
@@ -96,9 +86,7 @@ describe('DeleteFoodFromCategory', () => {
       session: jest.fn().mockResolvedValue(null),
     });
 
-    await expect(DeleteFoodFromCategory({}, { categoryId: 'cat1', foodId: 'invalid' }))
-      .rejects
-      .toThrow('Food-г category-с устгах үед алдаа гарлаа.');
+    await expect(DeleteFoodFromCategory({}, { categoryId: 'cat1', foodId: 'invalid' })).rejects.toThrow('Food-г category-с устгах үед алдаа гарлаа.');
 
     expect(mockSession.abortTransaction).toHaveBeenCalled();
     expect(mockSession.endSession).toHaveBeenCalled();
@@ -109,9 +97,7 @@ describe('DeleteFoodFromCategory', () => {
       throw new Error('Unexpected DB error');
     });
 
-    await expect(DeleteFoodFromCategory({}, { categoryId: 'cat1', foodId: 'food1' }))
-      .rejects
-      .toThrow('Food-г category-с устгах үед алдаа гарлаа.');
+    await expect(DeleteFoodFromCategory({}, { categoryId: 'cat1', foodId: 'food1' })).rejects.toThrow('Food-г category-с устгах үед алдаа гарлаа.');
 
     expect(mockSession.abortTransaction).toHaveBeenCalled();
     expect(mockSession.endSession).toHaveBeenCalled();

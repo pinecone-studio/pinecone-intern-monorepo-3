@@ -1,4 +1,4 @@
-import { getByIdCategory } from '../../../../src/resolvers/queries/category/get-By-Id-Category';
+import { getByIdCategory } from '../../../../src/resolvers/queries/category/get-by-id-category';
 import { CategoryModel } from '../../../../src/models/category.model';
 
 jest.mock('../../../../src/models/category.model', () => ({
@@ -32,9 +32,7 @@ describe('getByIdCategory resolver', () => {
       populate: jest.fn().mockResolvedValueOnce(null),
     });
 
-    await expect(getByIdCategory({}, { categoryId: '3' }))
-      .rejects
-      .toThrow('Category with ID 3 not found');
+    await expect(getByIdCategory({}, { categoryId: '3' })).rejects.toThrow('Category with ID 3 not found');
   });
 
   it('should throw an error if database fails', async () => {
@@ -42,8 +40,6 @@ describe('getByIdCategory resolver', () => {
       populate: jest.fn().mockRejectedValueOnce(new Error('DB error')),
     });
 
-    await expect(getByIdCategory({}, { categoryId: '2' }))
-      .rejects
-      .toThrow('DB error');
+    await expect(getByIdCategory({}, { categoryId: '2' })).rejects.toThrow('DB error');
   });
 });
