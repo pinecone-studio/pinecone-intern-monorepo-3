@@ -20,20 +20,31 @@ const formatValidDate = (date: Date): string => {
   return `${mm}.${dd}`;
 };
 
+const parseTimestamp = (timestamp: string): Date => {
+  const ts = parseInt(timestamp, 10);
+  const ms = String(ts).length === 10 ? ts * 1000 : ts;
+  return new Date(ms);
+};
+
+// eslint-disable-next-line complexity
 const parseDate = (dateStr: string, timeStr?: string): Date => {
-  if (/^\d+$/.test(dateStr)) {
-    return new Date(parseInt(dateStr));
-  }
+  if (/^\d{10,13}$/.test(dateStr)) return parseTimestamp(dateStr);
+  if (dateStr.includes('T') && dateStr.includes('Z')) return new Date(dateStr);
   const iso = `${dateStr}T${timeStr ?? '00:00'}:00`;
   return new Date(iso);
 };
 
 export const formatDateTime = (dateStr?: string, timeStr?: string): string => {
   if (!dateStr) return '';
-  const dt = parseDate(dateStr, timeStr);
-  if (!isValidDate(dt)) {
-    console.warn('Invalid date format:', { dateStr, timeStr });
-    return dateStr;
+  try {
+    const dt = parseDate(dateStr, timeStr);
+    if (!isValidDate(dt)) {
+      console.warn('Invalid date format:', { dateStr, timeStr, parsedDate: dt });
+      return 'Invalid date';
+    }
+    return formatValidDate(dt);
+  } catch (error) {
+    console.error('Date formatting error:', error, { dateStr, timeStr });
+    return 'Date error';
   }
-  return formatValidDate(dt);
 };

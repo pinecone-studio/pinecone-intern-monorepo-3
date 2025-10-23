@@ -8,11 +8,12 @@ interface HeroSliderProps {
   artist: string;
   dates: string[];
   backgroundImage?: string;
+  className?: string;
 }
 
-export const HeroSlider: React.FC<HeroSliderProps> = ({ title, artist, dates, backgroundImage = '/images/hero-bg.jpg' }) => {
+export const HeroSlider: React.FC<HeroSliderProps> = ({ title, artist, dates, backgroundImage = '/images/hero-bg.jpg', className }) => {
   return (
-    <section className="relative w-full h-[300px] overflow-hidden" data-testid="hero-slider">
+    <section className={`relative w-full h-[300px] overflow-hidden ${className ?? ''}`} data-testid="hero-slider">
       <div
         className="absolute inset-0 bg-center bg-no-repeat bg-cover"
         style={{
@@ -23,7 +24,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({ title, artist, dates, ba
       <div className="absolute inset-0 bg-black bg-opacity-50" />
 
       <div className="relative z-10 flex items-center h-full">
-        <div className="max-w-[1400px] mx-auto px-6 w-full">
+        <div className="w-full">
           <div className="flex items-start gap-6">
             <div className="flex-1">
               <h2

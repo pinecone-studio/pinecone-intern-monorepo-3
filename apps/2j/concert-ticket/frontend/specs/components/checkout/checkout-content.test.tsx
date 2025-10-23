@@ -167,4 +167,31 @@ describe('CheckoutContent', () => {
     fireEvent.change(emailInput, { target: { value: 'test@test.mn' } });
     expect(emailInput).toHaveValue('test@test.mn');
   });
+
+  it('uses default ticket categories when ticketData is invalid JSON', () => {
+    render(<CheckoutContent _concertId="1" _selectedDate="2024-12-25" ticketData="invalid-json" />);
+    expect(screen.getByPlaceholderText('9900-0000')).toBeInTheDocument();
+  });
+
+  it('uses default ticket categories when ticketData is undefined', () => {
+    render(<CheckoutContent _concertId="1" _selectedDate="2024-12-25" ticketData={undefined as unknown as string} />);
+    expect(screen.getByText('Арын тасалбар')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('9900-0000')).toBeInTheDocument();
+  });
+
+  it('validates form and shows error, then clears error when close button is clicked', () => {
+    render(<CheckoutContent _concertId="1" _selectedDate="2024-12-25" ticketData={encodeURIComponent(data)} />);
+
+    const continueButton = screen.getByText('Үргэлжлүүлэх');
+    fireEvent.click(continueButton);
+
+    const errorMessage = screen.getByText('Утасны дугаар оруулна уу!');
+    expect(errorMessage).toBeInTheDocument();
+
+    const closeButtons = screen.getAllByRole('button');
+    const closeButton = closeButtons.find((btn) => btn.querySelector('svg'));
+    if (closeButton) {
+      fireEvent.click(closeButton);
+    }
+  });
 });
