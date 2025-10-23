@@ -102,7 +102,7 @@ describe('Navbar', () => {
       },
       loading: false,
       error: null,
-    } as any);
+    } as ReturnType<typeof useMyProfileQuery>);
 
     render(<Navbar />);
     
@@ -120,7 +120,7 @@ describe('Navbar', () => {
       },
       loading: false,
       error: null,
-    } as any);
+    } as ReturnType<typeof useMyProfileQuery>);
 
     render(<Navbar />);
     

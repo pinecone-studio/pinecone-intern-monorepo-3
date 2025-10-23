@@ -6,13 +6,14 @@ import {
   calculateDiscountFromDate,
   formatDateTime 
 } from './EventCard.utils';
-import type { TicketCategory } from '@/types/Event.type';
+import type { TicketCategory, TicketCategoryType } from '@/types/Event.type';
+import { Types } from 'mongoose';
 
 describe('EventCard.utils', () => {
   const mockCategories: TicketCategory[] = [
     {
       id: '1',
-      type: 'VIP' as any,
+      type: 'VIP' as TicketCategoryType,
       totalQuantity: 100,
       availableQuantity: 50,
       unitPrice: 100000,
@@ -20,13 +21,13 @@ describe('EventCard.utils', () => {
       discountedPrice: 80000,
       description: 'VIP ticket',
       features: ['Best seats'],
-      concert: 'concert1' as any,
+      concert: 'concert1' as unknown as Types.ObjectId,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
       id: '2',
-      type: 'REGULAR' as any,
+      type: 'REGULAR' as TicketCategoryType,
       totalQuantity: 200,
       availableQuantity: 100,
       unitPrice: 50000,
@@ -34,13 +35,13 @@ describe('EventCard.utils', () => {
       discountedPrice: 45000,
       description: 'Regular ticket',
       features: ['Good seats'],
-      concert: 'concert1' as any,
+      concert: 'concert1' as unknown as Types.ObjectId,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
       id: '3',
-      type: 'GENERAL_ADMISSION' as any,
+      type: 'GENERAL_ADMISSION' as TicketCategoryType,
       totalQuantity: 300,
       availableQuantity: 200,
       unitPrice: 30000,
@@ -48,7 +49,7 @@ describe('EventCard.utils', () => {
       discountedPrice: 30000,
       description: 'General ticket',
       features: ['Basic seats'],
-      concert: 'concert1' as any,
+      concert: 'concert1' as unknown as Types.ObjectId,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
