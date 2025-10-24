@@ -13,7 +13,7 @@ const getTicketTypeName = (type: TicketType): string => {
     case TicketType.Regular:
       return 'Энгийн тасалбар';
     case TicketType.GeneralAdmission:
-      return 'Арын тасалбар';
+      return 'Задгай тасалбар';
     default:
       return 'Тасалбар';
   }

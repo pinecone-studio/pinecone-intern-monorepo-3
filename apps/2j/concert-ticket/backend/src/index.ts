@@ -37,6 +37,18 @@ async function startApolloServer() {
     cors({
       origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
       credentials: true,
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Apollo-Operation-Name',
+        'x-apollo-operation-name',
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+      ],
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
     }),
     express.json(),
     express.urlencoded({ extended: true }),

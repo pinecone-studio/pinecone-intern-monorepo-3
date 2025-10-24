@@ -14,4 +14,31 @@ export const config = {
   cors: {
     origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   },
-};
+  cloudinary: {
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME || extractCloudNameFromUrl(process.env.CLOUDINARY_URL || ''),
+    uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET || 'ticket-booking',
+    apiKey: process.env.CLOUDINARY_API_KEY || extractApiKeyFromUrl(process.env.CLOUDINARY_URL || ''),
+    apiSecret: process.env.CLOUDINARY_API_SECRET || extractApiSecretFromUrl(process.env.CLOUDINARY_URL || ''),
+  }
+}
+
+// Cloudinary URL-аас cloud name задлах функц
+function extractCloudNameFromUrl(cloudinaryUrl: string): string {
+  if (!cloudinaryUrl) return '';
+  const match = cloudinaryUrl.match(/cloudinary:\/\/\d+:[\w-]+@([\w-]+)/);
+  return match ? match[1] : '';
+}
+
+// Cloudinary URL-аас API key задлах функц
+function extractApiKeyFromUrl(cloudinaryUrl: string): string {
+  if (!cloudinaryUrl) return '';
+  const match = cloudinaryUrl.match(/cloudinary:\/\/(\d+):/);
+  return match ? match[1] : '';
+}
+
+// Cloudinary URL-аас API secret задлах функц
+function extractApiSecretFromUrl(cloudinaryUrl: string): string {
+  if (!cloudinaryUrl) return '';
+  const match = cloudinaryUrl.match(/cloudinary:\/\/\d+:([\w-]+)@/);
+  return match ? match[1] : '';
+}
