@@ -11,7 +11,7 @@ export const userTypeDefs = gql`
     email: String!
     username: String!
     profile: String
-    password: String!
+    password: String
     bonusPoints: Int
     role: UserRole!
     phoneNumber: String
