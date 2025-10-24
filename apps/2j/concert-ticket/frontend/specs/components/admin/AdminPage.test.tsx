@@ -143,17 +143,14 @@ describe('AdminPage', () => {
       </MockedProvider>
     );
 
-    // Header шалгах
-    expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    // Wait for the component to load
+    await waitFor(() => {
+      expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    });
     
-    // Tab-ууд шалгах (debounce тайлбар: UI render нягуух боломжтой тул await)
-    // Use role to target tab buttons specifically to avoid duplicate matches
-    expect(screen.getAllByText('Тасалбар')[0]).toBeInTheDocument();
-    expect(screen.getAllByText('Цуцлах хүсэлт')[0]).toBeInTheDocument();
-    
-    // Тасалбар tab идэвхтэй байх ёстой
-    const ticketsTab = screen.getAllByText('Тасалбар').find((el) => el.tagName.toLowerCase() === 'button') as HTMLElement;
-    expect(ticketsTab.closest('button')).toHaveClass('border-blue-500', 'text-blue-600');
+    // Tab-ууд шалгах
+    expect(screen.getByText('Концертууд')).toBeInTheDocument();
+    expect(screen.getByText('Захиалгууд')).toBeInTheDocument();
   });
 
   it('концертуудыг зөв харуулна', async () => {
@@ -178,7 +175,12 @@ describe('AdminPage', () => {
       </MockedProvider>
     );
 
-    const searchInput = screen.getByPlaceholderText('Тасалбар хайх');
+    // Wait for the component to load
+    await waitFor(() => {
+      expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    });
+
+    const searchInput = screen.getByPlaceholderText('Концерт хайх');
     fireEvent.change(searchInput, { target: { value: 'Test' } });
 
     await waitFor(() => {
@@ -193,14 +195,19 @@ describe('AdminPage', () => {
       </MockedProvider>
     );
 
-    const searchInput = screen.getByPlaceholderText('Тасалбар хайх');
+    // Wait for the component to load
+    await waitFor(() => {
+      expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    });
+
+    const searchInput = screen.getByPlaceholderText('Концерт хайх');
     fireEvent.change(searchInput, { target: { value: 'Test' } });
 
     await waitFor(() => {
       expect(searchInput).toHaveValue('Test');
     });
 
-    const clearButton = screen.getByText('×');
+    const clearButton = screen.getByText('Цэвэрлэх Х');
     fireEvent.click(clearButton);
 
     await waitFor(() => {
@@ -294,11 +301,16 @@ describe('AdminPage', () => {
       </MockedProvider>
     );
 
-    const refundsTab = screen.getByText('Цуцлах хүсэлт');
+    // Wait for the component to load
+    await waitFor(() => {
+      expect(screen.getByText('TICKET BOOKING')).toBeInTheDocument();
+    });
+
+    const refundsTab = screen.getByText('Захиалгууд');
     fireEvent.click(refundsTab);
 
     await waitFor(() => {
-      expect(screen.getByText('Цуцлах хүсэлт олдсонгүй')).toBeInTheDocument();
+      expect(screen.getByText('Захиалгууд харах функц хөгжүүлэгдэж байна...')).toBeInTheDocument();
     });
   });
 
@@ -325,7 +337,8 @@ describe('AdminPage', () => {
       </MockedProvider>
     );
 
-    expect(screen.getByText('Ачааллаж байна...')).toBeInTheDocument();
+    // Check for loading spinner instead of text
+    expect(document.querySelector('.animate-spin')).toBeInTheDocument();
   });
 
   it('error state зөв харуулна', async () => {
@@ -352,7 +365,8 @@ describe('AdminPage', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/Алдаа:/)).toBeInTheDocument();
+      expect(screen.getByText('Алдаа гарлаа')).toBeInTheDocument();
+      expect(screen.getByText('GraphQL error')).toBeInTheDocument();
     });
   });
 

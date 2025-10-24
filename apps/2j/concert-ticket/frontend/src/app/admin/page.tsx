@@ -13,7 +13,7 @@ import { TabType, ConcertForAdmin } from '../../types/admin.type';
 
 // Admin хуудасны state management hook
 const useAdminState = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('tickets');
+  const [activeTab, setActiveTab] = useState<TabType>('concerts');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [showFeaturedModal, setShowFeaturedModal] = useState(false);
@@ -114,7 +114,7 @@ const SearchSection = ({
       <div className="relative">
         <input
           type="text"
-          placeholder="Тасалбар хайх"
+          placeholder="Концерт хайх"
           value={searchQuery}
           onChange={handleSearchChange}
           className="w-64 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -454,7 +454,7 @@ const AdminPage = () => {
     showAddTicketModal, setShowAddTicketModal,
     showEditConcertModal, setShowEditConcertModal,
     showAddConcertModal, setShowAddConcertModal,
-    selectedConcert,
+    selectedConcert, setSelectedConcert,
     concerts, totalCount, hasMore, concertsLoading, concertsError, refetch
   } = useAdminData();
 
@@ -474,7 +474,7 @@ const AdminPage = () => {
     setFeaturedConcerts,
     setSelectedConcertForFeatured,
     setShowFeaturedModal,
-    selectedConcert,
+    setSelectedConcert,
     setShowEditConcertModal,
     deleteConcert,
     refetch,

@@ -197,8 +197,8 @@ const useFormHandlers = (
             type: 'GENERAL_ADMISSION',
             totalQuantity: parseInt(formData.generalQuantity),
             unitPrice: parseFloat(formData.generalPrice),
-            description: 'Ерөнхий тасалбар',
-            features: ['Ерөнхий орц']
+            description: 'Задгай тасалбар',
+            features: ['Задгай орц']
           }
         ]
       };

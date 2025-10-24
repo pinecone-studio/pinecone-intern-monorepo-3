@@ -19,8 +19,8 @@ export const config = {
     uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET || 'ticket-booking',
     apiKey: process.env.CLOUDINARY_API_KEY || extractApiKeyFromUrl(process.env.CLOUDINARY_URL || ''),
     apiSecret: process.env.CLOUDINARY_API_SECRET || extractApiSecretFromUrl(process.env.CLOUDINARY_URL || ''),
-  },
-};
+  }
+}
 
 // Cloudinary URL-аас cloud name задлах функц
 function extractCloudNameFromUrl(cloudinaryUrl: string): string {
@@ -41,4 +41,4 @@ function extractApiSecretFromUrl(cloudinaryUrl: string): string {
   if (!cloudinaryUrl) return '';
   const match = cloudinaryUrl.match(/cloudinary:\/\/\d+:([\w-]+)@/);
   return match ? match[1] : '';
-};
+}

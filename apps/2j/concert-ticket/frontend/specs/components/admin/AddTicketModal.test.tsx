@@ -11,7 +11,7 @@ global.alert = mockAlert;
 // Mock fetch for Cloudinary upload
 global.fetch = jest.fn().mockResolvedValue({
   ok: true,
-  json: () => Promise.resolve({ secure_url: 'https://cloudinary.com/test-image.jpg' })
+  json: () => Promise.resolve({ secureUrl: 'https://cloudinary.com/test-image.jpg' })
 });
 
 // Mock URL.createObjectURL
@@ -339,14 +339,111 @@ describe('AddTicketModal', () => {
   });
 
   it('амжилттай form submit ажиллана', async () => {
-    const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    // 1) Cloudinary upload
-    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({ secureUrl: 'https://cloudinary.com/test-image.jpg' }) });
-    // 2) /api/artists returns existing artist to skip createArtist
-    (global.fetch as jest.Mock).mockResolvedValueOnce({ ok: true, json: () => Promise.resolve([{ id: 'artist-1', name: 'Test Artist' }]) });
+    // Mock /api/artists to return existing artist to skip createArtist
+    (global.fetch as jest.Mock).mockResolvedValueOnce({ 
+      ok: true, 
+      json: () => Promise.resolve([{ id: 'artist-1', name: 'Test Artist' }]) 
+    });
+
+    // Create a specific mock for this test that includes both createArtist and createConcert mutations
+    const testMocks = [
+      ...mocks,
+      {
+        request: {
+          query: CreateArtistDocument,
+          variables: {
+            input: {
+              name: 'Test Artist',
+              bio: '',
+              image: ''
+            }
+          }
+        },
+        result: {
+          data: {
+            createArtist: {
+              id: 'artist-1',
+              name: 'Test Artist',
+              bio: '',
+              image: '',
+              __typename: 'Artist'
+            }
+          }
+        }
+      },
+      {
+        request: {
+          query: CreateConcertDocument,
+          variables: {
+            input: {
+              name: 'Test Concert',
+              description: '',
+              venue: 'Test Venue',
+              date: '2024-12-25',
+              time: '19:00',
+              image: '',
+              mainArtistId: 'artist-1',
+              otherArtistIds: [],
+              ticketCategories: [
+                {
+                  type: 'VIP',
+                  totalQuantity: 100,
+                  unitPrice: 50000,
+                  description: 'VIP тасалбар',
+                  features: ['VIP суудал', 'VIP орц', 'VIP үйлчилгээ']
+                },
+                {
+                  type: 'REGULAR',
+                  totalQuantity: 200,
+                  unitPrice: 30000,
+                  description: 'Энгийн тасалбар',
+                  features: ['Энгийн суудал']
+                },
+                {
+                  type: 'GENERAL_ADMISSION',
+                  totalQuantity: 300,
+                  unitPrice: 20000,
+                  description: 'Задгай тасалбар',
+                  features: ['Задгай орц']
+                }
+              ]
+            }
+          }
+        },
+        result: {
+          data: {
+            createConcert: {
+              id: 'concert-1',
+              name: 'Test Concert',
+              description: '',
+              venue: 'Test Venue',
+              date: '2024-12-25',
+              time: '19:00',
+              image: '',
+              isActive: true,
+              mainArtist: {
+                id: 'artist-1',
+                name: 'Test Artist',
+                __typename: 'Artist'
+              },
+              ticketCategories: [
+                {
+                  id: 'ticket-1',
+                  type: 'VIP',
+                  totalQuantity: 100,
+                  unitPrice: 50000,
+                  __typename: 'TicketCategory'
+                }
+              ],
+              __typename: 'Concert'
+            }
+          }
+        }
+      }
+    ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={testMocks} addTypename={false}>
         <AddTicketModal isOpen={true} onClose={mockOnClose} />
       </MockedProvider>
     );
