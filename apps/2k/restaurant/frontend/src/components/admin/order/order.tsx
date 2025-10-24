@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { OrderFilter } from './OrderFilter';
-import { OrderItemCard } from './OrderItemCard';
+import { OrderFilter } from './orderFilter';
+import { OrderItemCard } from './orderItemCard';
+
 
 
 export const AdminOrderStyle = () => {

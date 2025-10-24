@@ -16,11 +16,8 @@ interface AddFoodDialogProps {
   food?: FoodType;
 }
 
-
-
 export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ mode, food }) => {
-
-console.log('FoodType in AddFoodDialog:', food);
+  console.log('FoodType in AddFoodDialog:', food);
 
   const [name, setName] = useState(food?.name || '');
   const [price, setPrice] = useState(food?.price || '');
@@ -72,6 +69,7 @@ console.log('FoodType in AddFoodDialog:', food);
                 </>
               )}
             </label>
+
             <input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
           </div>
 
@@ -91,7 +89,10 @@ console.log('FoodType in AddFoodDialog:', food);
 
           <select
             value={status ? 'true' : 'false'}
-            onChange={(e) => setStatus(e.target.value === 'true')}
+            onChange={(e) => {
+              console.log(e.target.value); // 'true' эсвэл 'false'
+              setStatus(e.target.value === 'true');
+            }}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
           >
             <option value="true">идэвхитэй</option>
