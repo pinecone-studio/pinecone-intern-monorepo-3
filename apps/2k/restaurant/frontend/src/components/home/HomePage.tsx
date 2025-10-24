@@ -3,8 +3,9 @@
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { OrderList } from './OrderList';
 import { AddPayload, CartItem } from '@/types/cart';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MenuCard from './MenuCard';
+import { useGetCategoriesQuery } from '@/generated';
 
 export function removeItemReducer(prev: CartItem[], id: string): CartItem[] {
   const norm = (v: string) => String(v).trim();
@@ -32,6 +33,8 @@ export function removeOneReducer(prev: CartItem[], id: string): CartItem[] {
 }
 
 const HomePage = () => {
+  const { data: categories } = useGetCategoriesQuery();
+  const [activeCategory, setActiveCategory] = useState<string | undefined>(undefined);
   const foods = [
     {
       foodId: '1',
@@ -57,6 +60,14 @@ const HomePage = () => {
   ];
   const [cart, setCart] = useState<CartItem[]>([]);
 
+  useEffect(() => {
+    if (categories?.getCategories?.length) {
+      setActiveCategory(categories.getCategories[0]?.categoryName);
+    }
+  }, [categories]);
+
+  // const filteredItems = categories?.getCategories.find((item) => item?.categoryName === activeCategory)?.food ?? [];
+
   const addToCart = (id: string, image: string, foodName: string, price: string) => {
     setCart((prev) => addToCartReducer(prev, { id, image, foodName, price }));
   };
@@ -70,9 +81,21 @@ const HomePage = () => {
         </div>
         <div className="px-4 py-4 bg-white">
           <div className="flex space-x-6 overflow-x-auto">
-            <button>Үндсэн</button>
-            <button>Үндсэн</button>
-            <button>Үндсэн</button>
+            {categories?.getCategories.map((category) => (
+              <button
+                data-testid={`homepage-container-filter-button-${category?.categoryName || 'empty'}`}
+                key={category?.categoryId}
+                onClick={() => {
+                  const name = category?.categoryName?.trim();
+                  if (name) setActiveCategory(name);
+                }}
+                className={`whitespace-nowrap text-sm font-medium p-1 border-2 rounded-lg transition-colors ${
+                  activeCategory === category?.categoryName ? 'text-[#441500] border-[#441500]/20' : 'text-gray-500 border-transparent hover:text-gray-700'
+                }`}
+              >
+                {category?.categoryName}
+              </button>
+            ))}
           </div>
           <div className="grid max-w-2xl grid-cols-2 gap-4 p-4 mx-auto overflow-scroll h-fit pb-23">
             {foods.map((food) => {

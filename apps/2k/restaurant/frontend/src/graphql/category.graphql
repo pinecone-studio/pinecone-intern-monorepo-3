@@ -1,0 +1,55 @@
+query getCategories {
+  getCategories {
+    categoryId
+    categoryName
+    food {
+      id
+      name
+      price
+      available
+      image
+    #   discount {
+    #     discountId
+    #     discountName
+    #     discountRate
+    #     startDate
+    #     endDate
+    #   }
+    }
+  }
+}
+
+query getByIdCategory($categoryId: ID!) {
+  getByIdCategory(categoryId: $categoryId) {
+    categoryId
+    categoryName
+    food {
+      id
+      name
+      price
+      available
+      image
+    }
+  }
+}
+
+mutation createCategory($input: CreateCategoryInput!) {
+  createCategory(input: $input) {
+    categoryId
+    categoryName
+  }
+}
+
+mutation updateCategory($categoryId: ID!, $input: UpdateCategoryInput!) {
+  updateCategory(categoryId: $categoryId, input: $input) {
+    categoryId
+    categoryName
+  }
+}
+
+mutation deleteCategory($categoryId: ID!) {
+  deleteCategory(categoryId: $categoryId) {
+    categoryId
+    categoryName
+  }
+}
