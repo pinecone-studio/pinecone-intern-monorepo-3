@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { config } from '../../../config/env';
 
 // Cloudinary тохиргооны мэдээллийг frontend-д илгээх
-export async function GET(_request: NextRequest) {
+export async function GET() {
   try {
     // Зөвхөн шаардлагатай мэдээллийг илгээх (API key, secret-ийг нуух)
     const cloudinaryConfig = {

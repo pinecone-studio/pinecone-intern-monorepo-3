@@ -24,7 +24,7 @@ const AddConcertModal = ({ isOpen, onClose, onSuccess }: AddConcertModalProps) =
     ticketCategories: {
       vip: { totalQuantity: 0, unitPrice: 0 },
       regular: { totalQuantity: 0, unitPrice: 0 },
-      general: { totalQuantity: 0, unitPrice: 0 }
+      generalAdmission: { totalQuantity: 0, unitPrice: 0 }
     }
   });
 
@@ -33,6 +33,34 @@ const AddConcertModal = ({ isOpen, onClose, onSuccess }: AddConcertModalProps) =
     uploadProgress: 0,
     uploadedImageUrl: ''
   });
+
+  // Тасалбарын ангиллын нэр харуулах функц
+  const getCategoryDisplayName = (category: string): string => {
+    switch (category) {
+      case 'vip':
+        return 'VIP';
+      case 'regular':
+        return 'Regular';
+      case 'generalAdmission':
+        return 'General';
+      default:
+        return category;
+    }
+  };
+
+  // Тасалбарын ангиллын backend enum-д хөрвүүлэх функц
+  const getCategoryBackendType = (category: string): string => {
+    switch (category) {
+      case 'vip':
+        return 'VIP';
+      case 'regular':
+        return 'REGULAR';
+      case 'generalAdmission':
+        return 'GENERAL_ADMISSION';
+      default:
+        return category.toUpperCase();
+    }
+  };
 
   const [createConcert] = useCreateConcertMutation();
   const [createArtist] = useCreateArtistMutation();
@@ -250,10 +278,10 @@ const AddConcertModal = ({ isOpen, onClose, onSuccess }: AddConcertModalProps) =
     Object.entries(formData.ticketCategories).forEach(([type, data]) => {
       if (data.totalQuantity > 0 && data.unitPrice > 0) {
         ticketCategories.push({
-          type: type.toUpperCase(),
+          type: getCategoryBackendType(type),
           totalQuantity: data.totalQuantity,
           unitPrice: data.unitPrice,
-          description: `${type} тасалбар`,
+          description: `${getCategoryDisplayName(type)} тасалбар`,
           features: []
         });
       }
@@ -310,7 +338,7 @@ const AddConcertModal = ({ isOpen, onClose, onSuccess }: AddConcertModalProps) =
         ticketCategories: {
           vip: { totalQuantity: 0, unitPrice: 0 },
           regular: { totalQuantity: 0, unitPrice: 0 },
-          general: { totalQuantity: 0, unitPrice: 0 }
+          generalAdmission: { totalQuantity: 0, unitPrice: 0 }
         }
       });
     } catch (error) {
@@ -434,6 +462,21 @@ const AddConcertModal = ({ isOpen, onClose, onSuccess }: AddConcertModalProps) =
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Тоглолтын газар <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="venue"
+                  value={formData.venue}
+                  onChange={handleInputChange}
+                  placeholder="Жишээ: UG Arena, UB Palace"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
             </div>
 
             {/* Уран бүтээлчийн мэдээлэл */}
@@ -531,7 +574,7 @@ const AddConcertModal = ({ isOpen, onClose, onSuccess }: AddConcertModalProps) =
               
               {Object.entries(formData.ticketCategories).map(([category, data]) => (
                 <div key={category} className="border border-gray-200 rounded-lg p-4">
-                  <h5 className="font-medium text-gray-900 mb-3 capitalize">{category} <span className="text-red-500">*</span></h5>
+                  <h5 className="font-medium text-gray-900 mb-3">{getCategoryDisplayName(category)} <span className="text-red-500">*</span></h5>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">

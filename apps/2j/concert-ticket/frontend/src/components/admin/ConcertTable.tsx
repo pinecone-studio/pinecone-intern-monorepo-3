@@ -114,7 +114,7 @@ const ConcertRow = ({
             {concert.ticketCategories.map((category) => (
               <div key={category.id} className="text-xs text-gray-600">
                 <span className="font-medium">
-                  {category.type === 'GENERAL' ? 'Задгай' : 
+                  {category.type === 'GENERAL_ADMISSION' ? 'Задгай' : 
                    category.type === 'VIP' ? 'VIP' : 
                    category.type === 'REGULAR' ? 'Энгийн' : category.type}:
                 </span> {category.availableQuantity}

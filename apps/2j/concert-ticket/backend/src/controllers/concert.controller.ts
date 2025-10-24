@@ -110,7 +110,7 @@ export class ConcertController {
         mainArtist: input.mainArtistId,
         otherArtists: input.otherArtistIds || [],
         image: input.image,
-        isActive: true
+        isActive: input.isActive !== undefined ? input.isActive : true
       });
 
       const savedConcert = await concert.save();
