@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useGetAdminConcertsQuery, useDeleteConcertMutation } from '../../generated';
 import ConcertTable from '../../components/admin/ConcertTable';
 import AddTicketModal from '../../components/admin/AddTicketModal';
@@ -50,7 +50,7 @@ const useAdminHandlers = (
   setSelectedConcert: (concert: ConcertForAdmin) => void,
   setShowEditConcertModal: (show: boolean) => void,
   deleteConcert: (variables: { variables: { id: string } }) => Promise<unknown>,
-  setFeaturedConcerts: (fn: (prev: Set<string>) => Set<string>) => void,
+  setFeaturedConcerts: React.Dispatch<React.SetStateAction<Set<string>>>,
   refetch: () => void
 ) => {
   const handleStarClick = (concertId: string) => {
@@ -184,7 +184,8 @@ const useAdminData = () => {
 const useAdminEventHandlers = (
   concerts: ConcertForAdmin[],
   featuredConcerts: Set<string>,
-  setFeaturedConcerts: (concerts: Set<string>) => void,
+  setFeaturedConcerts: React.Dispatch<React.SetStateAction<Set<string>>>,
+  selectedConcertForFeatured: string | null,
   setSelectedConcertForFeatured: (concert: string | null) => void,
   setShowFeaturedModal: (show: boolean) => void,
   setSelectedConcert: (concert: ConcertForAdmin | null) => void,
@@ -209,13 +210,15 @@ const useAdminEventHandlers = (
 
   const handleFeaturedSave = (isFeatured: boolean) => {
     if (selectedConcertForFeatured) {
-      const newFeaturedConcerts = new Set(featuredConcerts);
-      if (isFeatured) {
-        newFeaturedConcerts.add(selectedConcertForFeatured);
-      } else {
-        newFeaturedConcerts.delete(selectedConcertForFeatured);
-      }
-      setFeaturedConcerts(newFeaturedConcerts);
+      setFeaturedConcerts((prev: Set<string>) => {
+        const newFeaturedConcerts = new Set(prev);
+        if (isFeatured) {
+          newFeaturedConcerts.add(selectedConcertForFeatured);
+        } else {
+          newFeaturedConcerts.delete(selectedConcertForFeatured);
+        }
+        return newFeaturedConcerts;
+      });
       setShowFeaturedModal(false);
       setSelectedConcertForFeatured(null);
     }
@@ -274,6 +277,7 @@ const AdminHeader = () => (
 const AdminMainContent = ({
   activeTab, setActiveTab,
   currentPage, setCurrentPage,
+  pageSize,
   searchQuery, handleSearchChange, clearSearch,
   setShowAddConcertModal,
   sortedConcerts, featuredConcerts,
@@ -331,6 +335,7 @@ const AdminMainContent = ({
           onEditClick={handleEditClick}
           onDeleteClick={handleDeleteClick}
           currentPage={currentPage}
+          pageSize={pageSize}
           totalCount={totalCount}
           hasMore={hasMore}
           onPageChange={setCurrentPage}
@@ -373,9 +378,6 @@ const AdminModals = ({
       isOpen={showEditConcertModal}
       onClose={() => setShowEditConcertModal(false)}
       concert={selectedConcert}
-      onSuccess={() => {
-        setShowEditConcertModal(false);
-      }}
     />
 
     <AddTicketModal
@@ -389,6 +391,7 @@ const AdminModals = ({
 const AdminPageContent = ({
   activeTab, setActiveTab,
   currentPage, setCurrentPage,
+  pageSize,
   showFeaturedModal, setShowFeaturedModal,
   selectedConcertForFeatured,
   featuredConcerts,
@@ -412,6 +415,7 @@ const AdminPageContent = ({
         setActiveTab={setActiveTab}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
+        pageSize={pageSize}
         searchQuery={searchQuery}
         handleSearchChange={handleSearchChange}
         clearSearch={clearSearch}
@@ -446,6 +450,7 @@ const AdminPage = () => {
   const {
     activeTab, setActiveTab,
     currentPage, setCurrentPage,
+    pageSize,
     showFeaturedModal, setShowFeaturedModal,
     selectedConcertForFeatured, setSelectedConcertForFeatured,
     featuredConcerts, setFeaturedConcerts,
@@ -472,6 +477,7 @@ const AdminPage = () => {
     concerts,
     featuredConcerts,
     setFeaturedConcerts,
+    selectedConcertForFeatured,
     setSelectedConcertForFeatured,
     setShowFeaturedModal,
     setSelectedConcert,
@@ -490,6 +496,7 @@ const AdminPage = () => {
       setActiveTab={setActiveTab}
       currentPage={currentPage}
       setCurrentPage={setCurrentPage}
+      pageSize={pageSize}
       showFeaturedModal={showFeaturedModal}
       setShowFeaturedModal={setShowFeaturedModal}
       selectedConcertForFeatured={selectedConcertForFeatured}

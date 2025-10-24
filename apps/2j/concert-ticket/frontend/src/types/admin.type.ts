@@ -1,6 +1,6 @@
 // Admin хуудасны TypeScript types
 
-export type TabType = 'tickets' | 'refunds';
+export type TabType = 'concerts' | 'orders';
 
 export interface AdminState {
   activeTab: TabType;

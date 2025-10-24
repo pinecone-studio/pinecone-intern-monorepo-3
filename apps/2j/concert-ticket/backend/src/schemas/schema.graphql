@@ -157,6 +157,7 @@ input CreateConcertInput {
   venue: String!
   date: String!
   time: String!
+  isActive: Boolean
   mainArtistId: ID!
   otherArtistIds: [ID!]
   image: String
