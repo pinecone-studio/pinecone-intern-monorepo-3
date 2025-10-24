@@ -6,6 +6,7 @@ import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import ProfileMenu from '@/components/profile/ProfileMenu';
 import { useMyProfileQuery, useUpdateUserProfileMutation } from '@/generated';
+import { useRouter } from 'next/navigation';
 
 const useCustomerData = () => {
   const [customerData, setCustomerData] = useState({
@@ -142,6 +143,7 @@ const ProfileForm = ({
 );
 
 const ProfilePage: React.FC = () => {
+  const router = useRouter();
   const { customerData, handleCustomerChange, profileLoading, profileError, refetchProfile } = useCustomerData();
   const { 
     handleSaveCustomer, 
@@ -152,6 +154,13 @@ const ProfilePage: React.FC = () => {
     setShowSuccessToast,
     setShowErrorToast
   } = useProfileSave(refetchProfile);
+
+  // Хэрэв UNAUTHENTICATED алдаа бол sign-in руу redirect хийх
+  useEffect(() => {
+    if (profileError?.message?.includes('UNAUTHENTICATED')) {
+      router.push('/sign-in');
+    }
+  }, [profileError, router]);
 
   // Loading state
   if (profileLoading) {

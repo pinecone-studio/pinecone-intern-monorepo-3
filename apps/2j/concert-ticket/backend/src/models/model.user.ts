@@ -73,4 +73,5 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
   return bcrypt.compare(candidatePassword, stored);
 };
 
-export const User = mongoose.model<IUser>('User', UserSchema);
+// Hot reload үед model дахин үүсэхээс сэргийлэх
+export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

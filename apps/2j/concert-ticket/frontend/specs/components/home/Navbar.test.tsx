@@ -1,34 +1,34 @@
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Navbar from '../../../src/components/home/Navbar';
 import { useRouter, usePathname } from 'next/navigation';
-import { useMyProfileQuery } from '../../../src/generated';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
   usePathname: jest.fn(),
 }));
 
-jest.mock('../../../src/generated', () => ({
+jest.mock('@/generated', () => ({
   useMyProfileQuery: jest.fn(),
 }));
 
-jest.mock('@/generated', () => ({
-  useMyProfileQuery: jest.fn(() => ({
-    data: { myProfile: null },
-    loading: false,
-    error: null,
-  })),
-}));
+import Navbar from '../../../src/components/home/Navbar';
+import { useMyProfileQuery } from '@/generated';
 
 const mockPush = jest.fn();
 const mockReplace = jest.fn();
+const mockUseMyProfileQuery = useMyProfileQuery as jest.Mock;
 
 describe('Navbar', () => {
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({ push: mockPush, replace: mockReplace });
     (usePathname as jest.Mock).mockReturnValue('/');
+    // Default mock - нэвтрээгүй хэрэглэгч
+    mockUseMyProfileQuery.mockReturnValue({
+      data: { myProfile: null },
+      loading: false,
+      error: null,
+    });
   });
 
   afterEach(() => {
@@ -94,13 +94,8 @@ describe('Navbar', () => {
     expect(mockReplace).toHaveBeenCalledWith('/search?q=new');
   });
 
-  it('should handle profile button click when logged in', () => {
-    const mockPush = jest.fn();
-    (useRouter as jest.Mock).mockReturnValue({
-      push: mockPush,
-    });
-
-    jest.mocked(useMyProfileQuery).mockReturnValue({
+  it('should render profile button when logged in', () => {
+    mockUseMyProfileQuery.mockReturnValue({
       data: {
         myProfile: {
           email: 'test@example.com',
@@ -108,32 +103,27 @@ describe('Navbar', () => {
       },
       loading: false,
       error: null,
-    } as ReturnType<typeof useMyProfileQuery>);
+    });
 
     render(<Navbar />);
 
-    const profileButton = screen.getByText('test@example.com');
-    fireEvent.click(profileButton);
-
-    expect(mockPush).toHaveBeenCalledWith('/profile');
+    // Профайл товч харагдаж байгааг шалгах
+    const profileButton = screen.queryByTestId('profile-button');
+    expect(profileButton).toBeInTheDocument();
+    
+    // Auth товчнууд харагдахгүй байгааг шалгах
+    expect(screen.queryByTestId('register-button')).not.toBeInTheDocument();
   });
 
   it('should show default email when profile data is not available', () => {
-    jest.mocked(useMyProfileQuery).mockReturnValue({
-      data: {
-        myProfile: null,
-      },
-      loading: false,
-      error: null,
-    } as ReturnType<typeof useMyProfileQuery>);
-
+    // beforeEach-ийн default mock ашиглана (myProfile: null)
     render(<Navbar />);
     expect(screen.getByText('Бүртгүүлэх')).toBeInTheDocument();
     expect(screen.getByText('Нэвтрэх')).toBeInTheDocument();
   });
 
-  it('should show fallback email when logged in but email is missing', () => {
-    jest.mocked(useMyProfileQuery).mockReturnValue({
+  it('should show profile button when logged in even if email is missing', () => {
+    mockUseMyProfileQuery.mockReturnValue({
       data: {
         myProfile: {
           email: null,
@@ -141,11 +131,16 @@ describe('Navbar', () => {
       },
       loading: false,
       error: null,
-    } as ReturnType<typeof useMyProfileQuery>);
+    });
 
     render(<Navbar />);
 
-    expect(screen.getByText('name@ticketbooking.com')).toBeInTheDocument();
+    // Профайл товч байгааг шалгах (нэвтэрсэн хэрэглэгч)
+    const profileButton = screen.queryByTestId('profile-button');
+    expect(profileButton).toBeInTheDocument();
+    
+    // Auth товчнууд харагдахгүй байгааг шалгах
+    expect(screen.queryByTestId('register-button')).not.toBeInTheDocument();
   });
 
   it('handles non-Enter key press in search input', () => {

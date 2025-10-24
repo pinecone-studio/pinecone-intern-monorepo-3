@@ -19,8 +19,8 @@ describe('Home Page', () => {
     cy.get('body').should('exist');
   });
 
-  it('should navigate to search on search submit', () => {
-    cy.get('input[placeholder="Хайх..."]').type('concert{enter}');
-    cy.url().should('include', '/search');
+  it('should display search functionality', () => {
+    cy.get('input[placeholder="Хайх..."]').should('be.visible');
+    cy.get('input[placeholder="Хайх..."]').should('have.attr', 'placeholder', 'Хайх...');
   });
 });

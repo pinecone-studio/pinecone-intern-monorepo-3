@@ -105,35 +105,38 @@ export const Mutation: MutationResolvers<Context> = {
     return await ArtistController.deleteArtist(args.id);
   },
   createBooking: async (_parent, args, ctx) => {
-    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
-    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
-
-    if (!userId) {
-      throw new Error('Нэвтрэх шаардлагатай эсвэл хэрэглэгчийн ID байхгүй.');
+    if (!ctx.user) {
+      throw new Error('UNAUTHENTICATED');
     }
 
-    return await BookingController.createBooking(userId, args.input);
+    return await BookingController.createBooking(ctx.user.id, args.input);
+  },
+
+  updateBookingPaymentStatus: async (_parent, args, ctx) => {
+    if (!ctx.user) {
+      throw new Error('UNAUTHENTICATED');
+    }
+    return await BookingController.updateBookingPaymentStatus(args.id, args.paymentStatus);
   },
 
   cancelBooking: async (_parent, args, ctx) => {
-    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
-    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
-    return await BookingController.cancelBooking(args.id, userId);
+    if (!ctx.user) {
+      throw new Error('UNAUTHENTICATED');
+    }
+    return await BookingController.cancelBooking(args.id, ctx.user.id);
   },
   requestCancellation: async (_parent, args, ctx) => {
-    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
-    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
-    return await BookingController.requestCancellation(args.id, userId);
+    if (!ctx.user) {
+      throw new Error('UNAUTHENTICATED');
+    }
+    return await BookingController.requestCancellation(args.id, ctx.user.id);
   },
   updateUserProfile: async (_parent, args, ctx) => {
-    // Түр зуурын шийдэл: Authentication байхгүй үед тодорхой user ID ашиглах
-    const userId = ctx.user?.id || '68e75deab6cd9759bc4033d7';
-
-    if (!userId) {
-      throw new Error('Нэвтрэх шаардлагатай эсвэл хэрэглэгчийн ID байхгүй.');
+    if (!ctx.user) {
+      throw new Error('UNAUTHENTICATED');
     }
 
-    return await UserController.updateUserProfile(userId, args.input);
+    return await UserController.updateUserProfile(ctx.user.id, args.input);
   },
   updateTicketQuantity: async (_parent, args, ctx) => {
     if (!ctx.user || ctx.user.role !== 'ADMIN') {
