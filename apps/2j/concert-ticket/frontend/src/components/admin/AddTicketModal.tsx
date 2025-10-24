@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { useCreateConcertMutation, useCreateArtistMutation, useGetArtistsQuery } from '../../generated';
-import { FormData, ImageUploadState, ValidationErrors } from '../../types/admin.type';
+import { useState, useRef } from 'react';
+import { useCreateConcertMutation, useCreateArtistMutation } from '../../generated';
+import { FormData, ImageUploadState } from '../../types/admin.type';
 
 interface AddTicketModalProps {
   isOpen: boolean;
@@ -124,45 +124,49 @@ const useFormHandlers = (
     }
   };
 
+  // Зураг upload хүлээх
+  const waitForImageUpload = async () => {
+    if (imageState.isUploading && imageUploadPromiseRef.current) {
+      try {
+        await imageUploadPromiseRef.current;
+      } catch {
+        // upload already handled error state
+      }
+    }
+  };
+
+  // Уран бүтээлч олох эсвэл үүсгэх
+  const findOrCreateArtist = async (artistName: string) => {
+    const existingArtists = await fetch('/api/artists').then(res => res.json());
+    const existingArtist = existingArtists.find((artist: any) => 
+      artist.name.toLowerCase() === artistName.toLowerCase()
+    );
+
+    if (existingArtist) {
+      return existingArtist.id;
+    }
+
+    // Шинэ уран бүтээлч үүсгэх
+    const artistResult = await createArtist({
+      variables: {
+        input: {
+          name: artistName,
+          bio: '',
+          image: ''
+        }
+      }
+    }) as any;
+    return artistResult.data.createArtist.id;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!validateForm()) return;
 
     try {
-      // Зураг upload болж байвал дуустал нь хүлээнэ
-      if (imageState.isUploading && imageUploadPromiseRef.current) {
-        try {
-          await imageUploadPromiseRef.current;
-        } catch {
-          // upload already handled error state
-        }
-      }
-
-      // Уран бүтээлч үүсгэх эсвэл олох
-      let artistId: string;
-      
-      // Эхлээд одоо байгаа уран бүтээлчдийг шалгах
-      const existingArtists = await fetch('/api/artists').then(res => res.json());
-      const existingArtist = existingArtists.find((artist: any) => 
-        artist.name.toLowerCase() === formData.mainArtistName.toLowerCase()
-      );
-
-      if (existingArtist) {
-        artistId = existingArtist.id;
-      } else {
-        // Шинэ уран бүтээлч үүсгэх
-        const artistResult = await createArtist({
-          variables: {
-            input: {
-              name: formData.mainArtistName,
-              bio: '',
-              image: ''
-            }
-          }
-        }) as any;
-        artistId = artistResult.data.createArtist.id;
-      }
+      await waitForImageUpload();
+      const artistId = await findOrCreateArtist(formData.mainArtistName);
 
       // Концерт үүсгэх
       const concertInput = {
@@ -518,7 +522,7 @@ const AddTicketModal = ({ isOpen, onClose }: AddTicketModalProps) => {
               />
 
               <TicketCategory
-                type="Ерөнхий"
+                type="Задгай"
                 quantityName="generalQuantity"
                 priceName="generalPrice"
                 quantityValue={formData.generalQuantity}

@@ -59,7 +59,8 @@ const EditConcertModal = ({ isOpen, onClose, concert }: EditConcertModalProps) =
             description: formData.description,
             venue: formData.venue,
             date: formData.date,
-            time: formData.time
+            time: formData.time,
+            isActive: formData.isActive
           }
         }
       });
@@ -68,7 +69,8 @@ const EditConcertModal = ({ isOpen, onClose, concert }: EditConcertModalProps) =
       onClose();
     } catch (error) {
       console.error('Error updating concert:', error);
-      alert('Концерт шинэчлэхэд алдаа гарлаа');
+      const errorMessage = error instanceof Error ? error.message : 'Тодорхойгүй алдаа';
+      alert(`Концерт шинэчлэхэд алдаа гарлаа: ${errorMessage}`);
     }
   };
 

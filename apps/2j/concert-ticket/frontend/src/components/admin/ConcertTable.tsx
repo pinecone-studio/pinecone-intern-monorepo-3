@@ -15,6 +15,60 @@ interface ConcertTableProps {
   onPageChange: (page: number) => void;
 }
 
+// Helper functions
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('mn-MN', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
+
+const formatTime = (timeString: string) => {
+  return timeString.substring(0, 5); // HH:MM форматаар харуулах
+};
+
+const getPriceRange = (ticketCategories: any[]) => {
+  const prices = ticketCategories.map(cat => cat.unitPrice);
+  return {
+    min: Math.min(...prices),
+    max: Math.max(...prices)
+  };
+};
+
+// Концертын зураг харуулах компонент
+const ConcertImage = ({ concert }: { concert: ConcertForAdmin }) => (
+  <div className="flex-shrink-0 h-10 w-10">
+    {concert.image ? (
+      <img 
+        className="h-10 w-10 rounded-lg object-cover" 
+        src={concert.image} 
+        alt={concert.name}
+      />
+    ) : (
+      <div className="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
+        <span className="text-gray-400 text-xs">Зураг</span>
+      </div>
+    )}
+  </div>
+);
+
+// Концертын нэр харуулах компонент
+const ConcertName = ({ concert, isFeatured }: { concert: ConcertForAdmin; isFeatured: boolean }) => (
+  <div className="ml-3">
+    <div className="text-sm font-medium text-gray-900 flex items-center">
+      {concert.name}
+      {isFeatured && (
+        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+          Онцлох
+        </span>
+      )}
+    </div>
+    <div className="text-sm text-gray-500">{concert.venue}</div>
+  </div>
+);
+
 // Концертын мэдээллийг харуулах компонент
 const ConcertRow = ({ 
   concert, 
@@ -29,84 +83,54 @@ const ConcertRow = ({
   onEditClick: (concertId: string) => void;
   onDeleteClick: (concertId: string) => void;
 }) => {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('mn-MN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const formatTime = (timeString: string) => {
-    return timeString.substring(0, 5); // HH:MM форматаар харуулах
-  };
-
-  const getMinPrice = () => {
-    const prices = concert.ticketCategories.map(cat => cat.unitPrice);
-    return Math.min(...prices);
-  };
-
-  const getMaxPrice = () => {
-    const prices = concert.ticketCategories.map(cat => cat.unitPrice);
-    return Math.max(...prices);
-  };
+  const priceRange = getPriceRange(concert.ticketCategories);
 
   return (
     <tr className="border-b border-gray-200 hover:bg-gray-50">
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3 whitespace-nowrap">
         <div className="flex items-center">
-          <div className="flex-shrink-0 h-12 w-12">
-            {concert.image ? (
-              <img 
-                className="h-12 w-12 rounded-lg object-cover" 
-                src={concert.image} 
-                alt={concert.name}
-              />
-            ) : (
-              <div className="h-12 w-12 rounded-lg bg-gray-200 flex items-center justify-center">
-                <span className="text-gray-400 text-xs">Зураг</span>
-              </div>
-            )}
-          </div>
-          <div className="ml-4">
-            <div className="text-sm font-medium text-gray-900 flex items-center">
-              {concert.name}
-              {isFeatured && (
-                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                  Онцлох
-                </span>
-              )}
-            </div>
-            <div className="text-sm text-gray-500">{concert.venue}</div>
-          </div>
+          <ConcertImage concert={concert} />
+          <ConcertName concert={concert} isFeatured={isFeatured} />
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3 whitespace-nowrap">
         <div className="text-sm text-gray-900">{concert.mainArtist?.name || 'Тодорхойгүй'}</div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3 whitespace-nowrap">
         <div className="text-sm text-gray-900">{formatDate(concert.date)}</div>
         <div className="text-sm text-gray-500">{formatTime(concert.time)}</div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
+      <td className="px-4 py-3 whitespace-nowrap">
         <div className="text-sm text-gray-900">
-          {getMinPrice().toLocaleString()}₮ - {getMaxPrice().toLocaleString()}₮
+          {priceRange.min.toLocaleString()}₮ - {priceRange.max.toLocaleString()}₮
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-900">{concert.totalAvailableTickets}</div>
+      <td className="px-4 py-3 whitespace-nowrap">
+        <div className="space-y-1">
+          <div className="text-sm font-medium text-gray-900">
+            Нийт: {concert.totalAvailableTickets}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {concert.ticketCategories.map((category) => (
+              <div key={category.id} className="text-xs text-gray-600">
+                <span className="font-medium">
+                  {category.type === 'GENERAL' ? 'Задгай' : 
+                   category.type === 'VIP' ? 'VIP' : 
+                   category.type === 'REGULAR' ? 'Энгийн' : category.type}:
+                </span> {category.availableQuantity}
+              </div>
+            ))}
+          </div>
+        </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-          concert.isActive 
-            ? 'bg-green-100 text-green-800' 
-            : 'bg-red-100 text-red-800'
-        }`}>
-          {concert.isActive ? 'Идэвхитэй' : 'Идэвхгүй'}
-        </span>
+      <td className="px-4 py-3 whitespace-nowrap">
+        <div className="flex items-center justify-center">
+          <div className={`w-3 h-3 rounded-full ${
+            concert.isActive ? 'bg-green-500' : 'bg-red-500'
+          }`}></div>
+        </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+      <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
         <div className="flex items-center space-x-2">
           <button
             onClick={() => onStarClick(concert.id)}
@@ -282,25 +306,25 @@ const ConcertTable = ({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Концерт
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Уран бүтээлч
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Огноо
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Үнэ
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Тасалбар
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Төлөв
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Үйлдэл
               </th>
             </tr>

@@ -53,7 +53,8 @@ const mocks = [
           description: 'Updated Description',
           venue: 'Updated Venue',
           date: '2024-12-26',
-          time: '20:00'
+          time: '20:00',
+          isActive: true
         }
       }
     },
@@ -242,10 +243,11 @@ describe('EditConcertModal', () => {
             id: '1',
             input: {
               name: 'Updated Concert',
-              description: 'Updated Description',
-              venue: 'Updated Venue',
-              date: '2024-12-26',
-              time: '20:00'
+              description: 'Test Description',
+              venue: 'Test Venue',
+              date: '2024-12-25',
+              time: '19:00',
+              isActive: true
             }
           }
         },
@@ -266,7 +268,7 @@ describe('EditConcertModal', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(mockAlert).toHaveBeenCalledWith('Концерт шинэчлэхэд алдаа гарлаа');
+      expect(mockAlert).toHaveBeenCalledWith('Концерт шинэчлэхэд алдаа гарлаа: GraphQL error');
     });
   });
 

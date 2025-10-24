@@ -159,21 +159,26 @@ describe('ConcertTable', () => {
   it('тасалбарын тоо зөв харуулна', () => {
     render(<ConcertTable {...defaultProps} />);
 
-    expect(screen.getAllByText('300')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Нийт: 300')[0]).toBeInTheDocument();
   });
 
   it('идэвхитэй төлөв зөв харуулна', () => {
     render(<ConcertTable {...defaultProps} />);
 
-    const activeStatus = screen.getByText('Идэвхитэй');
-    expect(activeStatus.closest('span')).toHaveClass('bg-green-100', 'text-green-800');
+    const statusCircle = document.querySelector('.bg-green-500');
+    expect(statusCircle).toBeInTheDocument();
   });
 
   it('идэвхгүй төлөв зөв харуулна', () => {
-    render(<ConcertTable {...defaultProps} />);
+    const inactiveConcert = {
+      ...mockConcerts[0],
+      isActive: false
+    };
+    
+    render(<ConcertTable {...defaultProps} concerts={[inactiveConcert]} />);
 
-    const inactiveStatus = screen.getByText('Идэвхгүй');
-    expect(inactiveStatus.closest('span')).toHaveClass('bg-red-100', 'text-red-800');
+    const statusCircle = document.querySelector('.bg-red-500');
+    expect(statusCircle).toBeInTheDocument();
   });
 
   it('онцлох товч ажиллана', () => {

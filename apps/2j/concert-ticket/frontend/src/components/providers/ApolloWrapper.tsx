@@ -18,7 +18,6 @@ const makeClient = () => {
     fetchOptions: { cache: 'no-store', mode: 'cors' },
     headers: {
       'Content-Type': 'application/json',
-      'x-apollo-operation-name': 'init', // ✅ Prevents CSRF error
     },
     // Add error handling
     fetch: (uri, options) => {

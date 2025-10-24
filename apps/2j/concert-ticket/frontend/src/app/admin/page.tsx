@@ -6,6 +6,9 @@ import ConcertTable from '../../components/admin/ConcertTable';
 import AddTicketModal from '../../components/admin/AddTicketModal';
 import FeaturedModal from '../../components/admin/FeaturedModal';
 import EditConcertModal from '../../components/admin/EditConcertModal';
+import AddConcertModal from '../../components/admin/AddConcertModal';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import ErrorDisplay from '../../components/common/ErrorDisplay';
 import { TabType, ConcertForAdmin } from '../../types/admin.type';
 
 // Admin хуудасны state management hook
@@ -20,6 +23,7 @@ const useAdminState = () => {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [showAddTicketModal, setShowAddTicketModal] = useState(false);
   const [showEditConcertModal, setShowEditConcertModal] = useState(false);
+  const [showAddConcertModal, setShowAddConcertModal] = useState(false);
   const [selectedConcert, setSelectedConcert] = useState<ConcertForAdmin | null>(null);
 
   return {
@@ -33,6 +37,7 @@ const useAdminState = () => {
     debouncedSearchQuery, setDebouncedSearchQuery,
     showAddTicketModal, setShowAddTicketModal,
     showEditConcertModal, setShowEditConcertModal,
+    showAddConcertModal, setShowAddConcertModal,
     selectedConcert, setSelectedConcert
   };
 };
@@ -105,30 +110,35 @@ const SearchSection = ({
   clearSearch: () => void;
 }) => (
   <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-    <div className="relative flex-1">
-      <input
-        type="text"
-        placeholder="Тасалбар хайх"
-        value={searchQuery}
-        onChange={handleSearchChange}
-        className="w-64 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      />
-      {searchQuery && (
-        <button
-          onClick={clearSearch}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-        >
-          ×
+    <div className="flex items-center gap-2">
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Тасалбар хайх"
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="w-64 px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+        {searchQuery && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            ×
+          </button>
+        )}
+      </div>
+      <div className="flex gap-2">
+        <button className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200">
+          Уран бүтээлч
         </button>
-      )}
-    </div>
-    <div className="flex gap-1">
-      <button className="px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors">
-        Уран бүтээлч
-      </button>
-      <button className="px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors">
-        Цэвэрлэх Х
-      </button>
+        <button 
+          onClick={clearSearch}
+          className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors border border-gray-200"
+        >
+          Цэвэрлэх Х
+        </button>
+      </div>
     </div>
     <div className="ml-auto">
       <input
@@ -139,54 +149,26 @@ const SearchSection = ({
   </div>
 );
 
-// Ачааллаж байгаа хэсэг
-const LoadingSection = () => (
-  <div className="bg-white rounded-lg shadow p-8 text-center">
-    <div className="flex justify-center">
-      <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-    <p className="mt-2 text-gray-500">Ачааллаж байна...</p>
-  </div>
-);
 
-// Алдааны хэсэг
-const ErrorSection = ({ error }: { error: { message: string } }) => (
-  <div className="bg-white rounded-lg shadow p-8 text-center">
-    <p className="text-red-500">Алдаа: {error.message}</p>
-  </div>
-);
-
-// Admin хуудасны гол компонент
-const AdminPage = () => {
-  const {
-    activeTab, setActiveTab,
-    currentPage, setCurrentPage,
-    pageSize,
-    showFeaturedModal, setShowFeaturedModal,
-    selectedConcertForFeatured, setSelectedConcertForFeatured,
-    featuredConcerts, setFeaturedConcerts,
-    searchQuery, setSearchQuery,
-    debouncedSearchQuery, setDebouncedSearchQuery,
-    showAddTicketModal, setShowAddTicketModal,
-    showEditConcertModal, setShowEditConcertModal,
-    selectedConcert, setSelectedConcert
-  } = useAdminState();
+// Admin хуудасны data management hook
+const useAdminData = () => {
+  const state = useAdminState();
   
   // Search query-г debounce хийх
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
+      state.setDebouncedSearchQuery(state.searchQuery);
     }, 300);
     return () => clearTimeout(timer);
-  }, [searchQuery]);
+  }, [state.searchQuery]);
 
   // GraphQL query
   const { data: concertsData, loading: concertsLoading, error: concertsError, refetch } = useGetAdminConcertsQuery({
     variables: {
-      filter: debouncedSearchQuery ? { name: debouncedSearchQuery } : undefined,
+      filter: state.debouncedSearchQuery ? { name: state.debouncedSearchQuery } : undefined,
       pagination: {
-        limit: pageSize,
-        offset: (currentPage - 1) * pageSize
+        limit: state.pageSize,
+        offset: (state.currentPage - 1) * state.pageSize
       }
     }
   });
@@ -195,19 +177,25 @@ const AdminPage = () => {
   const totalCount = concertsData?.concerts?.totalCount || 0;
   const hasMore = concertsData?.concerts?.hasMore || false;
 
-  const [deleteConcert] = useDeleteConcertMutation();
+  return { ...state, concerts, totalCount, hasMore, concertsLoading, concertsError, refetch };
+};
 
-  // Концертуудыг эрэмбэлэх: featured эхлээд, дараа нь нэрээр
-  const sortedConcerts = [...concerts].sort((a, b) => {
-    const aFeatured = featuredConcerts.has(a.id);
-    const bFeatured = featuredConcerts.has(b.id);
-    
-    if (aFeatured && !bFeatured) return -1;
-    if (!aFeatured && bFeatured) return 1;
-    return a.name.localeCompare(b.name);
-  });
-
-  // Event handlers
+// Admin хуудасны event handlers hook
+const useAdminEventHandlers = (
+  concerts: ConcertForAdmin[],
+  featuredConcerts: Set<string>,
+  setFeaturedConcerts: (concerts: Set<string>) => void,
+  setSelectedConcertForFeatured: (concert: string | null) => void,
+  setShowFeaturedModal: (show: boolean) => void,
+  setSelectedConcert: (concert: ConcertForAdmin | null) => void,
+  setShowEditConcertModal: (show: boolean) => void,
+  deleteConcert: any,
+  refetch: () => void,
+  searchQuery: string,
+  setSearchQuery: (query: string) => void,
+  setDebouncedSearchQuery: (query: string) => void,
+  setCurrentPage: (page: number) => void
+) => {
   const { handleStarClick, handleEditClick, handleDeleteClick } = useAdminHandlers(
     concerts,
     setSelectedConcertForFeatured,
@@ -235,7 +223,7 @@ const AdminPage = () => {
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    setCurrentPage(1); // Хайлт хийхэд эхний хуудас руу буцах
+    setCurrentPage(1);
   };
 
   const clearSearch = () => {
@@ -244,122 +232,288 @@ const AdminPage = () => {
     setCurrentPage(1);
   };
 
+  return {
+    handleStarClick,
+    handleEditClick,
+    handleDeleteClick,
+    handleFeaturedSave,
+    handleSearchChange,
+    clearSearch
+  };
+};
+
+// Концертуудыг эрэмбэлэх функц
+const sortConcerts = (concerts: ConcertForAdmin[], featuredConcerts: Set<string>) => {
+  return [...concerts].sort((a, b) => {
+    const aFeatured = featuredConcerts.has(a.id);
+    const bFeatured = featuredConcerts.has(b.id);
+    
+    if (aFeatured && !bFeatured) return -1;
+    if (!aFeatured && bFeatured) return 1;
+    return a.name.localeCompare(b.name);
+  });
+};
+
+// Admin header компонент
+const AdminHeader = () => (
+  <div className="w-full bg-white shadow-sm border-b border-gray-200">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between items-center py-4">
+        <div className="flex items-center">
+          <h1 className="text-2xl font-bold text-black">TICKET BOOKING</h1>
+        </div>
+        <div className="flex items-center space-x-4">
+          <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Admin main content компонент
+const AdminMainContent = ({
+  activeTab, setActiveTab,
+  currentPage, setCurrentPage,
+  searchQuery, handleSearchChange, clearSearch,
+  setShowAddConcertModal,
+  sortedConcerts, featuredConcerts,
+  handleStarClick, handleEditClick, handleDeleteClick,
+  totalCount, hasMore
+}: any) => (
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mb-6">
+      <div className="border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8">
+          <button
+            onClick={() => setActiveTab('concerts')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'concerts'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            Концертууд
+          </button>
+          <button
+            onClick={() => setActiveTab('orders')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'orders'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            Захиалгууд
+          </button>
+        </nav>
+      </div>
+    </div>
+
+    {activeTab === 'concerts' && (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <SearchSection 
+            searchQuery={searchQuery}
+            handleSearchChange={handleSearchChange}
+            clearSearch={clearSearch}
+          />
+          <button
+            onClick={() => setShowAddConcertModal(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            + Концерт нэмэх
+          </button>
+        </div>
+
+        <ConcertTable
+          concerts={sortedConcerts}
+          featuredConcerts={featuredConcerts}
+          onStarClick={handleStarClick}
+          onEditClick={handleEditClick}
+          onDeleteClick={handleDeleteClick}
+          currentPage={currentPage}
+          totalCount={totalCount}
+          hasMore={hasMore}
+          onPageChange={setCurrentPage}
+        />
+      </div>
+    )}
+
+    {activeTab === 'orders' && (
+      <div className="text-center py-12">
+        <p className="text-gray-500">Захиалгууд харах функц хөгжүүлэгдэж байна...</p>
+      </div>
+    )}
+  </div>
+);
+
+// Admin modals компонент
+const AdminModals = ({
+  showFeaturedModal, setShowFeaturedModal, handleFeaturedSave, selectedConcertForFeatured,
+  showAddConcertModal, setShowAddConcertModal,
+  showEditConcertModal, setShowEditConcertModal, selectedConcert,
+  showAddTicketModal, setShowAddTicketModal
+}: any) => (
+  <>
+    <FeaturedModal
+      isOpen={showFeaturedModal}
+      onClose={() => setShowFeaturedModal(false)}
+      onSave={handleFeaturedSave}
+      concertId={selectedConcertForFeatured}
+    />
+
+    <AddConcertModal
+      isOpen={showAddConcertModal}
+      onClose={() => setShowAddConcertModal(false)}
+      onSuccess={() => {
+        setShowAddConcertModal(false);
+      }}
+    />
+
+    <EditConcertModal
+      isOpen={showEditConcertModal}
+      onClose={() => setShowEditConcertModal(false)}
+      concert={selectedConcert}
+      onSuccess={() => {
+        setShowEditConcertModal(false);
+      }}
+    />
+
+    <AddTicketModal
+      isOpen={showAddTicketModal}
+      onClose={() => setShowAddTicketModal(false)}
+    />
+  </>
+);
+
+// Admin хуудасны JSX хэсэг
+const AdminPageContent = ({
+  activeTab, setActiveTab,
+  currentPage, setCurrentPage,
+  showFeaturedModal, setShowFeaturedModal,
+  selectedConcertForFeatured,
+  featuredConcerts,
+  searchQuery,
+  showAddTicketModal, setShowAddTicketModal,
+  showEditConcertModal, setShowEditConcertModal,
+  showAddConcertModal, setShowAddConcertModal,
+  selectedConcert,
+  sortedConcerts, totalCount, hasMore, concertsLoading, concertsError,
+  handleStarClick, handleEditClick, handleDeleteClick,
+  handleFeaturedSave, handleSearchChange, clearSearch
+}: any) => {
+  if (concertsLoading) return <LoadingSpinner />;
+  if (concertsError) return <ErrorDisplay error={concertsError} />;
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="w-full bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-black">TICKET BOOKING</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Tabs */}
-      <div className="w-full bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8">
-            <button
-              onClick={() => setActiveTab('tickets')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'tickets'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Тасалбар
-            </button>
-            <button
-              onClick={() => setActiveTab('refunds')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'refunds'
-                  ? 'border-blue-500 text-blue-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Цуцлах хүсэлт
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'tickets' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-bold text-black mb-2">Тасалбар</h2>
-                <p className="text-gray-600">Идэвхитэй зарагдаж буй тасалбарууд</p>
-              </div>
-            </div>
-
-            <SearchSection 
-              searchQuery={searchQuery}
-              handleSearchChange={handleSearchChange}
-              clearSearch={clearSearch}
-            />
-
-            {concertsLoading ? (
-              <LoadingSection />
-            ) : concertsError ? (
-              <ErrorSection error={concertsError} />
-            ) : (
-              <ConcertTable
-                concerts={sortedConcerts}
-                featuredConcerts={featuredConcerts}
-                onStarClick={handleStarClick}
-                onEditClick={handleEditClick}
-                onDeleteClick={handleDeleteClick}
-                currentPage={currentPage}
-                pageSize={pageSize}
-                totalCount={totalCount}
-                hasMore={hasMore}
-                onPageChange={setCurrentPage}
-              />
-            )}
-          </div>
-        )}
-
-        {activeTab === 'refunds' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-bold text-black mb-2">Цуцлах хүсэлт</h2>
-                <p className="text-gray-600">Цуцлах хүсэлтүүд</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow p-8 text-center">
-              <p className="text-gray-500">Цуцлах хүсэлт олдсонгүй</p>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Modals */}
-      <AddTicketModal
-        isOpen={showAddTicketModal}
-        onClose={() => setShowAddTicketModal(false)}
+      <AdminHeader />
+      <AdminMainContent
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        searchQuery={searchQuery}
+        handleSearchChange={handleSearchChange}
+        clearSearch={clearSearch}
+        setShowAddConcertModal={setShowAddConcertModal}
+        sortedConcerts={sortedConcerts}
+        featuredConcerts={featuredConcerts}
+        handleStarClick={handleStarClick}
+        handleEditClick={handleEditClick}
+        handleDeleteClick={handleDeleteClick}
+        totalCount={totalCount}
+        hasMore={hasMore}
       />
-      
-      <FeaturedModal
-        isOpen={showFeaturedModal}
-        onClose={() => setShowFeaturedModal(false)}
-        concertId={selectedConcertForFeatured}
-        onSave={handleFeaturedSave}
-      />
-      
-      <EditConcertModal
-        isOpen={showEditConcertModal}
-        onClose={() => setShowEditConcertModal(false)}
-        concert={selectedConcert}
+      <AdminModals
+        showFeaturedModal={showFeaturedModal}
+        setShowFeaturedModal={setShowFeaturedModal}
+        handleFeaturedSave={handleFeaturedSave}
+        selectedConcertForFeatured={selectedConcertForFeatured}
+        showAddConcertModal={showAddConcertModal}
+        setShowAddConcertModal={setShowAddConcertModal}
+        showEditConcertModal={showEditConcertModal}
+        setShowEditConcertModal={setShowEditConcertModal}
+        selectedConcert={selectedConcert}
+        showAddTicketModal={showAddTicketModal}
+        setShowAddTicketModal={setShowAddTicketModal}
       />
     </div>
+  );
+};
+
+// Admin хуудасны гол компонент
+const AdminPage = () => {
+  const {
+    activeTab, setActiveTab,
+    currentPage, setCurrentPage,
+    showFeaturedModal, setShowFeaturedModal,
+    selectedConcertForFeatured, setSelectedConcertForFeatured,
+    featuredConcerts, setFeaturedConcerts,
+    searchQuery, setSearchQuery,
+    setDebouncedSearchQuery,
+    showAddTicketModal, setShowAddTicketModal,
+    showEditConcertModal, setShowEditConcertModal,
+    showAddConcertModal, setShowAddConcertModal,
+    selectedConcert,
+    concerts, totalCount, hasMore, concertsLoading, concertsError, refetch
+  } = useAdminData();
+
+  const [deleteConcert] = useDeleteConcertMutation();
+  const sortedConcerts = sortConcerts(concerts, featuredConcerts);
+
+  const {
+    handleStarClick,
+    handleEditClick,
+    handleDeleteClick,
+    handleFeaturedSave,
+    handleSearchChange,
+    clearSearch
+  } = useAdminEventHandlers(
+    concerts,
+    featuredConcerts,
+    setFeaturedConcerts,
+    setSelectedConcertForFeatured,
+    setShowFeaturedModal,
+    selectedConcert,
+    setShowEditConcertModal,
+    deleteConcert,
+    refetch,
+    searchQuery,
+    setSearchQuery,
+    setDebouncedSearchQuery,
+    setCurrentPage
+  );
+
+  return (
+    <AdminPageContent
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      currentPage={currentPage}
+      setCurrentPage={setCurrentPage}
+      showFeaturedModal={showFeaturedModal}
+      setShowFeaturedModal={setShowFeaturedModal}
+      selectedConcertForFeatured={selectedConcertForFeatured}
+      featuredConcerts={featuredConcerts}
+      searchQuery={searchQuery}
+      showAddTicketModal={showAddTicketModal}
+      setShowAddTicketModal={setShowAddTicketModal}
+      showEditConcertModal={showEditConcertModal}
+      setShowEditConcertModal={setShowEditConcertModal}
+      showAddConcertModal={showAddConcertModal}
+      setShowAddConcertModal={setShowAddConcertModal}
+      selectedConcert={selectedConcert}
+      sortedConcerts={sortedConcerts}
+      totalCount={totalCount}
+      hasMore={hasMore}
+      concertsLoading={concertsLoading}
+      concertsError={concertsError}
+      handleStarClick={handleStarClick}
+      handleEditClick={handleEditClick}
+      handleDeleteClick={handleDeleteClick}
+      handleFeaturedSave={handleFeaturedSave}
+      handleSearchChange={handleSearchChange}
+      clearSearch={clearSearch}
+    />
   );
 };
 
