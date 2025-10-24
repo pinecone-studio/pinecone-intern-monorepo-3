@@ -10,6 +10,90 @@ interface Props {
   className?: string;
 }
 
+// Dropdown menu component
+const ProfileDropdown: React.FC<{
+  onNavigateProfile: () => void;
+  onSignOut: () => void;
+}> = ({ onNavigateProfile, onSignOut }) => (
+  <div className="absolute right-0 top-[calc(100%+8px)] w-[180px] bg-[#1a1a1a] rounded-[8px] shadow-lg border border-gray-800 overflow-hidden z-50">
+    <button
+      onClick={onNavigateProfile}
+      className="w-full flex items-center gap-[8px] px-[12px] py-[10px] text-[12px] text-left hover:bg-[#2a2a2a] transition-colors"
+    >
+      <User size={16} />
+      <span>Профайл</span>
+    </button>
+    <button
+      onClick={onSignOut}
+      className="w-full flex items-center gap-[8px] px-[12px] py-[10px] text-[12px] text-left hover:bg-[#2a2a2a] transition-colors text-red-400"
+    >
+      <LogOut size={16} />
+      <span>Гарах</span>
+    </button>
+  </div>
+);
+
+// Auth buttons component
+const AuthButtons: React.FC = () => (
+  <>
+    <Link
+      href="/sign-up"
+      className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex hover:bg-[#2a2a2a] transition-colors"
+      data-testid="register-button"
+    >
+      Бүртгүүлэх
+    </Link>
+    <Link
+      href="/sign-in"
+      className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px] hover:opacity-90 transition-opacity"
+      style={{ backgroundColor: '#00B7F4' }}
+      data-testid="login-button"
+    >
+      Нэвтрэх
+    </Link>
+  </>
+);
+
+// Profile section component
+const ProfileSection: React.FC<{
+  email: string;
+  showDropdown: boolean;
+  dropdownRef: React.RefObject<HTMLDivElement>;
+  onToggleDropdown: () => void;
+  onNavigateProfile: () => void;
+  onSignOut: () => void;
+}> = ({ email, showDropdown, dropdownRef, onToggleDropdown, onNavigateProfile, onSignOut }) => (
+  <div className="relative" ref={dropdownRef}>
+    <button 
+      onClick={onToggleDropdown} 
+      className="flex items-center gap-[8px] rounded-[8px] bg-[#1a1a1a] px-[12px] py-[6px] text-[12px] hover:bg-[#2a2a2a] transition-colors"
+      data-testid="profile-button"
+    >
+      <div className="h-[20px] w-[20px] rounded-full bg-gray-600"></div>
+      <span className="hidden sm:inline">{email}</span>
+    </button>
+    {showDropdown && (
+      <ProfileDropdown
+        onNavigateProfile={onNavigateProfile}
+        onSignOut={onSignOut}
+      />
+    )}
+  </div>
+);
+
+// Custom hook for dropdown outside click handler
+const useOutsideClick = (ref: React.RefObject<HTMLDivElement>, callback: () => void) => {
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [ref, callback]);
+};
+
 const Navbar: React.FC<Props> = ({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -27,25 +111,13 @@ const Navbar: React.FC<Props> = ({ className }) => {
   const isLoggedIn = !!profileData?.myProfile;
 
   // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setShowProfileDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  useOutsideClick(dropdownRef, () => setShowProfileDropdown(false));
 
   const goSearch = (q?: string) => {
     const keyword = (q ?? query).trim();
     const url = keyword ? `/search?q=${encodeURIComponent(keyword)}` : '/search';
-    if (pathname !== '/search') {
-      router.push(url);
-    } else {
-      router.replace(url);
-    }
+    const method = pathname === '/search' ? 'replace' : 'push';
+    router[method](url);
   };
 
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
@@ -56,24 +128,18 @@ const Navbar: React.FC<Props> = ({ className }) => {
 
   const handleCartClick = () => {
     if (isLoggedIn) {
-      // Нэвтэрсэн хэрэглэгч - orders page руу үсэрэх
       router.push('/orders');
     } else {
-      // Нэвтэрээгүй хэрэглэгч - toast харуулах
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
     }
   };
 
   const handleSignOut = () => {
-    // Remove token from localStorage
     localStorage.removeItem('token');
     localStorage.removeItem('authToken');
-    // Close dropdown
     setShowProfileDropdown(false);
-    // Redirect to home page
     router.push('/');
-    // Reload to clear Apollo cache
     window.location.href = '/';
   };
 
@@ -119,58 +185,19 @@ const Navbar: React.FC<Props> = ({ className }) => {
 
           {/* Authentication-based rendering */}
           {isLoggedIn ? (
-            // Logged in state - show email with dropdown
-            <div className="relative" ref={dropdownRef}>
-              <button 
-                onClick={() => setShowProfileDropdown(!showProfileDropdown)} 
-                className="flex items-center gap-[8px] rounded-[8px] bg-[#1a1a1a] px-[12px] py-[6px] text-[12px] hover:bg-[#2a2a2a] transition-colors"
-              >
-                <div className="h-[20px] w-[20px] rounded-full bg-gray-600"></div>
-                <span className="hidden sm:inline">{profileData?.myProfile?.email || 'name@ticketbooking.com'}</span>
-              </button>
-
-              {/* Dropdown Menu */}
-              {showProfileDropdown && (
-                <div className="absolute right-0 top-[calc(100%+8px)] w-[180px] bg-[#1a1a1a] rounded-[8px] shadow-lg border border-gray-800 overflow-hidden z-50">
-                  <button
-                    onClick={() => {
-                      setShowProfileDropdown(false);
-                      router.push('/profile');
-                    }}
-                    className="w-full flex items-center gap-[8px] px-[12px] py-[10px] text-[12px] text-left hover:bg-[#2a2a2a] transition-colors"
-                  >
-                    <User size={16} />
-                    <span>Профайл</span>
-                  </button>
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full flex items-center gap-[8px] px-[12px] py-[10px] text-[12px] text-left hover:bg-[#2a2a2a] transition-colors text-red-400"
-                  >
-                    <LogOut size={16} />
-                    <span>Гарах</span>
-                  </button>
-                </div>
-              )}
-            </div>
+            <ProfileSection
+              email={profileData?.myProfile?.email || 'name@ticketbooking.com'}
+              showDropdown={showProfileDropdown}
+              dropdownRef={dropdownRef}
+              onToggleDropdown={() => setShowProfileDropdown(!showProfileDropdown)}
+              onNavigateProfile={() => {
+                setShowProfileDropdown(false);
+                router.push('/profile');
+              }}
+              onSignOut={handleSignOut}
+            />
           ) : (
-            // Not logged in state - show register and login buttons
-            <>
-              <Link
-                href="/sign-up"
-                className="hidden h-[32px] items-center justify-center rounded-[8px] bg-[#1a1a1a] px-[12px] text-[12px] sm:inline-flex hover:bg-[#2a2a2a] transition-colors"
-                data-testid="register-button"
-              >
-                Бүртгүүлэх
-              </Link>
-              <Link
-                href="/sign-in"
-                className="inline-flex h-[32px] items-center justify-center rounded-[8px] px-[8px] text-[12px] text-black sm:px-[12px] hover:opacity-90 transition-opacity"
-                style={{ backgroundColor: '#00B7F4' }}
-                data-testid="login-button"
-              >
-                Нэвтрэх
-              </Link>
-            </>
+            <AuthButtons />
           )}
         </div>
       </div>
