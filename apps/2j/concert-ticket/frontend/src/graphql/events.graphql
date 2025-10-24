@@ -25,3 +25,144 @@ query HomeEvents($limit: Int = 12, $offset: Int = 0) {
     }
   }
 }
+
+# Admin хуудасны queries
+query GetAdminConcerts($filter: ConcertFilterInput, $pagination: PaginationInput) {
+  concerts(filter: $filter, pagination: $pagination) {
+    totalCount
+    hasMore
+    concerts {
+      id
+      name
+      description
+      venue
+      date
+      time
+      image
+      isActive
+      mainArtist {
+        id
+        name
+        image
+      }
+      otherArtists {
+        id
+        name
+        image
+      }
+      ticketCategories {
+        id
+        type
+        totalQuantity
+        availableQuantity
+        unitPrice
+        discountedPrice
+        discountPercentage
+        description
+        features
+      }
+      totalAvailableTickets
+    }
+  }
+}
+
+mutation DeleteConcert($id: ID!) {
+  deleteConcert(id: $id)
+}
+
+mutation CreateConcert($input: CreateConcertInput!) {
+  createConcert(input: $input) {
+    id
+    name
+    description
+    venue
+    date
+    time
+    image
+    isActive
+    mainArtist {
+      id
+      name
+    }
+    ticketCategories {
+      id
+      type
+      totalQuantity
+      unitPrice
+    }
+  }
+}
+
+mutation UpdateConcert($id: ID!, $input: UpdateConcertInput!) {
+  updateConcert(id: $id, input: $input) {
+    id
+    name
+    description
+    venue
+    date
+    time
+    image
+    isActive
+    mainArtist {
+      id
+      name
+    }
+    ticketCategories {
+      id
+      type
+      totalQuantity
+      unitPrice
+    }
+  }
+}
+
+mutation CreateArtist($input: ArtistInput!) {
+  createArtist(input: $input) {
+    id
+    name
+    bio
+    image
+  }
+}
+
+query GetArtists {
+  artists {
+    id
+    name
+    bio
+    image
+  }
+}
+
+mutation UpdateArtist($id: ID!, $input: ArtistInput!) {
+  updateArtist(id: $id, input: $input) {
+    id
+    name
+    bio
+    image
+  }
+}
+
+mutation DeleteArtist($id: ID!, $input: ArtistInput!) {
+  deleteArtist(id: $id, input: $input)
+}
+
+mutation UpdateTicketQuantity($ticketCategoryId: ID!, $newQuantity: Int!) {
+  updateTicketQuantity(ticketCategoryId: $ticketCategoryId, newQuantity: $newQuantity) {
+    id
+    type
+    totalQuantity
+    availableQuantity
+    unitPrice
+  }
+}
+
+mutation UpdateTicketPrice($ticketCategoryId: ID!, $newPrice: Float!) {
+  updateTicketPrice(ticketCategoryId: $ticketCategoryId, newPrice: $newPrice) {
+    id
+    type
+    totalQuantity
+    availableQuantity
+    unitPrice
+  }
+}

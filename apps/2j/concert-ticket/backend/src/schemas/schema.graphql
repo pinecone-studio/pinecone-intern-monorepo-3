@@ -132,7 +132,8 @@ input LoginInput {
 }
 
 input ResetPasswordInput {
-  token: String!
+  email: String!
+  code: String!
   newPassword: String!
 }
 
@@ -156,6 +157,7 @@ input CreateConcertInput {
   venue: String!
   date: String!
   time: String!
+  isActive: Boolean
   mainArtistId: ID!
   otherArtistIds: [ID!]
   image: String
@@ -168,6 +170,7 @@ input UpdateConcertInput {
   venue: String
   date: String
   time: String
+  isActive: Boolean
   mainArtistId: ID
   otherArtistIds: [ID!]
   image: String
@@ -217,10 +220,15 @@ type Query {
 type Mutation {
   register(input: RegisterInput!): AuthPayload!
   login(input: LoginInput!): AuthPayload!
-  forgotPassword(email: String!): String!
-  resetPassword(input: ResetPasswordInput!): AuthPayload!
-  changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
   logout: Boolean!
+
+  # Password reset functionality
+  forgotPassword(email: String!): Boolean!
+  verifyResetCode(email: String!, code: String!): Boolean!
+  resetPassword(email: String!, code: String!, newPassword: String!): Boolean!
+
+  # Change password for authenticated users
+  changePassword(currentPassword: String!, newPassword: String!): Boolean! @auth(requires: USER)
 
   createConcert(input: CreateConcertInput!): Concert! @auth(requires: ADMIN)
   updateConcert(id: ID!, input: UpdateConcertInput!): Concert! @auth(requires: ADMIN)

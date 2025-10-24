@@ -15,10 +15,16 @@ function CheckoutPageContent() {
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   // User мэдээлэл авах
-  const { data: profileData, loading: profileLoading } = useMyProfileQuery({
-    errorPolicy: 'all'
+  const { data: profileData, loading: profileLoading, error: profileError } = useMyProfileQuery({
+    errorPolicy: 'all',
   });
 
+  // Хэрэв UNAUTHENTICATED алдаа бол sign-in руу redirect хийх
+  React.useEffect(() => {
+    if (profileError?.message?.includes('UNAUTHENTICATED')) {
+      router.push('/sign-in');
+    }
+  }, [profileError, router]);
 
   const concertId = searchParams.get('concertId');
   const selectedDate = searchParams.get('selectedDate');
@@ -42,7 +48,7 @@ function CheckoutPageContent() {
     if (profileData?.myProfile) {
       setFormData({
         phone: profileData.myProfile.phoneNumber || '',
-        email: profileData.myProfile.email || ''
+        email: profileData.myProfile.email || '',
       });
     }
   }, [profileData]);
@@ -221,11 +227,7 @@ function CheckoutPageContent() {
                   <span className="text-xl font-bold text-white">{totalAmount.toLocaleString()}₮</span>
                 </div>
 
-                <button 
-                  onClick={handleContinue} 
-                  className="w-full px-6 py-4 mt-6 font-bold text-white transition-colors rounded-lg hover:opacity-90" 
-                  style={{ backgroundColor: '#00b7f4' }}
-                >
+                <button onClick={handleContinue} className="w-full px-6 py-4 mt-6 font-bold text-white transition-colors rounded-lg hover:opacity-90" style={{ backgroundColor: '#00b7f4' }}>
                   Үргэлжлүүлэх
                 </button>
               </div>
@@ -254,13 +256,15 @@ function CheckoutPageContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Ачааллаж байна...</h1>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold mb-4">Ачааллаж байна...</h1>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <CheckoutPageContent />
     </Suspense>
   );

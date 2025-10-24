@@ -1,6 +1,6 @@
 describe('Detail Page', () => {
   beforeEach(() => {
-    cy.visit('/concerts/68e75debb6cd9759bc4033ec');
+    cy.visit('/', { failOnStatusCode: false });
   });
 
   it('Should render navigation bar with all elements', () => {

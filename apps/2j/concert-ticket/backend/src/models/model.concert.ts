@@ -65,4 +65,5 @@ concertSchema.index({ date: 1 });
 concertSchema.index({ mainArtist: 1 });
 concertSchema.index({ isActive: 1 });
 
-export const Concert = mongoose.model<IConcert>('Concert', concertSchema);
+// Hot reload үед model дахин үүсэхээс сэргийлэх
+export const Concert = mongoose.models.Concert || mongoose.model<IConcert>('Concert', concertSchema);

@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { SelectStatus } from './SelectStatus';
 import { OrderItemType, typeOrderItemType } from '@/types/orderType';
 
+
 export const OrderItemCard = ({ order }: { order: OrderItemType }) => {
   
   const [isOrderDetail, setIsOrderDetail] = useState(false);
@@ -21,10 +22,10 @@ export const OrderItemCard = ({ order }: { order: OrderItemType }) => {
 
   return (
     <div className="max-w-[600px]">
-      <div className="border border-gray-200 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col gap-3">
+      <div className="flex flex-col gap-3 p-4 transition-all duration-300 bg-white border border-gray-200 shadow-sm rounded-2xl hover:shadow-md">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div className="flex gap-4 items-center">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <p className="text-[18px] font-semibold text-gray-800">{order.table}</p>
             <p className="text-[18px] text-gray-500">{order.orderNumber}</p>
           </div>
@@ -37,7 +38,7 @@ export const OrderItemCard = ({ order }: { order: OrderItemType }) => {
         {isOrderDetail && (
           <div className="flex flex-col gap-3 pt-2">
             {order.items.map((item: typeOrderItemType) => (
-              <div key={item.id} className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition-all duration-200 rounded-xl p-3 border border-gray-100">
+              <div key={item.id} className="flex items-center justify-between p-3 transition-all duration-200 border border-gray-100 bg-gray-50 hover:bg-gray-100 rounded-xl">
                 {/* Image */}
                 <div className="relative">
                   <img src={item.image} alt={item.name} className="w-[70px] h-[70px] rounded-xl object-cover border border-gray-200" />
@@ -63,18 +64,18 @@ export const OrderItemCard = ({ order }: { order: OrderItemType }) => {
 
         {/* Total + Buttons */}
         <div className="flex flex-col gap-2 pt-2 border-t border-gray-100">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <p className="text-gray-600 text-[14px]">Нийлбэр дүн:</p>
             <p className="font-semibold text-[18px] text-gray-800">{order.total.toLocaleString()}₮</p>
           </div>
 
-          <div className="flex justify-end gap-2 items-center">
+          <div className="flex items-center justify-end gap-2">
             {isOrderDetail ? (
-              <div className="flex gap-2 items-center">
+              <div className="flex items-center gap-2">
                 <SelectStatus value={status} onValueChange={setStatus} isAll={false} />
                 <button
                   onClick={toggleOrderDetail}
-                  className="rounded-lg border border-gray-800 bg-gray-800 text-white px-4 py-2 hover:bg-gray-700 transition"
+                  className="px-4 py-2 text-white transition bg-gray-800 border border-gray-800 rounded-lg hover:bg-gray-700"
                 >
                   Хадгалах
                 </button>
@@ -83,7 +84,7 @@ export const OrderItemCard = ({ order }: { order: OrderItemType }) => {
               // Дэлгэрэнгүй хаалттай үед status-г circle + текстээр харуулах
               <button
                 onClick={toggleOrderDetail}
-                className="rounded-lg border border-gray-200 px-4 py-2 flex items-center gap-2 text-gray-600 hover:bg-gray-50 transition"
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 transition border border-gray-200 rounded-lg hover:bg-gray-50"
               >
                 <span className={`inline-block w-2 h-2 rounded-full ${statusColors[status]}`}></span>
                 {status}

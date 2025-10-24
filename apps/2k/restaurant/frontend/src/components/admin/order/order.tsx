@@ -6,6 +6,7 @@ import { OrderItemCard } from './orderItemCard';
 
 
 
+
 export const AdminOrderStyle = () => {
   const img = 'zurag';
   const [statusFilter, setStatusFilter] = useState('Бүгд');

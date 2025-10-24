@@ -1,0 +1,6 @@
+mutation VerifyResetCode($input: VerifyResetCodeInput!) {
+  verifyResetCode(input: $input) {
+    message
+    success
+  }
+}

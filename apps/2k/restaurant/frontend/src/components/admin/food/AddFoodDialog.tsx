@@ -65,7 +65,7 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ mode, food }) => {
               ) : (
                 <>
                   <ImagePlus size={28} className="text-gray-500" />
-                  <span className="text-xs text-gray-500 mt-1">Зураг нэмэх</span>
+                  <span className="mt-1 text-xs text-gray-500">Зураг нэмэх</span>
                 </>
               )}
             </label>
@@ -77,14 +77,14 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ mode, food }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Хоолны нэр"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
 
           <input
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="Үнэ (ж: 15.6k)"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-300"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
 
           <select

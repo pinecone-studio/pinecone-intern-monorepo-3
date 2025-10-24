@@ -110,7 +110,7 @@ export class ConcertController {
         mainArtist: input.mainArtistId,
         otherArtists: input.otherArtistIds || [],
         image: input.image,
-        isActive: true
+        isActive: input.isActive !== undefined ? input.isActive : true
       });
 
       const savedConcert = await concert.save();
@@ -170,6 +170,7 @@ export class ConcertController {
       if (input.venue) updateData.venue = input.venue;
       if (input.date) updateData.date = new Date(input.date);
       if (input.time) updateData.time = input.time;
+      if (input.isActive !== undefined) updateData.isActive = input.isActive;
       if (input.mainArtistId) updateData.mainArtist = input.mainArtistId;
       if (input.otherArtistIds) updateData.otherArtists = input.otherArtistIds;
       if (input.image !== undefined) updateData.image = input.image;

@@ -15,48 +15,33 @@ export const Query: Resolvers['Query'] = {
   concert: async (_parent, args) => {
     return await ConcertController.getConcertById(args.id);
   },
-
-  // Хэрэглэгчийн захиалгуудыг авах
   myBookings: async (_parent, _args, ctx) => {
     if (!ctx.user) {
-      // Authentication байхгүй бол тодорхой user ID ашиглах
-      return await BookingController.getUserBookings('68e75deab6cd9759bc4033d7');
+      throw new Error('UNAUTHENTICATED');
     }
     return await BookingController.getUserBookings(ctx.user.id);
   },
-
-  // Нэг хэрэглэгчийг ID-аар олох (админ хэрэглэгчдэд зориулсан)
   user: async (_parent, args, ctx) => {
     if (!ctx.user || ctx.user.role !== 'ADMIN') {
       throw new Error('Админ эрх шаардлагатай');
     }
     return await UserController.getUserById(args.id);
   },
-
-  // Бүх хэрэглэгчдийг авах (админ хэрэглэгчдэд зориулсан)
   users: async (_parent, args, ctx) => {
     if (!ctx.user || ctx.user.role !== 'ADMIN') {
       throw new Error('Админ эрх шаардлагатай');
     }
     return await UserController.getUsers(args.pagination);
   },
-
-  // Бүх дуучнуудыг авах
   artists: async () => {
     return await ArtistController.getArtists();
   },
-
-  // Нэг дуучныг ID-аар олох
   artist: async (_parent, args) => {
     return await ArtistController.getArtistById(args.id);
   },
-
-  // Тасалбарын боломжийг шалгах
   checkTicketAvailability: async (_parent, args) => {
     return await TicketCategoryController.checkTicketAvailability(args.concertId, args.ticketCategoryId);
   },
-
-  // Хайлтын санал олох
   searchSuggestions: async (_parent, args) => {
     return await ConcertController.getSearchSuggestions(args.query);
   },
@@ -64,8 +49,7 @@ export const Query: Resolvers['Query'] = {
   // Хэрэглэгчийн профайл авах
   myProfile: async (_parent, _args, ctx) => {
     if (!ctx.user) {
-      // Authentication байхгүй бол тодорхой user ID ашиглах
-      return await UserController.getUserProfile('68e75deab6cd9759bc4033d7');
+      throw new Error('UNAUTHENTICATED');
     }
     return await UserController.getUserProfile(ctx.user.id);
   },

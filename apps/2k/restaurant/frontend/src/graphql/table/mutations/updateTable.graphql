@@ -1,0 +1,7 @@
+mutation UpdateTable($tableId: ID!, $input: UpdateTableInput!) {
+  updateTable(tableId: $tableId, input: $input) {
+    tableId
+    tableName
+    tableQr
+  }
+}

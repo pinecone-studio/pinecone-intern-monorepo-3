@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Navbar from '@/components/home/Navbar';
 import Footer from '@/components/home/Footer';
 import { HeroSlider } from '@/components/detail/hero-slider';
@@ -32,7 +32,7 @@ const getTicketTypeName = (type: TicketType): string => {
     case TicketType.Regular:
       return 'Энгийн тасалбар';
     case TicketType.GeneralAdmission:
-      return 'Арын тасалбар';
+      return 'Задгай тасалбар';
     default:
       return 'Тасалбар';
   }
@@ -72,11 +72,24 @@ const initSelectedDate = (concertDate?: string | null): string => {
 
 // eslint-disable-next-line complexity
 const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = React.useState<string>(() => {
     return initSelectedDate(concert.date);
   });
+  const [showAuthNotification, setShowAuthNotification] = React.useState(false);
 
   const handleBookTicket = () => {
+    // Authentication шалгах
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    
+    if (!token) {
+      setShowAuthNotification(true);
+      setTimeout(() => {
+        router.push('/sign-in');
+      }, 2000);
+      return;
+    }
+
     const urlParams = new URLSearchParams();
     if (selectedDate) {
       urlParams.set('selectedDate', selectedDate);
@@ -171,6 +184,17 @@ const ConcertContent = ({ concert, concertId }: ConcertContentProps) => {
       />
       <RelatedConcerts excludeConcertId={concertId} />
       <Footer />
+      
+      {/* Authentication notification */}
+      {showAuthNotification && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-gray-900 rounded-lg p-6 max-w-sm mx-4 border border-gray-700">
+            <h3 className="text-xl font-bold text-white mb-2">Анхаар</h3>
+            <p className="text-gray-300 mb-4">Та нэвтрэх хэрэгтэй</p>
+            <div className="text-sm text-gray-400">Нэвтрэх хуудас руу шилжүүлж байна...</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -230,6 +254,7 @@ const ConcertDetailPage = () => {
   const { data, loading, error } = useGetConcertQuery({
     variables: { id: concertId },
     skip: !concertId,
+    errorPolicy: 'all',
   });
 
   if (loading) {

@@ -9,8 +9,7 @@ export class TicketCategoryController {
         throw new Error('Буруу тасалбарын ангиллын ID');
       }
 
-      const ticketCategory = await TicketCategory.findById(id)
-        .populate('concert');
+      const ticketCategory = await TicketCategory.findById(id).populate('concert');
 
       if (!ticketCategory) {
         throw new Error('Тасалбарын ангилал олдсонгүй');
@@ -29,8 +28,7 @@ export class TicketCategoryController {
         throw new Error('Буруу концертын ID');
       }
 
-      const ticketCategories = await TicketCategory.find({ concert: concertId })
-        .sort({ unitPrice: 1 });
+      const ticketCategories = await TicketCategory.find({ concert: concertId }).sort({ unitPrice: 1 });
 
       return ticketCategories;
     } catch (error) {
@@ -48,7 +46,7 @@ export class TicketCategoryController {
 
       const ticketCategory = await TicketCategory.findOne({
         _id: ticketCategoryId,
-        concert: concertId
+        concert: concertId,
       });
 
       if (!ticketCategory) {
@@ -90,7 +88,7 @@ export class TicketCategoryController {
         ticketCategoryId,
         {
           totalQuantity: newQuantity,
-          availableQuantity: newAvailableQuantity
+          availableQuantity: newAvailableQuantity,
         },
         { new: true }
       ).populate('concert');
@@ -117,11 +115,7 @@ export class TicketCategoryController {
         throw new Error('Тасалбарын ангилал олдсонгүй');
       }
 
-      const updatedTicketCategory = await TicketCategory.findByIdAndUpdate(
-        ticketCategoryId,
-        { unitPrice: newPrice },
-        { new: true }
-      ).populate('concert');
+      const updatedTicketCategory = await TicketCategory.findByIdAndUpdate(ticketCategoryId, { unitPrice: newPrice }, { new: true }).populate('concert');
 
       return updatedTicketCategory;
     } catch (error) {
@@ -143,19 +137,15 @@ export class TicketCategoryController {
 
       // Зөвхөн өөрчлөгдсөн талбаруудыг шинэчлэх
       const allowedUpdates = ['description', 'features'];
-      const updates: any = {};
+      const updates: Partial<ITicketCategory> = {};
 
-      allowedUpdates.forEach(field => {
+      allowedUpdates.forEach((field) => {
         if (updateData[field as keyof ITicketCategory] !== undefined) {
           updates[field] = updateData[field as keyof ITicketCategory];
         }
       });
 
-      const updatedTicketCategory = await TicketCategory.findByIdAndUpdate(
-        ticketCategoryId,
-        updates,
-        { new: true }
-      ).populate('concert');
+      const updatedTicketCategory = await TicketCategory.findByIdAndUpdate(ticketCategoryId, updates, { new: true }).populate('concert');
 
       return updatedTicketCategory;
     } catch (error) {
@@ -191,9 +181,7 @@ export class TicketCategoryController {
   // Бүх тасалбарын ангиллуудыг авах (админ хэрэглэгчдэд зориулсан)
   static async getAllTicketCategories() {
     try {
-      const ticketCategories = await TicketCategory.find({})
-        .populate('concert')
-        .sort({ createdAt: -1 });
+      const ticketCategories = await TicketCategory.find({}).populate('concert').sort({ createdAt: -1 });
 
       return ticketCategories;
     } catch (error) {

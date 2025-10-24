@@ -13,7 +13,7 @@ const getTicketTypeName = (type: TicketType): string => {
     case TicketType.Regular:
       return 'Энгийн тасалбар';
     case TicketType.GeneralAdmission:
-      return 'Арын тасалбар';
+      return 'Задгай тасалбар';
     default:
       return 'Тасалбар';
   }
@@ -154,7 +154,7 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
   const formatDateToMMDD = (dateStr: string): string => {
     try {
       let date: Date;
-      
+
       // Timestamp эсэхийг шалгах
       if (/^\d+$/.test(dateStr)) {
         // Timestamp-г миллисекунд болгож форматлах
@@ -163,11 +163,11 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
       } else {
         date = new Date(dateStr);
       }
-      
+
       if (isNaN(date.getTime())) {
         return dateStr;
       }
-      
+
       // Local огноо ашиглах (timezone асуудал арилгах)
       const mm = String(date.getMonth() + 1).padStart(2, '0');
       const dd = String(date.getDate()).padStart(2, '0');
@@ -184,7 +184,7 @@ const useCartLogic = (concertId: string | null, selectedDate: string | null, dat
       if (!data?.concert?.date) {
         return [formatDateToMMDD(new Date().toISOString())];
       }
-      
+
       // Зөвхөн тухайн тоглолтын огноо (timestamp эсэхийг шалгахгүй)
       return [formatDateToMMDD(data.concert.date)];
     } catch (error) {
@@ -518,11 +518,15 @@ const CartLayout = ({ router, selectedDate, ticketCategories, updateQuantity, ge
 );
 
 export const CartContent: React.FC<CartContentProps> = ({ concertId, selectedDate }) => {
-  const { data, loading, error } = useGetConcertQuery({ variables: { id: concertId || '' }, skip: !concertId });
+  const { data, loading, error } = useGetConcertQuery({
+    variables: { id: concertId || '' },
+    skip: !concertId,
+    errorPolicy: 'all',
+  });
   const logic = useCartLogic(concertId, selectedDate, data);
 
   if (loading) return <LoadingState />;
-  if (error || !data?.concert) return <ErrorState onBack={() => logic.router.back()} />;
+  if (error || !data?.concert) return <ErrorState onBack={() => window.history.back()} />;
 
   return <CartLayout {...logic} selectedDate={logic.currentSelectedDate} dateDiscountPercentage={logic.dateDiscountPercentage} />;
 };

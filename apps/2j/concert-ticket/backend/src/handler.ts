@@ -13,11 +13,19 @@ const server = new ApolloServer<Context>({
   resolvers,
   typeDefs,
   introspection: true,
+  cors: {
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true,
+  },
 });
 
 export const handler = startServerAndCreateNextHandler<NextRequest, Context>(server, {
   context: async (req) => {
     // Authentication context үүсгэх
-    return await createContextWithAuth(req);
+    const authorization = req.headers.get('authorization') || '';
+    console.log('🔵 Request headers authorization:', authorization);
+    const context = await createContextWithAuth({ headers: { authorization } });
+    console.log('🔵 Context user:', context.user);
+    return context;
   },
 });

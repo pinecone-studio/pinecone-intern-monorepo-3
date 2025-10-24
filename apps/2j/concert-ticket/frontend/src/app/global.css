@@ -102,9 +102,9 @@
     font-feature-settings: 'rlig' 1, 'calt' 1;
     overflow-x: hidden;
     overscroll-behavior-y: none;
+  }
 
-    .error {
-      color: red;
-    }
+  .error {
+    color: red;
   }
 }
