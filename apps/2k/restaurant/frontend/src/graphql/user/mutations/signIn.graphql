@@ -6,7 +6,6 @@ mutation SignIn($input: LoginInput!) {
       username
       email
       profile
-      password
       bonusPoints
       role
       phoneNumber
