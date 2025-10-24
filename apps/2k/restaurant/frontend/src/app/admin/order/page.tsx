@@ -1,5 +1,4 @@
-import { AdminOrderStyle } from "@/components/admin/order/Order";
-
+import { AdminOrderStyle } from "@/components/admin/order/order";
 
  const AdminOrderPage: React.FC = () => {
   return (

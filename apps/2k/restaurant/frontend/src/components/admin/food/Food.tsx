@@ -1,24 +1,42 @@
+import { useAllFoodQuery } from '@/generated';
 import { AddFoodDialog } from './AddFoodDialog';
 import { FoodItemCard } from './FoodCardItem';
+
+import { Container, Stack } from '@mui/material';
 
 const image = 'zurag';
 
 type FoodItem = {
   id: number;
   name: string;
-  price: string;
+  price?: string;
   status: 'идэвхитэй' | 'идэвхгүй';
-  image: string;
+  image?: string;
 };
 
-const foodList: FoodItem[] = [
-  { id: 1, name: 'Taso', price: '15.6k', status: 'идэвхитэй', image },
-  { id: 2, name: 'Burger Deluxe', price: '18.2k', status: 'идэвхитэй', image },
-  { id: 3, name: 'Spaghetti', price: '12.4k', status: 'идэвхгүй', image },
-  { id: 4, name: 'Sushi Mix', price: '21.5k', status: 'идэвхитэй', image },
-];
-
 export const Food = () => {
+
+  const { data, loading, error, refetch: reFetchAdminFood } = useAllFoodQuery();
+  
+  console.log('data', data);
+
+  if (error) {
+    return (
+      <Container maxWidth="xs">
+        <Stack py={8}>Error: {error.message}</Stack>
+      </Container>
+    );
+  }
+
+  if (loading) {
+    return (
+      <Container maxWidth="xs">
+        <Stack py={8}>Loading...</Stack>
+      </Container>
+    );
+  }
+
+  const foods = data?.allFood ?? [];
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {/* Header */}
@@ -29,7 +47,7 @@ export const Food = () => {
 
       {/* Food grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {foodList.map((food) => (
+        {foods?.map((food) => (
           <FoodItemCard key={food.id} food={food} />
         ))}
       </div>

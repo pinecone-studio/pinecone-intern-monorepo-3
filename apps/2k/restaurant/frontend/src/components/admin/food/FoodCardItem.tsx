@@ -1,5 +1,6 @@
 import { Trash } from 'lucide-react';
 import { AddFoodDialog } from './AddFoodDialog';
+import { FoodType } from '@/generated';
 
 interface FoodItem {
   id: number;
@@ -9,14 +10,11 @@ interface FoodItem {
   image: string;
 }
 
-interface FoodItemCardProps {
-  food: FoodItem;
-}
+export const FoodItemCard = ({ food }:{food:FoodType}) => {
 
-export const FoodItemCard: React.FC<FoodItemCardProps> = ({ food }) => {
   return (
     <div className="flex flex-col w-64 bg-white rounded-2xl p-4 shadow-md">
-      <img src={food.image} alt={food.name} className="w-full h-40 object-cover rounded-xl mb-4" />
+      <img src={food.image ?? undefined} alt={food.name ?? 'zurag baihgui'} className="w-full h-40 object-cover rounded-xl mb-4" />
 
       {/* Text хэсэг */}
       <div className="space-y-2 mb-4">
@@ -24,12 +22,12 @@ export const FoodItemCard: React.FC<FoodItemCardProps> = ({ food }) => {
         <p className="text-base text-gray-700 font-medium">{food.price}</p>
         <p
           className={`text-sm font-medium ${
-            food.status === 'идэвхитэй'
+            food.available === true
               ? 'text-gray-800' // бараандуу саарал
               : 'text-gray-400' // бүдэг саарал
           }`}
         >
-          {food.status}
+          {food.available}
         </p>
       </div>
 
