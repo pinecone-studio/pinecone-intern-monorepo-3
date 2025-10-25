@@ -11,7 +11,10 @@ type TableData = {
 };
 
 export const SeeTableModal = ({ data }: { data: TableData }) => {
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=291x291&data=${encodeURIComponent(data.tableQr)}`;
+  const baseUrl = 'http://localhost:4201'; // ← одоохондоо локал
+  const qrDataUrl = `${baseUrl}/?tableQr=${data.tableQr}`;
+
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=291x291&data=${encodeURIComponent(qrDataUrl)}`;
 
   const handleDownload = () => {
     ImageDownloader(qrUrl, `${data.tableName}_QRcode.png`);

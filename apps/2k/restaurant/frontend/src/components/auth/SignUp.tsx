@@ -9,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useCreateUserMutation } from '@/generated';
 
-
 interface SignUpFormInputs {
   username: string;
   email: string;
@@ -21,7 +20,8 @@ const SignUp: React.FC = () => {
   const router = useRouter();
   const form = useForm<SignUpFormInputs>();
   const [loading, setLoading] = useState(false);
-  const [createUser] = useCreateUserMutation(); // generated hook
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [createUser] = useCreateUserMutation();
 
   const onSubmit = async (data: SignUpFormInputs) => {
     if (data.password !== data.confirmPassword) {
@@ -47,7 +47,11 @@ const SignUp: React.FC = () => {
       }
 
       localStorage.setItem('user', JSON.stringify(res.createUser));
-      router.push('/sign-in');
+
+      setSuccessMessage('Бүртгэл амжилттай хийгдлээ!');
+      setTimeout(() => {
+        router.push('/sign-in');
+      }, 2000);
     } catch (err: any) {
       console.error('Sign up error:', err);
       form.setError('email', { message: err.message || 'Алдаа гарлаа' });
@@ -58,85 +62,77 @@ const SignUp: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen w-screen gap-6 bg-gray-50">
-  <Image src="/mainLogo.png" alt="Logo" width={108} height={104} />
+      <Image src="/mainLogo.png" alt="Logo" width={108} height={104} />
 
-  <div className="flex flex-col w-full max-w-[327px] items-center gap-6">
-    <h1 className="text-2xl font-semibold text-[#441500]">Бүртгүүлэх</h1>
+      <div className="flex flex-col w-full max-w-[327px] items-center gap-6">
+        <h1 className="text-2xl font-semibold text-[#441500]">Бүртгүүлэх</h1>
 
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Хэрэглэгчийн нэр" {...field} />
-              </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
-            </FormItem>
-          )}
-        />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Хэрэглэгчийн нэр" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-sm" />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Имэйл хаяг" type="email" {...field} />
-              </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Имэйл хаяг" type="email" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-sm" />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input type="password" placeholder="Нууц үг" {...field} />
-              </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="password" placeholder="Нууц үг" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-sm" />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input type="password" placeholder="Нууц үгээ давтан оруулна уу" {...field} />
-              </FormControl>
-              <FormMessage className="text-red-500 text-sm" />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="password" placeholder="Нууц үгээ давтан оруулна уу" {...field} />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-sm" />
+                </FormItem>
+              )}
+            />
 
-        <Button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-[#441500] text-white"
-        >
-          {loading ? 'Түр хүлээнэ үү...' : 'Бүртгүүлэх'}
+            <Button type="submit" disabled={loading} className="w-full bg-[#441500] text-white">
+              {loading ? 'Түр хүлээнэ үү...' : 'Бүртгүүлэх'}
+            </Button>
+          </form>
+        </Form>
+        {successMessage && <p className="text-green-600 text-sm font-medium text-center">{successMessage}</p>}
+
+        <Button type="button" onClick={() => router.push('/sign-in')} className="w-full text-black bg-transparent hover:bg-gray-100">
+          Аль хэдийн бүртгэлтэй юу? Нэвтрэх
         </Button>
-      </form>
-    </Form>
-
-    <Button
-      type="button"
-      onClick={() => router.push('/sign-in')}
-      className="w-full text-black bg-transparent hover:bg-gray-100"
-    >
-      Аль хэдийн бүртгэлтэй юу? Нэвтрэх
-    </Button>
-  </div>
-</div>
-
+      </div>
+    </div>
   );
 };
 

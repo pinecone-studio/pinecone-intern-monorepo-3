@@ -2,13 +2,13 @@ export type AddPayload = {
   id: string;
   image: string;
   foodName: string;
-  price: string;
+  price: number;
 };
 
 export type CartItem = {
   id: string;
   image: string;
   foodName: string;
-  price: string;
+  price: number;
   selectCount: number;
 };
