@@ -42,13 +42,13 @@ export const Food = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">Хоол</h2>
-        <AddFoodDialog mode="add" />
+        <AddFoodDialog reFetchAdminFood={reFetchAdminFood} />
       </div>
 
       {/* Food grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {foods?.map((food) => (
-          <FoodItemCard key={food.id} food={food} />
+          <FoodItemCard key={food.id} food={food} reFetchAdminFood={reFetchAdminFood}/>
         ))}
       </div>
     </div>

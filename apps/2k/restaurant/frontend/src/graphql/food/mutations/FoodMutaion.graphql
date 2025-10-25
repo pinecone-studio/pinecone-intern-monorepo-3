@@ -1,0 +1,32 @@
+mutation CreateFood($name: String!, $price: Int!, $image: String, $available: Boolean) {
+  createFood(name: $name, price: $price, image: $image, available: $available) {
+    available
+    categoryId
+    id
+    image
+    name
+    price
+  }
+}
+
+mutation UpdateFood($updateFoodId: ID!, $available: Boolean, $price: Int, $image: String, $name: String) {
+  updateFood(id: $updateFoodId, available: $available, price: $price, image: $image, name: $name) {
+    available
+    categoryId
+    id
+    name
+    image
+    price
+  }
+}
+
+mutation DeleteFood($foodId: ID!) {
+  DeleteFood(foodId: $foodId) {
+    categoryId
+    id
+    image
+    available
+    name
+    price
+  }
+}
