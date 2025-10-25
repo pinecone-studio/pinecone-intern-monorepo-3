@@ -23,9 +23,14 @@ export const createUser = async (_: unknown, { input }: { input: CreateUserInput
   const user = newUser.toObject();
 
   return {
-    ...user,
-    userId: user.userId,
-    createdAt: user.createdAt.toISOString(),
-    updatedAt: user.updatedAt.toISOString(),
+    userId: newUser._id.toString(),
+    email: newUser.email,
+    username: newUser.username,
+    profile: newUser.profile,
+    bonusPoints: newUser.bonusPoints,
+    role: newUser.role,
+    phoneNumber: newUser.phoneNumber,
+    createdAt: newUser.createdAt.toISOString(),
+    updatedAt: newUser.updatedAt.toISOString(),
   };
 };
