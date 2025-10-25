@@ -1,6 +1,9 @@
 import { Trash } from 'lucide-react';
 import { AddFoodDialog } from './AddFoodDialog';
-import { FoodType } from '@/generated';
+import { AllFoodQuery, FoodType } from '@/generated';
+import { EditFoodDialog } from './UpdateFoodDialog';
+import { ApolloQueryResult } from '@apollo/client';
+import { DeleteFood } from './DeleteFoodDialog';
 
 interface FoodItem {
   id: number;
@@ -10,8 +13,7 @@ interface FoodItem {
   image: string;
 }
 
-export const FoodItemCard = ({ food }:{food:FoodType}) => {
-
+export const FoodItemCard = ({ food, reFetchAdminFood }: { food: FoodType; reFetchAdminFood: () => Promise<ApolloQueryResult<AllFoodQuery>> }) => {
   return (
     <div className="flex flex-col w-64 bg-white rounded-2xl p-4 shadow-md">
       <img src={food.image ?? undefined} alt={food.name ?? 'zurag baihgui'} className="w-full h-40 object-cover rounded-xl mb-4" />
@@ -33,10 +35,10 @@ export const FoodItemCard = ({ food }:{food:FoodType}) => {
 
       {/* Button хэсэг */}
       <div className="flex justify-end items-center gap-3">
-        <AddFoodDialog mode="edit" food={food} />
-        <button className="p-2 rounded-lg text-gray-500 font-normal hover:bg-gray-100 transition-colors duration-200">
-          <Trash size={20} />
-        </button>
+        {/* <AddFoodDialog mode="edit" food={food} /> */}
+
+        <EditFoodDialog food={food} reFetchAdminFood={reFetchAdminFood} />
+        <DeleteFood food={food} reFetchAdminFood={reFetchAdminFood} />
       </div>
     </div>
   );

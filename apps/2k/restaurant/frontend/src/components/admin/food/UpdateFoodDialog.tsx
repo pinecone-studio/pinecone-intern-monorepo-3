@@ -1,13 +1,21 @@
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AllFoodQuery, useCreateFoodMutation } from '@/generated';
+import { AllFoodQuery, FoodType, useUpdateFoodMutation } from '@/generated';
 import { ImagePlus } from 'lucide-react';
 import { useState } from 'react';
 import { ApolloQueryResult } from '@apollo/client';
 
-// Zod schema
+// ✅ Validation schema
 const foodSchema = z.object({
   name: z.string().min(1, 'Нэр оруулах шаардлагатай'),
   price: z.string().regex(/^\d+(\.\d+)?$/, 'Үнэ зөв форматтай байх ёстой'),
@@ -17,27 +25,30 @@ const foodSchema = z.object({
 
 type FoodFormData = z.infer<typeof foodSchema>;
 
-interface AddFoodDialogProps {
+interface EditFoodDialogProps {
+  food: FoodType;
   reFetchAdminFood: () => Promise<ApolloQueryResult<AllFoodQuery>>;
 }
 
-export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }) => {
-  const [createFood] = useCreateFoodMutation();
-  const [preview, setPreview] = useState('');
+export const EditFoodDialog: React.FC<EditFoodDialogProps> = ({
+  food,
+  reFetchAdminFood,
+}) => {
+  const [updateFood] = useUpdateFoodMutation();
+  const [preview, setPreview] = useState(food?.image || '');
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    reset,
   } = useForm<FoodFormData>({
     resolver: zodResolver(foodSchema),
     defaultValues: {
-      name: '',
-      price: '',
-      status: true,
-      image: '',
+      name: food?.name || '',
+      price: food?.price?.toString() || '',
+      status: food?.available ?? true,
+      image: food?.image || '',
     },
   });
 
@@ -54,9 +65,11 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
   };
 
   const onSubmit = async (data: FoodFormData) => {
-    console.log('🧩 Баталгаажсан өгөгдөл:', data);
-    await createFood({
+    console.log('🧩 UPDATE өгөгдөл:', data);
+
+    await updateFood({
       variables: {
+        updateFoodId: food.id, // ← энэ нэрийг GraphQL mutation-дээ тааруул
         name: data.name,
         price: Number(data.price),
         available: data.status,
@@ -65,22 +78,20 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
     });
 
     await reFetchAdminFood();
-    reset();
-    setPreview('');
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="px-4 py-2 rounded-lg font-medium bg-gray-900 text-white">
-          Хоол нэмэх
+        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+          Засах
         </button>
       </DialogTrigger>
 
       <DialogContent className="p-6 sm:max-w-[400px] space-y-5 rounded-2xl">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-gray-800">
-            Шинэ хоол нэмэх
+            Хоол засах
           </DialogTitle>
         </DialogHeader>
 
@@ -88,7 +99,7 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
           {/* Зураг */}
           <div className="flex flex-col items-center">
             <label
-              htmlFor="image-upload"
+              htmlFor={`image-upload-${food.id}`}
               className="w-28 h-28 bg-gray-100 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 transition"
             >
               {preview ? (
@@ -104,8 +115,9 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
                 </>
               )}
             </label>
+            
             <input
-              id="image-upload"
+              id={`image-upload-${food.id}`}
               type="file"
               accept="image/*"
               onChange={handleImageChange}
@@ -119,7 +131,9 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
             placeholder="Хоолны нэр"
             className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
-          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-sm text-red-500">{errors.name.message}</p>
+          )}
 
           {/* Үнэ */}
           <input
@@ -127,7 +141,9 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
             placeholder="Үнэ (ж: 15000)"
             className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
           />
-          {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
+          {errors.price && (
+            <p className="text-sm text-red-500">{errors.price.message}</p>
+          )}
 
           {/* Статус */}
           <select
@@ -154,7 +170,7 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
               type="submit"
               className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
             >
-              Нэмэх
+              Хадгалах
             </button>
           </DialogFooter>
         </form>
