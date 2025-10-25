@@ -7,9 +7,9 @@ export type Props = {
   id: string;
   image: string;
   foodName: string;
-  price: string;
+  price: number;
   count?: number;
-  onAdd?: (_id: string, _image: string, _foodName: string, _price: string) => void;
+  onAdd?: (_id: string, _image: string, _foodName: string, _price: number) => void;
   onRemove: (_id: string) => void;
   discount: any;
 };
@@ -43,18 +43,18 @@ const MenuCard = ({ id, image, foodName, price, count = 0, onAdd, onRemove, disc
               <p className="flex absolute text-[30px] text-white ">{count}</p>
             </div>
           )}
-           {isDiscounted !== null && <div className="bg-red-600 text-white flex relative w-[38px] h-[28px] mt-[127px] items-center justify-center text-[12px]">{isDiscounted}%</div>}
+          {isDiscounted !== null && <div className="bg-red-600 text-white flex relative w-[38px] h-[28px] mt-[127px] items-center justify-center text-[12px]">{isDiscounted}%</div>}
           <div>
             <p>{foodName}</p>
             <div className="flex gap-2">
               <p className="text-[18px] font-bold">{price}</p>
               {isDiscounted !== null ? (
                 <div className="flex gap-2">
-                  <p className="text-[18px] font-bold">{shortPrice(parseInt(price) - (parseInt(price) / 100) * isDiscounted)}</p>
-                  <p className="text-[18px] text-[#09090B]/30 line-through">{shortPrice(parseInt(price))}</p>
+                  <p className="text-[18px] font-bold">{shortPrice(price - (price / 100) * isDiscounted)}</p>
+                  <p className="text-[18px] text-[#09090B]/30 line-through">{shortPrice(price)}</p>
                 </div>
               ) : (
-                <p className="text-[18px] font-bold">{shortPrice(parseInt(price))}</p>
+                <p className="text-[18px] font-bold">{shortPrice(price)}</p>
               )}
             </div>
           </div>

@@ -5,10 +5,10 @@ type Props = {
   id: string;
   image: string;
   foodName: string;
-  price: string;
+  price: number;
   count: number;
-  onAdd?: (_id: string, _image: string, _foodName: string, _price: string) => void;
-  onRemove?: (_id: string, _image: string, _foodName: string, _price: string) => void;
+  onAdd?: (_id: string, _image: string, _foodName: string, _price: number) => void;
+  onRemove?: (_id: string, _image: string, _foodName: string, _price: number) => void;
   removeItem: (_id: string) => void;
 };
 
@@ -18,14 +18,14 @@ export const OrderList = ({ image, foodName, price, count, onAdd, onRemove, id, 
       <div className="w-[90px] h-[90px] relative ">
         <Image alt="hool" src={image} fill sizes="auto" className="object-cover rounded-xl" />
       </div>
-      
+
       <div className="flex flex-col justify-between">
         <div className="flex flex-col min-w-0">
-            <p className="text-[14px] truncate">{foodName}</p>
-            <p className="text-[16px] font-semibold">Нэгж: {price}₮</p>
+          <p className="text-[14px] truncate">{foodName}</p>
+          <p className="text-[16px] font-semibold">Нэгж: {price}₮</p>
         </div>
-         <div className="flex items-center gap-3">
-         <button
+        <div className="flex items-center gap-3">
+          <button
             onClick={() => {
               onRemove?.(id, image, foodName, price);
             }}
@@ -38,7 +38,7 @@ export const OrderList = ({ image, foodName, price, count, onAdd, onRemove, id, 
           <p className="w-6 text-center" aria-live="polite">
             {count}
           </p>
-           <button
+          <button
             onClick={() => {
               onAdd?.(id, image, foodName, price);
             }}
@@ -47,10 +47,9 @@ export const OrderList = ({ image, foodName, price, count, onAdd, onRemove, id, 
           >
             +
           </button>
-          
         </div>
       </div>
-       <div className="flex flex-col items-center justify-between">
+      <div className="flex flex-col items-center justify-between">
         <button
           onClick={() => {
             removeItem(id);
