@@ -1,4 +1,4 @@
-import { Wallet } from "@/components/Wallet";
+import { Wallet } from '@/components/Wallet';
 
 const page = () => {
   return <Wallet />;

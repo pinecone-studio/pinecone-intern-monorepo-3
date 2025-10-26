@@ -1,14 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { useRouter } from 'next/navigation'; // 🌟 Next.js Router-ийг импортлов
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import MenuCard from './MenuCard';
 import { OrderList } from './OrderList';
-import { CartItem } from '@/types/cart';
+import { CartItem, AddPayload } from '@/types/cart';
 import { useGetCategoriesQuery } from '@/generated';
+import OrderType from './OrderType';
 import { Header } from '../Header';
 
-export function addToCartReducer(prev: CartItem[], p: { id: string; image: string; name: string; price: number }): CartItem[] {
+// Төрлүүд
+type FoodServeTypeString = 'IN' | 'GO';
+
+// Reducer Functions (Хэвээр үлдэнэ)
+export function addToCartReducer(prev: CartItem[], p: AddPayload): CartItem[] {
   const idx = prev.findIndex((x) => x.id === p.id);
   if (idx !== -1) {
     const next = [...prev];
@@ -37,9 +43,15 @@ type MenuPageProps = {
 };
 
 const MenuPage = ({ tableQr }: MenuPageProps) => {
+  const router = useRouter(); // 🌟 useRouter-ийг ашиглав
+
   const { data: categories } = useGetCategoriesQuery();
   const [activeCategory, setActiveCategory] = useState<string | undefined>(undefined);
   const [cart, setCart] = useState<CartItem[]>([]);
+
+  // 🌟 isPaymentMode болон selectedOrderType state-ийг хасав
+  // OrderType-д хэрэгтэй тул selectedOrderType-ийг хадгалъя
+  const [selectedOrderType, setSelectedOrderType] = useState<FoodServeTypeString>('IN');
 
   useEffect(() => {
     if (categories?.getCategories?.length) {
@@ -47,7 +59,7 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
     }
   }, [categories]);
 
-  const foods = categories?.getCategories.find((item) => item?.categoryName === activeCategory)?.food ?? [];
+  const foods = categories?.getCategories?.find((item) => item?.categoryName === activeCategory)?.food ?? [];
 
   const addToCart = (id: string, image: string, name: string, price: number) => {
     setCart((prev) => addToCartReducer(prev, { id, image, name, price }));
@@ -55,38 +67,39 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
   const removeOne = (id: string) => setCart((prev) => removeOneReducer(prev, id));
   const removeItem = (id: string) => setCart((prev) => removeItemReducer(prev, id));
 
+  const baseOrderAmount = cart.reduce((a, b) => a + Number(b.price) * b.selectCount, 0);
   const cartCount = cart.reduce((a, b) => a + b.selectCount, 0);
-  const totalPrice = cart.reduce((a, b) => a + b.price * b.selectCount, 0);
 
-  const submitOrder = () => {
+  // 🌟 goToPayment-ийг orderPaymentPage руу шилжүүлдэг болгов
+  const goToPayment = (type: FoodServeTypeString) => {
     if (cart.length === 0) return alert('Захиалга хоосон байна.');
 
-    const newOrder = {
-      orderId: Date.now().toString(),
-      orderNumber: Math.floor(Math.random() * 10000),
-      tableQr,
-      items: cart,
-      totalPrice: cart.reduce((a, b) => a + Number(b.price) * b.selectCount, 0),
-      status: 'Боловсруулж байна',
-      createdAt: new Date().toISOString(),
+    // 1. Захиалгын мэдээллийг түр хадгалах (Local Storage-д)
+    const paymentData = {
+      cartItems: cart,
+      baseOrderAmount: baseOrderAmount,
+      selectedOrderType: type,
+      tableQr: tableQr,
     };
 
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-    localStorage.setItem('orders', JSON.stringify([...orders, newOrder]));
+    localStorage.setItem('pendingOrder', JSON.stringify(paymentData));
 
-    setCart([]);
-    alert('Захиалга амжилттай илгээгдлээ!');
+    // 2. "/order-payment" хуудас руу шилжих
+    router.push('/order-payment');
   };
+
+  // 🌟 submitOrder функц одоо MenuPage-д хэрэггүй тул хасав (PaymentPage дээр хийгдэнэ)
+
+  // 🌟 isPaymentMode шалгах хэсгийг хасав
 
   return (
     <div className="min-h-screen bg-white">
-      <Header/>
+      <Header />
       <div className="w-full h-fit sticky top-[55px]">
+        {/* ... (Categories болон Foods хэвээр) ... */}
         <div className="px-4 py-6 text-center bg-white">
           <h1 className="text-[#441500] text-2xl font-bold">Хоолны цэс ({tableQr})</h1>
         </div>
-
-        {/* Categories */}
         <div className="px-4 py-4 bg-white">
           <div className="flex space-x-6 overflow-x-auto">
             {categories?.getCategories?.map((category) => (
@@ -114,7 +127,6 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
                     price={foodItem?.price ?? 0}
                     id={foodItem?.id ?? ''}
                     count={count}
-                    // discount={foodItem?.discount}
                     onAdd={() => addToCart(foodItem?.id ?? '', foodItem?.image ?? '/placeholder.png', foodItem?.name ?? '', foodItem?.price ?? 0)}
                     onRemove={() => removeOne(foodItem?.id ?? '')}
                   />
@@ -126,10 +138,13 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
           </div>
         </div>
 
-        {/* Drawer */}
+        {/* Drawer - Сагс болон Захиалгын Төрөл Сонгох */}
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
           <Drawer>
-            <DrawerTrigger className="w-full py-4 text-lg font-medium text-white rounded-lg bg-amber-800 hover:bg-amber-900">Захиалах ({cart.reduce((a, b) => a + b.selectCount, 0)})</DrawerTrigger>
+            <DrawerTrigger disabled={cart.length === 0} className={`w-full py-4 text-lg font-medium text-white rounded-lg ${cart.length > 0 ? 'bg-amber-800 hover:bg-amber-900' : 'bg-gray-400'}`}>
+              Захиалах ({cartCount})
+            </DrawerTrigger>
+
             <DrawerContent>
               <DrawerHeader>
                 <DrawerTitle>Таны захиалга</DrawerTitle>
@@ -138,28 +153,31 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
               {cart.length === 0 ? (
                 <div className="py-10 text-sm text-center text-zinc-500">Хоосон байна.</div>
               ) : (
-                <div className="p-4 space-y-4">
-                  {cart.map((item) => (
-                    <OrderList
-                      key={item.id}
-                      id={item.id}
-                      image={item.image}
-                      name={item.name}
-                      price={item.price}
-                      count={item.selectCount}
-                      onAdd={() => addToCart(item.id, item.image, item.name, item.price)}
-                      onRemove={() => removeOne(item.id)}
-                      removeItem={() => removeItem(item.id)}
-                    />
-                  ))}
-                  <div className="flex items-center justify-between pt-4 border-t">
-                    <p className="font-medium">Нийт дүн:</p>
-                    <p className="font-bold text-[#441500]">{totalPrice.toLocaleString()} ₮</p>
+                <>
+                  <div className="py-4 space-y-4 px-4 overflow-y-auto max-h-[300px]">
+                    {cart.map((item) => (
+                      <OrderList
+                        key={item.id}
+                        id={item.id}
+                        image={item.image}
+                        name={item.name}
+                        price={item.price}
+                        count={item.selectCount}
+                        onAdd={() => addToCart(item.id, item.image, item.name, item.price)}
+                        onRemove={() => removeOne(item.id)}
+                        removeItem={() => removeItem(item.id)}
+                      />
+                    ))}
                   </div>
-                  <button className="w-full py-2 mt-4 text-white rounded-lg bg-amber-800 hover:bg-amber-900" onClick={submitOrder}>
-                    Захиалах
-                  </button>
-                </div>
+
+                  <DrawerFooter className="text-center text-gray-700 font-bold border-t pt-4">
+                    <div className="w-full">
+                      <p className="text-lg font-bold mb-4">Нийт дүн: {baseOrderAmount.toLocaleString()}₮</p>
+                      {/* OrderType нь goToPayment-ийг дуудан router-ээр шилжүүлнэ */}
+                      <OrderType currentCart={cart} onProceedToPayment={goToPayment} />
+                    </div>
+                  </DrawerFooter>
+                </>
               )}
             </DrawerContent>
           </Drawer>
