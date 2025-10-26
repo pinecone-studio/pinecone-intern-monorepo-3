@@ -1,17 +1,23 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import MenuCard from './MenuCard';
 import { OrderList } from './OrderList';
+// Төрлүүд (Таны төсөлд байгааг ашиглана)
 import { CartItem, AddPayload } from '@/types/cart';
 import { useGetCategoriesQuery } from '@/generated';
+import PaymentSelection from '@/components/payment/PaymentSelection';
+import OrderType from './OrderType';
 
-// Cart reducer functions
+// Төрлүүд
+type FoodServeTypeString = 'IN' | 'GO';
+
+// Reducer functions (Хэвээр үлдэнэ)
 export function removeItemReducer(prev: CartItem[], id: string): CartItem[] {
   return prev.filter((x) => x.id !== id);
 }
-
+// ... (Бусад reducer functions хэвээр үлдэнэ)
 export function addToCartReducer(prev: CartItem[], p: AddPayload): CartItem[] {
   const idx = prev.findIndex((x) => x.id === p.id);
   if (idx >= 0) {
@@ -21,7 +27,6 @@ export function addToCartReducer(prev: CartItem[], p: AddPayload): CartItem[] {
   }
   return [...prev, { ...p, selectCount: 1 }];
 }
-
 export function removeOneReducer(prev: CartItem[], id: string): CartItem[] {
   const idx = prev.findIndex((x) => x.id === id);
   if (idx < 0) return prev;
@@ -31,6 +36,7 @@ export function removeOneReducer(prev: CartItem[], id: string): CartItem[] {
   else next[idx] = { ...next[idx], selectCount: n };
   return next;
 }
+// ...
 
 type MenuPageProps = {
   tableQr: string;
@@ -41,6 +47,10 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
   const [activeCategory, setActiveCategory] = useState<string | undefined>(undefined);
   const [cart, setCart] = useState<CartItem[]>([]);
 
+  const [isPaymentMode, setIsPaymentMode] = useState(false);
+  const [selectedOrderType, setSelectedOrderType] = useState<FoodServeTypeString>('IN');
+
+  // ... (useEffect, addToCart, removeOne, removeItem functions хэвээр)
   useEffect(() => {
     if (categories?.getCategories?.length) {
       setActiveCategory(categories.getCategories[0]?.categoryName);
@@ -53,15 +63,27 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
   const removeOne = (id: string) => setCart((prev) => removeOneReducer(prev, id));
   const removeItem = (id: string) => setCart((prev) => removeItemReducer(prev, id));
 
-  const submitOrder = () => {
+  const baseOrderAmount = cart.reduce((a, b) => a + Number(b.price) * b.selectCount, 0);
+
+  // 🌟 goToPayment функц одоо OrderType Dialog-ийн доторх сонголтоос дуудагдана
+  const goToPayment = (type: FoodServeTypeString) => {
     if (cart.length === 0) return alert('Захиалга хоосон байна.');
+    setSelectedOrderType(type);
+    setIsPaymentMode(true);
+  };
+
+  const submitOrder = (finalAmount: number, paymentMethod: string) => {
+    // ... (submitOrder логик хэвээр)
+    if (cart.length === 0) return;
 
     const newOrder = {
       orderId: Date.now().toString(),
       orderNumber: Math.floor(Math.random() * 10000),
       tableQr,
       items: cart,
-      totalPrice: cart.reduce((a, b) => a + Number(b.price) * b.selectCount, 0),
+      totalPrice: finalAmount,
+      paymentMethod: paymentMethod,
+      orderType: selectedOrderType,
       status: 'Боловсруулж байна',
       createdAt: new Date().toISOString(),
     };
@@ -70,7 +92,8 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
     localStorage.setItem('orders', JSON.stringify([...orders, newOrder]));
 
     setCart([]);
-    alert('Захиалга амжилттай илгээгдлээ!');
+    setIsPaymentMode(false);
+    alert(`Захиалга (${selectedOrderType}) амжилттай илгээгдэж, ${finalAmount.toLocaleString()}₮ төлөгдлөө!`);
   };
 
   const foods = [
@@ -97,14 +120,23 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
     },
   ];
 
+  // Төлбөрийн горимыг шалгах хэсэг
+  if (isPaymentMode) {
+    return (
+      <div className="max-w-sm mx-auto min-h-screen bg-white">
+        <PaymentSelection baseOrderAmount={baseOrderAmount} onClose={() => setIsPaymentMode(false)} onSubmit={submitOrder} selectedOrderType={selectedOrderType} />
+      </div>
+    );
+  }
+
+  // Үндсэн цэсний хуудас
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="w-full h-fit sticky top-[55px]">
+        {/* ... (Header and Categories хэвээр) */}
         <div className="px-4 py-6 text-center bg-white">
           <h1 className="text-[#441500] text-2xl font-bold">Хоолны цэс ({tableQr})</h1>
         </div>
-
-        {/* Categories */}
         <div className="px-4 py-4 bg-white">
           <div className="flex space-x-6 overflow-x-auto">
             {categories?.getCategories?.map((category) => (
@@ -119,8 +151,6 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
               </button>
             ))}
           </div>
-
-          {/* Foods */}
           <div className="grid max-w-2xl grid-cols-2 gap-4 p-4 mx-auto overflow-scroll h-fit pb-23">
             {foods.map((food) => {
               const count = cart.find((x) => x.id === food.foodId)?.selectCount || 0;
@@ -141,10 +171,14 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
           </div>
         </div>
 
-        {/* Drawer */}
+        {/* Drawer - Захиалгыг баталгаажуулж, Төлбөр рүү шилжих хэсэг */}
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
           <Drawer>
-            <DrawerTrigger className="w-full py-4 text-lg font-medium text-white rounded-lg bg-amber-800 hover:bg-amber-900">Захиалах ({cart.reduce((a, b) => a + b.selectCount, 0)})</DrawerTrigger>
+            {/* 🌟 ӨӨРЧЛӨЛТ: OrderType-ийг DrawerTrigger-ээс хасаж, Энгийн Захиалах товчийг үлдээв */}
+            <DrawerTrigger disabled={cart.length === 0} className={`w-full py-4 text-lg font-medium text-white rounded-lg ${cart.length > 0 ? 'bg-amber-800 hover:bg-amber-900' : 'bg-gray-400'}`}>
+              Захиалах ({cart.reduce((a, b) => a + b.selectCount, 0)})
+            </DrawerTrigger>
+
             <DrawerContent>
               <DrawerHeader>
                 <DrawerTitle>Таны захиалга</DrawerTitle>
@@ -153,7 +187,7 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
               {cart.length === 0 ? (
                 <div className="py-10 text-sm text-center text-zinc-500">Хоосон байна.</div>
               ) : (
-                <div className="py-4 space-y-4">
+                <div className="py-4 space-y-4 px-4 overflow-y-auto max-h-[300px]">
                   {cart.map((item) => (
                     <OrderList
                       key={item.id}
@@ -167,11 +201,18 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
                       removeItem={() => removeItem(item.id)}
                     />
                   ))}
-                  <button className="mt-4 w-full py-2 bg-green-600 text-white rounded-lg" onClick={submitOrder}>
-                    Илгээх
-                  </button>
                 </div>
               )}
+              {/* 🌟 ӨӨРЧЛӨЛТ: Footer-т OrderType-ийг оруулж, төлбөр рүү шилжих товч болгов */}
+              <DrawerFooter className="text-center text-gray-700 font-bold border-t pt-4">
+                <div className="w-full">
+                  <p className="text-lg font-bold mb-4">Нийт дүн: {baseOrderAmount.toLocaleString()}₮</p>
+                  <OrderType
+                    currentCart={cart}
+                    onProceedToPayment={goToPayment} // ⬅️ Энэ нь Drawer-ийг хаагаад PaymentPage-руу шилжүүлнэ
+                  />
+                </div>
+              </DrawerFooter>
             </DrawerContent>
           </Drawer>
         </div>
