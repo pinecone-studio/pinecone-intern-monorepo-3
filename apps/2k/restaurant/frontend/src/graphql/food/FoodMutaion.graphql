@@ -30,3 +30,25 @@ mutation DeleteFood($foodId: ID!) {
     price
   }
 }
+
+mutation AddFoodToCategory($foodId: ID!, $categoryId: ID!) {
+  AddFoodToCategory(foodId: $foodId, categoryId: $categoryId) {
+    available
+    categoryId
+    id
+    image
+    name
+    price
+  }
+}
+
+mutation DeleteFoodFromCategory($foodId: ID!, $categoryId: ID!) {
+  DeleteFoodFromCategory(foodId: $foodId, categoryId: $categoryId) {
+    available
+    id
+    name
+    categoryId
+    image
+    price
+  }
+}
