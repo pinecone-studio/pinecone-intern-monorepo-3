@@ -4,18 +4,14 @@ import { useEffect, useState } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import MenuCard from './MenuCard';
 import { OrderList } from './OrderList';
-import { CartItem, AddPayload } from '@/types/cart';
+import { CartItem } from '@/types/cart';
 import { useGetCategoriesQuery } from '@/generated';
+import { Header } from '../Header';
 
-// Cart reducer functions
-export function removeItemReducer(prev: CartItem[], id: string): CartItem[] {
-  return prev.filter((x) => x.id !== id);
-}
-
-export function addToCartReducer(prev: CartItem[], p: AddPayload): CartItem[] {
+export function addToCartReducer(prev: CartItem[], p: { id: string; image: string; name: string; price: number }): CartItem[] {
   const idx = prev.findIndex((x) => x.id === p.id);
-  if (idx >= 0) {
-    const next = prev.slice();
+  if (idx !== -1) {
+    const next = [...prev];
     next[idx] = { ...next[idx], selectCount: next[idx].selectCount + 1 };
     return next;
   }
@@ -24,12 +20,16 @@ export function addToCartReducer(prev: CartItem[], p: AddPayload): CartItem[] {
 
 export function removeOneReducer(prev: CartItem[], id: string): CartItem[] {
   const idx = prev.findIndex((x) => x.id === id);
-  if (idx < 0) return prev;
-  const next = prev.slice();
-  const n = next[idx].selectCount - 1;
-  if (n <= 0) next.splice(idx, 1);
-  else next[idx] = { ...next[idx], selectCount: n };
+  if (idx === -1) return prev;
+  const item = prev[idx];
+  if (item.selectCount <= 1) return prev.filter((x) => x.id !== id);
+  const next = [...prev];
+  next[idx] = { ...item, selectCount: item.selectCount - 1 };
   return next;
+}
+
+export function removeItemReducer(prev: CartItem[], id: string): CartItem[] {
+  return prev.filter((x) => x.id !== id);
 }
 
 type MenuPageProps = {
@@ -47,11 +47,16 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
     }
   }, [categories]);
 
-  const addToCart = (id: string, image: string, foodName: string, price: number) => {
-    setCart((prev) => addToCartReducer(prev, { id, image, foodName, price }));
+  const foods = categories?.getCategories.find((item) => item?.categoryName === activeCategory)?.food ?? [];
+
+  const addToCart = (id: string, image: string, name: string, price: number) => {
+    setCart((prev) => addToCartReducer(prev, { id, image, name, price }));
   };
   const removeOne = (id: string) => setCart((prev) => removeOneReducer(prev, id));
   const removeItem = (id: string) => setCart((prev) => removeItemReducer(prev, id));
+
+  const cartCount = cart.reduce((a, b) => a + b.selectCount, 0);
+  const totalPrice = cart.reduce((a, b) => a + b.price * b.selectCount, 0);
 
   const submitOrder = () => {
     if (cart.length === 0) return alert('Захиалга хоосон байна.');
@@ -73,32 +78,9 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
     alert('Захиалга амжилттай илгээгдлээ!');
   };
 
-  const foods = [
-    {
-      foodId: '1',
-      foodName: 'Бууз',
-      image: 'https://i.pinimg.com/1200x/26/a7/0e/26a70e2ddd9a68f19c12f2dbce11d0dc.jpg',
-      price: 6500,
-      discount: null,
-    },
-    {
-      foodId: '2',
-      foodName: 'Хуушуур',
-      image: 'https://i.pinimg.com/736x/4a/70/74/4a7074e01ac804231a3956c5933cd106.jpg',
-      price: 5500,
-      discount: null,
-    },
-    {
-      foodId: '3',
-      foodName: 'Цуйван',
-      image: 'https://i.pinimg.com/736x/4e/9b/e8/4e9be865dd4633f15024e38ae3880b76.jpg',
-      price: 8500,
-      discount: null,
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
+      <Header/>
       <div className="w-full h-fit sticky top-[55px]">
         <div className="px-4 py-6 text-center bg-white">
           <h1 className="text-[#441500] text-2xl font-bold">Хоолны цэс ({tableQr})</h1>
@@ -120,24 +102,27 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
             ))}
           </div>
 
-          {/* Foods */}
           <div className="grid max-w-2xl grid-cols-2 gap-4 p-4 mx-auto overflow-scroll h-fit pb-23">
-            {foods.map((food) => {
-              const count = cart.find((x) => x.id === food.foodId)?.selectCount || 0;
-              return (
-                <MenuCard
-                  key={food.foodId}
-                  image={food.image}
-                  foodName={food.foodName}
-                  price={food.price}
-                  id={food.foodId}
-                  count={count}
-                  discount={food.discount}
-                  onAdd={() => addToCart(food.foodId, food.image, food.foodName, food.price)}
-                  onRemove={() => removeOne(food.foodId)}
-                />
-              );
-            })}
+            {foods.length > 0 ? (
+              foods.map((foodItem) => {
+                const count = cart.find((x) => x.id === foodItem?.id)?.selectCount || 0;
+                return (
+                  <MenuCard
+                    key={foodItem?.id}
+                    image={foodItem?.image ?? '/placeholder.png'}
+                    foodName={foodItem?.name ?? ''}
+                    price={foodItem?.price ?? 0}
+                    id={foodItem?.id ?? ''}
+                    count={count}
+                    // discount={foodItem?.discount}
+                    onAdd={() => addToCart(foodItem?.id ?? '', foodItem?.image ?? '/placeholder.png', foodItem?.name ?? '', foodItem?.price ?? 0)}
+                    onRemove={() => removeOne(foodItem?.id ?? '')}
+                  />
+                );
+              })
+            ) : (
+              <p className="col-span-2 py-10 text-center text-gray-500">Энэ ангилалд хоол байхгүй байна.</p>
+            )}
           </div>
         </div>
 
@@ -153,22 +138,26 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
               {cart.length === 0 ? (
                 <div className="py-10 text-sm text-center text-zinc-500">Хоосон байна.</div>
               ) : (
-                <div className="py-4 space-y-4">
+                <div className="p-4 space-y-4">
                   {cart.map((item) => (
                     <OrderList
                       key={item.id}
                       id={item.id}
                       image={item.image}
-                      foodName={item.foodName}
+                      name={item.name}
                       price={item.price}
                       count={item.selectCount}
-                      onAdd={() => addToCart(item.id, item.image, item.foodName, item.price)}
+                      onAdd={() => addToCart(item.id, item.image, item.name, item.price)}
                       onRemove={() => removeOne(item.id)}
                       removeItem={() => removeItem(item.id)}
                     />
                   ))}
-                  <button className="mt-4 w-full py-2 bg-green-600 text-white rounded-lg" onClick={submitOrder}>
-                    Илгээх
+                  <div className="flex items-center justify-between pt-4 border-t">
+                    <p className="font-medium">Нийт дүн:</p>
+                    <p className="font-bold text-[#441500]">{totalPrice.toLocaleString()} ₮</p>
+                  </div>
+                  <button className="w-full py-2 mt-4 text-white rounded-lg bg-amber-800 hover:bg-amber-900" onClick={submitOrder}>
+                    Захиалах
                   </button>
                 </div>
               )}

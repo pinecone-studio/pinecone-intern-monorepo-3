@@ -1,5 +1,7 @@
+'use client';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Ellipsis, HomeIcon, Info, List, User, Wallet } from 'lucide-react';
+import Link from "next/link";
 export const SheetMenu = () => {
     const logout = () => {
   localStorage.clear();
@@ -11,7 +13,6 @@ export const SheetMenu = () => {
           <Ellipsis />
         </SheetTrigger>
         <SheetContent className="h-full">
-          {/* <Ellipsis className="" /> */}
           <SheetHeader className="flex flex-col h-full">
             <SheetTitle></SheetTitle>
             <SheetDescription className="flex flex-col justify-between h-full">
@@ -23,15 +24,15 @@ export const SheetMenu = () => {
                   </a>
                 </div>
                  <div className='w-full py-5 border-b'>
-                  <a href="/" className="flex items-center gap-4">
+                  <Link href="/wallet" className="flex items-center gap-4">
                     <Wallet size={20}/>
                     <p>Хэтэвч</p>
-                  </a>
+                  </Link>
                 </div>
                  <div className='w-full py-5 border-b'>
-                  <a href="/" className="flex items-center gap-4">
+                  <a href="/update-user" className="flex items-center gap-4">
                     <User size={20}/>
-                    <p>Нүүр хуудас</p>
+                    <p>Хэрэглэгч</p>
                   </a>
                 </div>
                  <div className='w-full py-5 border-b'>

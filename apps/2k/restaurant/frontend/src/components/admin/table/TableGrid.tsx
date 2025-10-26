@@ -4,9 +4,10 @@ import { Separator } from '@/components/ui/separator';
 import { SeeTableModal } from './SeeTableModal';
 import { useGetTablesQuery, GetTablesQuery } from '@/generated';
 import { Toaster } from 'sonner';
-import { CreateTableModal } from '@/components/features/admin-table/CreateTable.modal';
-import { UpdateTableModal } from '@/components/features/admin-table/UpdateTable.modal';
-import { DeleteTableModal } from '@/components/features/admin-table/DeleteTable.modal';
+import { CreateTableModal } from '@/components/features/admin-table/CreateTable.Modal';
+import { UpdateTableModal } from '@/components/features/admin-table/UpdateTable.Modal';
+import { DeleteTableModal } from '@/components/features/admin-table/DeleteTable.Modal';
+
 
 export const TableGrid = () => {
   const { loading, error, data, refetch } = useGetTablesQuery();
@@ -30,7 +31,7 @@ export const TableGrid = () => {
           <>
             {tableData?.map((table: GetTablesQuery['getTables'][0]) => (
               <div data-testid="admin-table" key={table.tableId}>
-                <div className="flex py-4 w-full justify-between items-center">
+                <div className="flex items-center justify-between w-full py-4">
                   <h1 className="font-bold text-[18px]">{table.tableName}</h1>
                   <div className="flex justify-around gap-2">
                     <SeeTableModal data={table} />
