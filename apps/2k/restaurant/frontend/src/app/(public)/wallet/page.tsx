@@ -1,9 +1,7 @@
-'use client';
-
-import { WalletComponent } from '@/components/WalletComponent';
+import { Wallet } from '@/components/Wallet';
 
 const page = () => {
-  return <WalletComponent />;
+  return <Wallet />;
 };
 
 export default page;

@@ -4,7 +4,7 @@ import { Trash } from 'lucide-react';
 type Props = {
   id: string;
   image: string;
-  foodName: string;
+  name: string;
   price: number;
   count: number;
   onAdd?: (_id: string, _image: string, _foodName: string, _price: number) => void;
@@ -12,7 +12,8 @@ type Props = {
   removeItem: (_id: string) => void;
 };
 
-export const OrderList = ({ image, foodName, price, count, onAdd, onRemove, id, removeItem }: Props) => {
+export const OrderList = ({ image, name, price, count, onAdd, onRemove, id, removeItem }: Props) => {
+  const totalPrice = price * count;
   return (
     <div className="flex w-full gap-4 px-2 py-2 h-fit">
       <div className="w-[90px] h-[90px] relative ">
@@ -21,13 +22,13 @@ export const OrderList = ({ image, foodName, price, count, onAdd, onRemove, id, 
 
       <div className="flex flex-col justify-between">
         <div className="flex flex-col min-w-0">
-          <p className="text-[14px] truncate">{foodName}</p>
-          <p className="text-[16px] font-semibold">Нэгж: {price}₮</p>
+          <p className="text-[14px] truncate">{name}</p>
+          <p className="text-[16px] font-semibold text-black">Нийт: {totalPrice.toLocaleString()}₮</p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
-              onRemove?.(id, image, foodName, price);
+              onRemove?.(id, image, name, price);
             }}
             className="flex items-center justify-center w-10 h-10 text-lg border rounded-xl border-zinc-200 disabled:opacity-40"
             disabled={count <= 1}
@@ -40,7 +41,7 @@ export const OrderList = ({ image, foodName, price, count, onAdd, onRemove, id, 
           </p>
           <button
             onClick={() => {
-              onAdd?.(id, image, foodName, price);
+              onAdd?.(id, image, name, price);
             }}
             className="flex items-center justify-center w-10 h-10 text-lg border rounded-xl border-zinc-200"
             aria-label="Нэмэх"

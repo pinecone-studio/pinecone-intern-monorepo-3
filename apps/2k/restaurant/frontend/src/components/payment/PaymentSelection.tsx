@@ -1,17 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+
 import { X } from 'lucide-react';
 
-// Шаардлагатай UI Компонентууд (Таны төсөлд байгааг ашиглана)
+// UI компонент импортууд (Таны төслийн зам зөв эсэхийг шалгана уу)
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Toaster } from '@/components/ui/toaster';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-// Төрлүүд
+// Төрлүүд ба Тогтмол Утгууд
 type FoodServeType = 'GO' | 'IN';
 type PaymentMethod = {
   id: 'qpay' | 'socialpay' | 'wallet' | 'card';
@@ -19,26 +19,22 @@ type PaymentMethod = {
   iconUrl: string;
 };
 
-// Түр зуурын тогтмол утгууд
 const DELIVERY_FEE = 4000;
 const WALLET_BALANCE = 18864;
 
 const paymentMethods: PaymentMethod[] = [
-  { id: 'qpay', name: 'Qpay', iconUrl: '/icons/qpay.png' },
-  { id: 'socialpay', name: 'Social Pay', iconUrl: '/icons/socialpay.png' },
-  { id: 'wallet', name: 'Хэтэвч', iconUrl: '/icons/wallet.png' },
+  { id: 'qpay', name: 'Qpay', iconUrl: '/qpay.png' },
+  { id: 'socialpay', name: 'Social Pay', iconUrl: '/socialpay.png' },
+  { id: 'wallet', name: 'Хэтэвч', iconUrl: '/log2.png' },
 ];
 
-// 🌟 PaymentSelection-ийн пропсын төрлийг зөв тодорхойлов
 interface PaymentSelectionProps {
   baseOrderAmount: number;
   onClose: () => void;
   onSubmit: (finalAmount: number, paymentMethod: string) => void;
-  // OrderType-оос сонгогдсон төрлийг MenuPage дамжуулна
   selectedOrderType: FoodServeType;
 }
 
-// Хэсэгчилсэн Компонент: Төлбөрийн Карт (Хэвээр үлдэнэ)
 interface PaymentCardProps {
   method: PaymentMethod;
   selectedPayment: string;
@@ -52,39 +48,44 @@ const PaymentCard: React.FC<PaymentCardProps> = ({ method, selectedPayment, hand
     <div
       onClick={() => handlePaymentSelect(method.id)}
       className={`
-        flex flex-col items-center justify-center p-4 w-1/3 h-28 rounded-xl cursor-pointer transition-all duration-200
+        flex flex-col items-center justify-center p-4 w-1/3 h-28 rounded-xl cursor-pointer transition-all duration-200 pointer-events-auto
         ${isSelected ? 'border-2 border-[#9E6038] bg-[#F7F4F1]' : 'border border-gray-200 bg-white hover:bg-gray-50'}
       `}
     >
-      {/* 🌟 next/image ашиглаагүй тул img tag-ийг хэрэглэв */}
       <img src={method.iconUrl} alt={method.name} className="w-10 h-10 mb-2" />
       <span className="text-xs font-medium text-gray-700 text-center">{method.name}</span>
     </div>
   );
 };
 
-// Үндсэн Компонент: Төлбөр Сонгох
 const PaymentSelection: React.FC<PaymentSelectionProps> = ({ baseOrderAmount, onClose, onSubmit, selectedOrderType }) => {
-  const router = useRouter();
-  // 🌟 OrderType-оос ирсэн төрлөөр анхдагч утгыг тохируулж байна.
   const [deliveryOption, setDeliveryOption] = useState<FoodServeType>(selectedOrderType);
   const [selectedPayment, setSelectedPayment] = useState<string>('qpay');
   const [isWalletDrawerOpen, setIsWalletDrawerOpen] = useState(false);
   const [targetAmount, setTargetAmount] = useState<string>('');
   const [wallet, setWallet] = useState({ used: false, deduction: 0 });
 
-  // 🌟 Захиалга "Эндээ идэх" (IN) бол савны төлбөр (DELIVERY_FEE) авахгүй
-  const packagingFee = deliveryOption === 'GO' ? DELIVERY_FEE : 0;
+  // Select-ийг зөвхөн Client-Side Mount хийсний дараа рендэрлэх
+  const [selectMounted, setSelectMounted] = useState(false);
 
+  useEffect(() => {
+    setSelectMounted(true);
+  }, []);
+
+  const packagingFee = deliveryOption === 'GO' ? DELIVERY_FEE : 0;
   const totalBeforeWallet = baseOrderAmount + packagingFee;
   const finalAmount = totalBeforeWallet - wallet.deduction;
 
   const onPaymentSelect = (id: string) => {
     setSelectedPayment(id);
+
     if (id === 'wallet' && WALLET_BALANCE > 0) {
       setIsWalletDrawerOpen(true);
     } else {
-      setWallet({ used: false, deduction: 0 });
+      if (wallet.used) {
+        setWallet({ used: false, deduction: 0 });
+      }
+      setIsWalletDrawerOpen(false);
     }
   };
 
@@ -106,8 +107,6 @@ const PaymentSelection: React.FC<PaymentSelectionProps> = ({ baseOrderAmount, on
 
   const handleFinalOrder = () => {
     if (!selectedPayment) return alert('Төлбөрийн хэрэгсэл сонгоно уу.');
-
-    // 🌟 MenuPage-ийн submitOrder-ийг дуудна
     onSubmit(finalAmount, selectedPayment);
   };
 
@@ -115,14 +114,12 @@ const PaymentSelection: React.FC<PaymentSelectionProps> = ({ baseOrderAmount, on
     <>
       <Toaster />
       <div className="max-w-sm mx-auto bg-white min-h-screen">
-        {/* Буцах товч */}
         <div className="w-full flex justify-end px-4">
           <button onClick={onClose} className="flex mt-5" aria-label="Back">
             <X className="w-6 h-6 text-gray-800" />
           </button>
         </div>
 
-        {/* Гарчиг */}
         <div className="flex items-center justify-between pt-10">
           <h1 className="text-2xl font-bold text-center flex-1 text-gray-800">
             Төлбөрийн хэрэгслээ
@@ -131,31 +128,46 @@ const PaymentSelection: React.FC<PaymentSelectionProps> = ({ baseOrderAmount, on
           </h1>
         </div>
 
-        {/* Үндсэн контент */}
         <div className="flex flex-col p-4 gap-10 pt-10">
-          {/* Хүргэлтийн сонголт (Захиалгын төрөл) */}
-          <Select value={deliveryOption} onValueChange={(v) => setDeliveryOption(v as FoodServeType)}>
-            <SelectTrigger className="w-full h-12 border-gray-300">
-              <SelectValue placeholder="Захиалгын төрөл сонгоно уу" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="GO">Авч явах (Савны төлбөр: {DELIVERY_FEE.toLocaleString()}₮)</SelectItem>
-              <SelectItem value="IN">Эндээ идэх (Савны төлбөргүй)</SelectItem>
-            </SelectContent>
-          </Select>
+          {/* 🌟 SELECT хэсэг: position="popper" нэмсэн */}
+          <div className="relative z-20">
+            {selectMounted ? (
+              <Select
+                value={deliveryOption}
+                onValueChange={(v) => {
+                  setDeliveryOption(v as FoodServeType);
+                  const newTotalBeforeWallet = baseOrderAmount + (v === 'GO' ? DELIVERY_FEE : 0);
+                  if (wallet.used && wallet.deduction > newTotalBeforeWallet) {
+                    setWallet({ used: true, deduction: newTotalBeforeWallet });
+                  }
+                }}
+              >
+                <SelectTrigger className="w-full h-12 border-gray-300">
+                  <SelectValue placeholder="Захиалгын төрөл сонгоно уу" />
+                </SelectTrigger>
+                {/* 🌟 ШИНЭЧИЛСЭН: position="popper" нэмснээр Portal-ийг унтрааж, зөв байршлыг албадсан. */}
+                <SelectContent position="popper" className="z-[9999] relative">
+                  <SelectItem value="GO">Авч явах (Савны төлбөр: {DELIVERY_FEE.toLocaleString()}₮)</SelectItem>
+                  <SelectItem value="IN">Эндээ идэх</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              // Түр зуурын газар эзлэх placeholder
+              <div className="w-full h-12 border border-gray-300 rounded-lg animate-pulse bg-gray-100 flex items-center justify-center text-sm text-gray-500">Төрлийг ачаалж байна...</div>
+            )}
+          </div>
 
-          {/* Төлбөрийн аргууд */}
-          <div className="flex justify-between gap-2">
+          {/* 🌟 Төлбөрийн картууд */}
+          <div className="flex justify-between gap-2 relative z-10">
             {paymentMethods.map((m) => (
               <PaymentCard key={m.id} selectedPayment={selectedPayment} method={m} handlePaymentSelect={onPaymentSelect} />
             ))}
           </div>
 
-          {/* Захиалгын мэдээлэл */}
+          {/* Дүнгийн тооцоо */}
           <div>
             {[
               { label: 'Захиалгын нийт дүн:', value: baseOrderAmount },
-              // Зөвхөн "Авч явах" бол савны төлбөрийг харуулна
               ...(deliveryOption === 'GO' ? [{ label: 'Хоолны сав:', value: packagingFee }] : []),
               ...(wallet.used ? [{ label: 'Хэтэвчээс хасагдсан дүн:', value: -wallet.deduction }] : []),
             ].map((row, i) => (
@@ -168,7 +180,6 @@ const PaymentSelection: React.FC<PaymentSelectionProps> = ({ baseOrderAmount, on
               </div>
             ))}
 
-            {/* Төлөх нийт дүн */}
             <div className="flex justify-between items-center py-3 mt-2 bg-gray-50 rounded-md p-3">
               <span className="font-bold text-lg text-gray-800">Төлөх дүн:</span>
               <span className="font-bold text-xl text-green-600">{finalAmount.toLocaleString()}₮</span>
@@ -176,14 +187,14 @@ const PaymentSelection: React.FC<PaymentSelectionProps> = ({ baseOrderAmount, on
           </div>
         </div>
 
-        {/* Төлбөрийн товчлуур (Fixed footer) */}
+        {/* Төлөх товч */}
         <div className="p-4 pt-0 fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-white border-t border-gray-100">
           <Button className="w-full bg-amber-800 hover:bg-amber-900 text-white py-3 h-12 rounded-lg font-medium text-lg" onClick={handleFinalOrder}>
             {finalAmount > 0 ? `Төлөх (${finalAmount.toLocaleString()}₮)` : 'Захиалга Баталгаажуулах'}
           </Button>
         </div>
 
-        {/* Хэтэвчний Drawer (Sheet) */}
+        {/* Хэтэвчний Sheet (Drawer) */}
         <Sheet open={isWalletDrawerOpen} onOpenChange={setIsWalletDrawerOpen}>
           <SheetContent side="bottom" className="h-auto rounded-t-xl max-w-sm mx-auto">
             <SheetHeader className="text-center pb-6">

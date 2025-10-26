@@ -13,7 +13,7 @@ type FoodServeTypeString = 'IN' | 'GO';
 interface CartItem {
   id: string;
   image: string;
-  foodName: string;
+  name: string;
   price: number;
   selectCount: number;
 }

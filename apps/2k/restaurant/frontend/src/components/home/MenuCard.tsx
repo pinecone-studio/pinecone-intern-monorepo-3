@@ -1,74 +1,60 @@
 'use client';
+ 
 import { X } from 'lucide-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-
+import { useState } from 'react';
+ 
 export type Props = {
   id: string;
   image: string;
   foodName: string;
   price: number;
   count?: number;
-  onAdd?: (_id: string, _image: string, _foodName: string, _price: number) => void;
-  onRemove: (_id: string) => void;
-  discount: any;
+  onAdd?: (id: string, image: string, name: string, price: number) => void;
+  onRemove?: (id: string) => void;
 };
-const MenuCard = ({ id, image, foodName, price, count = 0, onAdd, onRemove, discount }: Props) => {
-  const [isDiscounted, setIsDiscounted] = useState<number | null>(null);
-  useEffect(() => {
-    if (discount?.discountRate != null) {
-      console.log(new Date(parseInt(discount.endDate)), ' hello');
-      const expired = new Date(parseInt(discount.endDate)).getTime() < Date.now();
-      if (!expired) {
-        setIsDiscounted(discount.discountRate);
-      }
-    }
-  }, [discount]);
-
+ 
+const MenuCard = ({ id, image, foodName, price, count = 0, onAdd, onRemove }: Props) => {
+  const [isHovered, setIsHovered] = useState(false);
+console.log(isHovered)
   function shortPrice(n: number) {
     if (n >= 1000) {
-      return `${(n / 1000).toFixed(3).replace(/\.?0+$/, '')}k`;
+      return `${(n / 1000).toFixed(1)}`;
     }
     return `${n}`;
   }
+ 
   return (
-    <div className="relative flex justify-center w-full h-fit ">
-      <div onClick={() => onAdd?.(id, image, foodName, price)} className="w-[165px] h-[200px] flex flex-col">
-        <div className="relative w-full h-40 overflow-hidden rounded-xl">
-          <Image src={image} alt="food" fill className="object-cover" />
+    <div className="relative flex justify-center w-full h-fit" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+      <div onClick={() => onAdd?.(id, image, foodName, price)} className="w-[165px] h-[230px] flex flex-col cursor-pointer">
+        <div className="relative w-full h-40 overflow-hidden shadow-md rounded-xl">
+          <Image src={image} alt={foodName} fill className="object-cover transition-transform duration-300 hover:scale-110" />
+ 
           {count > 0 && (
-            <div className="flex relative w-[50%] h-full ml-[50%] justify-center items-center">
-              <div className="absolute flex w-full h-full bg-black opacity-50 "></div>
-
-              <p className="flex absolute text-[30px] text-white ">{count}</p>
-            </div>
+            <>
+              <div className="flex relative w-[50%] h-full ml-[50%] justify-center items-center">
+                <div className="absolute flex w-full h-full bg-black opacity-50 "></div>
+ 
+                <p className="flex absolute text-[30px] text-white ">{count}</p>
+              </div>
+              <X
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemove?.(id);
+                }}
+                className="absolute top-2 right-2 w-[20px] h-[20px] text-white cursor-pointer hover:text-red-400 transition"
+              />
+            </>
           )}
-          {isDiscounted !== null && <div className="bg-red-600 text-white flex relative w-[38px] h-[28px] mt-[127px] items-center justify-center text-[12px]">{isDiscounted}%</div>}
-          <div>
-            <p>{foodName}</p>
-            <div className="flex gap-2">
-              <p className="text-[18px] font-bold">{price}</p>
-              {isDiscounted !== null ? (
-                <div className="flex gap-2">
-                  <p className="text-[18px] font-bold">{shortPrice(price - (price / 100) * isDiscounted)}</p>
-                  <p className="text-[18px] text-[#09090B]/30 line-through">{shortPrice(price)}</p>
-                </div>
-              ) : (
-                <p className="text-[18px] font-bold">{shortPrice(price)}</p>
-              )}
-            </div>
-          </div>
-          {count > 0 && (
-            <X
-              onClick={() => {
-                onRemove(id);
-              }}
-              className="flex absolute z-12 w-[18px] h-[18px] text-white cursor-pointer ml-[140px] mt-[10px]"
-            />
-          )}
+        </div>
+ 
+        <div className="flex flex-col px-1 mt-2 text-center">
+          <p className="text-sm font-medium truncate">{foodName}</p>
+          <p className="text-lg font-semibold text-gray-800">{shortPrice(price)}₮</p>
         </div>
       </div>
     </div>
   );
 };
+ 
 export default MenuCard;
