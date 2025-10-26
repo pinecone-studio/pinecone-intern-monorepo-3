@@ -17,6 +17,7 @@ export const categoryTypeDefs = gql`
   input UpdateCategoryInput {
     categoryName: String!
   }
+  
   type Query {
     getByIdCategory(categoryId: ID!): Category!
     getCategories: [Category]!

@@ -1,0 +1,33 @@
+query GetAllOrders {
+  GetAllOrders {
+    createdAt
+    id
+    orderNumber
+    serveType
+    status
+    tableId
+    totalPrice
+
+    updatedAt
+    foodOrderItems {
+      quantity
+    }
+  }
+}
+
+query GetAllOrderByUserId($userId: String!) {
+  getAllOrderByUserId(userId: $userId) {
+    createdAt
+    foodOrderItems {
+      quantity
+    }
+    id
+    orderNumber
+    serveType
+    status
+    tableId
+    totalPrice
+    user
+    updatedAt
+  }
+}

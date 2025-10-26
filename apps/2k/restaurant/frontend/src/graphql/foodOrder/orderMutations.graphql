@@ -1,0 +1,16 @@
+mutation CreateOrder($userId: String!, $tableId: String!, $input: FoodOrderInput!) {
+  createOrder(userId: $userId, tableId: $tableId, input: $input) {
+    id
+    orderNumber
+    serveType
+    status
+    tableId
+    foodOrderItems {
+      quantity
+    }
+    totalPrice
+    user
+    updatedAt
+    createdAt
+  }
+}

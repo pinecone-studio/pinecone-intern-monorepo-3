@@ -1,0 +1,10 @@
+query AllFood {
+  allFood {
+    available
+    categoryId
+    id
+    image
+    name
+    price
+  }
+}
