@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { AddFoodToCategory } from './FoodMenu/AddFoodToCategory';
 import { Category, useAllFoodQuery } from '@/generated';
 import { CategoryFoodItemCard } from './FoodMenu/CategoryFoodItemCard';
+import { EmptyState } from './EmptyState';
 
 const discounts = ['shine', 'ulirliin'];
 
@@ -17,8 +18,6 @@ export const MenuFood = ({ categories }: { categories: Category[] }) => {
   }, [categories]);
 
   const allitems = [...categories, ...discounts];
-
-  console.log("allfood", AllFood);
 
   const uncategorizedFood = AllFood?.allFood?.filter((food) => food.categoryId === null || food.categoryId === '');
 
@@ -50,9 +49,12 @@ export const MenuFood = ({ categories }: { categories: Category[] }) => {
 
         {/* Food card */}
 
-        {filteredFoodsByCategory?.map((food) => (
-          <CategoryFoodItemCard food={food} refetchAllFood={refetchAllFood}/>
-        ))}
+        {/* Food card */}
+        {filteredFoodsByCategory && filteredFoodsByCategory.length > 0 ? (
+          filteredFoodsByCategory.map((food) => <CategoryFoodItemCard key={food.id} food={food} refetchAllFood={refetchAllFood} />)
+        ) : (
+          <EmptyState />
+        )}
       </CardContent>
 
       <style jsx>{`

@@ -14,18 +14,27 @@ import { AllFoodQuery, FoodType, useDeleteFoodMutation } from '@/generated';
 import { ApolloQueryResult } from '@apollo/client';
 
 import { Trash, X } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export const DeleteFood = ({ food, reFetchAdminFood }: { food: FoodType; reFetchAdminFood: () => Promise<ApolloQueryResult<AllFoodQuery>> }) => {
   const [deleteFood] = useDeleteFoodMutation();
+  const [open, setOpen] = useState(false);
 
   const handleDelete = async (foodId: string) => {
     await deleteFood({ variables: { foodId } });
-
+    setOpen(false);
     reFetchAdminFood();
+
+    toast.success(
+      <span>
+        Хоол: <b>{food.name} </b>амжилттай устгагдлаа
+      </span>
+    );
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
         <Button className="p-2 rounded-lg text-gray-500 bg-white font-normal hover:bg-gray-100 transition-colors duration-200">
           <Trash size={20} />

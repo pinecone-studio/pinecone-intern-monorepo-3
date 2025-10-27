@@ -1,12 +1,4 @@
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,6 +6,7 @@ import { AllFoodQuery, FoodType, useUpdateFoodMutation } from '@/generated';
 import { ImagePlus } from 'lucide-react';
 import { useState } from 'react';
 import { ApolloQueryResult } from '@apollo/client';
+import { toast } from 'sonner';
 
 // ✅ Validation schema
 const foodSchema = z.object({
@@ -30,10 +23,7 @@ interface EditFoodDialogProps {
   reFetchAdminFood: () => Promise<ApolloQueryResult<AllFoodQuery>>;
 }
 
-export const EditFoodDialog: React.FC<EditFoodDialogProps> = ({
-  food,
-  reFetchAdminFood,
-}) => {
+export const EditFoodDialog: React.FC<EditFoodDialogProps> = ({ food, reFetchAdminFood }) => {
   const [updateFood] = useUpdateFoodMutation();
   const [preview, setPreview] = useState(food?.image || '');
 
@@ -76,6 +66,11 @@ export const EditFoodDialog: React.FC<EditFoodDialogProps> = ({
         image: data.image,
       },
     });
+    toast.success(
+      <span>
+        Хоол: <b>{data.name} </b>амжилттай шинэчлэгдлээ
+      </span>
+    );
 
     await reFetchAdminFood();
   };
@@ -83,31 +78,20 @@ export const EditFoodDialog: React.FC<EditFoodDialogProps> = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
-          Засах
-        </button>
+        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">Засах</button>
       </DialogTrigger>
 
       <DialogContent className="p-6 sm:max-w-[400px] space-y-5 rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold text-gray-800">
-            Хоол засах
-          </DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-gray-800">Хоол засах</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           {/* Зураг */}
           <div className="flex flex-col items-center">
-            <label
-              htmlFor={`image-upload-${food.id}`}
-              className="w-28 h-28 bg-gray-100 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 transition"
-            >
+            <label htmlFor={`image-upload-${food.id}`} className="w-28 h-28 bg-gray-100 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 transition">
               {preview ? (
-                <img
-                  src={preview}
-                  alt="preview"
-                  className="w-full h-full object-cover rounded-xl"
-                />
+                <img src={preview} alt="preview" className="w-full h-full object-cover rounded-xl" />
               ) : (
                 <>
                   <ImagePlus size={28} className="text-gray-500" />
@@ -115,35 +99,17 @@ export const EditFoodDialog: React.FC<EditFoodDialogProps> = ({
                 </>
               )}
             </label>
-            
-            <input
-              id={`image-upload-${food.id}`}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
+
+            <input id={`image-upload-${food.id}`} type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
           </div>
 
           {/* Нэр */}
-          <input
-            {...register('name')}
-            placeholder="Хоолны нэр"
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
-          />
-          {errors.name && (
-            <p className="text-sm text-red-500">{errors.name.message}</p>
-          )}
+          <input {...register('name')} placeholder="Хоолны нэр" className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300" />
+          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
 
           {/* Үнэ */}
-          <input
-            {...register('price')}
-            placeholder="Үнэ (ж: 15000)"
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
-          />
-          {errors.price && (
-            <p className="text-sm text-red-500">{errors.price.message}</p>
-          )}
+          <input {...register('price')} placeholder="Үнэ (ж: 15000)" className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300" />
+          {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
 
           {/* Статус */}
           <select
@@ -159,19 +125,15 @@ export const EditFoodDialog: React.FC<EditFoodDialogProps> = ({
           {/* Footer */}
           <DialogFooter className="flex justify-between mt-4">
             <DialogClose asChild>
-              <button
-                type="button"
-                className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition"
-              >
+              <button type="button" className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition">
                 Хаах
               </button>
             </DialogClose>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
-            >
-              Хадгалах
-            </button>
+            <DialogClose asChild>
+              <button type="submit" className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition">
+                Хадгалах
+              </button>
+            </DialogClose>
           </DialogFooter>
         </form>
       </DialogContent>
