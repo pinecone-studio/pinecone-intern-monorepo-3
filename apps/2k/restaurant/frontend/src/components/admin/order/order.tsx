@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { OrderFilter } from './orderFilter';
+
 import { OrderItemCard } from './orderItemCard';
 import { FoodOrder, useGetAllOrdersQuery } from '@/generated';
+import { OrderFilter } from './OrderFilter';
 
 export const AdminOrderStyle = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
