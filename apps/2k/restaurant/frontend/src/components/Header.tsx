@@ -1,6 +1,7 @@
-import { Bell, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import { SheetMenu } from './sheet/Menu';
+import { Notification } from './sheet/Notification';
+import { ActiveOrder } from './sheet/ActiveOrder';
 
 
 export const Header = () => {
@@ -17,8 +18,8 @@ export const Header = () => {
       </a>
 
       <div className="flex items-center gap-4">
-        <ShoppingCart size={15} />
-        <Bell size={15} />
+        <ActiveOrder/>
+        <Notification />
         <SheetMenu />
       </div>
     </div>

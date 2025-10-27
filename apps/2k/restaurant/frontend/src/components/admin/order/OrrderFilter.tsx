@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { SelectStatus } from './SelectStatus';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -17,19 +16,19 @@ interface OrderFilterProps {
 
 export const OrderFilter = ({ status, onStatusChange, onDateChange, selectedDate, setSelectedDate }: OrderFilterProps) => {
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
+    <div className="flex flex-col items-center justify-between gap-4 mb-6 sm:flex-row">
       {/* Гарчиг */}
-      <h1 className="text-xl sm:text-2xl font-medium text-gray-900">Захиалга</h1>
+      <h1 className="text-xl font-medium text-gray-900 sm:text-2xl">Захиалга</h1>
 
       {/* Огноо болон статус filter */}
       <div className="flex gap-3">
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="px-3 py-1 text-gray-700 border-gray-300 bg-white hover:bg-gray-50 shadow-none">
+            <Button variant="outline" className="px-3 py-1 text-gray-700 bg-white border-gray-300 shadow-none hover:bg-gray-50">
               {selectedDate ? format(selectedDate, 'yyyy-MM-dd') : 'Өнөөдөр'}
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-2 bg-white border border-gray-200 shadow-sm rounded-md">
+          <PopoverContent className="w-auto p-2 bg-white border border-gray-200 rounded-md shadow-sm">
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -37,7 +36,7 @@ export const OrderFilter = ({ status, onStatusChange, onDateChange, selectedDate
                 setSelectedDate(date || undefined);
                 if (date && onDateChange) onDateChange(date);
               }}
-              className="bg-white text-gray-800 rounded-md"
+              className="text-gray-800 bg-white rounded-md"
             />
           </PopoverContent>
         </Popover>
