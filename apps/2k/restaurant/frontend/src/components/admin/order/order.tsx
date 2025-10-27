@@ -4,7 +4,8 @@ import { useState } from 'react';
 
 import { OrderItemCard } from './orderItemCard';
 import { FoodOrder, useGetAllOrdersQuery } from '@/generated';
-import { OrderFilter } from './OrderFilter';
+import { OrderFilter } from './orderFilter';
+
 
 export const AdminOrderStyle = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
