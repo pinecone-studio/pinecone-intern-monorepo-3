@@ -18,7 +18,7 @@
       },
       "dependsOn": [
         {
-          "target": "codegen:dev",
+          "target": "codegen:testing",
           "params": "forward"
         }
       ]
@@ -43,7 +43,7 @@
       },
       "dependsOn": [
         {
-          "target": "codegen:dev",
+          "target": "codegen:testing",
           "params": "forward"
         },
         {
@@ -213,7 +213,7 @@
           "target": "clean"
         },
         {
-          "target": "get-secrets:dev"
+          "target": "get-secrets:testing"
         },
         {
           "target": "export-env"
@@ -238,7 +238,7 @@
       },
       "dependsOn": [
         {
-          "target": "get-secrets:prod"
+          "target": "get-secrets:testing"
         }
       ]
     },
@@ -247,7 +247,7 @@
       "options": {
         "commands": ["graphql-codegen --config ./apps/2k/restaurant/frontend/codegen.ts"]
       },
-      "dependsOn": [{ "target": "get-secrets:dev" }]
+      "dependsOn": [{ "target": "get-secrets:testing" }]
     },
     "codegen:testing": {
       "executor": "nx:run-commands",
@@ -257,6 +257,23 @@
       "dependsOn": [
         {
           "target": "get-secrets:testing"
+        }
+      ]
+    },
+    "deploy-testing": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx codegen:testing restaurant-frontend",
+          "mkdir -p .vercel && cp -r ./apps/2k/restaurant/frontend/vercel.config.json .vercel/project.json",
+          "npx env-cmd -f apps/2k/restaurant/frontend/.env sh -c 'vercel build --prod --token=\"$VERCEL_TOKEN\"'",
+          "npx env-cmd -f apps/2k/restaurant/frontend/.env sh -c 'vercel --prebuilt --prod --yes --token=\"$VERCEL_TOKEN\"'"
+        ],
+        "parallel": false
+      },
+      "dependsOn": [
+        {
+          "target": "clean"
         }
       ]
     },
@@ -275,7 +292,7 @@
           "target": "clean"
         },
         {
-          "target": "get-secrets:prod"
+          "target": "get-secrets:testing"
         },
         {
           "target": "export-env"
@@ -289,6 +306,3 @@
   },
   "tags": []
 }
-
-
-

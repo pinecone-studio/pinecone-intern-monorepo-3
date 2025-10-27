@@ -4,29 +4,26 @@ import { useState } from 'react';
 
 import { OrderItemCard } from './orderItemCard';
 import { FoodOrder, useGetAllOrdersQuery } from '@/generated';
-import { OrderFilter } from './orderFilter';
-
+import { OrderFilter } from './OrrderFilter';
 
 export const AdminOrderStyle = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
   const { data, refetch } = useGetAllOrdersQuery();
 
-  console.log("selectedDate", selectedDate);
-  
+  console.log('selectedDate', selectedDate);
 
   const [statusFilter, setStatusFilter] = useState('Бүгд');
 
-  console.log("statusFilter", statusFilter);
+  console.log('statusFilter', statusFilter);
 
-  const filteredOrders = data?.GetAllOrders.filter((order: FoodOrder) => {order.status
+  const filteredOrders = data?.GetAllOrders.filter((order: FoodOrder) => {
+    order.status;
     if (statusFilter === 'Бүгд') return true;
     return order.status === statusFilter;
-  })
+  });
 
-  console.log("filteredOrders", filteredOrders);
-  
-  
+  console.log('filteredOrders', filteredOrders);
 
   // const mockOrders = [
   //   {
