@@ -7,10 +7,43 @@ mutation CreateOrder($userId: String!, $tableId: String!, $input: FoodOrderInput
     tableId
     foodOrderItems {
       quantity
+      food {
+        id
+        name
+        image
+        price
+        categoryId
+        available
+      }
     }
     totalPrice
     user
     updatedAt
+    createdAt
+  }
+}
+
+mutation UpdateOrder($input: UpdateOrderStatusInput!) {
+  UpdateOrder(input: $input) {
+    orderNumber
+    serveType
+    id
+    tableId
+    status
+    totalPrice
+    updatedAt
+    user
+    foodOrderItems {
+      quantity
+      food {
+        name
+        available
+        categoryId
+        id
+        image
+        price
+      }
+    }
     createdAt
   }
 }

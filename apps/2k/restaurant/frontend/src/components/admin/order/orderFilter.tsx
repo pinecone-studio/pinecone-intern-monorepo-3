@@ -11,11 +11,11 @@ interface OrderFilterProps {
   status: string;
   onStatusChange: (_val: string) => void;
   onDateChange?: (_date: Date) => void;
+  selectedDate: Date | undefined;
+  setSelectedDate: (_date: Date | undefined) => void;
 }
 
-export const OrderFilter = ({ status, onStatusChange, onDateChange }: OrderFilterProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-
+export const OrderFilter = ({ status, onStatusChange, onDateChange, selectedDate, setSelectedDate }: OrderFilterProps) => {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between mb-6 gap-4">
       {/* Гарчиг */}
@@ -25,10 +25,7 @@ export const OrderFilter = ({ status, onStatusChange, onDateChange }: OrderFilte
       <div className="flex gap-3">
         <Popover>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className="px-3 py-1 text-gray-700 border-gray-300 bg-white hover:bg-gray-50 shadow-none"
-            >
+            <Button variant="outline" className="px-3 py-1 text-gray-700 border-gray-300 bg-white hover:bg-gray-50 shadow-none">
               {selectedDate ? format(selectedDate, 'yyyy-MM-dd') : 'Өнөөдөр'}
             </Button>
           </PopoverTrigger>

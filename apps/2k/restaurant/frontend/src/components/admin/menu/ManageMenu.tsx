@@ -6,7 +6,7 @@ import { Category, GetCategoriesQuery } from '@/generated';
 import { ApolloQueryResult } from '@apollo/client';
 import { ItemCard } from './ManageMenu/CategoryCard';
 import { DiscountItemCard } from './ManageMenu/DiscountItem';
-import { EmptyState } from './ManageMenu/EmptyState';
+import { EmptyState } from './EmptyState';
 
 
 

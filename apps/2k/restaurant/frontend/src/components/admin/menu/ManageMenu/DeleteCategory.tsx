@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 
-import { Category, GetCategoriesQuery, useDeleteCategoryMutation } from '@/generated';
+import { Category, GetCategoriesQuery, useAllFoodQuery, useDeleteCategoryMutation } from '@/generated';
 
 import { ApolloQueryResult } from '@apollo/client';
 
@@ -22,11 +22,14 @@ import { toast } from 'sonner';
 export const DeleteCategory = ({ category, refetchCategory }: { category: Category; refetchCategory: () => Promise<ApolloQueryResult<GetCategoriesQuery>> }) => {
   
   const [DeleteCategory] = useDeleteCategoryMutation();
+  const {data, refetch} = useAllFoodQuery();
   const [open, setOpen] = useState(false);
 
   const handleDeleteCategory = async () => {
     await DeleteCategory({ variables: { categoryId: category.categoryId } });
+    
     await refetchCategory();
+    await refetch();
     setOpen(false);
 
     toast.success(
