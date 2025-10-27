@@ -16,8 +16,6 @@
         "@as-integrations/next": "3.0.0",
         "@aws-sdk/client-s3": "3.556.0",
         "@aws-sdk/s3-request-presigner": "3.556.0",
-        "@clerk/nextjs": "5.6.0",
-        "@clerk/testing": "^1.7.0",
         "@emotion/cache": "11.11.0",
         "@emotion/react": "11.11.4",
         "@emotion/styled": "11.11.5",
@@ -81,6 +79,7 @@
         "clsx": "2.1.1",
         "cmdk": "1.0.0",
         "commitizen": "4.3.0",
+        "cors": "^2.8.5",
         "country-data-list": "^1.4.0",
         "cypress-file-upload": "^5.0.8",
         "cypress-wait-until": "3.0.2",
@@ -142,6 +141,7 @@
         "sonner": "1.5.0",
         "sonnet": "^0.0.1",
         "styled-components": "6.1.8",
+        "svix": "^1.77.0",
         "swiper": "^11.2.1",
         "tailwind-merge": "2.3.0",
         "tailwindcss-animate": "1.0.7",
@@ -180,6 +180,7 @@
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.2.0",
         "@types/classnames": "2.3.1",
+        "@types/cors": "^2.8.17",
         "@types/express": "4.17.13",
         "@types/jest": "^30.0.0",
         "@types/js-cookie": "^3.0.6",
@@ -690,18 +691,6 @@
     "@changesets/types": ["@changesets/types@6.1.0", "", {}, ""],
 
     "@changesets/write": ["@changesets/write@0.4.0", "", { "dependencies": { "@changesets/types": "^6.1.0", "fs-extra": "^7.0.1", "human-id": "^4.1.1", "prettier": "^2.7.1" } }, ""],
-
-    "@clerk/backend": ["@clerk/backend@1.13.2", "", { "dependencies": { "@clerk/shared": "2.8.1", "@clerk/types": "4.21.0", "cookie": "0.5.0", "snakecase-keys": "5.4.4", "tslib": "2.4.1" } }, ""],
-
-    "@clerk/clerk-react": ["@clerk/clerk-react@5.9.1", "", { "dependencies": { "@clerk/shared": "2.8.1", "@clerk/types": "4.21.0", "tslib": "2.4.1" }, "peerDependencies": { "react": ">=18 || >=19.0.0-beta", "react-dom": ">=18 || >=19.0.0-beta" } }, ""],
-
-    "@clerk/nextjs": ["@clerk/nextjs@5.6.0", "", { "dependencies": { "@clerk/backend": "1.13.2", "@clerk/clerk-react": "5.9.1", "@clerk/shared": "2.8.1", "@clerk/types": "4.21.0", "crypto-js": "4.2.0", "server-only": "0.0.1", "tslib": "2.4.1" }, "peerDependencies": { "next": "^13.5.4 || ^14.0.3 || >=15.0.0-rc", "react": ">=18 || >=19.0.0-beta", "react-dom": ">=18 || >=19.0.0-beta" } }, ""],
-
-    "@clerk/shared": ["@clerk/shared@2.8.1", "", { "dependencies": { "@clerk/types": "4.21.0", "glob-to-regexp": "0.4.1", "js-cookie": "3.0.5", "std-env": "^3.7.0", "swr": "^2.2.0" }, "peerDependencies": { "react": ">=18 || >=19.0.0-beta", "react-dom": ">=18 || >=19.0.0-beta" } }, ""],
-
-    "@clerk/testing": ["@clerk/testing@1.11.1", "", { "dependencies": { "@clerk/backend": "^2.9.2", "@clerk/shared": "^3.21.1", "@clerk/types": "^4.79.0", "dotenv": "17.2.1" }, "peerDependencies": { "@playwright/test": "^1", "cypress": "^13 || ^14" }, "optionalPeers": ["@playwright/test"] }, ""],
-
-    "@clerk/types": ["@clerk/types@4.21.0", "", { "dependencies": { "csstype": "3.1.1" } }, ""],
 
     "@cloudinary-util/types": ["@cloudinary-util/types@1.5.10", "", {}, ""],
 
@@ -1479,7 +1468,7 @@
 
     "@types/cookie": ["@types/cookie@0.6.0", "", {}, ""],
 
-    "@types/cors": ["@types/cors@2.8.12", "", {}, ""],
+    "@types/cors": ["@types/cors@2.8.19", "", { "dependencies": { "@types/node": "*" } }, "sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg=="],
 
     "@types/cypress": ["@types/cypress@1.1.3", "", { "dependencies": { "cypress": "*" } }, ""],
 
@@ -3209,8 +3198,6 @@
 
     "map-cache": ["map-cache@0.2.2", "", {}, ""],
 
-    "map-obj": ["map-obj@4.3.0", "", {}, ""],
-
     "material-ripple-effects": ["material-ripple-effects@2.0.1", "", {}, ""],
 
     "math-intrinsics": ["math-intrinsics@1.1.0", "", {}, ""],
@@ -3805,8 +3792,6 @@
 
     "serve-static": ["serve-static@1.15.0", "", { "dependencies": { "encodeurl": "~1.0.2", "escape-html": "~1.0.3", "parseurl": "~1.3.3", "send": "0.18.0" } }, ""],
 
-    "server-only": ["server-only@0.0.1", "", {}, ""],
-
     "set-blocking": ["set-blocking@2.0.0", "", {}, ""],
 
     "set-cookie-parser": ["set-cookie-parser@2.7.1", "", {}, ""],
@@ -3863,8 +3848,6 @@
 
     "snake-case": ["snake-case@3.0.4", "", { "dependencies": { "dot-case": "^3.0.4", "tslib": "^2.0.3" } }, ""],
 
-    "snakecase-keys": ["snakecase-keys@5.4.4", "", { "dependencies": { "map-obj": "^4.1.0", "snake-case": "^3.0.4", "type-fest": "^2.5.2" } }, ""],
-
     "sntp": ["sntp@0.2.4", "", { "dependencies": { "hoek": "0.9.x" } }, ""],
 
     "socks": ["socks@2.8.7", "", { "dependencies": { "ip-address": "^10.0.1", "smart-buffer": "^4.2.0" } }, ""],
@@ -3913,13 +3896,9 @@
 
     "stack-utils": ["stack-utils@2.0.6", "", { "dependencies": { "escape-string-regexp": "^2.0.0" } }, ""],
 
-    "standardwebhooks": ["standardwebhooks@1.0.0", "", { "dependencies": { "@stablelib/base64": "^1.0.0", "fast-sha256": "^1.3.0" } }, ""],
-
     "stat-mode": ["stat-mode@0.3.0", "", {}, ""],
 
     "statuses": ["statuses@2.0.1", "", {}, ""],
-
-    "std-env": ["std-env@3.9.0", "", {}, ""],
 
     "stdin-discarder": ["stdin-discarder@0.1.0", "", { "dependencies": { "bl": "^5.0.0" } }, ""],
 
@@ -3989,11 +3968,11 @@
 
     "svgo": ["svgo@3.3.2", "", { "dependencies": { "@trysound/sax": "0.2.0", "commander": "^7.2.0", "css-select": "^5.1.0", "css-tree": "^2.3.1", "css-what": "^6.1.0", "csso": "^5.0.5", "picocolors": "^1.0.0" }, "bin": "bin/svgo" }, ""],
 
+    "svix": ["svix@1.80.0", "", { "dependencies": { "@stablelib/base64": "^1.0.0", "fast-sha256": "^1.3.0", "uuid": "^10.0.0" } }, "sha512-OdWaotwCJnPP1q381gacgwGm9HUAKgv0/EhMv+YdL0k3EI009i/3V8CvUka8a/MUDGgRQ0BsRPDzTy6ldxf13Q=="],
+
     "swap-case": ["swap-case@2.0.2", "", { "dependencies": { "tslib": "^2.0.3" } }, ""],
 
     "swiper": ["swiper@11.2.10", "", {}, ""],
-
-    "swr": ["swr@2.3.6", "", { "dependencies": { "dequal": "^2.0.3", "use-sync-external-store": "^1.4.0" }, "peerDependencies": { "react": "^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, ""],
 
     "symbol-observable": ["symbol-observable@4.0.0", "", {}, ""],
 
@@ -4188,8 +4167,6 @@
     "use-callback-ref": ["use-callback-ref@1.3.3", "", { "dependencies": { "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" } }, ""],
 
     "use-sidecar": ["use-sidecar@1.1.3", "", { "dependencies": { "detect-node-es": "^1.1.0", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" } }, ""],
-
-    "use-sync-external-store": ["use-sync-external-store@1.5.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, ""],
 
     "util-deprecate": ["util-deprecate@1.0.2", "", {}, ""],
 
@@ -4500,22 +4477,6 @@
     "@changesets/write/fs-extra": ["fs-extra@7.0.1", "", { "dependencies": { "graceful-fs": "^4.1.2", "jsonfile": "^4.0.0", "universalify": "^0.1.0" } }, ""],
 
     "@changesets/write/prettier": ["prettier@2.8.8", "", { "bin": "bin-prettier.js" }, ""],
-
-    "@clerk/backend/tslib": ["tslib@2.4.1", "", {}, ""],
-
-    "@clerk/clerk-react/tslib": ["tslib@2.4.1", "", {}, ""],
-
-    "@clerk/nextjs/tslib": ["tslib@2.4.1", "", {}, ""],
-
-    "@clerk/testing/@clerk/backend": ["@clerk/backend@2.9.2", "", { "dependencies": { "@clerk/shared": "^3.21.1", "@clerk/types": "^4.79.0", "cookie": "1.0.2", "standardwebhooks": "^1.0.0", "tslib": "2.8.1" } }, ""],
-
-    "@clerk/testing/@clerk/shared": ["@clerk/shared@3.21.1", "", { "dependencies": { "@clerk/types": "^4.79.0", "dequal": "2.0.3", "glob-to-regexp": "0.4.1", "js-cookie": "3.0.5", "std-env": "^3.9.0", "swr": "2.3.4" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0 || ^19.0.0-0", "react-dom": "^18.0.0 || ^19.0.0 || ^19.0.0-0" } }, ""],
-
-    "@clerk/testing/@clerk/types": ["@clerk/types@4.79.0", "", { "dependencies": { "csstype": "3.1.3" } }, ""],
-
-    "@clerk/testing/dotenv": ["dotenv@17.2.1", "", {}, ""],
-
-    "@clerk/types/csstype": ["csstype@3.1.1", "", {}, ""],
 
     "@cloudinary-util/url-loader/@cloudinary-util/util": ["@cloudinary-util/util@3.3.2", "", {}, ""],
 
@@ -5111,6 +5072,8 @@
 
     "apollo-server-express/@types/body-parser": ["@types/body-parser@1.19.2", "", { "dependencies": { "@types/connect": "*", "@types/node": "*" } }, ""],
 
+    "apollo-server-express/@types/cors": ["@types/cors@2.8.12", "", {}, ""],
+
     "apollo-server-express/@types/express": ["@types/express@4.17.14", "", { "dependencies": { "@types/body-parser": "*", "@types/express-serve-static-core": "^4.17.18", "@types/qs": "*", "@types/serve-static": "*" } }, ""],
 
     "apollo-server-express/@types/express-serve-static-core": ["@types/express-serve-static-core@4.17.31", "", { "dependencies": { "@types/node": "*", "@types/qs": "*", "@types/range-parser": "*" } }, ""],
@@ -5629,8 +5592,6 @@
 
     "snake-case/tslib": ["tslib@2.6.3", "", {}, ""],
 
-    "snakecase-keys/type-fest": ["type-fest@2.19.0", "", {}, ""],
-
     "socks-proxy-agent/agent-base": ["agent-base@6.0.2", "", { "dependencies": { "debug": "4" } }, ""],
 
     "socks-proxy-agent/debug": ["debug@4.4.1", "", { "dependencies": { "ms": "^2.1.3" } }, ""],
@@ -5670,6 +5631,8 @@
     "styled-components/stylis": ["stylis@4.3.1", "", {}, ""],
 
     "styled-components/tslib": ["tslib@2.5.0", "", {}, ""],
+
+    "svix/uuid": ["uuid@10.0.0", "", { "bin": { "uuid": "dist/bin/uuid" } }, "sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ=="],
 
     "swap-case/tslib": ["tslib@2.6.3", "", {}, ""],
 
@@ -5782,12 +5745,6 @@
     "@changesets/write/fs-extra/jsonfile": ["jsonfile@4.0.0", "", { "optionalDependencies": { "graceful-fs": "^4.1.6" } }, ""],
 
     "@changesets/write/fs-extra/universalify": ["universalify@0.1.2", "", {}, ""],
-
-    "@clerk/testing/@clerk/backend/cookie": ["cookie@1.0.2", "", {}, ""],
-
-    "@clerk/testing/@clerk/backend/tslib": ["tslib@2.8.1", "", {}, ""],
-
-    "@clerk/testing/@clerk/shared/swr": ["swr@2.3.4", "", { "dependencies": { "dequal": "^2.0.3", "use-sync-external-store": "^1.4.0" }, "peerDependencies": { "react": "^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, ""],
 
     "@commitlint/config-validator/ajv/json-schema-traverse": ["json-schema-traverse@1.0.0", "", {}, ""],
 

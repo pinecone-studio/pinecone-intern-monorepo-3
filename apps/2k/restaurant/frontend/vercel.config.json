@@ -1,0 +1,10 @@
+{
+  "projectId": "prj_Cl1Te9GRx2p5h4sE45raJvojpj8x",
+  "orgId": "team_GcoSxSxP0tdBV7zgpH5E0dtY",
+  "settings": {
+    "framework": "nextjs",
+    "installCommand": "bun install",
+    "buildCommand": "nx build --skip-nx-cache restaurant-frontend",
+    "outputDirectory": "/dist/apps/2k/restaurant/frontend/.next"
+  }
+}
