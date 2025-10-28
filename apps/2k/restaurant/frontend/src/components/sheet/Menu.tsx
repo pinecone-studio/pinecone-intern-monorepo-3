@@ -10,7 +10,7 @@ export const SheetMenu = () => {
     <div>
       <Sheet>
         <SheetTrigger>
-          <Ellipsis />
+          <Ellipsis size={20}/>
         </SheetTrigger>
         <SheetContent className="h-full">
           <SheetHeader className="flex flex-col h-full">
