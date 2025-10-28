@@ -60,19 +60,19 @@ const OrderPaymentPage = () => {
 
     localStorage.removeItem('pendingOrder');
 
-    alert(`Захиалга амжилттай илгээгдэж, ${finalAmount.toLocaleString()}₮ төлөгдлөө!`);
+    // alert(`Захиалга амжилттай илгээгдэж, ${finalAmount.toLocaleString()}₮ төлөгдлөө!`);
 
-    router.push('/');
+    router.push('/success');
   };
 
   // 🌟 hasMounted шалгах
   if (!hasMounted || loading || !orderData) {
     // Хэрэв шууд шилжилт хийгдсэн бол, энэ хэсэг түр хугацаанд гарч, DOM-ийг зөв байршуулах хугацаа олгоно.
-    return <div className="max-w-sm mx-auto min-h-screen flex items-center justify-center">Мэдээлэл ачаалж байна...</div>;
+    return <div className="flex items-center justify-center max-w-sm min-h-screen mx-auto">Мэдээлэл ачаалж байна...</div>;
   }
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen">
+    <div className="max-w-sm min-h-screen mx-auto">
       {/* hasMounted үнэн бол PaymentSelection-ийг рендэрлэнэ */}
       <PaymentSelection baseOrderAmount={orderData.baseOrderAmount} onClose={() => router.back()} onSubmit={handleSubmit} selectedOrderType={orderData.selectedOrderType} />
     </div>
