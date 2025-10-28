@@ -73,7 +73,31 @@ const OrderPaymentPage = () => {
       });
 
       localStorage.removeItem('pendingOrder');
+
+      // Save order to order history and for activeOrder display
+      const completedOrder = {
+        userId: userId || '68ff2c8296358b4bed6a6e6b',
+        orderId: Date.now().toString(),
+        orderNumber: Math.floor(Math.random() * 10000),
+        tableQr: orderData.tableQr,
+        tableId: orderData.tableId,
+        items: orderData.cartItems,
+        totalPrice: finalAmount,
+        paymentMethod: paymentMethod,
+        orderType: orderData.selectedOrderType,
+        status: 'Хүлээгдэж байна',
+        createdAt: new Date().toISOString(),
+      };
+
+      // Add to order history
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      localStorage.setItem('orders', JSON.stringify([...orders, completedOrder]));
+
+      // Save last order for display on activeOrder page
+      localStorage.setItem('lastOrder', JSON.stringify(completedOrder));
+
       toast.success(`Төлбөр амжилттай. ${finalAmount.toLocaleString()}₮`);
+      router.push('/success');
       return;
     } catch (err) {
       console.error('createOrder 실패, fallback to local:', err);
@@ -98,7 +122,13 @@ const OrderPaymentPage = () => {
     localStorage.setItem('orders', JSON.stringify([...orders, newOrder]));
 
     localStorage.removeItem('pendingOrder');
+
+    // Save last order to localStorage for display on activeOrder page
+    localStorage.setItem('lastOrder', JSON.stringify(newOrder));
+
     toast.success(`Төлбөр амжилттай (offline). ${finalAmount.toLocaleString()}₮`);
+
+    router.push('/success');
   };
 
   if (loading || !orderData) {

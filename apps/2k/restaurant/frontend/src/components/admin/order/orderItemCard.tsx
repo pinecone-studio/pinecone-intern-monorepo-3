@@ -45,15 +45,21 @@ export const OrderItemCard = ({ order, refetch }: { order: FoodOrder; refetch: (
     <div className="max-w-[600px]">
       <div className="border border-gray-200 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-4 flex flex-col gap-3">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <div className="flex gap-4 items-center">
-            <p className="text-[18px] font-semibold text-gray-800">{order.tableId}</p>
-            <p className="text-[18px] text-gray-500">{order.orderNumber}</p>
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-3">
+              <p className="text-xl font-bold text-[#441500]">#{order.orderNumber}</p>
+              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
+                <span className={`inline-block w-2 h-2 rounded-full mr-2 ${statusUi[status].color}`}></span>
+                {statusUi[status].label}
+              </span>
+            </div>
+            <p className="text-sm text-gray-600">Ширээ: {order.tableId}</p>
           </div>
-          <p className="text-[13px] text-gray-400"> 🕒 {dayjs(order.createdAt).format('HH:mm, MMM D')}</p>
+          <p className="text-sm text-gray-500">🕒 {dayjs(order.createdAt).format('HH:mm, MMM D')}</p>
         </div>
 
-        <div className="h-[1px] bg-gray-100"></div>
+        <div className="border-t border-gray-200"></div>
 
         {/* Toggle дэлгэрэнгүй */}
         {isOrderDetail && (
@@ -86,23 +92,22 @@ export const OrderItemCard = ({ order, refetch }: { order: FoodOrder; refetch: (
         {/* Total + Buttons */}
         <div className="flex flex-col gap-2 pt-2 border-t border-gray-100">
           <div className="flex justify-between items-center">
-            <p className="text-gray-600 text-[14px]">Нийлбэр дүн:</p>
-            <p className="font-semibold text-[18px] text-gray-800">{order.totalPrice.toLocaleString()}₮</p>
+            <p className="text-gray-600 text-base">Нийт дүн:</p>
+            <p className="font-bold text-xl text-[#441500]">{order.totalPrice.toLocaleString()}₮</p>
           </div>
 
           <div className="flex justify-end gap-2 items-center">
             {isOrderDetail ? (
               <div className="flex gap-2 items-center">
                 <SelectStatus value={status} onValueChange={(value) => setStatus(value as FoodOrderStatus)} isAll={false} />
-                <button onClick={handleSave} className="rounded-lg border border-gray-800 bg-gray-800 text-white px-4 py-2 hover:bg-gray-700 transition">
+                <button onClick={handleSave} className="rounded-lg bg-[#441500] text-white px-6 py-2.5 hover:bg-amber-900 transition-colors font-medium">
                   Хадгалах
                 </button>
               </div>
             ) : (
               // Дэлгэрэнгүй хаалттай үед status-г circle + текстээр харуулах
-              <button onClick={toggleOrderDetail} className="rounded-lg border border-gray-200 px-4 py-2 flex items-center gap-2 text-gray-600 hover:bg-gray-50 transition">
-                <span className={`inline-block w-2 h-2 rounded-full ${statusUi[status].color}`}></span>
-                {statusUi[status].label}
+              <button onClick={toggleOrderDetail} className="rounded-lg border-2 border-[#441500] px-6 py-2.5 flex items-center gap-2 text-[#441500] hover:bg-amber-50 transition-colors font-medium">
+                Дэлгэрэнгүй харах
               </button>
             )}
           </div>
