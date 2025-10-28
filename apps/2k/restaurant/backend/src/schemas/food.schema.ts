@@ -1,11 +1,6 @@
 import gql from 'graphql-tag';
 
 export const typeDefs = gql`
-  # type discount {
-  #   value: Int
-  #   startDate: Date
-  #   endDate: Date
-  # }
 
   type FoodType {
     id: ID!
@@ -13,10 +8,9 @@ export const typeDefs = gql`
     image: String
     price: Int
     available: Boolean
-    # discount:discount
+    discount: Discount
     categoryId: ID
   }
-
 
   type Query {
     allFood: [FoodType!]!
@@ -40,7 +34,7 @@ export const typeDefs = gql`
     ): FoodType!
 
     AddFoodToCategory(foodId: ID!, categoryId: ID!): FoodType
-    DeleteFoodFromCategory(foodId:ID!, categoryId:ID!):FoodType
+    DeleteFoodFromCategory(foodId: ID!, categoryId: ID!): FoodType
 
     DeleteFood(foodId: ID!): FoodType!
   }

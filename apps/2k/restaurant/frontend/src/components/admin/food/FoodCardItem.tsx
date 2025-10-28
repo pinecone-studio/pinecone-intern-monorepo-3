@@ -14,14 +14,14 @@ interface FoodItem {
 }
 
 export const FoodItemCard = ({ food, reFetchAdminFood }: { food: FoodType; reFetchAdminFood: () => Promise<ApolloQueryResult<AllFoodQuery>> }) => {
-  
   const statusText = food.available ? 'идэвхитэй' : 'идэвхгүй';
   const statusColor = food.available ? 'bg-green-400' : 'bg-red-400';
 
   return (
     <div className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all duration-300">
       <div className="flex items-center gap-4">
-        <img src="https://i.pinimg.com/736x/4a/70/74/4a7074e01ac804231a3956c5933cd106.jpg" alt="Taso" className="w-16 h-16 rounded-xl object-cover border border-gray-100" />
+        {/* <img src="https://i.pinimg.com/736x/4a/70/74/4a7074e01ac804231a3956c5933cd106.jpg" alt="Taso" className="w-16 h-16 rounded-xl object-cover border border-gray-100" /> */}
+        <img src={food.image ?? ''} alt="Taso" className="w-16 h-16 rounded-xl object-cover border border-gray-100" />
         <div className="flex flex-col justify-center leading-snug">
           <p className="text-[15px] font-medium text-gray-700 tracking-tight">{food.name}</p>
           <p className="text-[17px] font-semibold text-gray-900 mt-0.5">{food.price}₮</p>

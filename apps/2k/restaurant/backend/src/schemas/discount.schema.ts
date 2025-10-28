@@ -7,7 +7,7 @@ export const discountTypeDefs = gql`
     discountRate: Int!
     startDate: String!
     endDate: String!
-    # food: [Food]
+    food: [FoodType]
     createdAt: String
     updatedAt: String
   }

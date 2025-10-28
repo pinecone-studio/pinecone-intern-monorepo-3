@@ -1,4 +1,5 @@
 import { model, models, Schema } from 'mongoose';
+import { Discount } from '../generated';
 
 export type FoodSchemaType = {
   _id: Schema.Types.ObjectId;
@@ -6,11 +7,7 @@ export type FoodSchemaType = {
   price: number;
   image: string;
   available: boolean;
-  // discount: {
-  //   value: number;
-  //   startDate: Date;
-  //   endDate: Date;
-  // };
+  discount:Discount;
   categoryId: Schema.Types.ObjectId;
 };
 
@@ -31,6 +28,12 @@ const foodSchema = new Schema<FoodSchemaType>(
     available: {
       type: Boolean,
       require: true,
+    },
+
+    discount: {
+      type:Schema.Types.ObjectId,
+      ref:"Discount", 
+      required:false
     },
 
     categoryId: {

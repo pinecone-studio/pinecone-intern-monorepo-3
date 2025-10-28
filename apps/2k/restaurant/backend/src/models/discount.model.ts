@@ -8,6 +8,7 @@ export type DiscountType = {
   endDate: Date;
   food: Types.ObjectId[];
 };
+
 const DiscountSchema = new mongoose.Schema<DiscountType>(
   {
     discountName: {
@@ -38,4 +39,6 @@ const DiscountSchema = new mongoose.Schema<DiscountType>(
     timestamps: true,
   }
 );
+
+
 export const DiscountModel = models.Discount || model<DiscountType>('Discount', DiscountSchema);

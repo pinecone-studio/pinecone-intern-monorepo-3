@@ -26,6 +26,8 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
   const [createFood] = useCreateFoodMutation();
   const [preview, setPreview] = useState('');
 
+  const [uploading, setUploading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -42,15 +44,36 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
     },
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-        setValue('image', reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    // Локал preview-г эхэлж харуулах
+    const localPreview = URL.createObjectURL(file);
+    setPreview(localPreview);
+
+    setUploading(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'images');
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_CLOUDINARY_IMAGE}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (data.secure_url) {
+        setPreview(data.secure_url); // upload хийгдсэний дараа Cloudinary URL-г харуулах
+        setValue('image', data.secure_url);
+      }
+    } catch (error) {
+      toast.error('Image upload failed');
+      console.error(error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -91,7 +114,11 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
           {/* Зураг */}
           <div className="flex flex-col items-center">
             <label htmlFor="image-upload" className="w-28 h-28 bg-gray-100 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 transition">
-              {preview ? (
+              {uploading ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span>Uploading...</span>
+                </div>
+              ) : preview ? (
                 <img src={preview} alt="preview" className="w-full h-full object-cover rounded-xl" />
               ) : (
                 <>
@@ -100,7 +127,12 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
                 </>
               )}
             </label>
+
+            {/* 👇 File input */}
             <input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+
+            {/* 👇 Энэ мөрийг заавал нэмээрэй */}
+            <input type="hidden" {...register('image')} />
           </div>
 
           {/* Нэр */}
@@ -109,6 +141,7 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
 
           {/* Үнэ */}
           <input {...register('price')} placeholder="Үнэ (ж: 15000)" className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300" />
+
           {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
 
           {/* Статус */}

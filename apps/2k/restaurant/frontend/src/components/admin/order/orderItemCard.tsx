@@ -10,7 +10,7 @@ type OrderItemCardProps = {
   quantity?: number;
 };
 
-export const OrderItemCard = ({ order, refetch }: { order: FoodOrder , refetch: () => Promise<ApolloQueryResult<GetAllOrdersQuery>> }) => {
+export const OrderItemCard = ({ order, refetch }: { order: FoodOrder; refetch: () => Promise<ApolloQueryResult<GetAllOrdersQuery>> }) => {
   console.log('order', order);
 
   const [isOrderDetail, setIsOrderDetail] = useState(false);
