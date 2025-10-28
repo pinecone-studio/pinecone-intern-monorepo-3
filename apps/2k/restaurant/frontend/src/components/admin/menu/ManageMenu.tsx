@@ -8,8 +8,6 @@ import { ItemCard } from './ManageMenu/CategoryCard';
 import { DiscountItemCard } from './ManageMenu/DiscountItem';
 import { EmptyState } from './EmptyState';
 
-
-
 export const mockDiscounts = [
   {
     id: '1',
@@ -64,7 +62,7 @@ export const ManageMenu = ({ categories, refetchCategory }: { categories: Catego
 
         <div className="flex items-center gap-2">
           <AddDialog />
-          <AddCategoryDialog isUpdate={false} refetchCategory={refetchCategory}  />
+          <AddCategoryDialog isUpdate={false} refetchCategory={refetchCategory} />
         </div>
       </CardHeader>
 

@@ -6,7 +6,7 @@ import { MenuFood } from './FoodMenu';
 import { Category, useGetCategoriesQuery } from '@/generated';
 
 export const TabsDemo = () => {
-  const { data, loading, error, refetch:refetchCategory } = useGetCategoriesQuery();
+  const { data, loading, error, refetch: refetchCategory } = useGetCategoriesQuery();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -30,7 +30,7 @@ export const TabsDemo = () => {
         </TabsContent>
 
         <TabsContent value="menu">
-          <ManageMenu categories={(data?.getCategories?.filter(Boolean) as Category[]) ?? []} refetchCategory={refetchCategory}/>
+          <ManageMenu categories={(data?.getCategories?.filter(Boolean) as Category[]) ?? []} refetchCategory={refetchCategory} />
         </TabsContent>
       </Tabs>
     </div>

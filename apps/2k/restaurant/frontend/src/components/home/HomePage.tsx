@@ -40,9 +40,10 @@ export function removeItemReducer(prev: CartItem[], id: string): CartItem[] {
 
 type MenuPageProps = {
   tableQr: string;
+  tableId: string | null;
 };
 
-const MenuPage = ({ tableQr }: MenuPageProps) => {
+const MenuPage = ({ tableQr, tableId }: MenuPageProps) => {
   const router = useRouter(); // 🌟 useRouter-ийг ашиглав
 
   const { data: categories } = useGetCategoriesQuery();
@@ -70,7 +71,6 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
   const baseOrderAmount = cart.reduce((a, b) => a + Number(b.price) * b.selectCount, 0);
   const cartCount = cart.reduce((a, b) => a + b.selectCount, 0);
 
-
   const goToPayment = (type: FoodServeTypeString) => {
     if (cart.length === 0) return alert('Захиалга хоосон байна.');
 
@@ -79,12 +79,15 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
       baseOrderAmount: baseOrderAmount,
       selectedOrderType: type,
       tableQr: tableQr,
+      tableId: tableId,
     };
 
     localStorage.setItem('pendingOrder', JSON.stringify(paymentData));
 
     router.push('/order-payment');
   };
+
+  console.log('tableQr', tableQr);
 
   return (
     <div className="items-center min-h-screen ">

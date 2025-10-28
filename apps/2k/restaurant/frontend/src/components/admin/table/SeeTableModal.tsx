@@ -12,7 +12,7 @@ type TableData = {
 
 export const SeeTableModal = ({ data }: { data: TableData }) => {
   const baseUrl = 'https://restaurant-be-eta.vercel.app'; // ← одоохондоо локал
-  const qrDataUrl = `${baseUrl}/?tableQr=${data.tableQr}`;
+  const qrDataUrl = `${baseUrl}/?tableQr=${encodeURIComponent(data.tableQr)}&tableId=${encodeURIComponent(data.tableId)}`;
 
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=291x291&data=${encodeURIComponent(qrDataUrl)}`;
 

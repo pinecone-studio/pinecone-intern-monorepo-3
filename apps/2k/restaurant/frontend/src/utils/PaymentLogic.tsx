@@ -80,6 +80,7 @@ export const handlePaymentSelect = async ({
     );
     return;
   }
+console.log("helloeeeee");
 
   // GraphQL schema-д нийцүүлсэн input
   await createOrder({

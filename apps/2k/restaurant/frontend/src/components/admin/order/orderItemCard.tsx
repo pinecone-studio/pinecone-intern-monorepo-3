@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { SelectStatus } from './SelectStatus';
 import { FoodOrder, FoodOrderStatus, FoodType, GetAllOrdersQuery, useUpdateOrderMutation } from '@/generated';
 import { ApolloQueryResult } from '@apollo/client';
+import dayjs from 'dayjs';
 
 type OrderItemCardProps = {
   food: FoodType;
@@ -49,7 +50,7 @@ export const OrderItemCard = ({ order, refetch }: { order: FoodOrder; refetch: (
             <p className="text-[18px] font-semibold text-gray-800">{order.tableId}</p>
             <p className="text-[18px] text-gray-500">{order.orderNumber}</p>
           </div>
-          <p className="text-[13px] text-gray-400">🕒 {order.createdAt}</p>
+          <p className="text-[13px] text-gray-400"> 🕒 {dayjs(order.createdAt).format('HH:mm, MMM D')}</p>
         </div>
 
         <div className="h-[1px] bg-gray-100"></div>
