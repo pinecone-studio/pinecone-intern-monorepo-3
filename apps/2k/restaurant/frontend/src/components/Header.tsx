@@ -1,8 +1,6 @@
 import Image from 'next/image';
 import { SheetMenu } from './sheet/Menu';
 import { Notification } from './sheet/Notification';
-import { ActiveOrder } from './sheet/ActiveOrder';
-
 
 export const Header = () => {
   return (
@@ -18,7 +16,6 @@ export const Header = () => {
       </a>
 
       <div className="flex items-center gap-4">
-        <ActiveOrder/>
         <Notification />
         <SheetMenu />
       </div>
