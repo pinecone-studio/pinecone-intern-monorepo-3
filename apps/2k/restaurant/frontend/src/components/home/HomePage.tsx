@@ -70,11 +70,10 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
   const baseOrderAmount = cart.reduce((a, b) => a + Number(b.price) * b.selectCount, 0);
   const cartCount = cart.reduce((a, b) => a + b.selectCount, 0);
 
-  // 🌟 goToPayment-ийг orderPaymentPage руу шилжүүлдэг болгов
+
   const goToPayment = (type: FoodServeTypeString) => {
     if (cart.length === 0) return alert('Захиалга хоосон байна.');
 
-    // 1. Захиалгын мэдээллийг түр хадгалах (Local Storage-д)
     const paymentData = {
       cartItems: cart,
       baseOrderAmount: baseOrderAmount,
@@ -84,18 +83,13 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
 
     localStorage.setItem('pendingOrder', JSON.stringify(paymentData));
 
-    // 2. "/order-payment" хуудас руу шилжих
     router.push('/order-payment');
   };
 
-  // 🌟 submitOrder функц одоо MenuPage-д хэрэггүй тул хасав (PaymentPage дээр хийгдэнэ)
-
-  // 🌟 isPaymentMode шалгах хэсгийг хасав
-
   return (
-    <div className="min-h-screen bg-white">
+    <div className="items-center min-h-screen ">
       <Header />
-      <div className="w-full h-fit sticky top-[55px]">
+      <div className="w-full h-fit sticky top-[55px] flex flex-col items-center">
         {/* ... (Categories болон Foods хэвээр) ... */}
         <div className="px-4 py-6 text-center bg-white">
           <h1 className="text-[#441500] text-2xl font-bold">Хоолны цэс ({tableQr})</h1>
@@ -106,8 +100,8 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
               <button
                 key={category?.categoryId}
                 onClick={() => setActiveCategory(category?.categoryName)}
-                className={`whitespace-nowrap text-sm font-medium p-1 border-2 rounded-lg transition-colors ${
-                  activeCategory === category?.categoryName ? 'text-[#441500] border-[#441500]/20' : 'text-gray-500 border-transparent hover:text-gray-700'
+                className={`whitespace-nowrap text-sm font-medium p-1 border-b-2 transition-colors ${
+                  activeCategory === category?.categoryName ? 'text-[#441500] border-[#441500]' : 'text-gray-500 border-transparent hover:text-gray-700'
                 }`}
               >
                 {category?.categoryName}
@@ -170,9 +164,9 @@ const MenuPage = ({ tableQr }: MenuPageProps) => {
                     ))}
                   </div>
 
-                  <DrawerFooter className="text-center text-gray-700 font-bold border-t pt-4">
+                  <DrawerFooter className="pt-4 font-bold text-center text-gray-700 border-t">
                     <div className="w-full">
-                      <p className="text-lg font-bold mb-4">Нийт дүн: {baseOrderAmount.toLocaleString()}₮</p>
+                      <p className="mb-4 text-lg font-bold">Нийт дүн: {baseOrderAmount.toLocaleString()}₮</p>
                       {/* OrderType нь goToPayment-ийг дуудан router-ээр шилжүүлнэ */}
                       <OrderType currentCart={cart} onProceedToPayment={goToPayment} />
                     </div>

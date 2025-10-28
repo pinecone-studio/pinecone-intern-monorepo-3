@@ -17,6 +17,9 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    BACKEND_URI: process.env.BACKEND_URI || 'http://localhost:4000/graphql',
+  },
 };
 
 const plugins = [withNx];

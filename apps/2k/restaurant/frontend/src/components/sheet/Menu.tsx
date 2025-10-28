@@ -36,13 +36,13 @@ export const SheetMenu = () => {
                   </a>
                 </div>
                  <div className='w-full py-5 border-b'>
-                  <a href="/" className="flex items-center gap-4">
+                  <a href="/history" className="flex items-center gap-4">
                     <List size={20}/>
-                    <p>Нүүр хуудас</p>
+                    <p>Захиалгын түүх</p>
                   </a>
                 </div>
                  <div className='w-full py-5 border-b'>
-                  <a href="/" className="flex items-center gap-4">
+                  <a href="/about-us" className="flex items-center gap-4">
                     <Info size={20}/>
                     <p>Нүүр хуудас</p>
                   </a>
