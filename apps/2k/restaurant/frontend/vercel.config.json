@@ -3,7 +3,7 @@
   "orgId": "team_GcoSxSxP0tdBV7zgpH5E0dtY",
   "settings": {
     "framework": "nextjs",
-    "installCommand": "bun install",
+    "installCommand": "yarn install",
     "buildCommand": "nx build --skip-nx-cache restaurant-frontend",
     "outputDirectory": "/dist/apps/2k/restaurant/frontend/.next"
   }
