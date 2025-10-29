@@ -43,10 +43,24 @@ type MenuPageProps = {
   tableId: string | null;
 };
 
+// Skeleton Component
+const MenuCardSkeleton = () => (
+  <div className="w-full h-[230px] bg-white rounded-xl shadow-sm overflow-hidden animate-pulse">
+    <div className="w-full h-40 bg-gray-200" />
+    <div className="p-2 space-y-2">
+      <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto" />
+      <div className="h-5 w-12 bg-gray-200 rounded mx-auto" />
+    </div>
+  </div>
+);
+
 const MenuPage = ({ tableQr, tableId }: MenuPageProps) => {
   const router = useRouter(); // 🌟 useRouter-ийг ашиглав
 
-  const { data: categories } = useGetCategoriesQuery();
+  // 🔄 Polling нэмж байна - Админ хоол нэмсэн үед автоматаар шинэчлэх
+  const { data: categories, loading } = useGetCategoriesQuery({
+    pollInterval: 3000, // 3 секунд тутамд шинэчлэх
+  });
   const [activeCategory, setActiveCategory] = useState<string | undefined>(undefined);
   const [cart, setCart] = useState<CartItem[]>([]);
 
@@ -90,30 +104,43 @@ const MenuPage = ({ tableQr, tableId }: MenuPageProps) => {
   console.log('tableQr', tableQr);
 
   return (
-    <div className="items-center min-h-screen ">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="w-full h-fit sticky top-[55px] flex flex-col items-center">
-        {/* ... (Categories болон Foods хэвээр) ... */}
-        <div className="px-4 py-6 text-center bg-white">
-          <h1 className="text-[#441500] text-2xl font-bold">Хоолны цэс ({tableQr})</h1>
+      <div className="w-full max-w-sm mx-auto pb-24">
+        {/* Page Header */}
+        <div className="bg-white border-b border-gray-200 px-4 py-4">
+          <h1 className="text-[#441500] text-lg font-bold text-center">Хоолны цэс</h1>
+          <p className="text-xs text-gray-500 text-center mt-1">Ширээ: {tableQr}</p>
         </div>
-        <div className="px-4 py-4 bg-white">
-          <div className="flex space-x-6 overflow-x-auto">
+
+        {/* Categories Tabs - Sticky */}
+        <div className="sticky top-14 z-40 bg-white border-b border-gray-200 px-4 py-3">
+          <div className="flex space-x-4 overflow-x-auto scrollbar-hide">
             {categories?.getCategories?.map((category) => (
               <button
                 key={category?.categoryId}
                 onClick={() => setActiveCategory(category?.categoryName)}
-                className={`whitespace-nowrap text-sm font-medium p-1 border-b-2 transition-colors ${
-                  activeCategory === category?.categoryName ? 'text-[#441500] border-[#441500]' : 'text-gray-500 border-transparent hover:text-gray-700'
+                className={`flex-shrink-0 whitespace-nowrap text-sm font-medium px-3 py-2 rounded-lg transition-colors ${
+                  activeCategory === category?.categoryName ? 'bg-[#441500] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
                 {category?.categoryName}
               </button>
             ))}
           </div>
+        </div>
 
-          <div className="grid max-w-2xl grid-cols-2 gap-4 p-4 mx-auto overflow-scroll h-fit pb-23">
-            {foods.length > 0 ? (
+        {/* Food Grid */}
+        <div className="px-4 py-4 bg-gray-50">
+          <div className="grid grid-cols-2 gap-3">
+            {loading ? (
+              // Skeleton Loading
+              <>
+                {[...Array(6)].map((_, i) => (
+                  <MenuCardSkeleton key={i} />
+                ))}
+              </>
+            ) : foods.length > 0 ? (
               foods.map((foodItem) => {
                 const count = cart.find((x) => x.id === foodItem?.id)?.selectCount || 0;
                 return (
@@ -130,28 +157,35 @@ const MenuPage = ({ tableQr, tableId }: MenuPageProps) => {
                 );
               })
             ) : (
-              <p className="col-span-2 py-10 text-center text-gray-500">Энэ ангилалд хоол байхгүй байна.</p>
+              <div className="col-span-2 py-12 text-center">
+                <p className="text-sm text-gray-500">Энэ ангилалд хоол байхгүй байна.</p>
+              </div>
             )}
           </div>
         </div>
 
-        {/* Drawer - Сагс болон Захиалгын Төрөл Сонгох */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t">
+        {/* Fixed Bottom Cart Button */}
+        <div className="fixed bottom-0 left-0 right-0 max-w-sm mx-auto px-4 py-3 bg-white border-t border-gray-200 shadow-lg">
           <Drawer>
-            <DrawerTrigger disabled={cart.length === 0} className={`w-full py-4 text-lg font-medium text-white rounded-lg ${cart.length > 0 ? 'bg-amber-800 hover:bg-amber-900' : 'bg-gray-400'}`}>
+            <DrawerTrigger
+              disabled={cart.length === 0}
+              className={`w-full py-3 text-base font-semibold rounded-xl transition-colors ${
+                cart.length > 0 ? 'bg-[#441500] text-white hover:bg-amber-900' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
               Захиалах ({cartCount})
             </DrawerTrigger>
 
-            <DrawerContent>
-              <DrawerHeader>
-                <DrawerTitle>Таны захиалга</DrawerTitle>
+            <DrawerContent className="max-w-sm mx-auto">
+              <DrawerHeader className="border-b border-gray-200">
+                <DrawerTitle className="text-lg font-bold text-[#441500]">Таны захиалга</DrawerTitle>
               </DrawerHeader>
 
               {cart.length === 0 ? (
-                <div className="py-10 text-sm text-center text-zinc-500">Хоосон байна.</div>
+                <div className="py-16 text-sm text-center text-gray-500">Хоосон байна.</div>
               ) : (
                 <>
-                  <div className="py-4 space-y-4 px-4 overflow-y-auto max-h-[300px]">
+                  <div className="py-4 space-y-3 px-4 overflow-y-auto max-h-[60vh]">
                     {cart.map((item) => (
                       <OrderList
                         key={item.id}
@@ -167,10 +201,12 @@ const MenuPage = ({ tableQr, tableId }: MenuPageProps) => {
                     ))}
                   </div>
 
-                  <DrawerFooter className="pt-4 font-bold text-center text-gray-700 border-t">
-                    <div className="w-full">
-                      <p className="mb-4 text-lg font-bold">Нийт дүн: {baseOrderAmount.toLocaleString()}₮</p>
-                      {/* OrderType нь goToPayment-ийг дуудан router-ээр шилжүүлнэ */}
+                  <DrawerFooter className="pt-4 pb-6 border-t border-gray-200 bg-gray-50">
+                    <div className="w-full space-y-4">
+                      <div className="flex justify-between items-center px-2">
+                        <span className="text-base font-semibold text-gray-700">Нийт дүн:</span>
+                        <span className="text-xl font-bold text-[#441500]">{baseOrderAmount.toLocaleString()}₮</span>
+                      </div>
                       <OrderType currentCart={cart} onProceedToPayment={goToPayment} />
                     </div>
                   </DrawerFooter>
@@ -180,6 +216,16 @@ const MenuPage = ({ tableQr, tableId }: MenuPageProps) => {
           </Drawer>
         </div>
       </div>
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 };

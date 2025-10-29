@@ -6,10 +6,28 @@ import { OrderItemCard } from './orderItemCard';
 import { FoodOrder, useGetAllOrdersQuery } from '@/generated';
 import { OrderFilter } from './OrrderFilter';
 
+const OrderItemCardSkeleton = () => (
+  <div className="border border-gray-200 rounded-xl p-5 space-y-4 animate-pulse">
+    <div className="flex items-center justify-between">
+      <div className="h-6 w-32 bg-gray-200 rounded" />
+      <div className="h-6 w-16 bg-gray-200 rounded" />
+    </div>
+    <div className="border-t border-gray-200" />
+    <div className="flex justify-between items-center">
+      <div className="h-5 w-24 bg-gray-200 rounded" />
+      <div className="h-7 w-20 bg-gray-200 rounded" />
+    </div>
+    <div className="border-t border-gray-200" />
+    <div className="flex justify-end">
+      <div className="h-10 w-32 bg-gray-200 rounded-lg" />
+    </div>
+  </div>
+);
+
 export const AdminOrderStyle = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
-  const { data, refetch } = useGetAllOrdersQuery();
+  const { data, refetch, loading } = useGetAllOrdersQuery();
 
   const [statusFilter, setStatusFilter] = useState('Бүгд');
 
@@ -38,9 +56,15 @@ export const AdminOrderStyle = () => {
       <OrderFilter status={statusFilter} onStatusChange={setStatusFilter} setSelectedDate={setSelectedDate} selectedDate={selectedDate} />
 
       <div className="flex flex-col gap-5 mt-4">
-        {filteredOrders.map((order: FoodOrder) => (
-          <OrderItemCard key={order.id} order={order} refetch={refetch} />
-        ))}
+        {loading ? (
+          <>
+            {[...Array(4)].map((_, i) => (
+              <OrderItemCardSkeleton key={i} />
+            ))}
+          </>
+        ) : (
+          filteredOrders.map((order: FoodOrder) => <OrderItemCard key={order.id} order={order} refetch={refetch} />)
+        )}
       </div>
     </div>
   );
