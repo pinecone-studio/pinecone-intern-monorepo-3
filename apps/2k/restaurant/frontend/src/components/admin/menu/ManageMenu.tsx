@@ -8,8 +8,6 @@ import { ItemCard } from './ManageMenu/CategoryCard';
 import { DiscountItemCard } from './ManageMenu/DiscountItem';
 import { EmptyState } from './EmptyState';
 
-
-
 export const mockDiscounts = [
   {
     id: '1',
@@ -64,7 +62,7 @@ export const ManageMenu = ({ categories, refetchCategory }: { categories: Catego
 
         <div className="flex items-center gap-2">
           <AddDialog />
-          <AddCategoryDialog isUpdate={false} refetchCategory={refetchCategory}  />
+          <AddCategoryDialog isUpdate={false} refetchCategory={refetchCategory} />
         </div>
       </CardHeader>
 
@@ -77,7 +75,7 @@ export const ManageMenu = ({ categories, refetchCategory }: { categories: Catego
             <button
               key={item.slug}
               onClick={() => setActiveCategory(item.slug)}
-              className={`px-3 py-1.5 text-sm rounded-md font-medium transition-colors ${activeCategory === item.slug ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+              className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors ${activeCategory === item.slug ? 'bg-[#441500] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
             >
               {item.name}
             </button>

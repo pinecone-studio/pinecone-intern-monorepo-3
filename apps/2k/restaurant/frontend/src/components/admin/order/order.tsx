@@ -6,63 +6,65 @@ import { OrderItemCard } from './orderItemCard';
 import { FoodOrder, useGetAllOrdersQuery } from '@/generated';
 import { OrderFilter } from './OrrderFilter';
 
+const OrderItemCardSkeleton = () => (
+  <div className="border border-gray-200 rounded-xl p-5 space-y-4 animate-pulse">
+    <div className="flex items-center justify-between">
+      <div className="h-6 w-32 bg-gray-200 rounded" />
+      <div className="h-6 w-16 bg-gray-200 rounded" />
+    </div>
+    <div className="border-t border-gray-200" />
+    <div className="flex justify-between items-center">
+      <div className="h-5 w-24 bg-gray-200 rounded" />
+      <div className="h-7 w-20 bg-gray-200 rounded" />
+    </div>
+    <div className="border-t border-gray-200" />
+    <div className="flex justify-end">
+      <div className="h-10 w-32 bg-gray-200 rounded-lg" />
+    </div>
+  </div>
+);
+
 export const AdminOrderStyle = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
 
-  const { data, refetch } = useGetAllOrdersQuery();
-
-  console.log('selectedDate', selectedDate);
+  const { data, refetch, loading } = useGetAllOrdersQuery();
 
   const [statusFilter, setStatusFilter] = useState('Бүгд');
 
-  console.log('statusFilter', statusFilter);
+  const filteredOrders = (data?.GetAllOrders || []).filter((order: FoodOrder) => {
+    // Status filter
+    const matchesStatus = statusFilter === 'Бүгд' || order.status === (statusFilter as any);
 
-  const filteredOrders = data?.GetAllOrders.filter((order: FoodOrder) => {
-    order.status;
-    if (statusFilter === 'Бүгд') return true;
-    return order.status === statusFilter;
+    // Date filter (same day comparison)
+    const matchesDate = selectedDate
+      ? (() => {
+          try {
+            const orderDate = order.createdAt ? new Date(order.createdAt as any) : null;
+            if (!orderDate) return false;
+            return orderDate.toDateString() === selectedDate.toDateString();
+          } catch {
+            return false;
+          }
+        })()
+      : true;
+
+    return matchesStatus && matchesDate;
   });
-
-  console.log('filteredOrders', filteredOrders);
-
-  // const mockOrders = [
-  //   {
-  //     id: 1,
-  //     table: '1B',
-  //     orderNumber: '#33678',
-  //     time: '12:45',
-  //     total: 25900,
-  //     status: 'Хүлээгдэж буй',
-  //     items: [
-  //       { id: 1, name: 'Taso', desc: 'Шоколадтай бялуу', price: 15600, quantity: 3, image: img },
-  //       { id: 2, name: 'Latte', desc: 'Кофе сүүтэй', price: 9900, quantity: 2, image: img },
-  //     ],
-  //   },
-  //   {
-  //     id: 2,
-  //     table: '1B',
-  //     orderNumber: '#33679',
-  //     time: '12:50',
-  //     total: 35600,
-  //     status: 'Бэлэн',
-  //     items: [
-  //       { id: 1, name: 'Taso', desc: 'Шоколадтай бялуу', price: 15600, quantity: 3, image: img },
-  //       { id: 2, name: 'Latte', desc: 'Кофе сүүтэй', price: 9900, quantity: 2, image: img },
-  //       { id: 3, name: 'Espresso', desc: 'Эспрессо кофе', price: 10100, quantity: 1, image: img },
-  //     ],
-  //   },
-  // ];
-
-  // const filteredOrders = statusFilter === 'Бүгд' ? mockOrders : mockOrders.filter((order) => order.status === statusFilter);
 
   return (
     <div className="min-h-screen p-6 w-full max-w-[600px] ">
       <OrderFilter status={statusFilter} onStatusChange={setStatusFilter} setSelectedDate={setSelectedDate} selectedDate={selectedDate} />
 
       <div className="flex flex-col gap-5 mt-4">
-        {data?.GetAllOrders.map((order: FoodOrder) => (
-          <OrderItemCard key={order.id} order={order} refetch={refetch} />
-        ))}
+        {loading ? (
+          <>
+            {[...Array(4)].map((_, i) => (
+              <OrderItemCardSkeleton key={i} />
+            ))}
+          </>
+        ) : (
+          filteredOrders.map((order: FoodOrder) => <OrderItemCard key={order.id} order={order} refetch={refetch} />)
+        )}
       </div>
     </div>
   );

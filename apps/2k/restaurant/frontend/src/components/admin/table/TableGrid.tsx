@@ -19,26 +19,34 @@ export const TableGrid = () => {
   return (
     <div className="flex sm:w-[600px] w-full h-fit flex-col gap-4 px-4">
       <Toaster position="bottom-right" />
-      {/* <CreateTableModal refetch={refetch} /> */}
 
-      <div className="flex flex-col p-4 bg-white border border-solid border-[#E4E4E7] rounded-md h-fit max-h-[450px] overflow-scroll">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold text-[#441500]">Ширээний жагсаалт</h1>
+        <button className="px-6 py-2.5 rounded-lg font-medium bg-[#441500] text-white hover:bg-amber-900 transition-colors">Ширээ үүсгэх</button>
+      </div>
+
+      {/* Table List */}
+      <div className="flex flex-col p-5 bg-white border border-gray-200 rounded-xl shadow-sm h-fit max-h-[450px] overflow-scroll">
         {tableData?.length === 0 ? (
-          <h1 data-testid="admin-empty-message" className="text-sm">
-            Ширээ үүсээгүй байна.
-          </h1>
+          <div className="flex items-center justify-center py-8">
+            <h1 data-testid="admin-empty-message" className="text-sm text-gray-500">
+              Ширээ үүсээгүй байна.
+            </h1>
+          </div>
         ) : (
           <>
             {tableData?.map((table: GetTablesQuery['getTables'][0]) => (
               <div data-testid="admin-table" key={table.tableId}>
                 <div className="flex items-center justify-between w-full py-4">
-                  <h1 className="font-bold text-[18px]">{table.tableName}</h1>
-                  <div className="flex justify-around gap-2">
+                  <h1 className="font-semibold text-base text-gray-900">{table.tableName}</h1>
+                  <div className="flex items-center gap-2">
                     <SeeTableModal data={table} />
                     {/* <UpdateTableModal refetch={refetch} tableId={table.tableId} currentName={table.tableName} /> */}
                     {/* <DeleteTableModal refetch={refetch} tableId={table.tableId} tableName={table.tableName} /> */}
                   </div>
                 </div>
-                <Separator />
+                {tableData.indexOf(table) < tableData.length - 1 && <Separator />}
               </div>
             ))}
           </>

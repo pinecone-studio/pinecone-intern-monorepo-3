@@ -1,15 +1,17 @@
-'use client'; 
-import { Header } from "@/components/Header";
-import { ActiveOrderContent } from "@/components/sheet/ActiveOrder";
-
+'use client';
+import { Header } from '@/components/Header';
+import { ActiveOrderContent } from '@/components/sheet/ActiveOrder';
+import { useRouter } from 'next/navigation';
 
 const page = () => {
-  return(
+  const router = useRouter();
+
+  return (
     <div>
-        <Header/>
-        <ActiveOrderContent  onBack={() => console.log('Буцах товч дарлаа')}/>
+      <Header />
+      <ActiveOrderContent onBack={() => router.back()} />
     </div>
-  )
+  );
 };
 
 export default page;

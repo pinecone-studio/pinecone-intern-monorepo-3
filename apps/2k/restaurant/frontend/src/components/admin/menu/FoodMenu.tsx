@@ -26,8 +26,8 @@ export const MenuFood = ({ categories }: { categories: Category[] }) => {
   return (
     <Card className="border-gray-200 shadow-sm">
       {/* Header */}
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-[18px] font-semibold text-gray-800">Цэс</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between pb-4 border-b border-gray-200">
+        <CardTitle className="text-xl font-bold text-[#441500]">Цэс</CardTitle>
         <AddFoodToCategory filteredCategoryFood={uncategorizedFood} activeCategory={activeCategoryId} refetchAllFood={refetchAllFood} />
       </CardHeader>
 
@@ -38,8 +38,8 @@ export const MenuFood = ({ categories }: { categories: Category[] }) => {
             <button
               key={category.categoryId}
               onClick={() => setActiveCategoryId(category.categoryId)}
-              className={`flex-shrink-0 px-3 py-1.5 text-sm rounded-md font-medium transition-colors ${
-                activeCategoryId === category.categoryId ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              className={`flex-shrink-0 px-4 py-2 text-sm rounded-lg font-medium transition-colors ${
+                activeCategoryId === category.categoryId ? 'bg-[#441500] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               {category.categoryName}

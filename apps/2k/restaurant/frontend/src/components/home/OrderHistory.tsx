@@ -2,12 +2,35 @@
 import { useEffect, useState } from 'react';
 import { Header } from '../Header';
 
+const OrderHistoryCardSkeleton = () => (
+  <div className="w-full border rounded-md bg-gray-50 p-4 animate-pulse">
+    <div className="flex items-center justify-between mb-3">
+      <div className="h-6 w-24 bg-gray-200 rounded" />
+      <div className="h-6 w-20 bg-gray-200 rounded-full" />
+    </div>
+    <div className="flex justify-between items-center pt-2 border-t border-gray-200 pb-3">
+      <div className="h-4 w-32 bg-gray-200 rounded" />
+      <div className="h-6 w-16 bg-gray-200 rounded" />
+    </div>
+    <div className="pt-2 border-t border-gray-200">
+      <div className="h-3 w-12 bg-gray-200 rounded mb-2" />
+      <div className="flex flex-wrap gap-2">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="h-6 w-16 bg-gray-200 rounded-lg" />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 export const OrderHistory = () => {
   const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem('orders') || '[]');
     setOrders(savedOrders);
+    setLoading(false);
   }, []);
 
   return (
@@ -16,20 +39,26 @@ export const OrderHistory = () => {
       <div className="text-center">
         <p className="font-medium text-[#441500] pt-5 text-[20px]">Захиалгын түүх</p>
         <div className="flex w-full justify-center pt-4">
-          <div className="w-[414px] flex flex-col gap-4 justify-start rounded-md p-4">
-            {orders.length === 0 ? (
-              <p>Захиалга олдсонгүй</p>
+          <div className="w-full max-w-md flex flex-col gap-4 justify-start rounded-md p-4">
+            {loading ? (
+              <>
+                {[...Array(3)].map((_, i) => (
+                  <OrderHistoryCardSkeleton key={i} />
+                ))}
+              </>
+            ) : orders.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-500">Захиалга олдсонгүй</p>
+              </div>
             ) : (
               orders.map((order) => (
                 <div key={order.orderId} className="w-full border-[1px] rounded-md bg-muted p-4">
-                  <div className="flex items-center gap-4 mb-2">
-                    <p className="text-[#441500] font-bold text-[20px]">#{order.orderNumber}</p>
-                    <div className="w-[120px] h-[20px] border-[1px] bg-white rounded-md flex items-center justify-center">
-                      <p className="text-[12px]">{order.status}</p>
-                    </div>
+                  <div className="flex items-center justify-between">
+                    <p className="text-xl font-bold text-[#441500]">#{order.orderNumber}</p>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">{order.status}</span>
                   </div>
-                  <div className="flex justify-between w-full">
-                    <p className="text-[10px] flex items-end">
+                  <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                    <p className="text-sm text-gray-600">
                       {new Intl.DateTimeFormat('en-GB', {
                         day: '2-digit',
                         month: '2-digit',
@@ -39,8 +68,24 @@ export const OrderHistory = () => {
                         hour12: false,
                       }).format(new Date(order.createdAt))}
                     </p>
-                    <p>{order.totalPrice}₮</p>
+                    <p className="text-lg font-bold text-[#441500]">{order.totalPrice?.toLocaleString()}₮</p>
                   </div>
+
+                  {/* Items Preview */}
+                  {order.items && order.items.length > 0 && (
+                    <div className="pt-2 border-t border-gray-200">
+                      <p className="text-xs text-gray-500 mb-2">Items:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {order.items.slice(0, 3).map((item: any, index: number) => (
+                          <div key={index} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-1.5">
+                            <span className="text-xs text-gray-700 font-medium">{item.name}</span>
+                            <span className="text-xs text-gray-500">x{item.selectCount || item.count}</span>
+                          </div>
+                        ))}
+                        {order.items.length > 3 && <span className="text-xs text-gray-500 flex items-center px-3 py-1.5">+{order.items.length - 3} more</span>}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))
             )}

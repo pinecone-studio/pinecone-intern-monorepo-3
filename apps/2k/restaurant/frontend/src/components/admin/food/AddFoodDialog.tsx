@@ -102,7 +102,7 @@ export const AddFoodDialog: React.FC<AddFoodDialogProps> = ({ reFetchAdminFood }
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="px-4 py-2 rounded-lg font-medium bg-gray-900 text-white">Хоол нэмэх</button>
+        <button className="px-6 py-2.5 rounded-lg font-medium bg-[#441500] text-white hover:bg-amber-900 transition-colors">Хоол нэмэх</button>
       </DialogTrigger>
 
       <DialogContent className="p-6 sm:max-w-[400px] space-y-5 rounded-2xl">

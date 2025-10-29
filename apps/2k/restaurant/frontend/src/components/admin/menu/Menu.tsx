@@ -6,10 +6,17 @@ import { MenuFood } from './FoodMenu';
 import { Category, useGetCategoriesQuery } from '@/generated';
 
 export const TabsDemo = () => {
-  const { data, loading, error, refetch:refetchCategory } = useGetCategoriesQuery();
+  const { data, loading, error, refetch: refetchCategory } = useGetCategoriesQuery();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex w-full max-w-[600px] flex-col gap-6 p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-10 bg-gray-200 rounded w-1/3"></div>
+          <div className="h-64 bg-gray-200 rounded-xl"></div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
@@ -30,7 +37,7 @@ export const TabsDemo = () => {
         </TabsContent>
 
         <TabsContent value="menu">
-          <ManageMenu categories={(data?.getCategories?.filter(Boolean) as Category[]) ?? []} refetchCategory={refetchCategory}/>
+          <ManageMenu categories={(data?.getCategories?.filter(Boolean) as Category[]) ?? []} refetchCategory={refetchCategory} />
         </TabsContent>
       </Tabs>
     </div>
