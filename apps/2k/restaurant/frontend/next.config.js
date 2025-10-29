@@ -18,7 +18,7 @@ const nextConfig = {
     ],
   },
   env: {
-    BACKEND_URI: process.env.BACKEND_URI || 'http://localhost:4000/graphql',
+    BACKEND_URI: process.env.BACKEND_URI || 'http://localhost:4000/api/graphql',
   },
 };
 
