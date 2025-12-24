@@ -135,7 +135,6 @@ mutation verifyOtp($verifyOtp: VerifyOtpInput!) {
   }
 }
 
-
 mutation updatePassword($input: UpdatePasswordInput) {
   updatePassword(input: $input) {
     message
@@ -145,5 +144,100 @@ mutation updatePassword($input: UpdatePasswordInput) {
 mutation ForgetverifyOtp($verifyOtp: VerifyOtpInput!) {
   forgetverifyOtp(verifyOtp: $verifyOtp) {
     message
+  }
+}
+
+query GetPosts {
+  getPosts {
+    id
+    user {
+      id
+      username
+      fullname
+      profilePicture
+    }
+    images
+    caption
+    likes {
+      id
+      username
+    }
+    comments {
+      id
+      user {
+        id
+        username
+      }
+      text
+      createdAt
+    }
+    createdAt
+  }
+}
+
+mutation CreatePost($input: CreatePostInput!) {
+  createPost(input: $input) {
+    id
+    user {
+      id
+      username
+      fullname
+      profilePicture
+    }
+    images
+    caption
+    likes {
+      id
+      username
+    }
+    comments {
+      id
+      user {
+        id
+        username
+      }
+      text
+      createdAt
+    }
+    createdAt
+  }
+}
+
+mutation LikePost($postId: ID!) {
+  likePost(postId: $postId) {
+    id
+    likes {
+      id
+      username
+    }
+  }
+}
+
+mutation AddComment($postId: ID!, $text: String!) {
+  addComment(postId: $postId, text: $text) {
+    id
+    user {
+      id
+      username
+    }
+    text
+    createdAt
+  }
+}
+query getNotifications($userId: ID!) {
+  getNotifications(userId: $userId) {
+    message
+    user {
+      username
+      profilePicture
+    }
+    fromUser {
+      username
+      profilePicture
+    }
+    isRead
+    type
+    createdAt
+    post
   }
 }

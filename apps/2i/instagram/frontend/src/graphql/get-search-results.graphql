@@ -5,3 +5,4 @@ query GetSearchResults {
     profilePicture
   }
 }
+
