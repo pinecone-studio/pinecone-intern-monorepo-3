@@ -1,14 +1,13 @@
 'use client';
 
-import {  useSignMutation } from '@/generated';
+import { useSignMutation } from '@/generated';
 import { useRouter } from 'next/navigation';
 
 import React, { useState } from 'react';
 
-
 const SignupPage = () => {
   const router = useRouter();
-const [ Sign,{ loading, error }] = useSignMutation()
+  const [Sign, { loading, error }] = useSignMutation();
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -16,13 +15,11 @@ const [ Sign,{ loading, error }] = useSignMutation()
     password: '',
   });
 
- 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -33,9 +30,9 @@ const [ Sign,{ loading, error }] = useSignMutation()
             email: formData.email,
             fullname: formData.name,
             username: formData.username,
-            password: formData.password
-          }
-        }
+            password: formData.password,
+          },
+        },
       });
       router.push('/otpverify');
     } catch (err) {
@@ -43,9 +40,8 @@ const [ Sign,{ loading, error }] = useSignMutation()
     }
   };
 
-
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center" >
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white border border-gray-300 rounded-lg p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Instagram</h1>
@@ -56,7 +52,7 @@ const [ Sign,{ loading, error }] = useSignMutation()
           <input
             data-cy="email-input"
             type="email"
-            name='email'
+            name="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Mobile Number or Email"
@@ -66,7 +62,7 @@ const [ Sign,{ loading, error }] = useSignMutation()
           <input
             data-cy="full-name-input"
             type="text"
-             name="name"
+            name="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="Full Name"
@@ -76,7 +72,7 @@ const [ Sign,{ loading, error }] = useSignMutation()
           <input
             data-cy="username-input"
             type="text"
-             value={formData.username}
+            value={formData.username}
             onChange={handleChange}
             name="username"
             placeholder="Username"
@@ -87,16 +83,16 @@ const [ Sign,{ loading, error }] = useSignMutation()
             data-cy="password-input"
             type="password"
             name="password"
-              value={formData.password}
+            value={formData.password}
             onChange={handleChange}
             placeholder="Password"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             required
           />
           <button data-cy="submit-button" type="submit" className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
-             {loading ? 'Signing up...' : 'Sign up'}
+            {loading ? 'Signing up...' : 'Sign up'}
           </button>
-           {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}
+          {error && <p className="text-red-500 text-sm mt-2">Error: {error.message}</p>}
         </form>
 
         <div className="mt-6 text-center">
